@@ -17,17 +17,18 @@ namespace RGLabs.InGame.Behaviours.Wave
         private void Awake()
         {
             var spawnEventStream = new DataStream<SpawnEvent>();
-            var creationStream = new DataStream<CreationRequest[]>();
             
             _updates.Add(spawnEventStream);
-            _updates.Add(creationStream);
 
             var waveUpdate = new WaveUpdate(_dbReference.waves, _dbReference.monsters, spawnEventStream);
             _updates.Add(waveUpdate);
 
             foreach (var area in _spawnAreas)
             {
+                var creationStream = new DataStream<CreationRequest[]>();
                 area.Init(spawnEventStream, creationStream);
+                
+                _updates.Add(creationStream);
             }
         }
 

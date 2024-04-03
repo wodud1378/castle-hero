@@ -15,16 +15,16 @@ namespace RGLabs.InGame.System.Wave
             public float size;
         }
 
-        private readonly int _eventId;
+        private readonly int _areaId;
         private readonly float _size;
         private readonly Vector2 _offset;
 
         private readonly DataStream<SpawnEvent> _input;
         private readonly DataStream<CreationRequest[]> _output;
 
-        public CreationHelper(int eventId, float size, Vector2 offset, DataStream<SpawnEvent> input, DataStream<CreationRequest[]> output)
+        public CreationHelper(int areaId, float size, Vector2 offset, DataStream<SpawnEvent> input, DataStream<CreationRequest[]> output)
         {
-            _eventId = eventId;
+            _areaId = areaId;
             _size = size;
             _offset = offset;
 
@@ -36,7 +36,7 @@ namespace RGLabs.InGame.System.Wave
         
         private void OnCollectSpawnEvent(SpawnEvent data)
         {
-            if (_eventId != data.area)
+            if (_areaId != data.area)
                 return;
 
             var spaces = ConstructSpaces(data.entities, out float totalSize);
