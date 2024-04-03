@@ -1,6 +1,6 @@
 namespace RGLabs.InGame.System
 {
-    public interface ISystem
+    public interface IUpdate
     {
         public void Init();
         

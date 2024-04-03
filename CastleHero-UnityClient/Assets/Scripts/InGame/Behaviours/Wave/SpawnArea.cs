@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using RGLabs.Common;
 using RGLabs.InGame.Behaviours.Unit;
+using RGLabs.InGame.Data.DB;
 using RGLabs.InGame.Data.Model;
-using RGLabs.InGame.System.MonsterFactory;
-using RGLabs.InGame.System.Spawn;
-using RGLabs.InGame.System.Wave.Data;
+using RGLabs.InGame.System.UnitFactory;
+using RGLabs.InGame.System.Wave;
 using RGLabs.InGame.Utility;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
-namespace RGLabs.InGame.Behaviours.System.Wave
+namespace RGLabs.InGame.Behaviours.Wave
 {
     public class SpawnArea : MonoBehaviour
     {
@@ -21,24 +20,21 @@ namespace RGLabs.InGame.Behaviours.System.Wave
             public float size;
         }
 
-        private struct CreationRequest
-        {
-            public Vector2 position;
-            public UnitEntity entity;
-        }
-
         [SerializeField] private int _id;
         [SerializeField] private float _size;
-        [SerializeField] private Shared _shared;
 
         private Queue<CreationRequest[]> _queue;
 
         private IUnitFactory _factory;
         private Dictionary<int, EntitySpace[]> _spawnSpaceMap;
 
+        public void Init(DataStream<SpawnEvent> stream)
+        {
+            stream.Collect += OnCollectSpawnEvent;
+        }
+        
         private void Awake()
         {
-            _shared.spawnDataStream.Collect += OnCollectSpawnEvent;
             _factory = new DefaultUnitFactory();
             _queue = new();
         }
@@ -56,7 +52,7 @@ namespace RGLabs.InGame.Behaviours.System.Wave
             }
         }
 
-        private void OnCollectSpawnEvent(SpawnEventData data)
+        private void OnCollectSpawnEvent(SpawnEvent data)
         {
             if (_id != data.area)
                 return;
@@ -67,7 +63,6 @@ namespace RGLabs.InGame.Behaviours.System.Wave
                 AddRandomSpace(ref spaces, leftSpace);
 
             spaces.Shuffle();
-            //Array.Sort(spaces, (_, _) => Random.Range(-1, 2));
 
             RegisterCreationRequests(data.spawnAt, spaces, data.entities);
         }

@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using RGLabs.InGame.System;
 
-namespace RGLabs.InGame.System.Wave
+namespace RGLabs.Common
 {
-    public class DataStream<T> : ISystem
+    public class DataStream<T> : IUpdate
     {
         public event Action<T> Collect;
         

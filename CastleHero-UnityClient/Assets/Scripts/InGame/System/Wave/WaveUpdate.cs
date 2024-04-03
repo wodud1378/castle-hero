@@ -1,19 +1,16 @@
 using System;
+using RGLabs.Common;
 using RGLabs.InGame.Data.DB;
 using RGLabs.InGame.Data.Model;
-using RGLabs.InGame.System.Wave.Data;
 using UnityEngine;
 
 namespace RGLabs.InGame.System.Wave
 {
-    [Serializable]
-    public class WaveSystem : ISystem
+    public class WaveUpdate : IUpdate
     {
-        [SerializeField] private Shared _shared;
-        [SerializeField] private WaveData[] _waves;
-        
+        private Wave[] _waves;
         private MonsterDB _db;
-        private DataStream<SpawnEventData> _stream;
+        private DataStream<SpawnEvent> _stream;
 
         private int _cursor;
         private float _timeSinceActive;
@@ -37,12 +34,16 @@ namespace RGLabs.InGame.System.Wave
         /// 현재 웨이브 진행 여부
         /// </summary>
         private bool OnWave => _timeSinceActive >= _waves[_cursor].start && _timeSinceActive < _waves[_cursor].end;
+
+        public WaveUpdate(Wave[] waves, MonsterDB db, DataStream<SpawnEvent> stream)
+        {
+            _waves = waves;
+            _db = db;
+            _stream = stream;
+        }
         
         public void Init()
         {
-            _db = _shared.monsterDB;
-            _stream = _shared.spawnDataStream;
-
             _cursor = 0;
             _timeSinceActive = 0f;
 
@@ -114,7 +115,7 @@ namespace RGLabs.InGame.System.Wave
         /// 생성 이벤트 데이터를 스트림에 전송 
         /// </summary>
         /// <param name="data">생성 정보 데이터</param>
-        private void Emit(SpawnInfoData data)
+        private void Emit(SpawnInfo data)
         {
             int size = 0;
             foreach (var detail in data.details)
@@ -123,7 +124,7 @@ namespace RGLabs.InGame.System.Wave
             }
 
             var entities = new UnitEntity[size];
-            var evData = new SpawnEventData
+            var evData = new SpawnEvent
             {
                 spawnAt = data.spawnAt,
                 area = data.area,

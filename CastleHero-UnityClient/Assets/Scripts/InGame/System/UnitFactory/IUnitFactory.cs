@@ -1,9 +1,8 @@
 using System;
-using RGLabs.InGame.Behaviours;
 using RGLabs.InGame.Behaviours.Unit;
 using RGLabs.InGame.Data.Model;
 
-namespace RGLabs.InGame.System.Spawn
+namespace RGLabs.InGame.System.UnitFactory
 {
     public interface IUnitFactory
     {

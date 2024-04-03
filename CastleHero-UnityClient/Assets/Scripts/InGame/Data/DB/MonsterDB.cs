@@ -9,7 +9,7 @@ namespace RGLabs.InGame.Data.DB
         protected override UnitEntity FallBackEntity() =>
             new()
             {
-                id = -1,
+                Id = -1,
                 prefab = string.Empty,
                 name = string.Empty,
                 hp = 0,

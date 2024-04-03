@@ -4,10 +4,9 @@ using RGLabs.Common.Pattern;
 using RGLabs.Common.ResourceManagement;
 using RGLabs.InGame.Behaviours.Unit;
 using RGLabs.InGame.Data.Model;
-using RGLabs.InGame.System.Spawn;
 using UnityEngine.AddressableAssets;
 
-namespace RGLabs.InGame.System.MonsterFactory
+namespace RGLabs.InGame.System.UnitFactory
 {
     public class DefaultUnitFactory : IUnitFactory
     {

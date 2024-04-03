@@ -1,13 +1,13 @@
 using System;
+using UnityEngine;
 
 namespace RGLabs.InGame.Data.Model
 {
     [Serializable]
     public struct UnitEntity : IEntity
     {
-        public int Id => id;
-        
-        public int id;
+        [field: SerializeField]
+        public int Id { get; set; }
         public float size;
         public string prefab;
         public string name;

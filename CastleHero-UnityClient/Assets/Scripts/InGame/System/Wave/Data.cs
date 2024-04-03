@@ -2,7 +2,7 @@ using System;
 using RGLabs.InGame.Data.Model;
 using UnityEngine;
 
-namespace RGLabs.InGame.System.Wave.Data
+namespace RGLabs.InGame.System.Wave
 {
     public enum SpawnAt
     {
@@ -11,35 +11,40 @@ namespace RGLabs.InGame.System.Wave.Data
     }
     
     [Serializable]
-    public struct WaveData
+    public struct Wave
     {
         public float timeStep;
         public float start;
         public float end;
 
-        public SpawnInfoData[] info;
+        public SpawnInfo[] info;
     }
     
     [Serializable]
-    public struct SpawnInfoData
+    public struct SpawnInfo
     {
         public int area;
         public SpawnAt spawnAt;
-        public SpawnDetailData[] details;
+        public SpawnDetail[] details;
     }
     
     [Serializable]
-    public struct SpawnDetailData
+    public struct SpawnDetail
     {
         public int id;
         public int count;
     }
 
-    [Serializable]
-    public struct SpawnEventData
+    public struct SpawnEvent
     {
         public int area;
         public SpawnAt spawnAt;
         public UnitEntity[] entities;
+    }
+    
+    public struct CreationRequest
+    {
+        public Vector2 position;
+        public UnitEntity entity;
     }
 }
