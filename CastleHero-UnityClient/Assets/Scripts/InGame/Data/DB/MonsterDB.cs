@@ -4,9 +4,9 @@ using RGLabs.InGame.Data.Model;
 namespace RGLabs.InGame.Data.DB
 {
     [Serializable]
-    public class MonsterDB : DB<MonsterEntity>
+    public class MonsterDB : DB<UnitEntity>
     {
-        protected override MonsterEntity FallBackEntity() =>
+        protected override UnitEntity FallBackEntity() =>
             new()
             {
                 id = -1,

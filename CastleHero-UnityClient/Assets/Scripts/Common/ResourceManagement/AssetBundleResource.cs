@@ -29,7 +29,9 @@ namespace RGLabs.Common.ResourceManagement
         {
             Addressables.InstantiateAsync(path).Completed += handle =>
             {
-                onComplete?.Invoke(handle.Result.GetComponent<T>());
+                var res = handle.Result;
+                var component = res.GetComponent<T>();
+                onComplete?.Invoke(component);
             };
         }
 

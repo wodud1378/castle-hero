@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace RGLabs.InGame.Data.DB
 {
+    [Serializable]
     public abstract class DB<T> where T : IEntity
     {
         [SerializeField] protected T[] _entities;

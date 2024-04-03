@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6077018133523872083}
   - component: {fileID: 3871190331950090388}
   - component: {fileID: 6013151911958948988}
+  - component: {fileID: -2654043704607830635}
   m_Layer: 0
   m_Name: 001
   m_TagString: Untagged
@@ -99,6 +100,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4345521fe413456eb8fa0b3bb04224d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _hp: 0
+  _speed: 0
+  _atk: 0
+  _atkSpeed: 0
+  _atkRange: 0
+  _enemySearchRange: 0
+  _attractionEnemyRange: 0
+  _attractionPeriod: 0
 --- !u!58 &3871190331950090388
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -161,3 +170,23 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 5
+--- !u!114 &-2654043704607830635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2224556522064719523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6457f92030aa4bb18cf53a503ebfd0f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hp: 0
+  _speed: 0
+  _atk: 0
+  _atkSpeed: 0
+  _atkRange: 0
+  _enemySearchRange: 0
+  _attractionEnemyRange: 0
+  _attractionPeriod: 0
