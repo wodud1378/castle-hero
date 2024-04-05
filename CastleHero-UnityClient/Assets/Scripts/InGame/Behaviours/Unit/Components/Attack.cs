@@ -11,13 +11,12 @@ namespace RGLabs.InGame.Behaviours.Unit.Components
 
         public GameUnit Root { get; set; }
         
-        private Animator _animator;
         private Detecting _detector;
         private float _damage;
 
-        public void Init(Animator animator, Detecting detector, float damage)
+        public void Init(Detecting detector, float damage)
         {
-            _animator = animator;
+            _detector = detector;
             _damage = damage;
 
             _events.OnHitEvent -= OnHit;
@@ -38,12 +37,6 @@ namespace RGLabs.InGame.Behaviours.Unit.Components
             {
                 // TODO 공격 로직
             }
-        }
-
-        private void OnValidate()
-        {
-            if (_animator == null)
-                _animator = GetComponent<Animator>();
         }
     }
 }

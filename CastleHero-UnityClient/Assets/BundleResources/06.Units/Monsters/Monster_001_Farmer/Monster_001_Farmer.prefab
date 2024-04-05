@@ -14,9 +14,10 @@ GameObject:
   - component: {fileID: 1951206759450433748}
   - component: {fileID: 2514936436172156276}
   - component: {fileID: 1563981804488503216}
-  m_Layer: 0
-  m_Name: Enemy_001_Farmer
-  m_TagString: Untagged
+  - component: {fileID: 443493125457280950}
+  m_Layer: 8
+  m_Name: Monster_001_Farmer
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -57,7 +58,8 @@ MonoBehaviour:
   _findingRange: {fileID: 1877827444260084374}
   _attackRange: {fileID: 6523311691162004946}
   _movement: {fileID: 1563981804488503216}
-  _attackComponents: []
+  _attackComponents:
+  - {fileID: 443493125457280950}
 --- !u!210 &7079242451995871381
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -144,6 +146,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89cbdf54421b45fabc193b4eca563483, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &443493125457280950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2224556522064719523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b2a2675de74cafb71a41e4d0cd3b5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _events: {fileID: 2382453869703170998}
 --- !u!1 &4666143083836451417
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,7 +171,7 @@ GameObject:
   - component: {fileID: 7600703842030978507}
   - component: {fileID: 2501007470193450148}
   - component: {fileID: 2364104701281550140}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -255,7 +270,7 @@ GameObject:
   - component: {fileID: 5975240846050550739}
   - component: {fileID: 4246205144746849534}
   - component: {fileID: 2382453869703170998}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Spine Mecanim GameObject (Enemy_001_Farmer)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -434,7 +449,7 @@ GameObject:
   - component: {fileID: 8876667565173737757}
   - component: {fileID: 5659223507372189352}
   - component: {fileID: 3795458797547449155}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -568,11 +583,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1148568050371455380, guid: fe376769bcf03bc40871ba783acbb3d8, type: 3}
       propertyPath: m_Radius
-      value: 0.5
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 1148568050371455380, guid: fe376769bcf03bc40871ba783acbb3d8, type: 3}
       propertyPath: m_Offset.y
-      value: 0.25
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 3205096512355982306, guid: fe376769bcf03bc40871ba783acbb3d8, type: 3}
       propertyPath: _maxTarget
@@ -581,6 +596,10 @@ PrefabInstance:
     - target: {fileID: 3571164533565747751, guid: fe376769bcf03bc40871ba783acbb3d8, type: 3}
       propertyPath: m_Name
       value: FindingRange
+      objectReference: {fileID: 0}
+    - target: {fileID: 3571164533565747751, guid: fe376769bcf03bc40871ba783acbb3d8, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -653,11 +672,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1148568050371455380, guid: fe376769bcf03bc40871ba783acbb3d8, type: 3}
       propertyPath: m_Radius
-      value: 2
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 1148568050371455380, guid: fe376769bcf03bc40871ba783acbb3d8, type: 3}
       propertyPath: m_Offset.y
-      value: 0.5
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 3205096512355982306, guid: fe376769bcf03bc40871ba783acbb3d8, type: 3}
       propertyPath: _maxTarget
@@ -666,6 +685,10 @@ PrefabInstance:
     - target: {fileID: 3571164533565747751, guid: fe376769bcf03bc40871ba783acbb3d8, type: 3}
       propertyPath: m_Name
       value: AttackRange
+      objectReference: {fileID: 0}
+    - target: {fileID: 3571164533565747751, guid: fe376769bcf03bc40871ba783acbb3d8, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

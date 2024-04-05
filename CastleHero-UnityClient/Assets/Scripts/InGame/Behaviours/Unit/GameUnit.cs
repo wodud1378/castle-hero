@@ -16,6 +16,7 @@ namespace RGLabs.InGame.Behaviours.Unit
     {
         public enum States
         {
+            None,
             Idle,
             Move,
             Attack,
@@ -30,10 +31,10 @@ namespace RGLabs.InGame.Behaviours.Unit
 
         private static readonly Dictionary<States, int> AnimationsHash = new()
         {
-            { States.Idle, Constants.IdleAnim },
-            { States.Move, Constants.MoveAnim },
-            { States.Attack, Constants.AtkAnim },
-            { States.Dead, Constants.DeadAnim },
+            { States.Idle, Animator.StringToHash("Idle") },
+            { States.Move,  Animator.StringToHash("Move") },
+            { States.Attack, Animator.StringToHash("Attack") },
+            { States.Dead, Animator.StringToHash("Dead") },
         };
 
         [SerializeField] private Rigidbody2D _rigidbody;
@@ -47,24 +48,34 @@ namespace RGLabs.InGame.Behaviours.Unit
         [SerializeField] protected Movement _movement;
         [SerializeField] protected Attack[] _attackComponents;
 
-        public ReactiveProperty<States> State { get; } = new(States.Idle);
-
+        public ReactiveProperty<States> State { get; } = new(States.None);
+        
         public void Init(UnitEntity data)
         {
             _movement.Root = this;
-            _movement.Init(_rigidbody, _animator.transform, data.speed, _findingRange, Destination());
+            _movement.Init(_rigidbody, _animator.transform, data.speed, data.range, _findingRange, Destination());
             foreach (var attack in _attackComponents)
             {
                 attack.Root = this;
-                attack.Init(_animator, _attackRange, data.atk);
+                attack.Init(_attackRange, data.atk);
             }
+
+            State.Value = States.Idle;
         }
 
         private void Awake()
         {
             State
                 .DistinctUntilChanged()
-                .Subscribe(x => _animator.SetTrigger(AnimationsHash[x]));
+                .Subscribe(UpdateAnimation);
+        }
+
+        private void UpdateAnimation(States state)
+        {
+            if (state == States.None)
+                return;
+
+            _animator.SetTrigger(AnimationsHash[state]);
         }
 
         private void Update()
@@ -74,7 +85,7 @@ namespace RGLabs.InGame.Behaviours.Unit
 
             if (_attackRange.HasDetected)
                 State.Value = States.Attack;
-            else if (_findingRange.HasDetected)
+            else if (_findingRange.HasDetected || _movement.MoveState.Value)
                 State.Value = States.Move;
             else
                 State.Value = States.Idle;

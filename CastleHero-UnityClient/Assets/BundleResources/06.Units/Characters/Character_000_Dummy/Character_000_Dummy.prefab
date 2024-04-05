@@ -14,9 +14,10 @@ GameObject:
   - component: {fileID: 2705414219230316648}
   - component: {fileID: 6823501329548866275}
   - component: {fileID: 1610542053234018673}
-  m_Layer: 8
+  - component: {fileID: 2975054814816650913}
+  m_Layer: 9
   m_Name: Character_000_Dummy
-  m_TagString: Untagged
+  m_TagString: Character
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -69,7 +70,8 @@ MonoBehaviour:
   _findingRange: {fileID: 8877386486501089145}
   _attackRange: {fileID: 2262076263650338623}
   _movement: {fileID: 1610542053234018673}
-  _attackComponents: []
+  _attackComponents:
+  - {fileID: 2975054814816650913}
 --- !u!50 &2705414219230316648
 Rigidbody2D:
   serializedVersion: 4
@@ -144,6 +146,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89cbdf54421b45fabc193b4eca563483, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2975054814816650913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2985652818029949293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b2a2675de74cafb71a41e4d0cd3b5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _events: {fileID: 976667049480023501}
 --- !u!1 &3348428060014438675
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,7 +171,7 @@ GameObject:
   - component: {fileID: 2193647627453059273}
   - component: {fileID: 2811989651650147784}
   - component: {fileID: 2305117564230882968}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -254,7 +269,8 @@ GameObject:
   - component: {fileID: 7163035223394346074}
   - component: {fileID: 8321658665644799341}
   - component: {fileID: 4697671263336751703}
-  m_Layer: 0
+  - component: {fileID: 976667049480023501}
+  m_Layer: 9
   m_Name: Spine Mecanim GameObject (Char_000_Dummy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -409,6 +425,18 @@ MonoBehaviour:
   partsRenderers:
   - {fileID: 1434391185579447381}
   - {fileID: 2305117564230882968}
+--- !u!114 &976667049480023501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7919644939295012117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d500710e7db4ac0a35be5c768699a10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8831559656878782165
 GameObject:
   m_ObjectHideFlags: 0
@@ -421,7 +449,7 @@ GameObject:
   - component: {fileID: 4692197625575229065}
   - component: {fileID: 1213846713636206222}
   - component: {fileID: 1434391185579447381}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -569,6 +597,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AttackRange
       objectReference: {fileID: 0}
+    - target: {fileID: 3571164533565747751, guid: 8a0c34f553423b840acba4723c0783b0, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -649,6 +681,10 @@ PrefabInstance:
     - target: {fileID: 3571164533565747751, guid: 8a0c34f553423b840acba4723c0783b0, type: 3}
       propertyPath: m_Name
       value: FindingRange
+      objectReference: {fileID: 0}
+    - target: {fileID: 3571164533565747751, guid: 8a0c34f553423b840acba4723c0783b0, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

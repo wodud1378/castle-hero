@@ -80,4 +80,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09dfc288224442fa93c8f7930daa8db9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _allowTags:
+  - Monster
   _maxTarget: 10
+  Targets: []

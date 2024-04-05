@@ -7,9 +7,10 @@ namespace RGLabs.InGame.Behaviours.Unit.Components
     [RequireComponent(typeof(CircleCollider2D))]
     public class Detecting : MonoBehaviour
     {
+        [SerializeField] private List<string> _allowTags;
         [SerializeField] private int _maxTarget = 10;
 
-        public List<GameUnit> Targets { get; } = new();
+        public List<GameUnit> Targets = new();
 
         public bool HasDetected => Targets.Count > 0;
 
@@ -48,6 +49,9 @@ namespace RGLabs.InGame.Behaviours.Unit.Components
 
         private void OnTriggerExit2D(Collider2D other)
         {
+            if (!_allowTags.Contains(other.tag))
+                return;
+            
             if (!other.gameObject.TryGetComponent(out GameUnit found))
                 return;
 
@@ -59,6 +63,9 @@ namespace RGLabs.InGame.Behaviours.Unit.Components
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            if (!_allowTags.Contains(other.tag))
+                return;
+            
             if (_addBuffer.Count >= _maxTarget)
                 return;
 

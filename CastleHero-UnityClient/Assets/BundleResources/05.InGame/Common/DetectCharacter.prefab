@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1148568050371455380}
   - component: {fileID: 3205096512355982306}
   m_Layer: 10
-  m_Name: DetectPlayer
+  m_Name: DetectCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80,4 +80,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09dfc288224442fa93c8f7930daa8db9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _allowTags:
+  - Character
   _maxTarget: 10
+  Targets: []

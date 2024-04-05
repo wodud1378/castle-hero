@@ -27,7 +27,7 @@ MonoBehaviour:
     _entities:
     - <Id>k__BackingField: 0
       name: 001
-      prefab: Monster_001_Farmer/Enemy_001_Farmer.prefab
+      prefab: Monster_001_Farmer/Monster_001_Farmer.prefab
       skinIndex: 0
       size: 0.3
       hp: 100
@@ -36,7 +36,7 @@ MonoBehaviour:
       range: 0.75
     - <Id>k__BackingField: 1
       name: 002
-      prefab: Monster_001_Farmer/Enemy_001_Farmer.prefab
+      prefab: Monster_001_Farmer/Monster_001_Farmer.prefab
       skinIndex: 1
       size: 0.3
       hp: 100
