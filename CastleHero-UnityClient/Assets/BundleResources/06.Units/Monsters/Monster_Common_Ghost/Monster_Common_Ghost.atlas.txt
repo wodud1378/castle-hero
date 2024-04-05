@@ -1,0 +1,22 @@
+Monster_Common_Ghost.png
+	size: 512, 512
+	filter: Linear, Linear
+	scale: 0.4
+Arm
+	bounds: 2, 19, 93, 118
+	offsets: 2, 2, 96, 121
+	rotate: 90
+Body_1
+	bounds: 131, 2, 223, 272
+	offsets: 1, 0, 224, 272
+	rotate: 270
+Body_2
+	bounds: 210, 215, 223, 272
+	offsets: 1, 0, 224, 272
+	rotate: 180
+Body_3
+	bounds: 2, 215, 223, 272
+	offsets: 1, 0, 224, 272
+Face
+	bounds: 2, 114, 121, 102
+	offsets: 0, 1, 121, 103

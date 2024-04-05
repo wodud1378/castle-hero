@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1b3b4b945939a54ea0b23d3396115fb, type: 3}
-  m_Name: Char_Dummy_SkeletonData
+  m_Name: Character_000_Dummy_SkeletonData
   m_EditorClassIdentifier: 
   atlasAssets:
-  - {fileID: 11400000, guid: 9815c074a45ea014c8d3982169fc6bb3, type: 2}
+  - {fileID: 11400000, guid: 395d79694a0039b4ebb8c653bf4c29b7, type: 2}
   scale: 0.01
-  skeletonJSON: {fileID: 4900000, guid: cb1769d78b7067140b7e467a1bfba44c, type: 3}
+  skeletonJSON: {fileID: 4900000, guid: 5404aa83c6456ef4d9d2201aa4442a97, type: 3}
   isUpgradingBlendModeMaterials: 0
   blendModeMaterials:
     requiresBlendModeMaterials: 0
@@ -27,5 +27,5 @@ MonoBehaviour:
   fromAnimation: []
   toAnimation: []
   duration: []
-  defaultMix: 0
-  controller: {fileID: 9100000, guid: 92ba2f1506be2434d9fb98c0996692cf, type: 2}
+  defaultMix: 0.2
+  controller: {fileID: 9100000, guid: d8438e918b168d449be7a52ce77068cc, type: 2}

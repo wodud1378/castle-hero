@@ -1,0 +1,90 @@
+Enemy_001_Farmer.png
+	size: 512, 512
+	filter: Linear, Linear
+	scale: 0.5
+Effect_Slash
+	bounds: 348, 402, 50, 50
+Elipse
+	bounds: 250, 305, 65, 65
+Flail_1
+	bounds: 328, 269, 18, 240
+Flail_2
+	bounds: 400, 418, 13, 91
+	offsets: 3, 0, 18, 91
+Pitchfork
+	bounds: 2, 232, 125, 277
+	offsets: 5, 5, 135, 287
+Var_1_Arm_L
+	bounds: 370, 191, 38, 57
+	offsets: 5, 5, 48, 67
+	rotate: 90
+Var_1_Arm_R
+	bounds: 348, 286, 43, 56
+	offsets: 5, 5, 53, 66
+Var_1_Eyes
+	bounds: 250, 219, 72, 44
+Var_1_Hair_Back
+	bounds: 129, 263, 120, 119
+	offsets: 5, 5, 130, 129
+	rotate: 90
+Var_1_Hair_Front_1
+	bounds: 242, 2, 80, 62
+	offsets: 4, 3, 87, 68
+Var_1_Hair_Front_2
+	bounds: 141, 139, 122, 102
+	offsets: 5, 5, 132, 112
+	rotate: 90
+Var_1_Hand_L
+	bounds: 367, 70, 45, 53
+	offsets: 5, 5, 55, 63
+Var_1_Hand_R
+	bounds: 348, 454, 48, 55
+	offsets: 5, 5, 58, 65
+Var_1_Hand_R_Grip
+	bounds: 393, 360, 39, 40
+	offsets: 1, 1, 42, 42
+Var_1_Head
+	bounds: 129, 385, 124, 116
+	offsets: 5, 5, 134, 126
+	rotate: 90
+Var_1_Leg
+	bounds: 321, 180, 48, 75
+	offsets: 2, 3, 53, 80
+Var_1_Mustache
+	bounds: 250, 280, 69, 23
+	offsets: 1, 3, 70, 29
+Var_1_Torso
+	bounds: 238, 111, 105, 106
+	offsets: 0, 3, 106, 113
+	rotate: 180
+Var_2_Arm_L
+	bounds: 369, 11, 38, 57
+	offsets: 5, 5, 48, 67
+Var_2_Arm_R
+	bounds: 348, 344, 43, 56
+	offsets: 5, 5, 53, 66
+Var_2_Eyes
+	bounds: 248, 66, 72, 44
+Var_2_Hair_Back
+	bounds: 2, 80, 150, 137
+	offsets: 5, 2, 159, 141
+	rotate: 90
+Var_2_Hair_Front
+	bounds: 247, 371, 138, 81
+	offsets: 1, 1, 139, 82
+	rotate: 90
+Var_2_Hand_L
+	bounds: 367, 231, 45, 53
+	offsets: 5, 5, 55, 63
+Var_2_Hand_R
+	bounds: 344, 125, 48, 55
+	offsets: 5, 5, 58, 65
+Var_2_Leg
+	bounds: 320, 31, 48, 75
+	offsets: 2, 3, 53, 80
+Var_2_Mouth
+	bounds: 294, 448, 29, 13
+Var_2_Torso
+	bounds: 141, 32, 105, 106
+	offsets: 0, 3, 106, 113
+	rotate: 90
