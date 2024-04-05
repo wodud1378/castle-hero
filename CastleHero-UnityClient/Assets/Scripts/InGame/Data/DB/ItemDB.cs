@@ -1,5 +1,4 @@
 using RGLabs.InGame.Data.Model;
-using NotImplementedException = System.NotImplementedException;
 
 namespace RGLabs.InGame.Data.DB
 {

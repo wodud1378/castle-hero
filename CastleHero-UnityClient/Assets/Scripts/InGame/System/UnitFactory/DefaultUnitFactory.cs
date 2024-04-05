@@ -1,32 +1,40 @@
-using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using RGLabs.Common.Pattern;
 using RGLabs.Common.ResourceManagement;
 using RGLabs.InGame.Behaviours.Unit;
 using RGLabs.InGame.Data.Model;
-using UnityEngine.AddressableAssets;
+using UnityEngine;
 
 namespace RGLabs.InGame.System.UnitFactory
 {
     public class DefaultUnitFactory : IUnitFactory
     {
-        // TODO: DI?
-        private AssetBundleResource _resource = new();
+        private readonly Dictionary<string, AddressablePool<GameUnit>> _pools = new();
 
-        private Dictionary<string, ObjectPool<GameUnit>> _pools = new();
+        private readonly AssetBundleResource _resource;
 
-        public DefaultUnitFactory()
+        public async UniTask<T> Create<T>(UnitEntity entity, Vector2 position) where T : GameUnit
         {
-            // TODO : 다운로드 구문 추후에 게임 시작으로 이동.
-            Addressables.InitializeAsync().Completed += (h) =>
+            string prefab = entity.prefab;
+            if (!_pools.TryGetValue(prefab, out var pool))
             {
-                Addressables.DownloadDependenciesAsync("Monster_001");
-            };
-        }
-        
-        public void PushCreationRequest<T>(UnitEntity entity, Action<T> onCreated) where T : GameUnit
-        {
-            _resource.Instantiate(entity.prefab, onCreated);
+                pool = new AddressablePool<GameUnit>(prefab);
+                _pools[prefab] = pool;
+            }
+
+            var unit = await pool.Get() as T;
+            if (unit == null)
+            {
+#if UNITY_EDITOR
+                Debug.LogError($"[{entity.prefab}] 리소스가 존재하지 않습니다.");
+#endif
+                return null;
+            }
+
+            unit.Position = position;
+            unit.Init(entity);
+            return unit;
         }
     }
 }

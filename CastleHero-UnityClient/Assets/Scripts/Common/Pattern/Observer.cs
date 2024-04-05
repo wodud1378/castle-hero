@@ -19,5 +19,12 @@ namespace RGLabs.Common.Pattern
         }
         
         private T _it;
+
+        public Observer(T initialVal)
+        {
+            It = initialVal;
+        }
+        
+        public static implicit operator T(Observer<T> observer) => observer.It;
     }
 }

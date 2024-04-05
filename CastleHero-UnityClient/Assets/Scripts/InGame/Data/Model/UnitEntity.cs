@@ -8,10 +8,14 @@ namespace RGLabs.InGame.Data.Model
     {
         [field: SerializeField]
         public int Id { get; set; }
-        public float size;
-        public string prefab;
         public string name;
+        public string prefab;
+        public int skinIndex;
+        
+        public float size;
         public float hp;
         public float speed;
+        public float atk;
+        public float range;
     }
 }

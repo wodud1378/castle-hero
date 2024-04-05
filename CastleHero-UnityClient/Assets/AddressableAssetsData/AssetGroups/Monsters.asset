@@ -18,16 +18,11 @@ MonoBehaviour:
   m_GUID: ad31481f4ac610845b318d3e3ed94f31
   m_SerializeEntries:
   - m_GUID: 45f3ba0eb31bd5d4794f53dcccd9019d
-    m_Address: Monster_001
+    m_Address: Monster_001_Farmer
     m_ReadOnly: 0
     m_SerializedLabels:
     - Monster_001
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b43725bfa641b634aab7efac19caf8dd
-    m_Address: Monster_002
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Monster_002
+    - Stage_01_01
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 5929c0cb8d0d07d4aa9632acaa1413c5, type: 2}

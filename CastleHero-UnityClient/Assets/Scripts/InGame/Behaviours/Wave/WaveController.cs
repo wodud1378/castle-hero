@@ -11,6 +11,8 @@ namespace RGLabs.InGame.Behaviours.Wave
     {
         [SerializeField] private DBReference _dbReference;
         [SerializeField] private SpawnArea[] _spawnAreas;
+
+        public bool IsRunning { get; set; } = false;
         
         private readonly List<IUpdate> _updates = new();
         
@@ -34,6 +36,9 @@ namespace RGLabs.InGame.Behaviours.Wave
 
         private void Update()
         {
+            if (!IsRunning)
+                return;
+            
             foreach (var update in _updates)
             {
                 update.ProcessUpdate(Time.deltaTime);

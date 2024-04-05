@@ -12,22 +12,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 131d53a9d0484024a4691fe57838c613, type: 3}
   m_Name: DB
   m_EditorClassIdentifier: 
+  characters:
+    _entities:
+    - <Id>k__BackingField: 0
+      name: Dummy
+      prefab: Character_000_Dummy/Character_000_Dummy.prefab
+      skinIndex: 0
+      size: 0.3
+      hp: 1000
+      speed: 2
+      atk: 100
+      range: 1
   monsters:
     _entities:
     - <Id>k__BackingField: 0
-      size: 1
-      prefab: Monster_001/001.prefab
       name: 001
+      prefab: Monster_001_Farmer/Enemy_001_Farmer.prefab
+      skinIndex: 0
+      size: 0.3
       hp: 100
-      speed: 5
+      speed: 1
+      atk: 10
+      range: 0.75
     - <Id>k__BackingField: 1
-      size: 0.5
-      prefab: Monster_002/002.prefab
       name: 002
+      prefab: Monster_001_Farmer/Enemy_001_Farmer.prefab
+      skinIndex: 1
+      size: 0.3
       hp: 100
-      speed: 5
+      speed: 1
+      atk: 10
+      range: 0.75
   waves:
-  - timeStep: 1
+  - timeStep: 5
     start: 0
     end: 60
     info:
@@ -35,4 +52,4 @@ MonoBehaviour:
       spawnAt: 0
       details:
       - id: 0
-        count: 5
+        count: 1

@@ -3,10 +3,21 @@ using UnityEngine;
 
 namespace RGLabs.InGame.Behaviours
 {
-    public class Obj : MonoBehaviour, IObjectPoolItem
+    public abstract class Obj : MonoBehaviour, IObjectPoolItem
     {
-        public void Activate() => gameObject.SetActive(true);
+        protected virtual void OnActivate()
+        {
+            gameObject.SetActive(true);
+        }
 
-        public void Inactivate() => gameObject.SetActive(false);
+        protected virtual void OnInactivate()
+        {
+            gameObject.SetActive(false);
+
+        }
+
+        public void Activate() => OnActivate();
+
+        public void Inactivate() => OnInactivate();
     }
 }

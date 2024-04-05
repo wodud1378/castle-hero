@@ -11,12 +11,12 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Terrain
+  - Castle
+  - Monster
+  - Player
+  - DetectPlayer
+  - DetectMonster
   - 
   - 
   - 
@@ -40,4 +40,22 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Map
+    uniqueID: 3977365181
+    locked: 0
+  - name: FloorEffect
+    uniqueID: 3407284717
+    locked: 0
+  - name: GroundUnit
+    uniqueID: 3567795195
+    locked: 0
+  - name: SkyUnit
+    uniqueID: 121034787
+    locked: 0
+  - name: CeilingEffect
+    uniqueID: 3399786455
+    locked: 0
+  - name: Damage
+    uniqueID: 1420770885
     locked: 0

@@ -1,8 +1,18 @@
+using System.Collections.Generic;
+using RGLabs.InGame.Behaviours.Unit.Components;
+using RGLabs.InGame.Common;
+using RGLabs.InGame.Data.Model;
+using UniRx;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace RGLabs.InGame.Behaviours.Unit
 {
-    public class GameUnit : Obj
+    [RequireComponent(typeof(SortingGroup))]
+    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(CircleCollider2D))]
+    [RequireComponent(typeof(Movement))]
+    public abstract class GameUnit : Obj
     {
         public enum States
         {
@@ -12,66 +22,64 @@ namespace RGLabs.InGame.Behaviours.Unit
             Dead,
         }
 
-        public States State { get; protected set; } = States.Idle;
-
-        [SerializeField] private float _hp;
-        [SerializeField] private float _speed;
-        
-        [SerializeField] private float _atk;
-        [SerializeField] private float _atkSpeed;
-        [SerializeField] private float _atkRange;
-
-        [SerializeField] private float _enemySearchRange;
-        [SerializeField] private float _attractionEnemyRange;
-        [SerializeField] private int _attractionPeriod;
-        
-        private GameUnit _attractionTarget = null;
-        
-        private readonly RaycastHit2D[] _searchBuffer = new RaycastHit2D[20];
-
-        private void Attract()
+        public Vector2 Position
         {
-            if (_attractionTarget == null)
-                return;
-            
-            
+            get => _rigidbody.position;
+            set => _rigidbody.position = value;
         }
 
-        private void Attack()
+        private static readonly Dictionary<States, int> AnimationsHash = new()
         {
-            
-        }
-        
-        private void SearchEnemy()
-        {
-            int found = Physics2D.CircleCastNonAlloc(transform.position, _enemySearchRange, Vector2.zero, _searchBuffer);
-            if (found <= 0)
-                return;
+            { States.Idle, Constants.IdleAnim },
+            { States.Move, Constants.MoveAnim },
+            { States.Attack, Constants.AtkAnim },
+            { States.Dead, Constants.DeadAnim },
+        };
 
-            int index = -1;
-            int max = -int.MaxValue;
-            for (int i = 0; i < found; ++i)
+        [SerializeField] private Rigidbody2D _rigidbody;
+        [SerializeField] private Collider2D _collider;
+        [SerializeField] private Animator _animator;
+
+        [SerializeField] protected Detecting _findingRange;
+        [SerializeField] protected Detecting _attackRange;
+
+        // Components
+        [SerializeField] protected Movement _movement;
+        [SerializeField] protected Attack[] _attackComponents;
+
+        public ReactiveProperty<States> State { get; } = new(States.Idle);
+
+        public void Init(UnitEntity data)
+        {
+            _movement.Root = this;
+            _movement.Init(_rigidbody, _animator.transform, data.speed, _findingRange, Destination());
+            foreach (var attack in _attackComponents)
             {
-                var unit = _searchBuffer[i].collider.GetComponent<GameUnit>();
-                if (max < unit._attractionPeriod)
-                {
-                    index = i;
-                    max = unit._attractionPeriod;
-                }
+                attack.Root = this;
+                attack.Init(_animator, _attackRange, data.atk);
             }
+        }
 
-            if (index is -1)
+        private void Awake()
+        {
+            State
+                .DistinctUntilChanged()
+                .Subscribe(x => _animator.SetTrigger(AnimationsHash[x]));
+        }
+
+        private void Update()
+        {
+            if (State.Value == States.Dead)
                 return;
 
-            var candidate = _searchBuffer[index].collider.GetComponent<GameUnit>();
-            if (_attractionTarget is null)
-                _attractionTarget = candidate;
+            if (_attackRange.HasDetected)
+                State.Value = States.Attack;
+            else if (_findingRange.HasDetected)
+                State.Value = States.Move;
             else
-            {
-                _attractionTarget = _attractionTarget._attractionPeriod < candidate._attractionPeriod
-                    ? candidate
-                    : _attractionTarget;
-            }
+                State.Value = States.Idle;
         }
+
+        protected abstract Vector2 Destination();
     }
 }

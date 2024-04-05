@@ -1,3 +1,5 @@
+using System.Collections;
+using RGLabs.InGame.Behaviours.Unit;
 using UnityEngine;
 
 namespace RGLabs.InGame.Utility
@@ -21,5 +23,15 @@ namespace RGLabs.InGame.Utility
 
             return array;
         }
+
+        public static bool IsValid(this GameUnit unit)
+        {
+            if (unit == null)
+                return false;
+
+            return unit.State.Value != GameUnit.States.Dead;
+        }
+
+        public static bool IsOutOfRange(this int index, IList target) => index < 0 || target.Count <= index;
     }
 }

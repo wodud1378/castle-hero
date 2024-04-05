@@ -9,7 +9,7 @@ namespace RGLabs.InGame.System.Wave
     public class WaveUpdate : IUpdate
     {
         private Wave[] _waves;
-        private MonsterDB _db;
+        private UnitDB _db;
         private DataStream<SpawnEvent> _stream;
 
         private int _cursor;
@@ -35,7 +35,7 @@ namespace RGLabs.InGame.System.Wave
         /// </summary>
         private bool OnWave => _timeSinceActive >= _waves[_cursor].start && _timeSinceActive < _waves[_cursor].end;
 
-        public WaveUpdate(Wave[] waves, MonsterDB db, DataStream<SpawnEvent> stream)
+        public WaveUpdate(Wave[] waves, UnitDB db, DataStream<SpawnEvent> stream)
         {
             _waves = waves;
             _db = db;
@@ -91,8 +91,8 @@ namespace RGLabs.InGame.System.Wave
         /// </summary>
         private void OnWaveStart()
         {
-            _currentTime = 0f;
             _timeStep = _waves[_cursor].timeStep;
+            _currentTime = _timeStep;
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace RGLabs.InGame.System.Wave
         /// </summary>
         private void ProcessSpawn()
         {
-            if (!OnWave || !OnStep)
+            if (!OnWave || !OnStep || ! IsCursorValid)
                 return;
 
             foreach (var info in _waves[_cursor].info)

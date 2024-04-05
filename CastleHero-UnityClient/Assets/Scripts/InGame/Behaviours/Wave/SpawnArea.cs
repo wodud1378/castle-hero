@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using RGLabs.Common;
 using RGLabs.InGame.Behaviours.Unit;
 using RGLabs.InGame.System.UnitFactory;
@@ -27,9 +26,16 @@ namespace RGLabs.InGame.Behaviours.Wave
         {
             foreach (var request in requests)
             {
-                _factory.PushCreationRequest<MonsterGameUnit>(request.entity,
-                    (unit) => { unit.transform.position = request.position; });
+                Create(request);
             }
+        }
+
+        private async void Create(CreationRequest request) => await _factory.Create<MonsterGameUnit>(request.entity, request.position);
+
+        private void OnDrawGizmos()
+        {
+            float angle = transform.rotation.z;
+            
         }
     }
 }

@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: InGame
+  m_EditorClassIdentifier: 
+  m_GroupName: InGame
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 7253d22a9b6585140ac329eb07b71414
+  m_SerializeEntries:
+  - m_GUID: 2a6e87714d86b014696fd5c1083ddb82
+    m_Address: Monster_Common_Ghost
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGame
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59dde40f0069763438e740fdf2c29fd8
+    m_Address: Assets/BundleResources/05.InGame/Common
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGame
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 5929c0cb8d0d07d4aa9632acaa1413c5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 456d1ed45e8cbd24eb89a3a2a8020e7f, type: 2}
+    - {fileID: 11400000, guid: 8ac908b5307e254419a5ce373a84f3bb, type: 2}
