@@ -10,28 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: InGame
+  m_Name: Castles
   m_EditorClassIdentifier: 
-  m_GroupName: InGame
+  m_GroupName: Castles
   m_Data:
     m_SerializedData: []
-  m_GUID: 7253d22a9b6585140ac329eb07b71414
+  m_GUID: 0f3411f6dae1336468dcab44b93bf6ff
   m_SerializeEntries:
-  - m_GUID: 2a6e87714d86b014696fd5c1083ddb82
-    m_Address: Monster_Common_Ghost
+  - m_GUID: 4588c6f69d7661648ab3e926cf8c3d47
+    m_Address: Castle_Dummy
     m_ReadOnly: 0
     m_SerializedLabels:
-    - InGame
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 59dde40f0069763438e740fdf2c29fd8
-    m_Address: Common
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGame
+    - Castle_001
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 5929c0cb8d0d07d4aa9632acaa1413c5, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 456d1ed45e8cbd24eb89a3a2a8020e7f, type: 2}
-    - {fileID: 11400000, guid: 8ac908b5307e254419a5ce373a84f3bb, type: 2}
+    - {fileID: 11400000, guid: d0aa3abb8a8299d4aa951cf2ca1ee681, type: 2}
+    - {fileID: 11400000, guid: d7463105cf481dc4a80653febb82794c, type: 2}

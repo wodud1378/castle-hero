@@ -1,10 +1,8 @@
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.ResourceManagement;
 using RGLabs.InGame.Behaviours.Player;
-using RGLabs.InGame.Behaviours.Unit;
 using RGLabs.InGame.Behaviours.Wave;
 using RGLabs.InGame.Data.DB;
-using RGLabs.InGame.Data.Model;
 using RGLabs.InGame.System;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -31,6 +29,9 @@ namespace RGLabs.InGame
         {
             await InitResource();
             await _camp.Init(_dbReference.characters);
+
+            _camp.OnDestroyed -= StopGame;
+            _camp.OnDestroyed += StopGame;
         }
         
         private async UniTask InitResource()
@@ -47,6 +48,11 @@ namespace RGLabs.InGame
         private void RunGame()
         {
             _wave.IsRunning = true;
+        }
+
+        private void StopGame()
+        {
+            _wave.IsRunning = false;
         }
     }
 }

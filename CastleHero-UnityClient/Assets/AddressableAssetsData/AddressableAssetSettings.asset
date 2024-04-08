@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 0c5a506bc9275174990f95aa72c6e156
   m_currentHash:
     serializedVersion: 2
-    Hash: ac720956fc7d4e5c6d2eef1c4352b016
+    Hash: 319f81488de483285be6cf52242814d9
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -50,6 +50,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e4e23adaa3d48d3498273191a80f89e0, type: 2}
   - {fileID: 11400000, guid: 6ea11e4f72fcbdf498e5b6232a061401, type: 2}
   - {fileID: 11400000, guid: 9566cb3caacacb24d8b99926be8f79d9, type: 2}
+  - {fileID: 11400000, guid: 00538f6da9877dc4db6dd8de206a083f, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -97,6 +98,7 @@ MonoBehaviour:
     - Character_Dummy
     - InGame
     - Global-Spine
+    - Castle_001
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: bf7473db48ca79b4692539b8b256c4ee, type: 2}

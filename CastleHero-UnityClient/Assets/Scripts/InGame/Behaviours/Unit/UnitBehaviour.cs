@@ -308,6 +308,9 @@ namespace RGLabs.InGame.Behaviours.Unit
 
         private void ProcessAttack()
         {
+            if (_attackTargets.Count == 0)
+                return;
+            
             LookAt(_attackTargets[0].Position);
         }
 

@@ -10,6 +10,8 @@ namespace RGLabs.InGame.Behaviours.Player
 {
     public class Camp : MonoBehaviour
     {
+        public event Action OnDestroyed;
+        
         [Serializable]
         public struct InitialUnit
         {
@@ -17,13 +19,12 @@ namespace RGLabs.InGame.Behaviours.Player
             public Vector2 position;
         }
 
-        [SerializeField] private UnitBehaviour _castle;
         [SerializeField] private int _castleId;
-        
         [SerializeField] private InitialUnit[] _initialUnits;
-        
-        private IUnitFactory _factory;
+
+        private UnitBehaviour _castle;
         private UnitBehaviour[] _playerUnits;
+        private IUnitFactory _factory;
         
         public async UniTask Init(UnitDB db)
         {
@@ -31,16 +32,13 @@ namespace RGLabs.InGame.Behaviours.Player
             
             await InitializeUnits(db);
         }
-        
+
         private async UniTask InitializeUnits(UnitDB db)
         {
-            if(db.TryFind(_castleId, out var castleEntity))
-                _castle.Init(castleEntity);
-            
             int count = _initialUnits.Length;
             _playerUnits = new UnitBehaviour[count];
 
-            var tasks = new UniTask[count];
+            var tasks = new UniTask[count + 1];
             for (int i = 0; i < count; ++i)
             {
                 if (!db.TryFind(_initialUnits[i].id, out var entity))
@@ -48,16 +46,33 @@ namespace RGLabs.InGame.Behaviours.Player
                 
                 tasks[i] = CreatUnit(i, entity, _initialUnits[i].position);
             }
+            
+            if (db.TryFind(_castleId, out var castleEntity))
+                tasks[count] = CreateCastle(castleEntity, Vector2.zero); 
 
             await UniTask.WhenAll(tasks);
         }
         
-        private async UniTask CreatUnit(int index, UnitEntity entity, Vector2 position)
+        private async UniTask<UnitBehaviour> CreatUnit(UnitEntity entity, Vector2 position)
         {
             var unit = await _factory.Create<UnitBehaviour>(entity, position);
             unit.defaultDestination = position;
-            _playerUnits[index] = unit;
+            return unit;
         }
+        
+        private async UniTask CreateCastle(UnitEntity entity, Vector2 position)
+        {
+            _castle = await CreatUnit(entity, position);
+            _castle.OnDead -= OnCastleDestroyed;
+            _castle.OnDead += OnCastleDestroyed;
+        }
+        
+        private async UniTask CreatUnit(int index, UnitEntity entity, Vector2 position)
+        {
+            _playerUnits[index] = await CreatUnit(entity, position);
+        }
+
+        private void OnCastleDestroyed(UnitBehaviour _) => OnDestroyed?.Invoke();
 
         private void OnDrawGizmosSelected()
         {
