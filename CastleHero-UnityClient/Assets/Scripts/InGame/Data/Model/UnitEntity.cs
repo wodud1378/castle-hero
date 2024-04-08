@@ -10,7 +10,7 @@ namespace RGLabs.InGame.Data.Model
         public int Id { get; set; }
         public string name;
         public string prefab;
-        public int skinIndex;
+        public string skinName;
         
         public float size;
         public float hp;

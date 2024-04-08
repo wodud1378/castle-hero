@@ -15,10 +15,10 @@ MonoBehaviour:
   m_GroupName: Global
   m_Data:
     m_SerializedData: []
-  m_GUID: d57c397482ccbd04384433ff874dedcf
+  m_GUID: 1b9985d9e51206f4aa7880cf6a4b09ad
   m_SerializeEntries:
-  - m_GUID: 29a3535756b284a428d35dcd4327185e
-    m_Address: Assets/ThirdParty/Spine/Runtime/spine-unity
+  - m_GUID: ddb0e27aa2258854a8d171196f395b87
+    m_Address: Spine-Runtime
     m_ReadOnly: 0
     m_SerializedLabels:
     - Global-Spine
@@ -27,5 +27,5 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: 5929c0cb8d0d07d4aa9632acaa1413c5, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 74e36c3fd2e12204c847a960f1a2da8d, type: 2}
-    - {fileID: 11400000, guid: db49a66b6a93f014d8b0452e61bf3f3a, type: 2}
+    - {fileID: 11400000, guid: 4e71ef06d4163364d9a4cf89b8b2a507, type: 2}
+    - {fileID: 11400000, guid: aea5543acfe6bb14490c845b84b7fd06, type: 2}

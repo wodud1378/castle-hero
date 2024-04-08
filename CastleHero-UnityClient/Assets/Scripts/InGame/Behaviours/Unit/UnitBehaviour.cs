@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using RGLabs.InGame.Behaviours.Unit.Components;
 using RGLabs.InGame.Data.Model;
 using RGLabs.InGame.Utility;
+using Spine.Unity;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace RGLabs.InGame.Behaviours.Unit
 {
@@ -30,6 +32,9 @@ namespace RGLabs.InGame.Behaviours.Unit
             { States.Dead, Animator.StringToHash("Dead") },
         };
 
+        [SerializeField] private int _randomSkinRange;
+        [SerializeField] private SkeletonMecanim _skeletonMecanim;
+        
         [SerializeField] private Rigidbody2D _rigidbody;
         [SerializeField] private Animator _animator;
         [SerializeField] private AnimationEvents _animationEvents;
@@ -66,6 +71,12 @@ namespace RGLabs.InGame.Behaviours.Unit
                 
                 _state = value;
                 UpdateAnimation(_state);
+
+                if (_state == States.Idle)
+                {
+                    _moveTarget = null;
+                    _attackTargets.Clear();
+                }
             }
         }
         
@@ -83,6 +94,8 @@ namespace RGLabs.InGame.Behaviours.Unit
 
         public void Init(UnitEntity data)
         {
+            ApplySkin(data.skinName);
+
             _hp = data.hp;
             _damage = data.atk;
             _speed = data.speed;
@@ -94,6 +107,17 @@ namespace RGLabs.InGame.Behaviours.Unit
             UpdateAnimation(State);
         }
 
+        private void ApplySkin(string skinName)
+        {
+            if (string.IsNullOrEmpty(skinName))
+                return;
+
+            if (_skeletonMecanim == null)
+                return;
+            
+            _skeletonMecanim.skeleton.SetSkin(skinName);
+        }
+        
         private void UpdateAnimation(States state)
         {
             if(_animator != null)

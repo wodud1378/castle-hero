@@ -48,6 +48,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e558861a18304d1a800653781dc32f1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _randomSkinRange: 0
+  _skeletonMecanim: {fileID: 5975240846050550739}
   _rigidbody: {fileID: 1951206759450433748}
   _animator: {fileID: 7818063615536016252}
   _animationEvents: {fileID: 8240167209487654757}

@@ -143,14 +143,12 @@ namespace RGLabs.InGame.System.Wave
             while (streamDataIndex < size)
             {
                 int count = data.details[spawnDataIndex].count;
-                if (_db.TryFind(data.details[spawnDataIndex].id, out var entity))
+                if (_db.TryFind(data.details[spawnDataIndex++].id, out var entity))
                 {
                     for (int i = 0; i < count; ++i)
                     {
-                        entities[streamDataIndex] = entity;
+                        entities[streamDataIndex++] = entity;
                     }
-
-                    ++streamDataIndex;
                 }
                 else
                     streamDataIndex += count;

@@ -7,11 +7,6 @@ namespace RGLabs.InGame.Utility
 {
     public static class Utility
     {
-        public static void ReleaseSelf(this Obj obj)
-        {
-            
-        }
-        
         public static T[] Shuffle<T>(this T[] array)
         {
             int random1, random2;
