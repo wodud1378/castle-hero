@@ -1,17 +1,17 @@
 using System;
 using RGLabs.Common;
+using RGLabs.InGame.Behaviours.Unit;
 using RGLabs.InGame.Data.DB;
 using RGLabs.InGame.Data.Model;
-using UnityEngine;
 
 namespace RGLabs.InGame.System.Wave
 {
     public class WaveUpdate : IUpdate
     {
-        private Wave[] _waves;
-        private UnitDB _db;
-        private DataStream<SpawnEvent> _stream;
-
+        private readonly Wave[] _waves;
+        private readonly UnitDB _db;
+        private readonly DataStream<SpawnEvent> _spawnStream;
+ 
         private int _cursor;
         private float _timeSinceActive;
 
@@ -35,13 +35,20 @@ namespace RGLabs.InGame.System.Wave
         /// </summary>
         private bool OnWave => _timeSinceActive >= _waves[_cursor].start && _timeSinceActive < _waves[_cursor].end;
 
-        public WaveUpdate(Wave[] waves, UnitDB db, DataStream<SpawnEvent> stream)
+        public WaveUpdate(Wave[] waves, UnitDB db, DataStream<SpawnEvent> spawnStream, DataStream<UnitBehaviour> releaseStream)
         {
             _waves = waves;
             _db = db;
-            _stream = stream;
+            _spawnStream = spawnStream;
+            
+            releaseStream.Collect += OnCollectRelease;
         }
-        
+
+        private void OnCollectRelease(UnitBehaviour obj)
+        {
+            obj.DestroySelf();
+        }
+
         public void Init()
         {
             _cursor = 0;
@@ -149,7 +156,7 @@ namespace RGLabs.InGame.System.Wave
                     streamDataIndex += count;
             }
             
-            _stream.Emit(evData);
+            _spawnStream.Emit(evData);
         }
     }
 }

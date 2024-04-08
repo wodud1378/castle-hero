@@ -5,6 +5,8 @@ namespace RGLabs.InGame.Behaviours
 {
     public abstract class Obj : MonoBehaviour, IObjectPoolItem
     {
+        public string ResourcePath { get; set; }
+        
         protected virtual void OnActivate()
         {
             gameObject.SetActive(true);
@@ -13,11 +15,18 @@ namespace RGLabs.InGame.Behaviours
         protected virtual void OnInactivate()
         {
             gameObject.SetActive(false);
-
         }
 
         public void Activate() => OnActivate();
 
         public void Inactivate() => OnInactivate();
+
+        public void DestroySelf()
+        {
+            if (InGameContext.Pools == null)
+                return;
+            
+            InGameContext.Pools.Release(this);
+        }
     }
 }

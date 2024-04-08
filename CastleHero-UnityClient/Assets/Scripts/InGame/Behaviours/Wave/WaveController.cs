@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using RGLabs.Common;
+using RGLabs.InGame.Behaviours.Unit;
 using RGLabs.InGame.Data.DB;
 using RGLabs.InGame.System;
 using RGLabs.InGame.System.Wave;
@@ -18,17 +20,18 @@ namespace RGLabs.InGame.Behaviours.Wave
         
         private void Awake()
         {
-            var spawnEventStream = new DataStream<SpawnEvent>();
-            
-            _updates.Add(spawnEventStream);
+            var spawnStream = new DataStream<SpawnEvent>();
+            var releaseStream = new DataStream<UnitBehaviour>();
+            var waveUpdate = new WaveUpdate(_dbReference.waves, _dbReference.monsters, spawnStream, releaseStream);
 
-            var waveUpdate = new WaveUpdate(_dbReference.waves, _dbReference.monsters, spawnEventStream);
+            _updates.Add(spawnStream);
+            _updates.Add(releaseStream);
             _updates.Add(waveUpdate);
 
             foreach (var area in _spawnAreas)
             {
                 var creationStream = new DataStream<CreationRequest[]>();
-                area.Init(spawnEventStream, creationStream);
+                area.Init(spawnStream, creationStream, releaseStream);
                 
                 _updates.Add(creationStream);
             }
@@ -42,6 +45,15 @@ namespace RGLabs.InGame.Behaviours.Wave
             foreach (var update in _updates)
             {
                 update.ProcessUpdate(Time.deltaTime);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            foreach (var update in _updates)
+            {
+                if(update is IDisposable disposable)
+                    disposable.Dispose();
             }
         }
     }

@@ -4,7 +4,7 @@ using RGLabs.InGame.System;
 
 namespace RGLabs.Common
 {
-    public class DataStream<T> : IUpdate
+    public class DataStream<T> : IUpdate, IDisposable
     {
         public event Action<T> Collect;
         
@@ -23,6 +23,12 @@ namespace RGLabs.Common
                 return;
             
             Collect?.Invoke(_queue.Dequeue());
+        }
+
+        public void Dispose()
+        {
+            _queue.Clear();
+            Collect = null;
         }
     }
 }

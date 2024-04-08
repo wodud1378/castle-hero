@@ -1,4 +1,5 @@
 using System.Collections;
+using RGLabs.InGame.Behaviours;
 using RGLabs.InGame.Behaviours.Unit;
 using UnityEngine;
 
@@ -6,6 +7,11 @@ namespace RGLabs.InGame.Utility
 {
     public static class Utility
     {
+        public static void ReleaseSelf(this Obj obj)
+        {
+            
+        }
+        
         public static T[] Shuffle<T>(this T[] array)
         {
             int random1, random2;
@@ -24,12 +30,12 @@ namespace RGLabs.InGame.Utility
             return array;
         }
 
-        public static bool IsValid(this GameUnit unit)
+        public static bool IsValid(this UnitBehaviour unit)
         {
             if (unit == null)
                 return false;
 
-            return unit.State.Value != GameUnit.States.Dead;
+            return unit.State != UnitBehaviour.States.Dead && unit.gameObject.activeSelf;
         }
 
         public static bool IsOutOfRange(this int index, IList target) => index < 0 || target.Count <= index;

@@ -19,7 +19,6 @@ namespace RGLabs.InGame.System.Wave
         private readonly float _size;
         private readonly Vector2 _offset;
 
-        private readonly DataStream<SpawnEvent> _input;
         private readonly DataStream<CreationRequest[]> _output;
 
         public CreationHelper(int areaId, float size, Vector2 offset, DataStream<SpawnEvent> input, DataStream<CreationRequest[]> output)
@@ -27,11 +26,9 @@ namespace RGLabs.InGame.System.Wave
             _areaId = areaId;
             _size = size;
             _offset = offset;
-
-            _input = input;
             _output = output;
             
-            _input.Collect += OnCollectSpawnEvent;
+            input.Collect += OnCollectSpawnEvent;
         }
         
         private void OnCollectSpawnEvent(SpawnEvent data)

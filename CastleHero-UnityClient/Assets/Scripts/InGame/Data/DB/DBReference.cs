@@ -1,6 +1,5 @@
 using RGLabs.InGame.System.Wave;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace RGLabs.InGame.Data.DB
 {
