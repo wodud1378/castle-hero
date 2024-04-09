@@ -40,7 +40,6 @@ namespace RGLabs.InGame.Behaviours.Unit
         [SerializeField] private AnimationEvents _animationEvents;
 
         [SerializeField] private LayerMask _enemyLayer;
-        [SerializeField] private float _detectMoveTargetRange;
         [SerializeField] private int _maxAttackTarget;
         [SerializeField] private float _defaultMoveThreshlod;
         
@@ -83,9 +82,10 @@ namespace RGLabs.InGame.Behaviours.Unit
         private States _state;
     
         private float _hp;
-        private float _damage;
+        private float _atk;
         private float _speed;
-        private float _detectAttackTargetRange;
+        private float _attackRange;
+        private float _moveRange;
 
         private void Awake()
         {
@@ -97,9 +97,10 @@ namespace RGLabs.InGame.Behaviours.Unit
             ApplySkin(data.skinName);
 
             _hp = data.hp;
-            _damage = data.atk;
+            _atk = data.atk;
             _speed = data.speed;
-            _detectAttackTargetRange = data.range;
+            _attackRange = data.attackRange;
+            _moveRange = data.moveRange;
 
             _moveTarget = null;
             
@@ -146,7 +147,7 @@ namespace RGLabs.InGame.Behaviours.Unit
         {
             _attackTargets.RemoveAll((x) => !x.IsValid());
             
-            int found = Search(_detectAttackTargetRange);
+            int found = Search(_attackRange);
             if (found == 0)
                 return false;
 
@@ -167,7 +168,7 @@ namespace RGLabs.InGame.Behaviours.Unit
 
         private bool SearchMoveTarget()
         {
-            int found = Search(_detectMoveTargetRange);
+            int found = Search(_moveRange);
             if (found == 0)
                 return false;
 
@@ -342,7 +343,7 @@ namespace RGLabs.InGame.Behaviours.Unit
         {
             foreach (var target in _attackTargets)
             {
-                target._hp -= _damage;
+                target._hp -= _atk;
             }
         }
 
@@ -376,9 +377,9 @@ namespace RGLabs.InGame.Behaviours.Unit
                 return;
 
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(Position, _detectMoveTargetRange);
+            Gizmos.DrawWireSphere(Position, _moveRange);
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(Position, _detectAttackTargetRange);
+            Gizmos.DrawWireSphere(Position, _attackRange);
             Gizmos.color = Color.cyan;
             Gizmos.DrawLine(Position, defaultDestination);
         }

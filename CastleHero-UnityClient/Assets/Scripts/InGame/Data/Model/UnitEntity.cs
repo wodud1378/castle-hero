@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace RGLabs.InGame.Data.Model
 {
@@ -15,7 +16,8 @@ namespace RGLabs.InGame.Data.Model
         public float size;
         public float hp;
         public float speed;
+        public float moveRange;
         public float atk;
-        public float range;
+        public float attackRange;
     }
 }

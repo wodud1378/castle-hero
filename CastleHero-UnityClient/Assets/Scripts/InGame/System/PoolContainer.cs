@@ -7,7 +7,7 @@ namespace RGLabs.InGame.System
 {
     public class PoolContainer : IDisposable
     {
-        private Dictionary<string, AddressablePool<Obj>> _pools = new();
+        private readonly Dictionary<string, AddressablePool<Obj>> _pools = new();
         
         public AddressablePool<Obj> Get(string resourcePath, bool autoCreate = true)
         {
@@ -39,8 +39,12 @@ namespace RGLabs.InGame.System
 
         public void Dispose()
         {
+            foreach (var pair in _pools)
+            {
+                pair.Value.Dispose();
+            }
+            
             _pools.Clear();
-            _pools = null;
         }
     }
 }

@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 0c5a506bc9275174990f95aa72c6e156
   m_currentHash:
     serializedVersion: 2
-    Hash: 81a5049a79e99b7b913924b72cf55f9f
+    Hash: 9aa1b52314cd8ea14ebf948a34cf8c89
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -68,6 +68,34 @@ MonoBehaviour:
         m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
       - m_Id: ebdcc412e580a8c4aa1de42476398f4d
         m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
+      - m_Id: 9b1d8e8d8183b2145b7cbe30c05274f2
+        m_Value: ServerData/[BuildTarget]
+      - m_Id: 6f5a5deb780aa624c8174b2b03a96382
+        m_Value: http://[PrivateIpAddress]:[HostingServicePort]
+    - m_InheritedParent: 
+      m_Id: 57c5b89e33feb7d46a5544771dd84197
+      m_ProfileName: Android
+      m_Values:
+      - m_Id: bebe728393a666844a66def2408d7e03
+        m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
+      - m_Id: b82804ed7841a1647979c617cf3b5ce1
+        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
+      - m_Id: ebdcc412e580a8c4aa1de42476398f4d
+        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
+      - m_Id: 9b1d8e8d8183b2145b7cbe30c05274f2
+        m_Value: ServerData/[BuildTarget]
+      - m_Id: 6f5a5deb780aa624c8174b2b03a96382
+        m_Value: http://[PrivateIpAddress]:[HostingServicePort]
+    - m_InheritedParent: 
+      m_Id: f16c73d314fa13c49ac0d3c677590458
+      m_ProfileName: Editor
+      m_Values:
+      - m_Id: bebe728393a666844a66def2408d7e03
+        m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
+      - m_Id: b82804ed7841a1647979c617cf3b5ce1
+        m_Value: Library/com.unit.addressables/aa/Windows/StandaloneWindows64
+      - m_Id: ebdcc412e580a8c4aa1de42476398f4d
+        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/StandaloneWindows64'
       - m_Id: 9b1d8e8d8183b2145b7cbe30c05274f2
         m_Value: ServerData/[BuildTarget]
       - m_Id: 6f5a5deb780aa624c8174b2b03a96382

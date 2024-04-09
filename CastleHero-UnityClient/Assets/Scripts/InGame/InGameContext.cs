@@ -1,3 +1,4 @@
+using System;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.ResourceManagement;
 using RGLabs.InGame.Behaviours.Player;
@@ -6,11 +7,14 @@ using RGLabs.InGame.Data.DB;
 using RGLabs.InGame.System;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.SceneManagement;
 
 namespace RGLabs.InGame
 {
     public class InGameContext : MonoBehaviour
     {
+        public event Action OnEnd;
+        
         public static readonly PoolContainer Pools = new();
         public static readonly AssetBundleResource Resource = new();
         
@@ -23,6 +27,13 @@ namespace RGLabs.InGame
             await InitAsync();
             
             RunGame();
+        }
+        
+        
+        public void Retry()
+        {
+            Pools.Dispose();
+            SceneManager.LoadScene("SampleScene");
         }
 
         private async UniTask InitAsync()
@@ -53,6 +64,7 @@ namespace RGLabs.InGame
         private void StopGame()
         {
             _wave.IsRunning = false;
+            OnEnd?.Invoke();
         }
     }
 }
