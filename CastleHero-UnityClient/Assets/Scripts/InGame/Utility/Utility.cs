@@ -1,5 +1,4 @@
 using System.Collections;
-using RGLabs.InGame.Behaviours;
 using RGLabs.InGame.Behaviours.Unit;
 using UnityEngine;
 
@@ -7,6 +6,20 @@ namespace RGLabs.InGame.Utility
 {
     public static class Utility
     {
+        public static float DistanceTo(this Vector2 from, Vector2 to) => (to - from).sqrMagnitude;
+
+        public static bool IsFar(this Vector2 from, Vector2 to, float threshold) => !from.IsNear(to, threshold);
+
+        public static bool IsNear(this Vector2 from, Vector2 to, float threshold)
+        {
+            float thresholdPow = Mathf.Pow(threshold, 2);
+            float distance = from.DistanceTo(to);
+            if (Mathf.Approximately(distance, thresholdPow))
+                return true;
+
+            return distance < thresholdPow;
+        }
+
         public static T[] Shuffle<T>(this T[] array)
         {
             int random1, random2;

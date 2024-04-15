@@ -19,19 +19,20 @@ namespace RGLabs.InGame.System.Wave
         private readonly float _size;
         private readonly Vector2 _offset;
 
-        private readonly DataStream<CreationRequest[]> _output;
+        private readonly DataStream<CreationEvent> _output;
 
-        public CreationHelper(int areaId, float size, Vector2 offset, DataStream<SpawnEvent> input, DataStream<CreationRequest[]> output)
+        public CreationHelper(int areaId, float size, Vector2 offset, DataStream<SpawnEvent> input,
+            DataStream<CreationEvent> output)
         {
             _areaId = areaId;
             _size = size;
             _offset = offset;
             _output = output;
-            
-            input.Collect += OnCollectSpawnEvent;
+
+            input.Collect += OnCollectData;
         }
-        
-        private void OnCollectSpawnEvent(SpawnEvent data)
+
+        private void OnCollectData(SpawnEvent data)
         {
             if (_areaId != data.area)
                 return;
@@ -45,7 +46,7 @@ namespace RGLabs.InGame.System.Wave
 
             RegisterCreationRequests(data.spawnAt, spaces, data.entities);
         }
-        
+
         private void RegisterCreationRequests(SpawnAt spawnAt, EntitySpace[] spaces, UnitEntity[] entities)
         {
             float lastX = _offset.x - (_size * 0.5f);
@@ -76,12 +77,17 @@ namespace RGLabs.InGame.System.Wave
                 case SpawnAt.ForEach:
                     foreach (var req in requests)
                     {
-                        _output.Emit(new[] { req });
+                        var data = new CreationEvent
+                        {
+                            requests = new[] { req }
+                        };
+
+                        _output.Emit(data);
                     }
 
                     break;
                 case SpawnAt.AtOnce:
-                    _output.Emit(requests);
+                    _output.Emit(new CreationEvent { requests = requests });
                     break;
             }
         }

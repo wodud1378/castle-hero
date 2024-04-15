@@ -47,13 +47,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e558861a18304d1a800653781dc32f1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _skeletonMecanim: {fileID: 0}
   _rigidbody: {fileID: 5057493854964016350}
+  _collider: {fileID: 2729130189829634113}
   _animator: {fileID: 0}
   _animationEvents: {fileID: 0}
   _enemyLayer:
     serializedVersion: 2
     m_Bits: 0
-  _detectMoveTargetRange: 0
   _maxAttackTarget: 0
   _defaultMoveThreshlod: 0
   _canAttack: 0

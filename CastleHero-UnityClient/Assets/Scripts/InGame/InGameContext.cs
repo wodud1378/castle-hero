@@ -1,6 +1,5 @@
 using System;
 using Cysharp.Threading.Tasks;
-using RGLabs.Common.ResourceManagement;
 using RGLabs.InGame.Behaviours.Player;
 using RGLabs.InGame.Behaviours.Wave;
 using RGLabs.InGame.Data.DB;
@@ -14,56 +13,86 @@ namespace RGLabs.InGame
     public class InGameContext : MonoBehaviour
     {
         public event Action OnEnd;
-        
-        public static readonly PoolContainer Pools = new();
-        public static readonly AssetBundleResource Resource = new();
-        
+
+        public static PoolContainer pools;
+        public static Streams streams;
+        public static Camp camp;
+
         [SerializeField] private DBReference _dbReference;
         [SerializeField] private Camp _camp;
         [SerializeField] private WaveController _wave;
+
+        private UnitStreamHandler _unitStreamHandler;
         
         public async void Awake()
         {
-            await InitAsync();
+            InitPool();
+            InitStreams();
+
+            _unitStreamHandler = new UnitStreamHandler(streams.atk, streams.heal);
             
+            await InitSpawn();
+
             RunGame();
         }
-        
-        
+
+        private void Update()
+        {
+            streams.Update();
+        }
+
         public void Retry()
         {
-            Pools.Dispose();
+            pools.Dispose();
+            streams.Dispose();
             SceneManager.LoadScene("SampleScene");
         }
 
-        private async UniTask InitAsync()
+        private void InitPool() => pools = new();
+        
+        private void InitStreams()
+        {
+            streams = new Streams(_wave.SpawnAreaCount)
+            {
+                spawnEvent = { processPerFrame = 1 },
+                release = { processPerFrame = 10 },
+                heal = { processPerFrame = 1 },
+            };
+
+            foreach (var creation in streams.creations)
+            {
+                creation.processPerFrame = 1;
+            }
+        }
+
+        private async UniTask InitSpawn()
         {
             await InitResource();
             await _camp.Init(_dbReference.characters);
 
             _camp.OnDestroyed -= StopGame;
             _camp.OnDestroyed += StopGame;
+            camp = _camp;
         }
-        
+
         private async UniTask InitResource()
         {
             await Addressables.InitializeAsync();
             var catalogs = await Addressables.CheckForCatalogUpdates();
             foreach (var catalog in catalogs)
             {
-                Debug.Log(catalog);
                 await Addressables.DownloadDependenciesAsync(catalog);
             }
         }
 
         private void RunGame()
         {
-            _wave.IsRunning = true;
+            _wave.isRunning = true;
         }
 
         private void StopGame()
         {
-            _wave.IsRunning = false;
+            _wave.isRunning = false;
             OnEnd?.Invoke();
         }
     }

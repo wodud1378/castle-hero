@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using RGLabs.Common;
 using RGLabs.InGame.Behaviours.Unit;
 using RGLabs.InGame.System.UnitFactory;
@@ -13,21 +13,21 @@ namespace RGLabs.InGame.Behaviours.Wave
         [SerializeField] private float _size;
 
         private CreationHelper _creationHelper;
-        private DataStream<UnitBehaviour> _releaseStream;
+        private DataStream<ReleaseEvent> _releaseStream;
         private IUnitFactory _factory;
 
-        public void Init(DataStream<SpawnEvent> spawnEventStream, DataStream<CreationRequest[]> creationStream, DataStream<UnitBehaviour> releaseStream)
+        public void Init(DataStream<SpawnEvent> spawnEventStream, DataStream<CreationEvent> creationStream, DataStream<ReleaseEvent> releaseStream)
         {
-            _factory = new DefaultUnitFactory(InGameContext.Pools);
+            _factory = new DefaultUnitFactory(InGameContext.pools);
             _creationHelper = new CreationHelper(_id, _size, transform.position, spawnEventStream, creationStream);
             _releaseStream = releaseStream;
 
-            creationStream.Collect += OnCollectCreationRequest;
+            creationStream.Collect += OnCollectData;
         }
 
-        private void OnCollectCreationRequest(CreationRequest[] requests)
+        private void OnCollectData(CreationEvent data)
         {
-            foreach (var request in requests)
+            foreach (var request in data.requests)
             {
                 Create(request);
             }
@@ -37,25 +37,25 @@ namespace RGLabs.InGame.Behaviours.Wave
         {
             var position = request.position;
             var unit = await _factory.Create<UnitBehaviour>(request.entity, position);
-            unit.defaultDestination = CalculateTargetPosition(position);
+            unit.defaultDestination = unit.ClosestPoint(position, InGameContext.camp.castle);
             unit.autoRelease = false;
             unit.OnDead += OnUnitDead;
         }
 
-        private Vector2 CalculateTargetPosition(Vector2 from)
-        {
-            //Temp
-            float size = 1.34f;
-            var to = Vector2.zero;
-            var direction = (to - from).normalized;
-            return to - (direction * size);
-        }
-
         private void OnUnitDead(UnitBehaviour unit)
         {
-            _releaseStream.Emit(unit);
+            _releaseStream.Emit(new ReleaseEvent
+            {
+                unit = unit
+            });
 
             unit.OnDead -= OnUnitDead;
+        }
+
+        private void OnDestroy()
+        {
+            _creationHelper = null;
+            _factory = null;
         }
 
         private void OnDrawGizmos()

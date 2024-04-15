@@ -48,15 +48,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e558861a18304d1a800653781dc32f1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _randomSkinRange: 0
   _skeletonMecanim: {fileID: 8321658665644799341}
   _rigidbody: {fileID: 2705414219230316648}
+  _collider: {fileID: 6823501329548866275}
   _animator: {fileID: 7163035223394346074}
   _animationEvents: {fileID: 4892121698718697599}
   _enemyLayer:
     serializedVersion: 2
     m_Bits: 256
-  _detectMoveTargetRange: 2
   _maxAttackTarget: 1
   _defaultMoveThreshlod: 0.1
   _canAttack: 1

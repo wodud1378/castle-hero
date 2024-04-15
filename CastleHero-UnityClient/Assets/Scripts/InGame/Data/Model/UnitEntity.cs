@@ -18,6 +18,9 @@ namespace RGLabs.InGame.Data.Model
         public float speed;
         public float moveRange;
         public float atk;
-        public float attackRange;
+        public float atkRange;
+        public float atkSpeed;
+        public float critical;
+        public float criticalAtk;
     }
 }

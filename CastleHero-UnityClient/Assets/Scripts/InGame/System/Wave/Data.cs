@@ -1,4 +1,5 @@
 using System;
+using RGLabs.InGame.Behaviours.Unit;
 using RGLabs.InGame.Data.Model;
 using UnityEngine;
 
@@ -41,10 +42,20 @@ namespace RGLabs.InGame.System.Wave
         public SpawnAt spawnAt;
         public UnitEntity[] entities;
     }
+
+    public struct CreationEvent
+    {
+        public CreationRequest[] requests;
+    }
     
     public struct CreationRequest
     {
         public Vector2 position;
         public UnitEntity entity;
+    }
+
+    public struct ReleaseEvent
+    {
+        public UnitBehaviour unit;
     }
 }

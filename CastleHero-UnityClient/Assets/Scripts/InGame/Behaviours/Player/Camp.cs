@@ -22,13 +22,14 @@ namespace RGLabs.InGame.Behaviours.Player
         [SerializeField] private int _castleId;
         [SerializeField] private InitialUnit[] _initialUnits;
 
-        private UnitBehaviour _castle;
-        private UnitBehaviour[] _playerUnits;
+        public UnitBehaviour castle;
+        public UnitBehaviour[] characters;
+        
         private IUnitFactory _factory;
         
         public async UniTask Init(UnitDB db)
         {
-            _factory = new DefaultUnitFactory(InGameContext.Pools);
+            _factory = new DefaultUnitFactory(InGameContext.pools);
             
             await InitializeUnits(db);
         }
@@ -36,7 +37,7 @@ namespace RGLabs.InGame.Behaviours.Player
         private async UniTask InitializeUnits(UnitDB db)
         {
             int count = _initialUnits.Length;
-            _playerUnits = new UnitBehaviour[count];
+            characters = new UnitBehaviour[count];
 
             var tasks = new UniTask[count + 1];
             for (int i = 0; i < count; ++i)
@@ -48,7 +49,7 @@ namespace RGLabs.InGame.Behaviours.Player
             }
             
             if (db.TryFind(_castleId, out var castleEntity))
-                tasks[count] = CreateCastle(castleEntity, Vector2.zero); 
+                tasks[count] = CreateCastle(castleEntity, Vector2.zero);
 
             await UniTask.WhenAll(tasks);
         }
@@ -62,14 +63,14 @@ namespace RGLabs.InGame.Behaviours.Player
         
         private async UniTask CreateCastle(UnitEntity entity, Vector2 position)
         {
-            _castle = await CreatUnit(entity, position);
-            _castle.OnDead -= OnCastleDestroyed;
-            _castle.OnDead += OnCastleDestroyed;
+            castle = await CreatUnit(entity, position);
+            castle.OnDead -= OnCastleDestroyed;
+            castle.OnDead += OnCastleDestroyed;
         }
         
         private async UniTask CreatUnit(int index, UnitEntity entity, Vector2 position)
         {
-            _playerUnits[index] = await CreatUnit(entity, position);
+            characters[index] = await CreatUnit(entity, position);
         }
 
         private void OnCastleDestroyed(UnitBehaviour _) => OnDestroyed?.Invoke();

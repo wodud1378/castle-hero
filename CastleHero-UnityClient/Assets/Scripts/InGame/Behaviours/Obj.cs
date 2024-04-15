@@ -23,10 +23,10 @@ namespace RGLabs.InGame.Behaviours
 
         public void DestroySelf()
         {
-            if (InGameContext.Pools == null)
+            if (InGameContext.pools == null)
                 return;
             
-            InGameContext.Pools.Release(this);
+            InGameContext.pools.Release(this);
         }
     }
 }

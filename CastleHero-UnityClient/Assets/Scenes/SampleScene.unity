@@ -322,10 +322,8 @@ MonoBehaviour:
   _initialUnits:
   - id: 0
     position: {x: -2, y: 2}
-  - id: 0
-    position: {x: 0, y: 3}
-  - id: 0
-    position: {x: 2, y: 2}
+  castle: {fileID: 0}
+  characters: []
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -512,6 +510,7 @@ MonoBehaviour:
   _dbReference: {fileID: 11400000, guid: e350620d338d3ca4ebad28dfe09d2e94, type: 2}
   _spawnAreas:
   - {fileID: 529714781}
+  isRunning: 0
 --- !u!1 &942303274
 GameObject:
   m_ObjectHideFlags: 0

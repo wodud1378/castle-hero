@@ -35,18 +35,18 @@ namespace RGLabs.InGame.System.Wave
         /// </summary>
         private bool OnWave => _timeSinceActive >= _waves[_cursor].start && _timeSinceActive < _waves[_cursor].end;
 
-        public WaveUpdate(Wave[] waves, UnitDB db, DataStream<SpawnEvent> spawnStream, DataStream<UnitBehaviour> releaseStream)
+        public WaveUpdate(Wave[] waves, UnitDB db, DataStream<SpawnEvent> spawnStream, DataStream<ReleaseEvent> releaseStream)
         {
             _waves = waves;
             _db = db;
             _spawnStream = spawnStream;
             
-            releaseStream.Collect += OnCollectRelease;
+            releaseStream.Collect += OnCollectData;
         }
 
-        private void OnCollectRelease(UnitBehaviour obj)
+        private void OnCollectData(ReleaseEvent data)
         {
-            obj.DestroySelf();
+            data.unit.DestroySelf();
         }
 
         public void Init()

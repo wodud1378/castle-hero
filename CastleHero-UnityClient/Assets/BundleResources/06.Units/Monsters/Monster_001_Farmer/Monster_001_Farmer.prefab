@@ -48,19 +48,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e558861a18304d1a800653781dc32f1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _randomSkinRange: 0
   _skeletonMecanim: {fileID: 5975240846050550739}
   _rigidbody: {fileID: 1951206759450433748}
+  _collider: {fileID: 2514936436172156276}
   _animator: {fileID: 7818063615536016252}
   _animationEvents: {fileID: 8240167209487654757}
   _enemyLayer:
     serializedVersion: 2
     m_Bits: 640
-  _detectMoveTargetRange: 1
   _maxAttackTarget: 1
-  _defaultMoveThreshlod: 0.32
+  _defaultMoveThreshlod: 0
   _canAttack: 1
   _canMove: 1
+  <Status>k__BackingField:
+    hp:
+      <Left>k__BackingField: 0
 --- !u!210 &7079242451995871381
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -85,9 +87,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 1000000
-  m_AngularDrag: 1000000
+  m_Mass: 5
+  m_LinearDrag: 10
+  m_AngularDrag: 10
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
