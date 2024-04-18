@@ -49,6 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _skeletonMecanim: {fileID: 8321658665644799341}
+  _meshRenderer: {fileID: 2939138338615412885}
   _rigidbody: {fileID: 2705414219230316648}
   _collider: {fileID: 6823501329548866275}
   _animator: {fileID: 7163035223394346074}
@@ -60,6 +61,7 @@ MonoBehaviour:
   _defaultMoveThreshlod: 0.1
   _canAttack: 1
   _canMove: 1
+  _offset: {x: 0, y: 0.5}
 --- !u!210 &637868188244381656
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -80,7 +82,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2985652818029949293}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0

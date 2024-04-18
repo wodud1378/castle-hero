@@ -7,6 +7,10 @@ using RGLabs.InGame.Utility;
 using Spine.Unity;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace RGLabs.InGame.Behaviours.Unit
 {
     public class UnitBehaviour : Obj
@@ -15,6 +19,7 @@ namespace RGLabs.InGame.Behaviours.Unit
 
         public enum States
         {
+            Prepare,
             Idle,
             DefaultMove,
             MoveToTarget,
@@ -32,31 +37,36 @@ namespace RGLabs.InGame.Behaviours.Unit
             //{ States.Dead, Animator.StringToHash("Dead") },
         };
 
-        [SerializeField] private SkeletonMecanim _skeletonMecanim;
+        private const int LookFrameThreshold = 10;
 
-        [SerializeField] private Rigidbody2D _rigidbody;
+        [Header("Renderer")] [SerializeField] private SkeletonMecanim _skeletonMecanim;
+        [SerializeField] private MeshRenderer _meshRenderer;
+
+        [Header("Physics")] [SerializeField] private Rigidbody2D _rigidbody;
         [SerializeField] private Collider2D _collider;
-        
-        [SerializeField] private Animator _animator;
+
+        [Header("Animation")] [SerializeField] private Animator _animator;
         [SerializeField] private AnimationEvents _animationEvents;
 
-        [SerializeField] private LayerMask _enemyLayer;
+        [Header("Others")] [SerializeField] private LayerMask _enemyLayer;
         [SerializeField] private int _maxAttackTarget;
         [SerializeField] private float _defaultMoveThreshlod;
-
         [SerializeField] private bool _canAttack;
         [SerializeField] private bool _canMove;
+        [SerializeField] private Vector2 _offset;
 
         [NonSerialized] public bool autoRelease = true;
         [NonSerialized] public Vector2 defaultDestination = default;
-
+        
         public Vector2 Position
         {
             get => _rigidbody.position;
             set => _rigidbody.MovePosition(value);
         }
 
-        [field:SerializeField] public Status Status { get; private set; }
+        public Vector2 Center => Position + _offset;
+
+        public Status Status { get; private set; }
 
         public States State
         {
@@ -92,14 +102,18 @@ namespace RGLabs.InGame.Behaviours.Unit
         private RenderController _renderController;
         private Attack _attack;
 
+        private Vector2 _look;
+        private int _currentLookFrame;
+
         public void Init(UnitEntity data)
         {
-            State = States.Idle;
             Status.Init(data);
 
             _findMoveTarget.Clear();
             _findAttackTarget.Clear();
             _renderController.ApplySkin(data.skinName);
+
+            _currentLookFrame = LookFrameThreshold;
             UpdateAnimation(State);
         }
 
@@ -115,17 +129,25 @@ namespace RGLabs.InGame.Behaviours.Unit
 
         private void Awake()
         {
+            State = States.Prepare;
             Status = new();
 
             _findMoveTarget = new FindMoveTarget(_enemyLayer, _castBuffer, 0);
             _findAttackTarget = new FindAttackTarget(_enemyLayer, _castBuffer, _maxAttackTarget);
             _renderController = new RenderController(_skeletonMecanim, _animator);
+
             _attack = new Attack();
 
             AttachAnimationEvents();
         }
 
-        private void UpdateAnimation(States state) => _renderController.SetAnimation(AnimationsHash[state]);
+        private void UpdateAnimation(States state)
+        {
+            if (!AnimationsHash.TryGetValue(state, out var hash))
+                return;
+            
+            _renderController.SetAnimation(hash);
+        }
 
         private void AttachAnimationEvents()
         {
@@ -148,6 +170,7 @@ namespace RGLabs.InGame.Behaviours.Unit
 
             UpdateState();
             ProcessState();
+            UpdateLookDirection();
         }
 
         private void FixedUpdate()
@@ -167,6 +190,12 @@ namespace RGLabs.InGame.Behaviours.Unit
 
         private void UpdateState()
         {
+            if (State == States.Prepare)
+            {
+                State = States.Idle;
+                return;
+            }
+            
             if (Status.hp <= 0)
             {
                 State = States.Dead;
@@ -204,12 +233,23 @@ namespace RGLabs.InGame.Behaviours.Unit
             }
         }
 
+        private void UpdateLookDirection()
+        {
+            ++_currentLookFrame;
+
+            if (LookFrameThreshold > _currentLookFrame)
+                return;
+
+            LookAt(_look);
+            _currentLookFrame = 0;
+        }
+
         private bool CheckAttack()
         {
             if (State == States.Attack)
                 return true;
 
-            if (_findAttackTarget.Update(Position, Status.atkRange))
+            if (_findAttackTarget.Update(Center, Status.atkRange))
             {
                 State = States.Attack;
                 return true;
@@ -223,8 +263,11 @@ namespace RGLabs.InGame.Behaviours.Unit
             if (State == States.MoveToTarget)
                 return true;
 
-            if (_findMoveTarget.Update(Position, Status.moveRange))
+            if (_findMoveTarget.Update(Center, Status.moveRange))
             {
+                if (Position.IsNear(_findMoveTarget.Found[0].Position, 0f))
+                    return false;
+                
                 State = States.MoveToTarget;
                 return true;
             }
@@ -234,7 +277,7 @@ namespace RGLabs.InGame.Behaviours.Unit
 
         private bool CheckDefaultMove()
         {
-            if (Position.IsNear(defaultDestination, 0.1f))
+            if (Position.IsNear(defaultDestination, _defaultMoveThreshlod))
                 return false;
 
             State = States.DefaultMove;
@@ -243,7 +286,7 @@ namespace RGLabs.InGame.Behaviours.Unit
 
         private void ProcessDefaultMove()
         {
-            Move(defaultDestination, 0);
+            Move(defaultDestination);
         }
 
         private void ProcessMoveToTarget()
@@ -251,22 +294,20 @@ namespace RGLabs.InGame.Behaviours.Unit
             var target = _findMoveTarget.Found[0];
             if (!target.IsValid())
                 return;
-            
-            Move(ClosestPoint(target), 0f);
+
+            Move(ClosestPoint(target));
         }
 
-        private void Move(Vector2 target, float threshold)
+        private void Move(Vector2 target)
         {
             var pos = Position;
-            if (pos.IsNear(target, threshold))
-                return;
-
             var diff = target - pos;
             var dir = diff.normalized;
             var moveAmount = dir * (Status.speed * Time.fixedDeltaTime);
 
             Position += moveAmount;
-            LookAt(target);
+
+            _look = target;
         }
 
         private void ProcessAttack()
@@ -275,7 +316,7 @@ namespace RGLabs.InGame.Behaviours.Unit
             if (targets.Count == 0)
                 return;
 
-            LookAt(targets[0].Position);
+            _look = targets[0].Position;
         }
 
         private void ProcessHit() => _attack.Process(this, _findAttackTarget.Found);
@@ -287,6 +328,8 @@ namespace RGLabs.InGame.Behaviours.Unit
 
             OnDead?.Invoke(this);
             OnDead = null;
+
+            State = States.Release;
         }
 
         private void OnReleaseAttack()
@@ -294,9 +337,12 @@ namespace RGLabs.InGame.Behaviours.Unit
             if (!CheckMoveToTarget())
                 State = States.Idle;
         }
-
+        
         private void LookAt(Vector2 target)
         {
+            if (_animator == null)
+                return;
+            
             var diff = target - Position;
             var originScale = _animator.transform.localScale;
             float originX = Mathf.Abs(originScale.x);
@@ -304,21 +350,52 @@ namespace RGLabs.InGame.Behaviours.Unit
             _animator.transform.localScale = new Vector3(scale, originScale.y, originScale.z);
         }
 
-        private void OnDrawGizmosSelected()
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
         {
-            if (_rigidbody == null || Status == null)
+            if (!Application.isPlaying)
                 return;
 
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(Position, Status.moveRange);
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(Position, Status.atkRange);
+            DrawRanges();
+            DrawMoveTarget();
+            DrawStatus();
+        }
 
+        private void DrawRanges()
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(Center, Status.moveRange);
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(Center, Status.atkRange);
+        }
+
+        private void DrawMoveTarget()
+        {
             if (State == States.DefaultMove)
             {
                 Gizmos.color = Color.cyan;
                 Gizmos.DrawLine(Position, defaultDestination);
             }
         }
+
+        private void DrawStatus()
+        {
+            var style = new GUIStyle
+            {
+                alignment = TextAnchor.UpperLeft,
+                fontSize = 12,
+                fontStyle = FontStyle.Bold,
+                normal = { textColor = Color.green }
+            };
+
+            string text =
+                $"State : {State}\n"+
+                $"HP : {(float)Status.hp}/{Status.hp.Max}\n" +
+                $"ATK : {(float)Status.atk}\n" +
+                $"SPD : {(float)Status.speed}\n";
+            
+            Handles.Label(transform.position, text, style);
+        }
+#endif
     }
 }

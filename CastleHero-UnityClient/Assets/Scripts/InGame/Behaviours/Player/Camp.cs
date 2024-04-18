@@ -27,8 +27,9 @@ namespace RGLabs.InGame.Behaviours.Player
         
         private IUnitFactory _factory;
         
-        public async UniTask Init(UnitDB db)
+        public async UniTask Init()
         {
+            var db = InGameContext.db.characters;
             _factory = new DefaultUnitFactory(InGameContext.pools);
             
             await InitializeUnits(db);

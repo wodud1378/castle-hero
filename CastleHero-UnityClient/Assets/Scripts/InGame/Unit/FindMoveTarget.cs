@@ -34,7 +34,7 @@ namespace RGLabs.InGame.Unit
             }
 
             Found[0] = duplicated != null ? duplicated : firstFound;
-            return true;
+            return Found[0] != null;
         }
     }
 }

@@ -5,50 +5,46 @@ using UnityEngine;
 
 namespace RGLabs.InGame.System.Wave
 {
-    public enum SpawnAt
+    public enum Pattern
     {
         ForEach,
-        AtOnce
+        AtOnce,
     }
-    
-    [Serializable]
-    public struct Wave
-    {
-        public float timeStep;
-        public float start;
-        public float end;
 
+    [Serializable]
+    public struct WaveGroup
+    {
+        public int id;
+        public float startTime;
+        public Pattern pattern;
         public SpawnInfo[] info;
     }
-    
+
     [Serializable]
     public struct SpawnInfo
     {
-        public int area;
-        public SpawnAt spawnAt;
-        public SpawnDetail[] details;
-    }
-    
-    [Serializable]
-    public struct SpawnDetail
-    {
         public int id;
         public int count;
+        public int lv;
+        public int area;
+        public float timeStep;
     }
 
     public struct SpawnEvent
     {
+        public int id;
+        public int lv;
         public int area;
-        public SpawnAt spawnAt;
-        public UnitEntity[] entities;
-    }
 
-    public struct CreationEvent
-    {
-        public CreationRequest[] requests;
+        public void Set(int id, int lv, int area)
+        {
+            this.id = id;
+            this.lv = lv;
+            this.area = area;
+        }
     }
     
-    public struct CreationRequest
+    public struct UnitCreation
     {
         public Vector2 position;
         public UnitEntity entity;

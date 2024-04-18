@@ -6,6 +6,27 @@ namespace RGLabs.InGame.Utility
 {
     public static class Utility
     {
+        public static Vector2 ToVector(this float degree)
+        {
+            float rad = degree * Mathf.Deg2Rad;
+
+            return new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
+        }
+        
+        public static float ToFloat(this Vector2 direction)
+        {
+            float radian = Mathf.Atan2(direction.x, direction.y);
+            return radian * Mathf.Rad2Deg;
+        }
+        
+        public static Vector2 Rotate(this Vector2 point, Vector2 pivot, float angle)
+        {
+            Vector2 dir = point - pivot;
+            dir = Quaternion.Euler(0f, 0f, angle) * dir;
+            point = dir + pivot;
+            return point;
+        }
+        
         public static float DistanceTo(this Vector2 from, Vector2 to) => (to - from).sqrMagnitude;
 
         public static bool IsFar(this Vector2 from, Vector2 to, float threshold) => !from.IsNear(to, threshold);
@@ -20,19 +41,18 @@ namespace RGLabs.InGame.Utility
             return distance < thresholdPow;
         }
 
-        public static T[] Shuffle<T>(this T[] array)
+        public static T[] Shuffle<T>(this T[] array) => array.Shuffle(0, array.Length);
+
+        public static T[] Shuffle<T>(this T[] array, int length) => array.Shuffle(0, length);
+        
+        public static T[] Shuffle<T>(this T[] array, int index, int length)
         {
-            int random1, random2;
-            T temp;
-
-            for (int i = 0; i < array.Length; ++i)
+            for (int i = index; i < length; ++i)
             {
-                random1 = Random.Range(0, array.Length);
-                random2 = Random.Range(0, array.Length);
+                var a = Random.Range(0, array.Length);
+                var b = Random.Range(0, array.Length);
 
-                temp = array[random1];
-                array[random1] = array[random2];
-                array[random2] = temp;
+                (array[a], array[b]) = (array[b], array[a]);
             }
 
             return array;
@@ -43,7 +63,7 @@ namespace RGLabs.InGame.Utility
             if (unit == null)
                 return false;
 
-            return unit.State != UnitBehaviour.States.Dead && unit.gameObject.activeSelf;
+            return unit.State is > UnitBehaviour.States.Prepare and < UnitBehaviour.States.Dead;
         }
 
         public static bool IsOutOfRange(this int index, IList target) => index < 0 || target.Count <= index;

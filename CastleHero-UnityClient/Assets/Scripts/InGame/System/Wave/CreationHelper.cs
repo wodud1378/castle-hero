@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
 using RGLabs.Common;
+using RGLabs.InGame.Behaviours;
+using RGLabs.InGame.Common;
+using RGLabs.InGame.Data.DB;
 using RGLabs.InGame.Data.Model;
 using RGLabs.InGame.Utility;
 using UnityEngine;
@@ -12,124 +16,165 @@ namespace RGLabs.InGame.System.Wave
         private struct EntitySpace
         {
             public int index;
-            public float size;
+            public Vector2 size;
         }
 
+        private readonly int _bufferSize;
         private readonly int _areaId;
         private readonly float _size;
         private readonly Vector2 _offset;
 
-        private readonly DataStream<CreationEvent> _output;
+        private readonly Vector2 _cornerA;
+        private readonly Vector2 _cornerB;
 
-        public CreationHelper(int areaId, float size, Vector2 offset, DataStream<SpawnEvent> input,
-            DataStream<CreationEvent> output)
+        private readonly UnitDB _db;
+        private readonly Queue<SpawnEvent> _queue;
+
+        private readonly UnitEntity[] _entityBuffer;
+        private readonly EntitySpace[] _spaceBuffer;
+        private readonly UnitCreation[] _creationBuffer;
+
+        public CreationHelper(int areaId, Vector2 cornerA, Vector2 cornerB)
         {
             _areaId = areaId;
-            _size = size;
-            _offset = offset;
-            _output = output;
+            _cornerA = cornerA;
+            _cornerB = cornerB;
+            _bufferSize = Constants.spawnBufferSize;
+            _db = InGameContext.db.monsters;
 
-            input.Collect += OnCollectData;
+            _queue = new();
+            _entityBuffer = new UnitEntity[_bufferSize];
+            _spaceBuffer = new EntitySpace[_bufferSize];
+            _creationBuffer = new UnitCreation[_bufferSize];
+
+            InGameContext.streams.spawnEvent.Collect += OnCollectData;
         }
-
-        private void OnCollectData(SpawnEvent data)
+        
+        public void SetUpBuffers(Action<UnitCreation> onResult)
         {
-            if (_areaId != data.area)
+            if (_queue.Count == 0)
                 return;
-
-            var spaces = ConstructSpaces(data.entities, out float totalSize);
-            float leftSpace = _size - totalSize;
-            if (leftSpace > 0)
-                AddRandomSpace(ref spaces, leftSpace);
-
-            spaces.Shuffle();
-
-            RegisterCreationRequests(data.spawnAt, spaces, data.entities);
+            
+            int bufferLength = SetUpEntityBuffer();
+            SetUpSpaceBuffer(bufferLength, out var leftSpace);
+            
+            bufferLength = ApplyBlank(bufferLength, leftSpace);
+            bufferLength = SetUpCreationBuffer(bufferLength);
+            
+            for (int i = 0; i < bufferLength; ++i)
+            {
+                onResult.Invoke(_creationBuffer[i]);
+            }
         }
 
-        private void RegisterCreationRequests(SpawnAt spawnAt, EntitySpace[] spaces, UnitEntity[] entities)
+        private void OnCollectData(SpawnEvent[] data)
         {
-            float lastX = _offset.x - (_size * 0.5f);
-            float lastHalfSize = 0f;
-            float y = _offset.y;
-
-            int requestIndex = 0;
-            var requests = new CreationRequest[entities.Length];
-            foreach (var space in spaces)
+            foreach (var ev in data)
             {
-                float halfSize = space.size * 0.5f;
-                float x = lastX + lastHalfSize + halfSize;
-                if (space.index != -1)
+                if(ev.area == _areaId)
+                    _queue.Enqueue(ev);
+            }
+        }
+
+        /// <summary>
+        /// 유닛 데이터 버퍼 할당
+        /// </summary>
+        /// <returns>버퍼의 유효 길이</returns>
+        private int SetUpEntityBuffer()
+        {
+            int count = Mathf.Min(_queue.Count, _bufferSize);
+            int left = count;
+            int i = 0;
+            while (left > 0)
+            {
+                var data = _queue.Dequeue();
+                if (!_db.TryFind(data.id, out var entity))
+                    --count;
+                else
+                    _entityBuffer[i++] = entity;
+                
+                --left;
+            }
+
+            return count;
+        }
+        
+        /// <summary>
+        /// 공간 버퍼 할당
+        /// </summary>
+        /// <param name="count">할당할 길이</param>
+        /// <param name="leftSpace">할당 후 남은 공간</param>
+        private void SetUpSpaceBuffer(int count, out Vector2 leftSpace)
+        {
+            leftSpace = _cornerB - _cornerA;
+            
+            var direction = leftSpace.normalized;
+            for (int i = 0; i < count; ++i)
+            {
+                var entity = _entityBuffer[i];
+                var size = new Vector2(entity.size, entity.size) * direction;
+                _spaceBuffer[i].index = i;
+                _spaceBuffer[i].size = size;
+
+                leftSpace -= size;
+            }
+        }
+        
+        /// <summary>
+        /// 빈 공간을 랜덤하게 적용
+        /// </summary>
+        /// <param name="startIndex">적용 시작 인덱스</param>
+        /// <param name="availableSpace">사용 가능 공간</param>
+        /// <returns>적용된 빈 공간 개수를 더한 길이</returns>
+        private int ApplyBlank(int startIndex, Vector2 availableSpace)
+        {
+            int leftSlot = _bufferSize - startIndex;
+            if (leftSlot <= 0)
+                return startIndex;
+
+            int random = Mathf.Min(Random.Range(1, leftSlot), 5);
+            int end = startIndex + random;
+            var blankSpace = availableSpace / random;
+            for (int i = startIndex; i < end; ++i)
+            {
+                _spaceBuffer[i].index = -1;
+                _spaceBuffer[i].size = blankSpace;
+            }
+
+            _spaceBuffer.Shuffle(end);
+            return end;
+        }
+
+        /// <summary>
+        /// 생성 버퍼 할당
+        /// </summary>
+        /// <param name="count">빈 공간을 포함한 개수</param>
+        /// <returns>버퍼의 유효 길이</returns>
+        private int SetUpCreationBuffer(int count)
+        {
+            Vector2 lastPosition = _cornerA;
+            Vector2 lastHalfSize = default;
+
+            int sBufferIndex = 0;
+            int cBufferIndex = 0;
+            for (; sBufferIndex < count; ++sBufferIndex)
+            {
+                var space = _spaceBuffer[sBufferIndex];
+                var halfSize = space.size * 0.5f;
+                var position = lastPosition + lastHalfSize + halfSize;
+                var entityIndex = space.index;
+                if (entityIndex != -1)
                 {
-                    requests[requestIndex++] = new CreationRequest
-                    {
-                        position = new Vector2(x, y),
-                        entity = entities[space.index]
-                    };
+                    _creationBuffer[cBufferIndex].entity = _entityBuffer[entityIndex];
+                    _creationBuffer[cBufferIndex].position = position;
+                    ++cBufferIndex;
                 }
 
-                lastX = x;
+                lastPosition = position;
                 lastHalfSize = halfSize;
             }
 
-            switch (spawnAt)
-            {
-                case SpawnAt.ForEach:
-                    foreach (var req in requests)
-                    {
-                        var data = new CreationEvent
-                        {
-                            requests = new[] { req }
-                        };
-
-                        _output.Emit(data);
-                    }
-
-                    break;
-                case SpawnAt.AtOnce:
-                    _output.Emit(new CreationEvent { requests = requests });
-                    break;
-            }
-        }
-
-        private EntitySpace[] ConstructSpaces(UnitEntity[] entities, out float totalSize)
-        {
-            totalSize = 0f;
-            int count = entities.Length;
-            var spaces = new EntitySpace[count];
-            for (int i = 0; i < count; ++i)
-            {
-                float size = entities[i].size;
-                spaces[i] = new EntitySpace
-                {
-                    index = i,
-                    size = size
-                };
-                totalSize += size;
-            }
-
-            return spaces;
-        }
-
-        private void AddRandomSpace(ref EntitySpace[] spaces, float availableSpace)
-        {
-            if (availableSpace < 0 || Mathf.Approximately(availableSpace, 0))
-                return;
-
-            int random = Random.Range(1, 5);
-            int originLength = spaces.Length;
-            int newLength = originLength + random;
-            Array.Resize(ref spaces, newLength);
-
-            float blankSpace = availableSpace / random;
-            for (int i = originLength; i < newLength; ++i)
-            {
-                spaces[i] = new EntitySpace
-                {
-                    index = -1,
-                    size = blankSpace
-                };
-            }
+            return cBufferIndex;
         }
     }
 }

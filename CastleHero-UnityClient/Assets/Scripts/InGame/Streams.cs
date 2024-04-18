@@ -8,31 +8,23 @@ namespace RGLabs.InGame
 {
     public class Streams : IDisposable
     {
-        public readonly DataStream<SpawnEvent> spawnEvent;
+        public readonly DataStream<SpawnEvent[]> spawnEvent;
         public readonly DataStream<ReleaseEvent> release;
-        public readonly DataStream<AdjustHpRequest> atk;
-        public readonly DataStream<AdjustHpRequest> heal;
-        public readonly DataStream<CreationEvent>[] creations;
+        public readonly DataStream<AdjustHpEvent> atk;
+        public readonly DataStream<AdjustHpEvent> heal;
 
         private readonly IList<IUpdate> _updates;
         private readonly IList<IDisposable> _disposables;
         
-        public Streams(int spawnAreaCount)
+        public Streams()
         {
             _updates = new List<IUpdate>();
             _disposables = new List<IDisposable>();
             
-            spawnEvent = DataStream<SpawnEvent>.Create(_updates, _disposables);
+            spawnEvent = DataStream<SpawnEvent[]>.Create(_updates, _disposables);
             release = DataStream<ReleaseEvent>.Create(_updates, _disposables);
-            atk = DataStream<AdjustHpRequest>.Create(_updates, _disposables);
-            heal = DataStream<AdjustHpRequest>.Create(_updates, _disposables);
-            
-            creations = new DataStream<CreationEvent>[spawnAreaCount];
-            for (int i = 0; i < spawnAreaCount; ++i)
-            {
-                var stream = DataStream<CreationEvent>.Create(_updates, _disposables);
-                creations[i] = stream;
-            }
+            atk = DataStream<AdjustHpEvent>.Create(_updates, _disposables);
+            heal = DataStream<AdjustHpEvent>.Create(_updates, _disposables);
         }
         
         public void Update()

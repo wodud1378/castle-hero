@@ -85,7 +85,6 @@ namespace RGLabs.InGame.Unit
         }
     }
 
-    [Serializable]
     public class Ability : CachedValue
     {
         public readonly Multiplier multiplier;
@@ -105,7 +104,6 @@ namespace RGLabs.InGame.Unit
         public static implicit operator float(Ability it) => it.Value;
     }
 
-    [Serializable]
     public class Hp : Ability
     {
         public float Max => Value;
@@ -136,7 +134,6 @@ namespace RGLabs.InGame.Unit
 
     }
 
-    [Serializable]
     public class Status
     {
         public Hp hp;

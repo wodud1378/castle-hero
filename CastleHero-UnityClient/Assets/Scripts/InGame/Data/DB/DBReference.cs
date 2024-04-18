@@ -8,6 +8,6 @@ namespace RGLabs.InGame.Data.DB
     {
         public UnitDB characters;
         public UnitDB monsters;
-        public Wave[] waves;
+        public WaveGroup[] waves;
     }
 }

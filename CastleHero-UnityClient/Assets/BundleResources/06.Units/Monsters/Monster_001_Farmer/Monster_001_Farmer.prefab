@@ -49,6 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _skeletonMecanim: {fileID: 5975240846050550739}
+  _meshRenderer: {fileID: 2961150237718510959}
   _rigidbody: {fileID: 1951206759450433748}
   _collider: {fileID: 2514936436172156276}
   _animator: {fileID: 7818063615536016252}
@@ -60,9 +61,7 @@ MonoBehaviour:
   _defaultMoveThreshlod: 0
   _canAttack: 1
   _canMove: 1
-  <Status>k__BackingField:
-    hp:
-      <Left>k__BackingField: 0
+  _offset: {x: 0, y: 0.5}
 --- !u!210 &7079242451995871381
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -87,9 +86,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 5
-  m_LinearDrag: 10
-  m_AngularDrag: 10
+  m_Mass: 0.5
+  m_LinearDrag: 1
+  m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:

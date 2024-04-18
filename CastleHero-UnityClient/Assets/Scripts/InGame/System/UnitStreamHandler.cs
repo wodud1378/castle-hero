@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace RGLabs.InGame.System
 {
-    public struct AdjustHpRequest
+    public struct AdjustHpEvent
     {
         public UnitBehaviour from;
         public UnitBehaviour to;
@@ -17,10 +17,10 @@ namespace RGLabs.InGame.System
 
     public class UnitStreamHandler
     {
-        private readonly DataStream<AdjustHpRequest> _atkStream;
-        private readonly DataStream<AdjustHpRequest> _healStream;
+        private readonly DataStream<AdjustHpEvent> _atkStream;
+        private readonly DataStream<AdjustHpEvent> _healStream;
 
-        public UnitStreamHandler(DataStream<AdjustHpRequest> atkStream, DataStream<AdjustHpRequest> healStream)
+        public UnitStreamHandler(DataStream<AdjustHpEvent> atkStream, DataStream<AdjustHpEvent> healStream)
         {
             _atkStream = atkStream;
             _healStream = healStream;
@@ -29,23 +29,23 @@ namespace RGLabs.InGame.System
             _healStream.Collect += OnCollectHealData;
         }
 
-        private void OnCollectAtkData(AdjustHpRequest request)
+        private void OnCollectAtkData(AdjustHpEvent ev)
         {
-            var to = request.to;
+            var to = ev.to;
             if (!to.IsValid())
                 return;
 
-            float amount = CalcAmount(request.amount, request.critical, request.criticalMul);
+            float amount = CalcAmount(ev.amount, ev.critical, ev.criticalMul);
             to.Status.hp.Decrease(amount);
         }
 
-        private void OnCollectHealData(AdjustHpRequest request)
+        private void OnCollectHealData(AdjustHpEvent ev)
         {
-            var to = request.to;
+            var to = ev.to;
             if (!to.IsValid())
                 return;
 
-            to.Status.hp.Increase(request.amount);
+            to.Status.hp.Increase(ev.amount);
         }
 
         private float CalcAmount(float atk, float critical, float criticalAtk)

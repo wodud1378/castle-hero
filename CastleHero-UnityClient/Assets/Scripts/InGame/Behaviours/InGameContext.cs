@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
 
-namespace RGLabs.InGame
+namespace RGLabs.InGame.Behaviours
 {
     public class InGameContext : MonoBehaviour
     {
@@ -17,10 +17,10 @@ namespace RGLabs.InGame
         public static PoolContainer pools;
         public static Streams streams;
         public static Camp camp;
+        public static DBReference db;
 
-        [SerializeField] private DBReference _dbReference;
         [SerializeField] private Camp _camp;
-        [SerializeField] private WaveController _wave;
+        [SerializeField] private WaveSystemBehaviour waveSystem;
 
         private UnitStreamHandler _unitStreamHandler;
         
@@ -31,8 +31,10 @@ namespace RGLabs.InGame
 
             _unitStreamHandler = new UnitStreamHandler(streams.atk, streams.heal);
             
+            await InitResource();
             await InitSpawn();
 
+            waveSystem.Init();
             RunGame();
         }
 
@@ -52,23 +54,18 @@ namespace RGLabs.InGame
         
         private void InitStreams()
         {
-            streams = new Streams(_wave.SpawnAreaCount)
+            streams = new Streams()
             {
                 spawnEvent = { processPerFrame = 1 },
                 release = { processPerFrame = 10 },
+                atk = { processPerFrame = 1},
                 heal = { processPerFrame = 1 },
             };
-
-            foreach (var creation in streams.creations)
-            {
-                creation.processPerFrame = 1;
-            }
         }
 
         private async UniTask InitSpawn()
         {
-            await InitResource();
-            await _camp.Init(_dbReference.characters);
+            await _camp.Init();
 
             _camp.OnDestroyed -= StopGame;
             _camp.OnDestroyed += StopGame;
@@ -83,16 +80,18 @@ namespace RGLabs.InGame
             {
                 await Addressables.DownloadDependenciesAsync(catalog);
             }
+
+            db = await Addressables.LoadAssetAsync<DBReference>("Common/DB.asset");
         }
 
         private void RunGame()
         {
-            _wave.isRunning = true;
+            waveSystem.isRunning = true;
         }
 
         private void StopGame()
         {
-            _wave.isRunning = false;
+            waveSystem.isRunning = false;
             OnEnd?.Invoke();
         }
     }

@@ -14,11 +14,6 @@ namespace RGLabs.Common
         public int processPerFrame;
 
         private DataStream(int processPerFrame) => this.processPerFrame = processPerFrame;
-
-        public void Init()
-        {
-            _queue.Clear();
-        }
         
         public void Emit(T item) => _queue.Enqueue(item);
 
