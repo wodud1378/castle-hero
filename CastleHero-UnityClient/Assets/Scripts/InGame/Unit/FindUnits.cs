@@ -10,17 +10,17 @@ namespace RGLabs.InGame.Unit
         private static readonly Dictionary<Collider2D, UnitBehaviour> CachedUnits = new();
         
         public List<UnitBehaviour> Found { get; }
-
+        
         protected readonly LayerMask _layerMask;
         protected readonly RaycastHit2D[] _castBuffer;
         protected readonly int _maxTarget;
-
+        
         public FindUnits(LayerMask layerMask, RaycastHit2D[] castBuffer, int maxTarget)
         {
             _layerMask = layerMask;
             _castBuffer = castBuffer;
             _maxTarget = maxTarget;
-            
+
             Found = new();
         }
 

@@ -1,7 +1,13 @@
+using RGLabs.InGame.Data.Model;
+using UnityEngine;
+
 namespace RGLabs.InGame.Data.DB
 {
-    public class StageDB
+    [CreateAssetMenu(fileName = "Stages", menuName = "Scriptable Object/Stages")]
+    public class StageDB : DB<StageEntity>
     {
-        
+        protected override StageEntity FallBackEntity() => new()
+        {
+        };
     }
 }

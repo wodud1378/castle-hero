@@ -1,4 +1,5 @@
-using RGLabs.InGame.Behaviours;
+using RGLabs.InGame.Data.DB;
+using UniRx;
 
 namespace RGLabs.InGame.System.Wave
 {
@@ -6,21 +7,19 @@ namespace RGLabs.InGame.System.Wave
     {
         private readonly SpawnEventProvider[] _waves;
         
-        public WaveUpdate()
+        public WaveUpdate(WaveDB db)
         {
-            var data = InGameContext.db.waves;
-            
-            int count = data.Length;
+            int count = db.Length;
             _waves = new SpawnEventProvider[count];
             for (int i = 0; i < count; ++i)
             {
-                _waves[i] = new SpawnEventProvider(data[i]);
+                _waves[i] = new SpawnEventProvider(db[i]);
             }
 
-            InGameContext.streams.release.Collect += OnCollectData;
+            MessageBroker.Default.Receive<ReleaseEvent>().Subscribe(OnReceiveReleaseEvent);
         }
 
-        private void OnCollectData(ReleaseEvent data) => data.unit.DestroySelf();
+        private void OnReceiveReleaseEvent(ReleaseEvent data) => data.unit.DestroySelf();
 
         public void ProcessUpdate(float deltaTime)
         {

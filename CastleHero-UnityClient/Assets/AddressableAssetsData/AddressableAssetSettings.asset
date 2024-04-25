@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 0c5a506bc9275174990f95aa72c6e156
   m_currentHash:
     serializedVersion: 2
-    Hash: 9aa1b52314cd8ea14ebf948a34cf8c89
+    Hash: 1dfb980036b076931633bfb7c71d51e7
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -125,8 +125,9 @@ MonoBehaviour:
     - Stage_01_01
     - Character_Dummy
     - InGame
-    - Global-Spine
     - Castle_001
+    - Global
+    - Global-Atlas
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: bf7473db48ca79b4692539b8b256c4ee, type: 2}

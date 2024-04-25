@@ -1,9 +1,9 @@
-using System;
 using RGLabs.InGame.Data.Model;
+using UnityEngine;
 
 namespace RGLabs.InGame.Data.DB
 {
-    [Serializable]
+    [CreateAssetMenu(fileName = "Units", menuName = "Scriptable Object/Units")]
     public class UnitDB : DB<UnitEntity>
     {
         protected override UnitEntity FallBackEntity() =>

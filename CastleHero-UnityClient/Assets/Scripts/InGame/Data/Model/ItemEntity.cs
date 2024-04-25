@@ -8,5 +8,9 @@ namespace RGLabs.InGame.Data.Model
     {
         [field: SerializeField]
         public int Id { get; set; }
+
+        public string icon;
+        public string name;
+        public string desc;
     }
 }

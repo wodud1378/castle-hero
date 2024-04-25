@@ -4,8 +4,8 @@ namespace RGLabs.InGame.Common
 {
     public static class Constants
     {
-        public static readonly int spawnBufferSize = 50;
-        public static readonly int spawnLimitPerFrame = 2;
+        public static readonly int SpawnBufferSize = 50;
+        public static readonly int SpawnLimitPerFrame = 2;
         
         public static int IdleAnim { get; private set; }
         public static int MoveAnim { get; private set; }

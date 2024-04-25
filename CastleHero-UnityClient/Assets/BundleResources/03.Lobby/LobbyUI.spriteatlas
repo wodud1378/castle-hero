@@ -1,0 +1,141 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: LobbyUI
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 4b653e47f5f31cb42bfc907f4389e701, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - d1313870f2a48344283ccbaf9115aeb3: 21300000
+    - 7a14aa91be436334094bb09dea2eed11: 21300000
+    - f1ef9802ea12e2c40abd986dbffd8113: 21300000
+    - 0a4f8e22bee9273438bdbb21c086c293: 21300000
+    - 003b8e438338eeb4c9fb51d580fe88f0: 21300000
+    - 0c9f13639f046e240b8dfec2fb286366: 21300000
+    - 3c64ea73e21a7e847ae74b15cbe0bde0: 21300000
+    - 85b28d93bd5dc3b4081e282b7ea14141: 21300000
+    - 81be8af3a756eaa4dbd677e4c7a74e40: 21300000
+    - b9d1f5646085b974dabe73a2469ce86f: 21300000
+    - 558b0c64e421b004a875faf65706e48c: 21300000
+    - 317cc355bbeced845bc0520d96aa8bf4: 21300000
+    - 78c98f55d25c17542821c9fceb4984c6: 21300000
+    - 86ed5716f80547744898dcc83b857a4f: 21300000
+    - 58da98073d9fae9479363255cb28d581: 21300000
+    - 2e4d2d37305fef24091122e3253e4947: 21300000
+    - 09b1146756359154b92d4ed792bdc3d0: 21300000
+    - 524ad678fe0e3af44b23079388ad79ae: 21300000
+    - f903a0e87fcf6444194e63c838686b2d: 21300000
+    - 0408d5e8195846c4383fe93c991d50dc: 21300000
+    - 4a9b3daa11d565f4598d604e0a50a437: 21300000
+    - 2ce1647b039eda1488c00ac011dece6d: 21300000
+    - 2683429c194383f42bc2dc2ac3fa78d4: 21300000
+    - f5ddbf0d7347e014cbbe7ef90d328176: 21300000
+    - bb3b6c6db040f784c903aacd39799aa0: 21300000
+    - 73750d7d85acc6a418d08750bffc6afc: 21300000
+    - 80f5afbdc4b057a4d9a849d1af36e7de: 21300000
+    - f1b199fd112e9d54b9e522a025928904: 21300000
+    - 2e65b02ff59d7c143b624a949039976c: 21300000
+    - 2b5e718f8285b7743b9a5ce5d749f416: 21300000
+    - a23da59f087092d4aab06451e56cabe4: 21300000
+    - 5a78b0dfd5c75b848976fb75bc452101: 21300000
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: d1313870f2a48344283ccbaf9115aeb3, type: 3}
+  - {fileID: 21300000, guid: 7a14aa91be436334094bb09dea2eed11, type: 3}
+  - {fileID: 21300000, guid: f1ef9802ea12e2c40abd986dbffd8113, type: 3}
+  - {fileID: 21300000, guid: 0a4f8e22bee9273438bdbb21c086c293, type: 3}
+  - {fileID: 21300000, guid: 003b8e438338eeb4c9fb51d580fe88f0, type: 3}
+  - {fileID: 21300000, guid: 0c9f13639f046e240b8dfec2fb286366, type: 3}
+  - {fileID: 21300000, guid: 3c64ea73e21a7e847ae74b15cbe0bde0, type: 3}
+  - {fileID: 21300000, guid: 85b28d93bd5dc3b4081e282b7ea14141, type: 3}
+  - {fileID: 21300000, guid: 81be8af3a756eaa4dbd677e4c7a74e40, type: 3}
+  - {fileID: 21300000, guid: b9d1f5646085b974dabe73a2469ce86f, type: 3}
+  - {fileID: 21300000, guid: 558b0c64e421b004a875faf65706e48c, type: 3}
+  - {fileID: 21300000, guid: 317cc355bbeced845bc0520d96aa8bf4, type: 3}
+  - {fileID: 21300000, guid: 78c98f55d25c17542821c9fceb4984c6, type: 3}
+  - {fileID: 21300000, guid: 86ed5716f80547744898dcc83b857a4f, type: 3}
+  - {fileID: 21300000, guid: 58da98073d9fae9479363255cb28d581, type: 3}
+  - {fileID: 21300000, guid: 2e4d2d37305fef24091122e3253e4947, type: 3}
+  - {fileID: 21300000, guid: 09b1146756359154b92d4ed792bdc3d0, type: 3}
+  - {fileID: 21300000, guid: 524ad678fe0e3af44b23079388ad79ae, type: 3}
+  - {fileID: 21300000, guid: f903a0e87fcf6444194e63c838686b2d, type: 3}
+  - {fileID: 21300000, guid: 0408d5e8195846c4383fe93c991d50dc, type: 3}
+  - {fileID: 21300000, guid: 4a9b3daa11d565f4598d604e0a50a437, type: 3}
+  - {fileID: 21300000, guid: 2ce1647b039eda1488c00ac011dece6d, type: 3}
+  - {fileID: 21300000, guid: 2683429c194383f42bc2dc2ac3fa78d4, type: 3}
+  - {fileID: 21300000, guid: f5ddbf0d7347e014cbbe7ef90d328176, type: 3}
+  - {fileID: 21300000, guid: bb3b6c6db040f784c903aacd39799aa0, type: 3}
+  - {fileID: 21300000, guid: 73750d7d85acc6a418d08750bffc6afc, type: 3}
+  - {fileID: 21300000, guid: 80f5afbdc4b057a4d9a849d1af36e7de, type: 3}
+  - {fileID: 21300000, guid: f1b199fd112e9d54b9e522a025928904, type: 3}
+  - {fileID: 21300000, guid: 2e65b02ff59d7c143b624a949039976c, type: 3}
+  - {fileID: 21300000, guid: 2b5e718f8285b7743b9a5ce5d749f416, type: 3}
+  - {fileID: 21300000, guid: a23da59f087092d4aab06451e56cabe4, type: 3}
+  - {fileID: 21300000, guid: 5a78b0dfd5c75b848976fb75bc452101, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Icon_Character
+  - Button_Event
+  - Button_PanelSize_Up
+  - Button_DailyCheck
+  - Button_Start_SwordGrip
+  - Button_Post
+  - Box_Stock
+  - Frame_Portrait
+  - Button_Start_Sword
+  - BG_Portrait
+  - Icon_Buff_Dummy03
+  - Button_PanelSize_Down
+  - Stamp
+  - Panel_Bottom
+  - Icon_Gacha
+  - Button_Shop
+  - Button_Start
+  - Button_StageSelect
+  - Icon_Inventory
+  - Panel_Top
+  - Icon_Buff_Dummy01
+  - Box_Elipse
+  - Button_Start_Dust
+  - Portrait_Dummy
+  - Icon_Buff_Dummy02
+  - Button_Start_Effect
+  - Button_Setting
+  - Reward_First
+  - Panel_Top_Gauge_Bar
+  - Icon_WorldMap
+  - Panel_Top_Parent
+  - Button_Quest
+  m_RenderDataMap: {}
+  m_Tag: LobbyUI
+  m_IsVariant: 0

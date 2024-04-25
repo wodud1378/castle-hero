@@ -26,7 +26,8 @@ namespace RGLabs.InGame.System.UnitFactory
 #endif
                 return null;
             }
-
+            
+            unit.Container = _pools;
             unit.Position = position;
             unit.Init(entity);
             return unit;

@@ -34,29 +34,38 @@ namespace RGLabs.InGame.Behaviours.Unit
             { States.DefaultMove, Animator.StringToHash("Move") },
             { States.MoveToTarget, Animator.StringToHash("Move") },
             { States.Attack, Animator.StringToHash("Attack") },
-            //{ States.Dead, Animator.StringToHash("Dead") },
         };
 
         private const int LookFrameThreshold = 10;
 
-        [Header("Renderer")] [SerializeField] private SkeletonMecanim _skeletonMecanim;
-        [SerializeField] private MeshRenderer _meshRenderer;
+        [Header("Renderer")] 
+        [SerializeField] private SkeletonMecanim _skeletonMecanim;
 
-        [Header("Physics")] [SerializeField] private Rigidbody2D _rigidbody;
+        [Header("Physics")] 
+        [SerializeField] private Rigidbody2D _rigidbody;
         [SerializeField] private Collider2D _collider;
 
-        [Header("Animation")] [SerializeField] private Animator _animator;
+        [Header("Animation")] 
+        [SerializeField] private Animator _animator;
         [SerializeField] private AnimationEvents _animationEvents;
 
-        [Header("Others")] [SerializeField] private LayerMask _enemyLayer;
+        [Header("Others")] 
+        [SerializeField] private LayerMask _enemyLayer;
         [SerializeField] private int _maxAttackTarget;
         [SerializeField] private float _defaultMoveThreshlod;
-        [SerializeField] private bool _canAttack;
-        [SerializeField] private bool _canMove;
+        
         [SerializeField] private Vector2 _offset;
 
         [NonSerialized] public bool autoRelease = true;
+        [NonSerialized] public bool canAttack;
+        [NonSerialized] public bool canMove;
         [NonSerialized] public Vector2 defaultDestination = default;
+
+        public int Id { get; private set; }
+        
+        public Rigidbody2D Body => _rigidbody;
+
+        public Collider2D Collider => _collider;
         
         public Vector2 Position
         {
@@ -107,6 +116,8 @@ namespace RGLabs.InGame.Behaviours.Unit
 
         public void Init(UnitEntity data)
         {
+            Id = data.Id;
+            
             Status.Init(data);
 
             _findMoveTarget.Clear();
@@ -202,13 +213,13 @@ namespace RGLabs.InGame.Behaviours.Unit
                 return;
             }
 
-            if (_canAttack)
+            if (canAttack)
             {
                 if (CheckAttack())
                     return;
             }
 
-            if (_canMove)
+            if (canMove)
             {
                 if (CheckMoveToTarget())
                     return;
@@ -347,6 +358,7 @@ namespace RGLabs.InGame.Behaviours.Unit
             var originScale = _animator.transform.localScale;
             float originX = Mathf.Abs(originScale.x);
             float scale = diff.x <= 0 ? originX : -originX;
+            
             _animator.transform.localScale = new Vector3(scale, originScale.y, originScale.z);
         }
 

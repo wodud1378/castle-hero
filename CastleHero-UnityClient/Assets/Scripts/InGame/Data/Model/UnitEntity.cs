@@ -10,6 +10,7 @@ namespace RGLabs.InGame.Data.Model
         [field: SerializeField]
         public int Id { get; set; }
         public string name;
+        public string icon;
         public string prefab;
         public string skinName;
         
