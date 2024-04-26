@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2705414219230316648}
   - component: {fileID: 6823501329548866275}
   m_Layer: 9
-  m_Name: Character_000_Dummy
+  m_Name: Character_10021_Dummy
   m_TagString: Character
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -198,7 +198,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8acc3aa6075543a4f800f789f2e7e856, type: 2}
+  - {fileID: 2100000, guid: 73a652054185c6a40adde041d815418f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -299,7 +299,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8acc3aa6075543a4f800f789f2e7e856, type: 2}
+  - {fileID: 2100000, guid: 73a652054185c6a40adde041d815418f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -354,7 +354,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9db98c60740638449864eb028fbe7ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skeletonDataAsset: {fileID: 11400000, guid: 3ca716ff459c4bc458128065ce08736e, type: 2}
+  skeletonDataAsset: {fileID: 11400000, guid: 87303c7831e7a0544b3d9073d631f5c0, type: 2}
   initialSkinName: 
   fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
@@ -476,7 +476,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8acc3aa6075543a4f800f789f2e7e856, type: 2}
+  - {fileID: 2100000, guid: 73a652054185c6a40adde041d815418f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
