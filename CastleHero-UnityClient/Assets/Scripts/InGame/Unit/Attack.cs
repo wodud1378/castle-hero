@@ -18,9 +18,9 @@ namespace RGLabs.InGame.Unit
                 {
                     from = root,
                     to = target,
-                    amount = root.Status.atk,
-                    critical = root.Status.critical,
-                    criticalMul = root.Status.criticalAtk
+                    amount = root.status.atk,
+                    critical = root.status.critical,
+                    criticalMul = root.status.criticalAtk
                 };
 
                 data.Publish();

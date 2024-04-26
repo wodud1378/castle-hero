@@ -7,21 +7,36 @@ using RGLabs.InGame.Data.User;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace RGLabs.InGame.UI
 {
-    public class UICharacterList : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDisposable
+    public class UICharacterList : MonoBehaviour
     {
+        public Action<UICharacterSlot> OnSlotCreated;
+        
+        private static readonly int UnFold = Animator.StringToHash("UnFold");      
+        private static readonly int Fold = Animator.StringToHash("Fold");
+
+        [SerializeField] private Animator _animator;
         [SerializeField] private RectTransform _slotParent;
         [SerializeField] private AssetReference _slotPrefab;
+        [SerializeField] private Button _close;
 
         public readonly ReactiveProperty<UICharacterSlot> selected = new(null);
         
         private readonly List<UICharacterSlot> _slots = new();
 
         private UserRepository _repository;
-        
+
+        private void Awake()
+        {
+            _close
+                .OnClickAsObservable()
+                .Subscribe(_ => Close())
+                .AddTo(this);
+        }
+
         public async UniTask Init(UserRepository repository, UnitDB db)
         {
             _repository = repository;
@@ -40,8 +55,9 @@ namespace RGLabs.InGame.UI
             var obj = await Addressables.InstantiateAsync(_slotPrefab, _slotParent);
             var slot = obj.GetComponent<UICharacterSlot>();
             await slot.InitAsync(character, db);
-
+            
             _slots.Add(slot);
+            OnSlotCreated?.Invoke(slot);
 
             return slot;
         }
@@ -55,13 +71,14 @@ namespace RGLabs.InGame.UI
             }
 
             _slots.Clear();
+
+            OnSlotCreated = null;
         }
 
-        public void OnBeginDrag(PointerEventData eventData)
+        public UICharacterSlot GetSlot(Vector2 position)
         {
-            Vector2 position = eventData.position;
             if (!_slotParent.rect.Contains(position))
-                return;
+                return null;
 
             UICharacterSlot selectedSlot = null;
             float lastDistance = float.MaxValue;
@@ -75,15 +92,18 @@ namespace RGLabs.InGame.UI
                 }
             }
 
-            if (selectedSlot == null)
-                return;
-
-            selected.Value = selectedSlot;
+            return selectedSlot;
         }
+        
+        public void Open() => _animator.SetTrigger(UnFold);
 
-        public void OnEndDrag(PointerEventData _)
+        public void Close() => _animator.SetTrigger(Fold);
+
+        #region Animation Events.
+        public void OnClosed()
         {
-            selected.Value = null;
+            Dispose();
         }
+        #endregion
     }
 }

@@ -12,17 +12,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a30aea90350c458c94a0d0520409d181, type: 3}
   m_Name: Characters
   m_EditorClassIdentifier: 
+  <Id>k__BackingField: 0
   _entities:
-  - <Id>k__BackingField: 10001
-    name: Dummy
-    prefab: Character_000_Dummy/Character_000_Dummy.prefab
+  - <Id>k__BackingField: 10021
+    name: 10021
+    icon: Common/Portrait/Character_10021.png
+    prefab: Character_10021/Character_10021.prefab
     skinName: 
+    grade: 0
+    role: 2
+    team: 6
+    atkOrder: 0
+    atkLayer: 1
+    defLayer: 1
     size: 0.6
-    hp: 3000
+    hp: 300
     speed: 2
     moveRange: 2
     atk: 100
     atkRange: 0.75
     atkSpeed: 1
     critical: 0.3
-    criticalAtk: 2
+    criticalAtk: 1.5
+    recovery: 30

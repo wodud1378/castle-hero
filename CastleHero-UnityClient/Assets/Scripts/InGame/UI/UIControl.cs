@@ -12,7 +12,7 @@ namespace RGLabs.InGame.UI
             Stage,
             InGame,
         }
-        
+
         [Serializable]
         public struct TriggerSet
         {
@@ -27,16 +27,18 @@ namespace RGLabs.InGame.UI
 
         private void Awake()
         {
-            step.Subscribe(x =>
-            {
-                foreach (var set in _triggerSets)
+            step.DistinctUntilChanged()
+                .Skip(1)
+                .Subscribe(x =>
                 {
-                    if (set.step != x)
-                        continue;
+                    foreach (var set in _triggerSets)
+                    {
+                        if (set.step != x)
+                            continue;
 
-                    set.animator.SetTrigger(set.trigger);
-                }
-            });
+                        set.animator.SetTrigger(set.trigger);
+                    }
+                });
         }
-    } 
+    }
 }

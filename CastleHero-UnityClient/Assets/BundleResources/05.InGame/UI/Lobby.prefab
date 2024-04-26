@@ -6279,8 +6279,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2.5, y: -68.7}
-  m_SizeDelta: {x: 237, y: 288}
+  m_AnchoredPosition: {x: 2.5, y: 0}
+  m_SizeDelta: {x: 170, y: 170}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5566956908132067062
 CanvasRenderer:
@@ -6310,7 +6310,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f5ddbf0d7347e014cbbe7ef90d328176, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 72396526ed338e840827c8db26f6143c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -12890,7 +12890,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5163146830989145901}
-  - component: {fileID: 5576209025511684132}
   m_Layer: 5
   m_Name: Stage
   m_TagString: Untagged
@@ -12920,24 +12919,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1080, y: 300}
   m_Pivot: {x: 0.5, y: 0}
---- !u!114 &5576209025511684132
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6216885376479882410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a24a4a93d2747b09412d87868801b8d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _formation: {fileID: 0}
-  _openList: {fileID: 2360181356773733894}
-  _characterList: {fileID: 8955051544456603353}
-  tab:
-    value: 0
-  back: {fileID: 5283222370527801644}
 --- !u!1 &6217687334889868377
 GameObject:
   m_ObjectHideFlags: 0
@@ -14847,12 +14828,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb0fd99593374775be27c8df8886da9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _animator: {fileID: 370205901682238140}
   _slotParent: {fileID: 6497381063181132867}
   _slotPrefab:
     m_AssetGUID: 962e75f93f7d5d749ae9737ff965e8e1
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
+  _close: {fileID: 3127937337360099743}
 --- !u!1 &7226628352039221564
 GameObject:
   m_ObjectHideFlags: 0

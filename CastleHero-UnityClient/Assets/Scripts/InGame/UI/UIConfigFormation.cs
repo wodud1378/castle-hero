@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using RGLabs.InGame.Behaviours;
 using RGLabs.InGame.Behaviours.Unit;
 using RGLabs.InGame.Data.DB;
@@ -6,13 +7,14 @@ using RGLabs.InGame.Data.Repositories;
 using RGLabs.InGame.System.UnitFactory;
 using RGLabs.InGame.Utility;
 using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace RGLabs.InGame.UI
 {
-    public class UIConfigFormation : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDisposable
+    public class UIConfigFormation : MonoBehaviour, IDisposable
     {
         public enum Tab
         {
@@ -27,59 +29,78 @@ namespace RGLabs.InGame.UI
 
         public ReactiveProperty<Tab> tab;
         public Button back;
-        
+
         private int _originLayer;
         private UnitBehaviour _hold;
 
         private IUnitFactory _factory;
-        
+
         public void Init()
         {
             tab = new ReactiveProperty<Tab>(Tab.Character);
 
             _hold = null;
+
+            _openList
+                .OnClickAsObservable()
+                .Subscribe(OpenCharacterList);
             
-            _characterList.selected.Subscribe(OnSlotSelected);
+            _characterList.OnSlotCreated += (slot) =>
+            {
+                slot.OnBeginDrag += OnSlotSelected;
+                slot.OnDuringDrag += () => OnDrag(Input.mousePosition);
+                slot.OnEndDrag += (_) => OnUnitSelected(null);
+            };
+        }
+
+        private void OpenCharacterList(UniRx.Unit _)
+        {
+            _characterList.Open();
         }
 
         public async void Set(UserRepository repository, UnitDB db, IUnitFactory factory)
         {
             _factory = factory;
-            
+
             await _characterList.Init(repository, db);
         }
 
-        public void OnBeginDrag(PointerEventData eventData)
-        {
-            var unit = FindFromRay(eventData.position);
-            OnUnitSelected(unit);
-        }
-
-        public void OnDrag(PointerEventData eventData)
+        public void OnDrag(Vector2 position)
         {
             if (_hold == null)
                 return;
 
-            _hold.transform.position = eventData.position;
+            _hold.transform.position = position;
             bool isValid = _formation.IsValid(_hold.Collider);
         }
-        
-        public void OnEndDrag(PointerEventData _) => OnUnitSelected(null);
 
-        private UnitBehaviour FindFromRay(Vector2 position)
+        private async UniTask<UnitBehaviour> FindFromRay(Vector2 position)
         {
             var hit = Physics2D.Raycast(position, Vector2.zero);
-            if (!hit.collider.TryGetComponent(out UnitBehaviour unit))
-                return null;
+            if (hit.collider.TryGetComponent(out UnitBehaviour unit))
+            {
+                var slot = _characterList.GetSlot(position);
+
+                if (slot == null)
+                    return null;
+
+                unit = await _factory.Create<UnitBehaviour>(slot.Entity, slot.transform.position);
+                unit.canMove = false;
+                unit.canAttack = false;
+                unit.Collider.isTrigger = true;
+
+                _originLayer = unit.gameObject.layer;
+                unit.gameObject.ToUILayer();
+            }
 
             return unit;
         }
-        
+
         private async void OnSlotSelected(UICharacterSlot slot)
         {
             if (slot == null)
                 return;
-            
+
             var unit = await _factory.Create<UnitBehaviour>(slot.Entity, slot.transform.position);
             unit.canMove = false;
             unit.canAttack = false;
@@ -112,12 +133,10 @@ namespace RGLabs.InGame.UI
 
             _hold = null;
         }
-        
+
         public void Dispose()
         {
             tab?.Dispose();
-            
-            _characterList.Dispose();
         }
     }
 }

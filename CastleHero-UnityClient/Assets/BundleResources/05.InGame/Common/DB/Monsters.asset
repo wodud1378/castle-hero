@@ -12,43 +12,68 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a30aea90350c458c94a0d0520409d181, type: 3}
   m_Name: Monsters
   m_EditorClassIdentifier: 
+  <Id>k__BackingField: 0
   _entities:
   - <Id>k__BackingField: 20001
-    name: 001
-    prefab: Monster_001_Farmer/Monster_001_Farmer.prefab
-    skinName: Chacter_001_Farmer_01
+    name: "\uC18C\uC791\uB18D"
+    icon: 
+    prefab: Monster_20001/Monster_20001.prefab
+    skinName: 01
+    grade: 3
+    role: 2
+    team: 0
+    atkOrder: 0
+    atkLayer: 1
+    defLayer: 1
     size: 0.6
     hp: 200
     speed: 1
-    moveRange: 0
+    moveRange: 2
     atk: 10
-    atkRange: 0.5
-    atkSpeed: 1
+    atkRange: 2
+    atkSpeed: 2
     critical: 0
     criticalAtk: 0
+    recovery: 0
   - <Id>k__BackingField: 20002
-    name: 002
-    prefab: Monster_001_Farmer/Monster_001_Farmer.prefab
-    skinName: Chacter_001_Farmer_02
+    name: "\uC7A1\uBD80"
+    icon: 
+    prefab: Monster_20001/Monster_20001.prefab
+    skinName: 02
+    grade: 3
+    role: 2
+    team: 0
+    atkOrder: 0
+    atkLayer: 1
+    defLayer: 1
     size: 0.6
     hp: 200
     speed: 1
-    moveRange: 0.75
+    moveRange: 2
     atk: 10
-    atkRange: 0.5
-    atkSpeed: 1
+    atkRange: 2
+    atkSpeed: 2
     critical: 0
     criticalAtk: 0
+    recovery: 0
   - <Id>k__BackingField: 20003
-    name: 002
-    prefab: Monster_001_Farmer/Monster_001_Farmer.prefab
-    skinName: Chacter_001_Farmer_03
+    name: "\uB18D\uC0AC\uAFBC"
+    icon: 
+    prefab: Monster_20001/Monster_20001.prefab
+    skinName: 03
+    grade: 3
+    role: 2
+    team: 0
+    atkOrder: 0
+    atkLayer: 1
+    defLayer: 1
     size: 0.6
-    hp: 100
+    hp: 200
     speed: 1
-    moveRange: 0
+    moveRange: 2
     atk: 10
-    atkRange: 0.5
-    atkSpeed: 1
+    atkRange: 2
+    atkSpeed: 2
     critical: 0
     criticalAtk: 0
+    recovery: 0

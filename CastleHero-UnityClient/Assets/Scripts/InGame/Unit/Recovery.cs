@@ -16,7 +16,7 @@ namespace RGLabs.InGame.Unit
             _unit = unit;
             _unit.OnDead += OnUnitDead;
             _unit.autoRelease = false;
-            _ability = _unit.Status.recovery;
+            _ability = _unit.status.recovery;
         }
 
         public void Dispose()

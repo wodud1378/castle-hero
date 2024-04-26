@@ -18,10 +18,10 @@ MonoBehaviour:
   m_GUID: 52c3b7560e7e52c4d9d5c3d9514171f6
   m_SerializeEntries:
   - m_GUID: 6db1fd01acaac1b44ac4b9957e57fd17
-    m_Address: Character_000_Dummy
+    m_Address: Character_10021
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Character_Dummy
+    - Character_10021
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 5929c0cb8d0d07d4aa9632acaa1413c5, type: 2}

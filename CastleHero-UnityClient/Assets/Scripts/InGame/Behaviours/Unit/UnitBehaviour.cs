@@ -65,8 +65,8 @@ namespace RGLabs.InGame.Behaviours.Unit
             get => Body.position;
             set => Body.MovePosition(value);
         }
-        
-        public Status Status { get; private set; }
+
+        public readonly Status status = new();
         
         private Vector2 Center => position + _offset;
 
@@ -90,7 +90,7 @@ namespace RGLabs.InGame.Behaviours.Unit
         public void Init(UnitEntity data)
         {
             Data = data;
-            Status.Init(data);
+            status.Init(data);
             
             InitAlley(data.Id, data.defLayer);
             InitEnemy(data.Id, data.atkLayer);
@@ -108,7 +108,7 @@ namespace RGLabs.InGame.Behaviours.Unit
             var go = gameObject;
             
             go.tag = alleyTag;
-            go.layer = alleyLayer;
+            //go.layer = alleyLayer;
             
             InitFindUnitComponent(_thrust, alleyLayer, alleyTag);
         }
@@ -175,7 +175,7 @@ namespace RGLabs.InGame.Behaviours.Unit
         public Vector2 ClosestPoint(Vector2 from, UnitBehaviour other)
         {
             var closest = other.Collider.ClosestPoint(from);
-            var ranged = (closest - from).normalized * (Status.atkRange * 0.9f);
+            var ranged = (closest - from).normalized * (status.atkRange * 0.9f);
             var final = closest - ranged;
             return final;
         }
@@ -235,7 +235,7 @@ namespace RGLabs.InGame.Behaviours.Unit
             if (state.Value is States.Release)
                 return;
 
-            Status.Update();
+            status.Update();
 
             UpdateState();
             ProcessState();
@@ -265,7 +265,7 @@ namespace RGLabs.InGame.Behaviours.Unit
                 return;
             }
             
-            if (Status.hp <= 0)
+            if (status.hp <= 0)
             {
                 state.Value = States.Dead;
                 return;
@@ -318,7 +318,7 @@ namespace RGLabs.InGame.Behaviours.Unit
             if (state.Value == States.Attack)
                 return true;
 
-            if (_findAttackTarget.Update(Center, Status.atkRange))
+            if (_findAttackTarget.Update(Center, status.atkRange))
             {
                 state.Value = States.Attack;
                 return true;
@@ -332,7 +332,7 @@ namespace RGLabs.InGame.Behaviours.Unit
             if (state.Value == States.MoveToTarget)
                 return true;
 
-            if (_findMoveTarget.Update(Center, Status.moveRange))
+            if (_findMoveTarget.Update(Center, status.moveRange))
             {
                 if (position.IsNear(_findMoveTarget.Found[0].position, 0f))
                     return false;
@@ -372,7 +372,7 @@ namespace RGLabs.InGame.Behaviours.Unit
             var pos = position;
             var diff = target - pos;
             var dir = diff.normalized;
-            var moveAmount = dir * (Status.speed * Time.fixedDeltaTime);
+            var moveAmount = dir * (status.speed * Time.fixedDeltaTime);
 
             position += moveAmount;
 
@@ -434,9 +434,9 @@ namespace RGLabs.InGame.Behaviours.Unit
         private void DrawRanges()
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(Center, Status.moveRange);
+            Gizmos.DrawWireSphere(Center, status.moveRange);
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(Center, Status.atkRange);
+            Gizmos.DrawWireSphere(Center, status.atkRange);
         }
 
         private void DrawMoveTarget()
@@ -460,9 +460,9 @@ namespace RGLabs.InGame.Behaviours.Unit
 
             string text =
                 $"State : {state}\n"+
-                $"HP : {(float)Status.hp}/{Status.hp.Max}\n" +
-                $"ATK : {(float)Status.atk}\n" +
-                $"SPD : {(float)Status.speed}\n";
+                $"HP : {(float)status.hp}/{status.hp.Max}\n" +
+                $"ATK : {(float)status.atk}\n" +
+                $"SPD : {(float)status.speed}\n";
             
             Handles.Label(transform.position, text, style);
         }

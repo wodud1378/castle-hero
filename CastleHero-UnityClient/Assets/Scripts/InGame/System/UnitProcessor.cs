@@ -38,7 +38,7 @@ namespace RGLabs.InGame.System
                 return;
 
             float amount = CalcAmount(ev.amount, ev.critical, ev.criticalMul);
-            to.Status.hp.Decrease(amount);
+            to.status.hp.Decrease(amount);
         }
 
         private void OnReceiveHealEvent(HealEvent ev)
@@ -47,7 +47,7 @@ namespace RGLabs.InGame.System
             if (!to.IsValid())
                 return;
 
-            to.Status.hp.Increase(ev.amount);
+            to.status.hp.Increase(ev.amount);
         }
 
         private float CalcAmount(float atk, float critical, float criticalAtk)

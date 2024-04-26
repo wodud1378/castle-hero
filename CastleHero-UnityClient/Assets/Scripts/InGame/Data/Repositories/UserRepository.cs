@@ -11,6 +11,24 @@ namespace RGLabs.InGame.Data.Repositories
 {
     public class UserRepository
     {
+        [Serializable]
+        public struct CharactersWrap
+        {
+            public Character[] array;
+        }
+
+        [Serializable]
+        public struct FieldCharactersWrap
+        {
+            public FieldCharacter[] array;
+        }
+
+        [Serializable]
+        public class ArrayWrap<T>
+        {
+            public T[] array;
+        }
+
         private const string SavedStageKey = "saved-stage";
         private const string CharactersKey = "characters";
         private const string FieldCharactersKey = "characters-field";
@@ -20,7 +38,7 @@ namespace RGLabs.InGame.Data.Repositories
         public readonly ReactiveProperty<int> castle;
         public readonly ReactiveProperty<Character[]> characters;
         public readonly ReactiveProperty<FieldCharacter[]> fieldCharacters;
-        
+
         public UserRepository()
         {
             stage = new(Load(SavedStageKey, 1));
@@ -29,13 +47,13 @@ namespace RGLabs.InGame.Data.Repositories
             castle = new(Load(CastleKey));
             castle.Subscribe(x => Save(CastleKey, x));
 
-            characters = new(Load<Character[]>(CharactersKey, TestData()));
-            characters.Subscribe(x => Save(CharactersKey, x));
-            
-            fieldCharacters = new(Load<FieldCharacter[]>(FieldCharactersKey));
-            fieldCharacters.Subscribe(x => Save(FieldCharactersKey, x));
+            characters = new(LoadArray<Character>(CharactersKey, TestData()));
+            characters.Subscribe(x => SaveArray(CharactersKey, x));
+
+            fieldCharacters = new(LoadArray<FieldCharacter>(FieldCharactersKey));
+            fieldCharacters.Subscribe(x => SaveArray(FieldCharactersKey, x));
         }
-        
+
         public void SaveFieldCharacters(UnitBehaviour[] units)
         {
             int length = units.Length;
@@ -44,7 +62,7 @@ namespace RGLabs.InGame.Data.Repositories
             {
                 var unit = units[i];
                 int index = Array.FindIndex(characters.Value, (x) => x.id == unit.Id);
-                if(!index.IsValidIndex(characters.Value))
+                if (!index.IsValidIndex(characters.Value))
                     continue;
 
                 array[i] = new FieldCharacter
@@ -56,12 +74,30 @@ namespace RGLabs.InGame.Data.Repositories
 
             fieldCharacters.Value = array;
         }
-        
+
         private static int Load(string key, int defaultVal = -1) => PlayerPrefs.GetInt(key, defaultVal);
 
         private static void Save(string key, int value) => PlayerPrefs.SetInt(key, value);
-        
-        private static T Load<T>(string key, string defaultVal = "") => JsonUtility.FromJson<T>(PlayerPrefs.GetString(key, defaultVal));
+
+        private static T[] LoadArray<T>(string key, string defaultVal = "")
+        {
+            var wrap = JsonUtility.FromJson<ArrayWrap<T>>(PlayerPrefs.GetString(key, defaultVal));
+            if (wrap == null)
+                return null;
+            
+            return wrap.array;
+        }
+
+
+        private static void SaveArray<T>(string key, T[] value)
+        {
+            var wrap = new ArrayWrap<T> { array = value };
+
+            PlayerPrefs.SetString(key, JsonUtility.ToJson(wrap));
+        }
+
+        private static T Load<T>(string key, string defaultVal = "") =>
+            JsonUtility.FromJson<T>(PlayerPrefs.GetString(key, defaultVal));
 
         private static void Save<T>(string key, T value) => PlayerPrefs.SetString(key, JsonUtility.ToJson(value));
 
@@ -77,7 +113,7 @@ namespace RGLabs.InGame.Data.Repositories
                 }
             };
 
-            return JsonUtility.ToJson(array);
+            return JsonUtility.ToJson(new ArrayWrap<Character> { array = array });
         }
     }
 }
