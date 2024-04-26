@@ -6,10 +6,9 @@ namespace RGLabs.InGame.Unit
     {
         private readonly Rigidbody2D _rigidbody;
         
-        public ThrustAlley(Rigidbody2D rigidbody, LayerMask layerMask, RaycastHit2D[] castBuffer, int maxTarget) 
-            : base(layerMask, castBuffer, maxTarget)
+        public ThrustAlley(Rigidbody2D rigidbody, RaycastHit2D[] castBuffer, int maxTarget) 
+            : base(castBuffer, maxTarget)
         {
-            
             _rigidbody = rigidbody;
         }
 
@@ -23,7 +22,7 @@ namespace RGLabs.InGame.Unit
                 if (!TryGetUnit(_castBuffer[i], out var unit))
                     continue;
                 
-                var point = unit.Position - _rigidbody.position;
+                var point = unit.position - _rigidbody.position;
                 var direction = point.normalized;
                 unit.Body.AddForceAtPosition(direction * _rigidbody.mass, point, ForceMode2D.Impulse);
             }

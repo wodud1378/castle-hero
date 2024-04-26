@@ -4,7 +4,8 @@ namespace RGLabs.InGame.Unit
 {
     public class FindAttackTarget : FindUnits
     {
-        public FindAttackTarget(LayerMask layerMask, RaycastHit2D[] castBuffer, int maxTarget) : base(layerMask, castBuffer, maxTarget)
+        public FindAttackTarget(RaycastHit2D[] castBuffer, int maxTarget) 
+            : base(castBuffer, maxTarget)
         {
         }
         

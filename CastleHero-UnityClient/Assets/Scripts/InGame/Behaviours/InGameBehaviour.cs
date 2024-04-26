@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using RGLabs.InGame.Behaviours.Wave;
@@ -8,20 +9,21 @@ using RGLabs.InGame.UI;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.U2D;
 
 namespace RGLabs.InGame.Behaviours
 {
     public class InGameBehaviour : MonoBehaviour
     {
-        [field: SerializeField] public Formation Formation { get; private set; }
-
+        [SerializeField] private UIControl _uiControl;
+        
         [SerializeField] private UIStageSelect _stageSelect;
         [SerializeField] private UIConfigFormation _configFormation;
 
+        [SerializeField] private Formation _formation;
+        [SerializeField] private SpriteRenderer _map;
         [SerializeField] private WaveRunner _waveRunner;
 
-        private InGameDB _db;
+        private DBCollections _dbCollections;
 
         private InGameRepository _inGameRepo;
         private UserRepository _userRepo;
@@ -29,40 +31,73 @@ namespace RGLabs.InGame.Behaviours
         private IUnitFactory _unitFactory;
         private PoolContainer _pools;
 
-        private void Awake()
+        private async void Awake()
         {
             _inGameRepo = new InGameRepository();
             _userRepo = new UserRepository();
 
             _pools = new PoolContainer();
             _unitFactory = new DefaultUnitFactory(_pools);
+            
+            await InitAsync();
 
-            InitAsync();
+            _uiControl.step.Subscribe(OnNextStep);
+            
+            _stageSelect.submit
+                .OnClickAsObservable()
+                .Subscribe(OnStageSelectSubmit);
+
+            _configFormation.back
+                .OnClickAsObservable()
+                .Subscribe(OnCancelStart);
         }
 
-        private async void InitAsync()
+        private void OnCancelStart(UniRx.Unit _)
+        {
+            var step = _uiControl.step.Value;
+            if (step != UIControl.Step.Stage) return;
+
+            _uiControl.step.Value = UIControl.Step.Lobby;
+        }
+
+        private void OnStageSelectSubmit(UniRx.Unit _)
+        {
+            var step = _uiControl.step.Value;
+            if (step == UIControl.Step.InGame) return;
+
+            _uiControl.step.Value = step + 1;
+        }
+
+        private void OnNextStep(UIControl.Step step)
+        {
+            switch (step)
+            {
+                case UIControl.Step.Lobby:
+                    _stageSelect.Set(_userRepo, _dbCollections);
+                    break;
+                case UIControl.Step.Stage:
+                    _configFormation.Set(_userRepo, _dbCollections.characters, _unitFactory);
+                    break;
+                case UIControl.Step.InGame:
+                    _stageSelect.Dispose();
+                    _configFormation.Dispose();
+                    StartGame();
+                    break;
+            }
+
+            _stageSelect.enabled = step == UIControl.Step.Lobby;
+            _configFormation.enabled = step == UIControl.Step.Stage;
+        }
+
+        private async UniTask InitAsync()
         {
             await InitResources();
-
-            await Formation.Init(_db.characters, _inGameRepo, _unitFactory);
-
-            MessageBroker.Default
-                .Receive<UIStageSelect.Result>()
-                .Subscribe(_ => OpenConfigFormation())
-                .AddTo(this);
-
-            MessageBroker.Default
-                .Receive<UIConfigFormation.Result>()
-                .Subscribe(x =>
-                {
-                    if (x.completed)
-                        StartGame();
-                    else
-                        OpenStageSelect();
-                })
-                .AddTo(this);
+            await _formation.Init(_dbCollections.characters, _userRepo, _inGameRepo, _unitFactory);
             
-            OpenStageSelect();
+            _stageSelect.Init();
+            _stageSelect.Set(_userRepo, _dbCollections);
+            
+            _configFormation.Init();
         }
         
         private async UniTask InitResources()
@@ -80,24 +115,18 @@ namespace RGLabs.InGame.Behaviours
             
             tasks.Clear();
 
-            _db = await InGameDB.Load();
+            _dbCollections = await DBCollections.Load();
         }
-
-        private void OpenStageSelect() => _stageSelect.Open(_inGameRepo, _db);
-
-        private void OpenConfigFormation() => _configFormation.Open(_userRepo, _db.characters, _unitFactory);
-
+        
         private void StartGame()
         {
-            _stageSelect.Dispose();
-
-            _waveRunner.Init(_unitFactory, _db.monsters, _db.waves, _inGameRepo.castle.Value);
+            _waveRunner.Init(_unitFactory, _dbCollections.monsters, _dbCollections.waves, _inGameRepo.castle.Value);
             _waveRunner.isRunning = true;
 
-            foreach (var set in _inGameRepo.characterSet.Value)
+            foreach (var unit in _inGameRepo.characters.Value)
             {
-                set.unit.canMove = true;
-                set.unit.canAttack = true;
+                unit.canMove = true;
+                unit.canAttack = true;
             }
         }
     }

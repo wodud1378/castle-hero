@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using RGLabs.InGame.Data.DB;
-using RGLabs.InGame.Data.Model;
 using RGLabs.InGame.Data.Repositories;
-using RGLabs.InGame.System.UnitFactory;
-using RGLabs.InGame.Utility;
+using RGLabs.InGame.Data.User;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -15,40 +13,33 @@ namespace RGLabs.InGame.UI
 {
     public class UICharacterList : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDisposable
     {
-        [SerializeField] private float _dragThresholdTime = 0.2f;
         [SerializeField] private RectTransform _slotParent;
-        [SerializeField] private AssetLabelReference _slotPrefab;
+        [SerializeField] private AssetReference _slotPrefab;
 
         public readonly ReactiveProperty<UICharacterSlot> selected = new(null);
-
-        private UnitDB _db;
-        private UserRepository _repository;
-
-        private readonly List<UICharacterSlot> _slots = new();
         
+        private readonly List<UICharacterSlot> _slots = new();
 
+        private UserRepository _repository;
+        
         public async UniTask Init(UserRepository repository, UnitDB db)
         {
             _repository = repository;
-            _db = db;
 
             var tasks = new List<UniTask>();
-            foreach (var id in _repository.characters.Value)
+            foreach (var character in _repository.characters.Value)
             {
-                if (!_db.TryFind(id, out var entity))
-                    continue;
-
-                tasks.Add(AddSlot(entity));
+                tasks.Add(AddSlot(character, db));
             }
 
             await UniTask.WhenAll(tasks);
         }
 
-        private async UniTask<UICharacterSlot> AddSlot(UnitEntity entity)
+        private async UniTask<UICharacterSlot> AddSlot(Character character, UnitDB db)
         {
             var obj = await Addressables.InstantiateAsync(_slotPrefab, _slotParent);
             var slot = obj.GetComponent<UICharacterSlot>();
-            await slot.Init(entity);
+            await slot.InitAsync(character, db);
 
             _slots.Add(slot);
 
@@ -60,6 +51,7 @@ namespace RGLabs.InGame.UI
             foreach (var slot in _slots)
             {
                 slot.Dispose();
+                Addressables.ReleaseInstance(slot.gameObject);
             }
 
             _slots.Clear();

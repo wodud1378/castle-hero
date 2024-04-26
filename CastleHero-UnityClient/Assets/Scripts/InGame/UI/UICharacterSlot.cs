@@ -1,27 +1,29 @@
-using System;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.UI;
+using RGLabs.InGame.Data.DB;
 using RGLabs.InGame.Data.Model;
-using RGLabs.InGame.Utility;
-using UnityEngine;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.UI;
+using RGLabs.InGame.Data.User;
 
 namespace RGLabs.InGame.UI
 {
-    public class UICharacterSlot : MonoBehaviour, IDisposable
+    public class UICharacterSlot : UIItemSlot
     {
-        [SerializeField] private Image _icon;
-        
+        public Character Data { get; private set; }
         public UnitEntity Entity { get; private set; }
-
-        private AsyncOperationHandle<Sprite> _resourceHandle;
         
-        public async UniTask Init(UnitEntity entity)
+        public async UniTask InitAsync(Character data, UnitDB db)
         {
+            Data = data;
+
+            if (!db.TryFind(data.id, out var entity))
+                return;
+
             Entity = entity;
-            _resourceHandle = await _icon.LoadImage(entity.icon);
+
+            string type = entity.Id / 10000 == 1 ? "Character" : "Monster";
+            string iconPath = $"Common/Portrait/{type}_{entity.Id}.png";
+            
+            await base.InitAsync(iconPath);
         }
-        
-        public void Dispose() => _resourceHandle.Release();
     }
 }

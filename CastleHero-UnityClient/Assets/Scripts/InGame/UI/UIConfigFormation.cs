@@ -7,7 +7,6 @@ using RGLabs.InGame.System.UnitFactory;
 using RGLabs.InGame.Utility;
 using UniRx;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -15,11 +14,6 @@ namespace RGLabs.InGame.UI
 {
     public class UIConfigFormation : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDisposable
     {
-        public struct Result
-        {
-            public bool completed;
-        }
-
         public enum Tab
         {
             Character,
@@ -27,58 +21,37 @@ namespace RGLabs.InGame.UI
         }
 
         [SerializeField] private Formation _formation;
-        [SerializeField] private Transform _slotParent;
-        [SerializeField] private AssetLabelReference _slotPrefab;
-
-        [SerializeField] private Button _complete;
-        [SerializeField] private Button _cancel;
+        [SerializeField] private Button _openList;
 
         [SerializeField] private UICharacterList _characterList;
 
-        [SerializeField] private Color _vaildColor;
-        [SerializeField] private Color _invalidColor;
-
         public ReactiveProperty<Tab> tab;
-
+        public Button back;
+        
+        private int _originLayer;
         private UnitBehaviour _hold;
 
-        private UnitDB _db;
         private IUnitFactory _factory;
-
-        private void Awake()
+        
+        public void Init()
         {
             tab = new ReactiveProperty<Tab>(Tab.Character);
 
             _hold = null;
-
-            _complete
-                .OnClickAsObservable()
-                .Subscribe(_ => Complete())
-                .AddTo(this);
-
-            _cancel
-                .OnClickAsObservable()
-                .Subscribe(_ => Cancel())
-                .AddTo(this);
-
+            
             _characterList.selected.Subscribe(OnSlotSelected);
         }
 
-        public async void Open(UserRepository repository, UnitDB db, IUnitFactory factory)
+        public async void Set(UserRepository repository, UnitDB db, IUnitFactory factory)
         {
             _factory = factory;
+            
             await _characterList.Init(repository, db);
-
-            gameObject.SetActive(true);
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            var position = Input.GetTouch(0).position;
-            var hit = Physics2D.Raycast(position, Vector2.zero);
-            if (!hit.collider.TryGetComponent(out UnitBehaviour unit))
-                return;
-
+            var unit = FindFromRay(eventData.position);
             OnUnitSelected(unit);
         }
 
@@ -93,12 +66,26 @@ namespace RGLabs.InGame.UI
         
         public void OnEndDrag(PointerEventData _) => OnUnitSelected(null);
 
+        private UnitBehaviour FindFromRay(Vector2 position)
+        {
+            var hit = Physics2D.Raycast(position, Vector2.zero);
+            if (!hit.collider.TryGetComponent(out UnitBehaviour unit))
+                return null;
+
+            return unit;
+        }
+        
         private async void OnSlotSelected(UICharacterSlot slot)
         {
+            if (slot == null)
+                return;
+            
             var unit = await _factory.Create<UnitBehaviour>(slot.Entity, slot.transform.position);
             unit.canMove = false;
             unit.canAttack = false;
             unit.Collider.isTrigger = true;
+
+            _originLayer = unit.gameObject.layer;
             unit.gameObject.ToUILayer();
 
             OnUnitSelected(unit);
@@ -118,38 +105,19 @@ namespace RGLabs.InGame.UI
                 else
                 {
                     unit.Collider.isTrigger = false;
-                    unit.defaultDestination = unit.Position;
-                    unit.gameObject.ToLayer("GroundUnit");
+                    unit.defaultDestination = unit.position;
+                    unit.gameObject.layer = _originLayer;
                 }
             }
 
             _hold = null;
         }
-
-        private void Complete()
-        {
-            var message = new Result { completed = true };
-            message.Publish();
-
-            Close();
-        }
-
-        private void Cancel()
-        {
-            var message = new Result { completed = false };
-            message.Publish();
-
-            Close();
-        }
-
-        private void Close()
-        {
-            gameObject.SetActive(false);
-        }
-
+        
         public void Dispose()
         {
             tab?.Dispose();
+            
+            _characterList.Dispose();
         }
     }
 }

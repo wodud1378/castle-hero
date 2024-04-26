@@ -118,7 +118,7 @@ namespace RGLabs.InGame.Utility
             if (unit == null)
                 return false;
 
-            return unit.State is > UnitBehaviour.States.Prepare and < UnitBehaviour.States.Dead;
+            return unit.state.Value is > UnitBehaviour.States.Prepare and < UnitBehaviour.States.Dead;
         }
 
         public static bool IsValidIndex(this int index, IList target) => index >= 0 && target.Count > index;

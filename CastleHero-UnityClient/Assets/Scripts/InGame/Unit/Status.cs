@@ -32,10 +32,10 @@ namespace RGLabs.InGame.Unit
     {
         public event Action<float, float> OnChanged;
 
-        private readonly List<TimedValue> _increase;
-        private readonly List<TimedValue> _decrease;
+        private readonly List<TimedValue> _increase = new();
+        private readonly List<TimedValue> _decrease = new();
 
-        private readonly float _default;
+        private float _default;
 
         protected override float Value
         {
@@ -48,12 +48,12 @@ namespace RGLabs.InGame.Unit
             }
         }
 
-        public Multiplier(float initialVal = 0f)
+        public void Init(float val)
         {
-            _default = initialVal;
+            _default = val;
 
-            _increase = new();
-            _decrease = new();
+            _increase.Clear();
+            _decrease.Clear();
 
             Update();
         }
@@ -87,14 +87,14 @@ namespace RGLabs.InGame.Unit
 
     public class Ability : CachedValue
     {
-        public readonly Multiplier multiplier;
-        public readonly float origin;
+        public readonly Multiplier multiplier = new();
+        public float origin;
 
-        public Ability(IList<Ability> root = null, float origin = 0f, float initialMul = 1f)
+        public virtual void Init(IList<Ability> root = null, float origin = 0f, float initialMul = 1f)
         {
             this.origin = origin;
 
-            multiplier = new(initialMul);
+            multiplier.Init(initialMul);
 
             root?.Add(this);
         }
@@ -108,15 +108,18 @@ namespace RGLabs.InGame.Unit
     {
         public float Max => Value;
 
-        [field: SerializeField] public float Left { get; private set; }
+        public float Left { get; private set; }
 
         public void Increase(float value) => Left = Mathf.Min(Max, Left + value);
 
         public void Decrease(float value) => Left = Mathf.Max(0, Left - value);
 
-        public Hp(IList<Ability> root, float origin = 0f, float initialMul = 1f) : base(root, origin, initialMul)
+        public Hp() => multiplier.OnChanged += OnMultiplierChanged;
+
+        public override void Init(IList<Ability> root = null, float origin = 0, float initialMul = 1)
         {
-            multiplier.OnChanged += OnMultiplierChanged;
+            base.Init(root, origin, initialMul);
+
             Left = Max;
         }
 
@@ -129,36 +132,38 @@ namespace RGLabs.InGame.Unit
                 Left = Mathf.Min(Max, Left + heal);
             }
         }
-        
-        public static implicit operator float(Hp it) => it.Left;
 
+        public static implicit operator float(Hp it) => it.Left;
     }
 
     public class Status
     {
-        public Hp hp;
-        public Ability speed;
-        public Ability atk;
-        public Ability moveRange;
-        public Ability atkRange;
-        public Ability atkSpeed;
-        public Ability critical;
-        public Ability criticalAtk;
+        public readonly Hp hp = new();
+        public readonly Ability speed = new();
+        public readonly Ability atk = new();
+        public readonly Ability moveRange = new();
+        public readonly Ability atkRange = new();
+        public readonly Ability atkSpeed = new();
+        public readonly Ability critical = new();
+        public readonly Ability criticalAtk = new();
+        public readonly Ability recovery = new();
 
         private List<Ability> _abilities;
+        
 
         public void Init(UnitEntity data)
         {
             _abilities = new List<Ability>();
-            
-            hp = new Hp(_abilities, data.hp);
-            speed = new Ability(_abilities, data.speed);
-            atk = new Ability(_abilities, data.atk);
-            moveRange = new Ability(_abilities, data.moveRange);
-            atkRange = new Ability(_abilities, data.atkRange);
-            atkSpeed = new Ability(_abilities, data.atkSpeed);
-            critical = new Ability(_abilities, data.critical);
-            criticalAtk = new Ability(_abilities, data.criticalAtk);
+
+            hp.Init(_abilities, data.hp);
+            speed.Init(_abilities, data.speed);
+            atk.Init(_abilities, data.atk);
+            moveRange.Init(_abilities, data.moveRange);
+            atkRange.Init(_abilities, data.atkRange);
+            atkSpeed.Init(_abilities, data.atkSpeed);
+            critical.Init(_abilities, data.critical);
+            criticalAtk.Init(_abilities, data.criticalAtk);
+            recovery.Init(_abilities, data.recovery);
         }
 
         public void Update()

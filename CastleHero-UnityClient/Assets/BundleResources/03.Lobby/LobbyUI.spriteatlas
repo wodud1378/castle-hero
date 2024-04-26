@@ -38,6 +38,7 @@ SpriteAtlas:
     cachedData: {fileID: 0}
     packedSpriteRenderDataKeys:
     - d1313870f2a48344283ccbaf9115aeb3: 21300000
+    - cf7a7a91523970e42a4cff969fcdc9b0: 21300000
     - 7a14aa91be436334094bb09dea2eed11: 21300000
     - f1ef9802ea12e2c40abd986dbffd8113: 21300000
     - 0a4f8e22bee9273438bdbb21c086c293: 21300000
@@ -72,6 +73,7 @@ SpriteAtlas:
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: d1313870f2a48344283ccbaf9115aeb3, type: 3}
+  - {fileID: 21300000, guid: cf7a7a91523970e42a4cff969fcdc9b0, type: 3}
   - {fileID: 21300000, guid: 7a14aa91be436334094bb09dea2eed11, type: 3}
   - {fileID: 21300000, guid: f1ef9802ea12e2c40abd986dbffd8113, type: 3}
   - {fileID: 21300000, guid: 0a4f8e22bee9273438bdbb21c086c293, type: 3}
@@ -105,15 +107,16 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5a78b0dfd5c75b848976fb75bc452101, type: 3}
   m_PackedSpriteNamesToIndex:
   - Icon_Character
+  - Panel_CharList
   - Button_Event
   - Button_PanelSize_Up
   - Button_DailyCheck
   - Button_Start_SwordGrip
   - Button_Post
   - Box_Stock
-  - Frame_Portrait
+  - Frame_Portrait_01
   - Button_Start_Sword
-  - BG_Portrait
+  - BG_Portrait_01
   - Icon_Buff_Dummy03
   - Button_PanelSize_Down
   - Stamp

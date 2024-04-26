@@ -1,89 +1,97 @@
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI;
+using RGLabs.InGame.Data.Model;
 using RGLabs.InGame.Data.Repositories;
-using RGLabs.InGame.Utility;
+using TMPro;
 using UniRx;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
 namespace RGLabs.InGame.UI
 {
     public class UIStageSelect : MonoBehaviour, IDisposable
     {
-        public struct Result
-        {
-            public int selectedStage;
-        }
-        
-        [SerializeField] private UIStage _ui;
         [SerializeField] private Button _prev;
         [SerializeField] private Button _next;
-        [SerializeField] private Button _complete;
 
-        private readonly ReactiveProperty<int> _stageIndex = new(0);
-        private InGameRepository _repository;
-        private InGameDB _db;
+        [SerializeField] private TMP_Text _title;
+        [SerializeField] private RectTransform _rewardParent;
+        [SerializeField] private AssetReference _rewardPrefab;
 
-        private IDisposable _subscription;
+        private readonly List<UIItemSlot> _rewards = new();
+        private readonly ReactiveProperty<StageEntity> _stageData = new(default);
 
-        private void Awake()
+        public Button submit;
+
+        private UserRepository _repository;
+        private DBCollections _db;
+
+        private readonly List<IDisposable> _subscriptions = new();
+
+        public void Init()
         {
             _prev
                 .OnClickAsObservable()
-                .Subscribe(_=> OnPrevStage())
+                .Subscribe(_ => OnPrevStage())
                 .AddTo(this);
 
             _next
                 .OnClickAsObservable()
                 .Subscribe(_ => OnNextStage())
                 .AddTo(this);
-
-            _complete
-                .OnClickAsObservable()
-                .Subscribe(_ => OnClickSelect())
-                .AddTo(this);
         }
 
-        public void Open(InGameRepository repository, InGameDB db)
-        {
-            Init(repository, db);
-            
-            gameObject.SetActive(true);
-        }
-        
-        private void Init(InGameRepository repository, InGameDB db)
+        public void Set(UserRepository repository, DBCollections db)
         {
             _repository = repository;
             _db = db;
-            _ui.Init(this, db.rewards, db.items);
 
-            _subscription = _repository.stage.Subscribe(OnStageSelected);
+            _subscriptions.Add(_repository.stage.Subscribe(OnStageSelected));
+            _subscriptions.Add(_stageData
+                .Subscribe(x =>
+                {
+                    _title.text = $"STAGE {x}";
+                    SetRewards(x);
+                    UpdateButtonsActive(x);
+                }));
 
-            int stage = _repository.stage.Value;
-            
-            OnStageSelected(stage);
-            SetIndex(stage);
+            OnStageSelected(_repository.stage.Value);
         }
 
-        private void SetIndex(int stage)
+        private async void SetRewards(StageEntity stageData)
         {
-            if (!_db.stages.TryFindIndex(stage, out int index))
-                return;
+            var rewards = _db.rewards.Map(stageData.rewards);
+            foreach (var reward in rewards)
+            {
+                if (!_db.items.TryFind(reward.itemId, out var entity))
+                    continue;
 
-            _stageIndex.Value = index;
+                var obj = await Addressables.InstantiateAsync(_rewardPrefab, _rewardParent);
+                if (!obj.TryGetComponent(out UIItemSlot slot))
+                    continue;
+
+                _rewards.Add(slot);
+
+                await slot.InitAsync(entity.icon);
+            }
         }
 
         private void OnStageSelected(int stage)
         {
-            var stages = _db.stages;
-            if (!stages.TryFindIndex(stage, out int index))
-                index = 0;
-            
-            if (!stages.TryIndexOf(index, out var entity))
+            if (!_db.stages.TryFind(stage, out var entity))
                 return;
 
-            _ui.Set(entity);
+            _stageData.Value = entity;
+        }
+
+        private void UpdateButtonsActive(StageEntity stageData)
+        {
+            var stages = _db.stages;
+            if (!stages.TryFindIndex(stageData.Id, out int index))
+                index = 0;
 
             _prev.gameObject.SetActive(index > 0);
             _next.gameObject.SetActive(index < stages.Length - 1);
@@ -91,30 +99,40 @@ namespace RGLabs.InGame.UI
 
         #region UI Events.
 
-        private void OnClickSelect()
-        {
-            var message = new Result { selectedStage = _repository.stage.Value };
-            message.Publish();
-            
-            Close();
-        }
+        private void OnPrevStage() => AdjustIndex(-1);
 
-        private void OnPrevStage() => --_stageIndex.Value;
-
-        private void OnNextStage() => ++_stageIndex.Value;
+        private void OnNextStage() => AdjustIndex(1);
 
         #endregion
 
-        public void Dispose()
+        private void AdjustIndex(int adjust)
         {
-            _ui?.Dispose();
-            _subscription?.Dispose();
+            var stages = _db.stages;
+            if (!stages.TryFindIndex(_stageData.Value.Id, out int index))
+                return;
+
+            index += adjust;
+            if (!stages.IsValidIndex(index))
+                return;
+
+            if (!stages.TryIndexOf(index, out var entity))
+                return;
+
+            _repository.stage.Value = entity.Id;
         }
 
-        private void Close()
+        public void Dispose()
         {
-            gameObject.SetActive(false);
-            Dispose();
+            foreach (var slot in _rewards)
+            {
+                slot.Dispose();
+                Addressables.ReleaseInstance(slot.gameObject);
+            }
+
+            foreach (var subscription in _subscriptions)
+            {
+                subscription.Dispose();
+            }
         }
     }
 }

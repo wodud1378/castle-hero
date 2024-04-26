@@ -4,19 +4,21 @@ using Cysharp.Threading.Tasks;
 using RGLabs.InGame.Behaviours;
 using RGLabs.InGame.Behaviours.Unit;
 using RGLabs.InGame.Data.DB;
+using RGLabs.InGame.Data.Model;
+using RGLabs.InGame.Data.User;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 namespace RGLabs.InGame.Data.Repositories
 {
-    public class InGameDB
+    public class DBCollections
     {
-        public static async UniTask<InGameDB> Load()
+        public static async UniTask<DBCollections> Load()
         {
             if (_loaded == null)
             {
-                _loaded = new InGameDB();
+                _loaded = new DBCollections();
 
                 await _loaded.Init();
             }
@@ -24,7 +26,7 @@ namespace RGLabs.InGame.Data.Repositories
             return _loaded;
         }
 
-        private static InGameDB _loaded = null;
+        private static DBCollections _loaded = null;
 
         private const string DBRoot = "Common/DB/";
 
@@ -35,7 +37,7 @@ namespace RGLabs.InGame.Data.Repositories
         public UnitDB characters;
         public UnitDB monsters;
 
-        private InGameDB()
+        private DBCollections()
         {
         }
 
@@ -53,41 +55,9 @@ namespace RGLabs.InGame.Data.Repositories
             await Addressables.LoadAssetAsync<T>($"{DBRoot}{name}.asset");
     }
 
-    public class InGameRepository : IDisposable
+    public class InGameRepository
     {
-        private const string SavedStageKey = "saved-stage";
-        private const string SavedCastleKey = "saved-castle";
-        private const string SavedCharacterKey = "saved-characters";
-        
-        public readonly ReactiveProperty<int> savedCastle = new(Load(SavedCastleKey));
-        public readonly ReactiveProperty<SavedUnit[]> savedCharacters = new(Load<SavedUnit[]>(SavedCharacterKey));
-     
-        public readonly ReactiveProperty<int> stage = new(Load(SavedStageKey));
-
         public readonly ReactiveProperty<UnitBehaviour> castle = new(null);
-        public readonly ReactiveProperty<UnitSet[]> characterSet = new(null);
-
-        public void SaveCharacters()
-        {
-            var list = new List<SavedUnit>();
-            foreach (var character in characterSet.Value)
-            {
-                list.Add(new SavedUnit(character));
-            }
-            
-            Save(SavedCharacterKey, list);
-        }
-        
-        public void Dispose()
-        {
-        }
-
-        private static int Load(string key) => PlayerPrefs.GetInt(key, -1);
-
-        private static void Save(string key, int value) => PlayerPrefs.SetInt(key, value);
-        
-        private static T Load<T>(string key) => JsonUtility.FromJson<T>(PlayerPrefs.GetString(key));
-
-        private static void Save<T>(string key, T value) => PlayerPrefs.SetString(key, JsonUtility.ToJson(value));
+        public readonly ReactiveProperty<UnitBehaviour[]> characters = new(null);
     }
 }

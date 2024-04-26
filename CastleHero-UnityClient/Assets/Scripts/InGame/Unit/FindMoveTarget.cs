@@ -5,8 +5,8 @@ namespace RGLabs.InGame.Unit
 {
     public class FindMoveTarget : FindUnits
     {
-        public FindMoveTarget(LayerMask layerMask, RaycastHit2D[] castBuffer, int _) : base(layerMask,
-            castBuffer, _)
+        public FindMoveTarget(RaycastHit2D[] castBuffer, int maxTarget) 
+            : base(castBuffer, maxTarget)
         {
         }
         
