@@ -28,17 +28,18 @@ namespace RGLabs.InGame.Behaviours
 
         private readonly Collider2D[] _buffer = new Collider2D[Constants.SpawnBufferSize];
 
+        public IUnitFactory Factory { get; private set; }
+        
         private UnitDB _db;
         private UserRepository _userRepo;
         private InGameRepository _gameRepo;
-        private IUnitFactory _factory;
 
         public async UniTask Init(UnitDB db, UserRepository userRepo, InGameRepository gameRepo, IUnitFactory factory)
         {
             _db = db;
             _userRepo = userRepo;
             _gameRepo = gameRepo;
-            _factory = factory;
+            Factory = factory;
 
             await LoadCastle();
             await LoadSavedUnits();
@@ -149,7 +150,7 @@ namespace RGLabs.InGame.Behaviours
 
         private async UniTask<UnitBehaviour> CreateUnit(UnitEntity entity, Vector2 position)
         {
-            var unit = await entity.Create<UnitBehaviour>(position, _factory);
+            var unit = await entity.Create<UnitBehaviour>(position, Factory);
             unit.defaultDestination = position;
             unit.canMove = false;
             unit.canAttack = false;

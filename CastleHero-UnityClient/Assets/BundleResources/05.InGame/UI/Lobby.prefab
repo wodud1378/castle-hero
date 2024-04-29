@@ -589,6 +589,12 @@ MonoBehaviour:
   - step: 0
     trigger: Lobby
     animator: {fileID: 7883919529514807641}
+  - step: 0
+    trigger: Lobby
+    animator: {fileID: 8228364814133806816}
+  - step: 1
+    trigger: Stage
+    animator: {fileID: 8228364814133806816}
   - step: 1
     trigger: Stage
     animator: {fileID: 7883919529514807641}
@@ -3196,7 +3202,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: STAGE 999
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
   m_sharedMaterial: {fileID: 2164040, guid: 5302535af1044152a457ed104f1f4b91, type: 2}

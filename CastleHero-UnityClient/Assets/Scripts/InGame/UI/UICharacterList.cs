@@ -3,10 +3,8 @@ using Cysharp.Threading.Tasks;
 using RGLabs.InGame.Data.DB;
 using RGLabs.InGame.Data.Repositories;
 using RGLabs.InGame.Data.User;
-using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace RGLabs.InGame.UI
@@ -23,10 +21,6 @@ namespace RGLabs.InGame.UI
         [SerializeField] private AssetReference _slotPrefab;
         
         public bool IsOpen { get; private set; }
-
-        public readonly ReactiveProperty<UICharacterSlot> selected = new(null);
-        public readonly ReactiveProperty<PointerEventData> dragPoint = new(default);
-
         private readonly List<UICharacterSlot> _slots = new();
 
         private UserRepository _repository;

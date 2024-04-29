@@ -108,6 +108,7 @@ namespace RGLabs.InGame.UI
         private void EndConfig()
         {
             CharacterList.Close();
+            CharacterList.Dispose();
             ConfigFormation.enabled = false;
 
             _startConfig.enabled = true;
