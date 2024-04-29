@@ -1,0 +1,100 @@
+Character_10021.png
+	size: 512, 512
+	filter: Linear, Linear
+	scale: 0.5
+Arm_L
+	bounds: 300, 389, 42, 59
+	offsets: 5, 5, 52, 69
+Arm_R
+	bounds: 302, 328, 40, 59
+	offsets: 5, 5, 50, 69
+Belt
+	bounds: 306, 255, 71, 64
+	offsets: 3, 1, 76, 66
+	rotate: 90
+Bluser
+	bounds: 227, 374, 73, 13
+	offsets: 4, 9, 81, 24
+Effect_Slash
+	bounds: 294, 41, 50, 50
+Elipse
+	bounds: 219, 445, 65, 65
+Eyebrow_L
+	bounds: 102, 375, 15, 10
+Eyebrow_R
+	bounds: 102, 363, 11, 10
+Eyes
+	bounds: 341, 122, 73, 31
+	offsets: 1, 3, 76, 36
+	rotate: 90
+Foot_L
+	bounds: 336, 2, 46, 45
+	offsets: 3, 8, 52, 57
+Foot_R
+	bounds: 338, 422, 46, 45
+	offsets: 4, 8, 53, 55
+	rotate: 90
+Hair_Back
+	bounds: 2, 112, 145, 127
+	offsets: 5, 5, 155, 137
+	rotate: 90
+Hair_Front_1
+	bounds: 155, 2, 99, 92
+	offsets: 2, 1, 104, 95
+	rotate: 180
+Hair_Front_2
+	bounds: 120, 248, 137, 106
+	offsets: 2, 0, 139, 106
+	rotate: 270
+Hair_Side_Back
+	bounds: 250, 41, 43, 114
+	offsets: 3, 2, 49, 119
+Hand_L
+	bounds: 226, 157, 54, 66
+	offsets: 4, 5, 64, 76
+Hand_R
+	bounds: 286, 450, 50, 60
+	offsets: 5, 10, 60, 74
+Hand_R_Back
+	bounds: 338, 470, 34, 40
+	offsets: 5, 5, 44, 51
+Head
+	bounds: 102, 387, 123, 115
+	offsets: 12, 5, 136, 125
+	rotate: 90
+Hip
+	bounds: 219, 394, 79, 49
+	offsets: 5, 5, 88, 59
+Horn_L
+	bounds: 275, 225, 50, 63
+	offsets: 5, 5, 60, 73
+Horn_R
+	bounds: 251, 2, 36, 58
+	offsets: 5, 5, 46, 68
+	rotate: 90
+Leg_L
+	bounds: 294, 93, 45, 64
+	offsets: 5, 5, 56, 74
+Leg_R
+	bounds: 282, 159, 48, 64
+	offsets: 5, 5, 60, 74
+Mouth
+	bounds: 282, 290, 24, 13
+Muffler
+	bounds: 332, 197, 57, 37
+	offsets: 5, 5, 70, 47
+	rotate: 90
+Muffler_2
+	bounds: 121, 14, 105, 147
+	offsets: 2, 2, 109, 151
+Muffler_3
+	bounds: 210, 232, 91, 133
+	offsets: 2, 3, 94, 138
+Nose
+	bounds: 227, 356, 26, 19
+Torso
+	bounds: 131, 157, 95, 91
+	offsets: 2, 0, 100, 95
+Weapon
+	bounds: 2, 259, 98, 251
+	offsets: 0, 2, 98, 255
