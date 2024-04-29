@@ -21,7 +21,7 @@ namespace RGLabs.InGame.UI
         [SerializeField] private RectTransform _rewardParent;
         [SerializeField] private AssetReference _rewardPrefab;
 
-        private readonly List<UIItemSlot> _rewards = new();
+        private readonly List<UIItemSlot> _uiSlots = new();
         private readonly ReactiveProperty<StageEntity> _stageData = new(default);
 
         public Button submit;
@@ -53,7 +53,7 @@ namespace RGLabs.InGame.UI
             _subscriptions.Add(_stageData
                 .Subscribe(x =>
                 {
-                    _title.text = $"STAGE {x}";
+                    _title.text = $"STAGE {x.Id}";
                     SetRewards(x);
                     UpdateButtonsActive(x);
                 }));
@@ -63,6 +63,12 @@ namespace RGLabs.InGame.UI
 
         private async void SetRewards(StageEntity stageData)
         {
+            foreach (var slot in _uiSlots)
+            {
+                Addressables.ReleaseInstance(slot.gameObject);
+            }
+            _uiSlots.Clear();
+            
             var rewards = _db.rewards.Map(stageData.rewards);
             foreach (var reward in rewards)
             {
@@ -73,7 +79,7 @@ namespace RGLabs.InGame.UI
                 if (!obj.TryGetComponent(out UIItemSlot slot))
                     continue;
 
-                _rewards.Add(slot);
+                _uiSlots.Add(slot);
 
                 await slot.InitAsync(entity.icon);
             }
@@ -123,7 +129,7 @@ namespace RGLabs.InGame.UI
 
         public void Dispose()
         {
-            foreach (var slot in _rewards)
+            foreach (var slot in _uiSlots)
             {
                 slot.Dispose();
                 Addressables.ReleaseInstance(slot.gameObject);

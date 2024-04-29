@@ -92,8 +92,10 @@ namespace RGLabs.InGame.Data.Repositories
         private static void SaveArray<T>(string key, T[] value)
         {
             var wrap = new ArrayWrap<T> { array = value };
-
-            PlayerPrefs.SetString(key, JsonUtility.ToJson(wrap));
+            var data = JsonUtility.ToJson(wrap);
+            
+            Debug.Log(data);
+            PlayerPrefs.SetString(key, data);
         }
 
         private static T Load<T>(string key, string defaultVal = "") =>

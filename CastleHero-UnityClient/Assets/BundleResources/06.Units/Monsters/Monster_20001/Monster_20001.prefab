@@ -349,7 +349,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skeletonDataAsset: {fileID: 11400000, guid: a6c96272815606a4e9aecabc176ed9e0, type: 2}
-  initialSkinName: Chacter_001_Farmer_01
+  initialSkinName: 01
   fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
   initialFlipY: 0

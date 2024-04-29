@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.InGame.Behaviours.Unit;
 using RGLabs.InGame.Common;
@@ -43,21 +44,35 @@ namespace RGLabs.InGame.Behaviours
             await LoadSavedUnits();
         }
 
-        public bool TryRegister(UnitBehaviour unit)
+        public void Remove(UnitBehaviour unit)
+        {
+            if (unit == null)
+                return;
+
+            if (_gameRepo.characters.Value == null)
+                return;
+            
+            _gameRepo.characters.Value = _gameRepo.characters.Value
+                .Where(x => x != unit)
+                .ToArray();
+            
+            unit.DestroySelf();
+        }
+
+        public bool TryRegister(UnitBehaviour unit, int layer)
         {
             if (!unit.IsValid())
                 return false;
 
-            if (!IsValid(unit.Collider))
+            if (!IsValid(unit.Collider, layer))
                 return false;
 
             Register(unit);
             return true;
         }
 
-        public bool IsValid(Collider2D col)
+        public bool IsValid(Collider2D col, int layer)
         {
-            int layer = col.gameObject.layer;
             var layerMask = new LayerMask { value = 1 << layer };
             var distance = Vector2.Distance(col.transform.position, transform.position);
             if (distance > Radius || distance < 1f)
@@ -69,16 +84,20 @@ namespace RGLabs.InGame.Behaviours
         private void Register(UnitBehaviour unit)
         {
             var units = _gameRepo.characters.Value;
+            units ??= Array.Empty<UnitBehaviour>();
+
             int index = Array.FindIndex(units, (x) => x.Id == unit.Id);
-            if (!index.IsValidIndex(units))
+            if (index != -1)
             {
-                int length = units.Length;
-                index = length;
-                Array.Resize(ref units, length + 1);
+                units[index].DestroySelf();
+                units[index] = null;
             }
 
-            units[index] = unit;
-            
+            units = units
+                .Where(x => x != null)
+                .Append(unit)
+                .ToArray();
+
             _gameRepo.characters.Value = units;
             _userRepo.SaveFieldCharacters(units);
         }
@@ -101,15 +120,15 @@ namespace RGLabs.InGame.Behaviours
             var characters = _userRepo.characters.Value;
             if (characters == null)
                 return;
-            
+
             var saved = _userRepo.fieldCharacters.Value;
             if (saved == null)
                 return;
-            
+
             foreach (var data in saved)
             {
                 int index = data.index;
-                if (index.IsValidIndex(characters))
+                if (!index.IsValidIndex(characters))
                     continue;
 
                 var character = characters[index];

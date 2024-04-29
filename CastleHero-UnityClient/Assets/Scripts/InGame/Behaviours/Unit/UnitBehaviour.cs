@@ -40,15 +40,15 @@ namespace RGLabs.InGame.Behaviours.Unit
         private const int LookFrameThreshold = 10;
 
         [SerializeField] private SkeletonMecanim _skeletonMecanim;
-        [field:SerializeField] public Rigidbody2D Body { get; private set; }
-        [field:SerializeField] public Collider2D Collider { get; private set; }
+        [field: SerializeField] public Rigidbody2D Body { get; private set; }
+        [field: SerializeField] public Collider2D Collider { get; private set; }
 
         [SerializeField] private Animator _animator;
         [SerializeField] private AnimationEvents _animationEvents;
-  
+
         [SerializeField] private int _maxAttackTarget;
         [SerializeField] private float _defaultMoveThreshlod;
-        
+
         [SerializeField] private Vector2 _offset;
 
         [NonSerialized] public bool autoRelease = true;
@@ -57,9 +57,9 @@ namespace RGLabs.InGame.Behaviours.Unit
         [NonSerialized] public Vector2 defaultDestination = default;
 
         public int Id => Data.Id;
-        
-        public UnitEntity Data { get; private set; } 
-        
+
+        public UnitEntity Data { get; private set; }
+
         public Vector2 position
         {
             get => Body.position;
@@ -67,14 +67,12 @@ namespace RGLabs.InGame.Behaviours.Unit
         }
 
         public readonly Status status = new();
-        
+
         private Vector2 Center => position + _offset;
 
         public readonly ReactiveProperty<States> state = new(States.Prepare);
-        
-        private readonly RaycastHit2D[] _castBuffer = new RaycastHit2D[20];
 
-        private States _state;
+        private readonly RaycastHit2D[] _castBuffer = new RaycastHit2D[20];
 
         private FindUnits _findMoveTarget;
         private FindUnits _findAttackTarget;
@@ -86,30 +84,30 @@ namespace RGLabs.InGame.Behaviours.Unit
 
         private Vector2 _look;
         private int _currentLookFrame;
-        
+
         public void Init(UnitEntity data)
         {
             Data = data;
             status.Init(data);
-            
+
             InitAlley(data.Id, data.defLayer);
             InitEnemy(data.Id, data.atkLayer);
-            
+
             _renderController.ApplySkin(data.skinName);
             _currentLookFrame = LookFrameThreshold;
-            
+
             UpdateAnimation(state.Value);
         }
 
         private void InitAlley(int id, int defLayer)
         {
-            var alleyLayer =  DefTypeToLayerMask(defLayer);
+            var alleyLayer = DefTypeToLayerMask(defLayer);
             var alleyTag = AlleyTag(id);
             var go = gameObject;
-            
+
             go.tag = alleyTag;
-            //go.layer = alleyLayer;
-            
+            go.layer = alleyLayer;
+
             InitFindUnitComponent(_thrust, alleyLayer, alleyTag);
         }
 
@@ -120,49 +118,41 @@ namespace RGLabs.InGame.Behaviours.Unit
             InitFindUnitComponent(_findAttackTarget, enemyLayerMask, enemyTag);
             InitFindUnitComponent(_findAttackTarget, enemyLayerMask, enemyTag);
         }
-        
+
         private string AlleyTag(int id) => id.ToString().StartsWith("1") ? "Character" : "Monster";
-        
+
         private string EnemyTag(int id) => id.ToString().StartsWith("1") ? "Monster" : "Character";
 
         private LayerMask EnemyLayerMask(int atkType)
         {
             LayerMask layerMask = default;
-            int groundUnit = LayerMask.GetMask("GroundUnit");
-            int skyUnit = LayerMask.GetMask("SkyUnit");
+            int groundUnit = 1 << LayerMask.NameToLayer("GroundUnit");
+            int skyUnit = 1 << LayerMask.NameToLayer("SkyUnit");
             switch (atkType)
             {
-                case 0 :
+                case 0:
                     layerMask = groundUnit | skyUnit;
                     break;
                 case 1:
                     layerMask = groundUnit;
                     break;
                 case 2:
-                    layerMask = skyUnit; 
+                    layerMask = skyUnit;
                     break;
             }
 
             return layerMask;
         }
 
-        private LayerMask DefTypeToLayerMask(int defType)
+        private int DefTypeToLayerMask(int defType)
         {
-            LayerMask layerMask = default;
-            int groundUnit = LayerMask.GetMask("GroundUnit");
-            int skyUnit = LayerMask.GetMask("SkyUnit");
-            
             switch (defType)
             {
-                case 1:
-                    layerMask = groundUnit;
-                    break;
-                case 2:
-                    layerMask = skyUnit; 
-                    break;
+                case 1: return LayerMask.NameToLayer("GroundUnit");
+                case 2: return LayerMask.NameToLayer("SkyUnit");
             }
 
-            return layerMask;
+            return 0;
         }
 
         private void InitFindUnitComponent(FindUnits component, LayerMask layerMask, string tag)
@@ -190,16 +180,16 @@ namespace RGLabs.InGame.Behaviours.Unit
                         case States.Idle:
                             _findMoveTarget.Clear();
                             _findAttackTarget.Clear();
-                            UpdateAnimation(_state);
+                            UpdateAnimation(x);
                             break;
                         case States.Dead:
                             break;
                         default:
-                            UpdateAnimation(_state);
+                            UpdateAnimation(x);
                             break;
                     }
                 });
-            
+
             _thrust = new ThrustAlley(Body, _castBuffer, 5);
             _findMoveTarget = new FindMoveTarget(_castBuffer, 1);
             _findAttackTarget = new FindAttackTarget(_castBuffer, _maxAttackTarget);
@@ -214,7 +204,7 @@ namespace RGLabs.InGame.Behaviours.Unit
         {
             if (!AnimationsHash.TryGetValue(state, out var hash))
                 return;
-            
+
             _renderController.SetAnimation(hash);
         }
 
@@ -264,7 +254,7 @@ namespace RGLabs.InGame.Behaviours.Unit
                 state.Value = States.Idle;
                 return;
             }
-            
+
             if (status.hp <= 0)
             {
                 state.Value = States.Dead;
@@ -336,7 +326,7 @@ namespace RGLabs.InGame.Behaviours.Unit
             {
                 if (position.IsNear(_findMoveTarget.Found[0].position, 0f))
                     return false;
-                
+
                 state.Value = States.MoveToTarget;
                 return true;
             }
@@ -406,17 +396,17 @@ namespace RGLabs.InGame.Behaviours.Unit
             if (!CheckMoveToTarget())
                 state.Value = States.Idle;
         }
-        
+
         private void LookAt(Vector2 target)
         {
             if (_animator == null)
                 return;
-            
+
             var diff = target - position;
             var originScale = _animator.transform.localScale;
             float originX = Mathf.Abs(originScale.x);
             float scale = diff.x <= 0 ? originX : -originX;
-            
+
             _animator.transform.localScale = new Vector3(scale, originScale.y, originScale.z);
         }
 
@@ -459,11 +449,11 @@ namespace RGLabs.InGame.Behaviours.Unit
             };
 
             string text =
-                $"State : {state}\n"+
+                $"State : {state}\n" +
                 $"HP : {(float)status.hp}/{status.hp.Max}\n" +
                 $"ATK : {(float)status.atk}\n" +
                 $"SPD : {(float)status.speed}\n";
-            
+
             Handles.Label(transform.position, text, style);
         }
 #endif

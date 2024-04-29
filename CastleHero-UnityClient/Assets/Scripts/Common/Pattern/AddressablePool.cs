@@ -58,15 +58,20 @@ namespace RGLabs.Common.Pattern
             _spares.Enqueue(obj);
         }
 
+        public void ClearSpares()
+        {
+            foreach (var spare in _spares)
+            {
+                Addressables.ReleaseInstance(spare.gameObject);
+            }
+        }
+        
         public void Dispose()
         {
             foreach (var obj in _activated)
                 Release(obj);
 
-            foreach (var spare in _spares)
-            {
-                Addressables.ReleaseInstance(spare.gameObject);
-            }
+            ClearSpares();
         }
     }
 }

@@ -35,3 +35,24 @@ MonoBehaviour:
     critical: 0.3
     criticalAtk: 1.5
     recovery: 30
+  - <Id>k__BackingField: 1
+    name: Castle
+    icon: 
+    prefab: Castle_01/Castle_01.prefab
+    skinName: 
+    grade: 0
+    role: 0
+    team: 0
+    atkOrder: 0
+    atkLayer: 0
+    defLayer: 0
+    size: 0
+    hp: 30000
+    speed: 0
+    moveRange: 0
+    atk: 0
+    atkRange: 0
+    atkSpeed: 0
+    critical: 0
+    criticalAtk: 0
+    recovery: 0
