@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1b3b4b945939a54ea0b23d3396115fb, type: 3}
-  m_Name: Monster_20001_SkeletonData
+  m_Name: Character_10034_SkeletonData
   m_EditorClassIdentifier: 
   atlasAssets:
-  - {fileID: 11400000, guid: 7668ad7675c9832419c115946074ed28, type: 2}
+  - {fileID: 11400000, guid: ba1778c6ba8e82a4f80574ca6fe541f0, type: 2}
   scale: 0.01
-  skeletonJSON: {fileID: 4900000, guid: 6c4dc3a2ece7e2a4cb09b20031eaf913, type: 3}
+  skeletonJSON: {fileID: 4900000, guid: 7602814fe006fbd439a915bf589d6b87, type: 3}
   isUpgradingBlendModeMaterials: 0
   blendModeMaterials:
     requiresBlendModeMaterials: 0
@@ -28,4 +28,4 @@ MonoBehaviour:
   toAnimation: []
   duration: []
   defaultMix: 0.2
-  controller: {fileID: 9100000, guid: 1b099169e244a5a43891e9ff2ecc0692, type: 2}
+  controller: {fileID: 0}

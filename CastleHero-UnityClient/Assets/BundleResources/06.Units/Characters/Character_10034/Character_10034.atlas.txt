@@ -1,0 +1,85 @@
+Character_10034.png
+	size: 512, 512
+	filter: Linear, Linear
+	scale: 0.5
+Arm _L
+	bounds: 216, 132, 64, 46
+	offsets: 5, 5, 74, 56
+Arm_R
+	bounds: 208, 390, 77, 43
+	offsets: 5, 5, 87, 53
+Beard
+	bounds: 95, 331, 14, 39
+	offsets: 5, 5, 24, 49
+Bluser
+	bounds: 208, 374, 71, 14
+	offsets: 5, 5, 81, 24
+Ear_L
+	bounds: 284, 349, 39, 37
+	offsets: 5, 5, 49, 47
+	rotate: 90
+Ear_R
+	bounds: 287, 409, 26, 37
+	offsets: 5, 5, 36, 47
+Eyes
+	bounds: 273, 49, 81, 32
+	offsets: 5, 5, 91, 42
+	rotate: 90
+Hair_Base
+	bounds: 2, 2, 127, 116
+	offsets: 5, 5, 137, 126
+	rotate: 90
+Hair_Deco_1
+	bounds: 199, 286, 84, 83
+	offsets: 5, 5, 94, 93
+	rotate: 90
+Hair_Deco_2
+	bounds: 268, 200, 32, 84
+	offsets: 5, 5, 42, 94
+Hair_Deco_3
+	bounds: 210, 10, 88, 35
+	offsets: 5, 5, 98, 45
+Hair_Deco_4
+	bounds: 284, 305, 42, 33
+	offsets: 5, 5, 52, 43
+	rotate: 90
+Hair_Front_L
+	bounds: 282, 448, 36, 52
+	offsets: 5, 5, 46, 62
+Hair_Front_R
+	bounds: 282, 146, 29, 52
+	offsets: 5, 5, 39, 62
+Hair_Tail
+	bounds: 2, 287, 91, 213
+	offsets: 5, 5, 101, 223
+Head
+	bounds: 95, 372, 111, 128
+	offsets: 5, 5, 121, 138
+Hip
+	bounds: 208, 435, 72, 65
+	offsets: 5, 5, 82, 75
+Leg
+	bounds: 216, 179, 52, 105
+	offsets: 2, 3, 57, 111
+Mouth
+	bounds: 95, 315, 13, 4
+	offsets: 5, 5, 23, 14
+Nose
+	bounds: 95, 321, 13, 8
+	offsets: 7, 6, 26, 19
+Torso
+	bounds: 210, 47, 61, 70
+	offsets: 5, 5, 71, 80
+Wing_Back
+	bounds: 120, 119, 103, 94
+	offsets: 5, 5, 113, 104
+	rotate: 90
+Wing_Back_Guide
+	bounds: 120, 23, 88, 94
+	offsets: 5, 5, 98, 104
+Wing_L
+	bounds: 2, 131, 113, 154
+	offsets: 5, 5, 123, 164
+Wing_R
+	bounds: 117, 224, 80, 146
+	offsets: 5, 5, 90, 156
