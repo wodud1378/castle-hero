@@ -72,7 +72,7 @@ namespace RGLabs.InGame.Behaviours.Unit
 
         public readonly ReactiveProperty<States> state = new(States.Prepare);
 
-        private readonly RaycastHit2D[] _castBuffer = new RaycastHit2D[20];
+        private readonly Collider2D[] _castBuffer = new Collider2D[20];
 
         private FindUnits _findMoveTarget;
         private FindUnits _findAttackTarget;
@@ -84,6 +84,7 @@ namespace RGLabs.InGame.Behaviours.Unit
 
         private Vector2 _look;
         private int _currentLookFrame;
+        private float _thrustRange;
 
         public void Init(UnitEntity data)
         {
@@ -95,7 +96,7 @@ namespace RGLabs.InGame.Behaviours.Unit
 
             _renderController.ApplySkin(data.skinName);
             _currentLookFrame = LookFrameThreshold;
-
+            
             UpdateAnimation(state.Value);
         }
 
@@ -178,6 +179,7 @@ namespace RGLabs.InGame.Behaviours.Unit
                     switch (x)
                     {
                         case States.Idle:
+                            _thrust.Clear();
                             _findMoveTarget.Clear();
                             _findAttackTarget.Clear();
                             UpdateAnimation(x);
@@ -190,7 +192,7 @@ namespace RGLabs.InGame.Behaviours.Unit
                     }
                 });
 
-            _thrust = new ThrustAlley(Body, _castBuffer, 5);
+            _thrust = new ThrustAlley(Collider, Body, _castBuffer, 5);
             _findMoveTarget = new FindMoveTarget(_castBuffer, 1);
             _findAttackTarget = new FindAttackTarget(_castBuffer, _maxAttackTarget);
             _renderController = new RenderController(_skeletonMecanim, _animator);
@@ -226,7 +228,7 @@ namespace RGLabs.InGame.Behaviours.Unit
                 return;
 
             status.Update();
-
+            
             UpdateState();
             ProcessState();
             UpdateLookDirection();
@@ -234,6 +236,8 @@ namespace RGLabs.InGame.Behaviours.Unit
 
         private void FixedUpdate()
         {
+            _thrust.Update(position, 0f);
+            
             if (state.Value == States.MoveToTarget)
             {
                 ProcessMoveToTarget();

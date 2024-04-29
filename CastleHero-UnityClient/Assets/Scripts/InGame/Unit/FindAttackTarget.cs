@@ -4,7 +4,7 @@ namespace RGLabs.InGame.Unit
 {
     public class FindAttackTarget : FindUnits
     {
-        public FindAttackTarget(RaycastHit2D[] castBuffer, int maxTarget) 
+        public FindAttackTarget(Collider2D[] castBuffer, int maxTarget) 
             : base(castBuffer, maxTarget)
         {
         }

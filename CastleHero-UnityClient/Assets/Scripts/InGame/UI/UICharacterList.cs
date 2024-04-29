@@ -14,23 +14,19 @@ namespace RGLabs.InGame.UI
         private static readonly int UnFold = Animator.StringToHash("UnFold");
         private static readonly int Fold = Animator.StringToHash("Fold");
 
-        [field: SerializeField] public ScrollRect Scroll { get; private set; }
         [field: SerializeField] public RectTransform SlotParent { get; private set; }
 
         [SerializeField] private Animator _animator;
         [SerializeField] private AssetReference _slotPrefab;
         
         public bool IsOpen { get; private set; }
+        
         private readonly List<UICharacterSlot> _slots = new();
 
-        private UserRepository _repository;
-
-        public async UniTask Init(UserRepository repository, UnitDB db)
+        public async UniTask Init(Character[] characters, UnitDB db)
         {
-            _repository = repository;
-
             var tasks = new List<UniTask>();
-            foreach (var character in _repository.characters.Value)
+            foreach (var character in characters)
             {
                 tasks.Add(AddSlot(character, db));
             }

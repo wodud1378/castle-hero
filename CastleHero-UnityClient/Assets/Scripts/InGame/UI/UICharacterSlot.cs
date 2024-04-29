@@ -1,12 +1,8 @@
-using System;
-using System.Threading;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI;
 using RGLabs.InGame.Data.DB;
 using RGLabs.InGame.Data.Model;
 using RGLabs.InGame.Data.User;
-using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace RGLabs.InGame.UI
 {

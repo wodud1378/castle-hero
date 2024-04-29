@@ -50,10 +50,10 @@ namespace RGLabs.InGame.Behaviours
             if (unit == null)
                 return;
 
-            if (_gameRepo.characters.Value == null)
+            if (_gameRepo.units.Value == null)
                 return;
             
-            _gameRepo.characters.Value = _gameRepo.characters.Value
+            _gameRepo.units.Value = _gameRepo.units.Value
                 .Where(x => x != unit)
                 .ToArray();
             
@@ -84,7 +84,7 @@ namespace RGLabs.InGame.Behaviours
 
         private void Register(UnitBehaviour unit)
         {
-            var units = _gameRepo.characters.Value;
+            var units = _gameRepo.units.Value;
             units ??= Array.Empty<UnitBehaviour>();
 
             int index = Array.FindIndex(units, (x) => x.Id == unit.Id);
@@ -99,7 +99,7 @@ namespace RGLabs.InGame.Behaviours
                 .Append(unit)
                 .ToArray();
 
-            _gameRepo.characters.Value = units;
+            _gameRepo.units.Value = units;
             _userRepo.SaveFieldCharacters(units);
         }
 

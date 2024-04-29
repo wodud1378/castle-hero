@@ -11,12 +11,13 @@ using RGLabs.InGame.UI;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Serialization;
 
 namespace RGLabs.InGame.Behaviours
 {
     public class InGameBehaviour : MonoBehaviour
     {
-        [SerializeField] private UIControl _uiControl;
+        [FormerlySerializedAs("_uiControl")] [SerializeField] private UILobby uiLobby;
 
         [SerializeField] private Formation _formation;
         [SerializeField] private SpriteRenderer _map;
@@ -42,14 +43,14 @@ namespace RGLabs.InGame.Behaviours
 
             await _formation.Init(_dbCollections.characters, _userRepo, _inGameRepo, _unitFactory);
             
-            _uiControl.Init();
-            _uiControl.step.Subscribe(OnNextStep);
+            uiLobby.Init();
+            uiLobby.step.Subscribe(OnNextStep);
         }
         
 
-        private void OnNextStep(UIControl.Step step)
+        private void OnNextStep(UILobby.Step step)
         {
-            if (step != UIControl.Step.InGame)
+            if (step != UILobby.Step.InGame)
                 return;
             
             StartGame();
@@ -60,7 +61,7 @@ namespace RGLabs.InGame.Behaviours
             _waveRunner.Init(_unitFactory, _dbCollections.monsters, _dbCollections.waves, _inGameRepo.castle.Value);
             _waveRunner.isRunning = true;
 
-            foreach (var unit in _inGameRepo.characters.Value)
+            foreach (var unit in _inGameRepo.units.Value)
             {
                 unit.canMove = true;
                 unit.canAttack = true;

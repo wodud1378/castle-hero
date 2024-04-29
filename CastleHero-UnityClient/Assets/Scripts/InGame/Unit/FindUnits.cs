@@ -14,11 +14,11 @@ namespace RGLabs.InGame.Unit
         public string tag;
         public LayerMask layerMask;
         
-        protected readonly RaycastHit2D[] _castBuffer;
+        protected readonly Collider2D[] _castBuffer;
         
-        private readonly int _maxTarget;
+        protected readonly int _maxTarget;
         
-        public FindUnits(RaycastHit2D[] castBuffer, int maxTarget)
+        public FindUnits(Collider2D[] castBuffer, int maxTarget)
         {
             _castBuffer = castBuffer;
             _maxTarget = maxTarget;
@@ -38,22 +38,22 @@ namespace RGLabs.InGame.Unit
         
         public void Clear() => Found.Clear();
         
-        protected bool TrySearch(Vector2 position, float range, out int found)
+        protected virtual bool TrySearch(Vector2 position, float range, out int found)
         {
-            found = Physics2D.CircleCastNonAlloc(position, range, default, _castBuffer, 0f, layerMask);
+            found =  Physics2D.OverlapCircleNonAlloc(position, range, _castBuffer, layerMask);
             if (_maxTarget > 0)
                 found = Mathf.Min(found, _maxTarget);
 
             return found > 0;
         }
         
-        protected bool TryGetUnit(RaycastHit2D hit, out UnitBehaviour unit)
+        protected bool TryGetUnit(Collider2D collider, out UnitBehaviour unit)
         {
-            unit = null;
-            
-            var collider = hit.collider;
             if (!collider.CompareTag(tag))
+            {
+                unit = null;
                 return false;
+            }
             
             if (!CachedUnits.TryGetValue(collider, out unit))
             {

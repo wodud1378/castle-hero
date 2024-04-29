@@ -2,12 +2,11 @@ using System;
 using RGLabs.InGame.Data;
 using UniRx;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace RGLabs.InGame.UI
 {
-    public class UIControl : MonoBehaviour
+    public class UILobby : MonoBehaviour
     {
         public enum Step
         {
@@ -96,7 +95,7 @@ namespace RGLabs.InGame.UI
         
         private async void StartConfig()
         {
-            await CharacterList.Init(Storage.userRepository, Storage.DB.characters);
+            await CharacterList.Init(Storage.userRepository.characters.Value, Storage.DB.characters);
             
             CharacterList.Open();
             ConfigFormation.enabled = true;
