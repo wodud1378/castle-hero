@@ -1,4 +1,4 @@
-Monster_001_Farmer.png
+Monster_20001.png
 	size: 1024, 1024
 	filter: Linear, Linear
 	scale: 0.5

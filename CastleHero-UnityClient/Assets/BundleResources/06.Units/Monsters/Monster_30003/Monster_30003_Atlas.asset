@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
-  m_Name: Enemy_001_Farmer_Atlas
+  m_Name: Monster_30003_Atlas
   m_EditorClassIdentifier: 
   textureLoadingMode: 0
   onDemandTextureLoader: {fileID: 0}
-  atlasFile: {fileID: 4900000, guid: e012f778009f4f442b6b126ef2e4a846, type: 3}
+  atlasFile: {fileID: 4900000, guid: 35e085898fd17374797271ec70bedaaa, type: 3}
   materials:
-  - {fileID: 2100000, guid: 202e941056103bb4e92d02ab6982fea8, type: 2}
+  - {fileID: 2100000, guid: 85ad670f26c0f8d428efb347bac03bd2, type: 2}
