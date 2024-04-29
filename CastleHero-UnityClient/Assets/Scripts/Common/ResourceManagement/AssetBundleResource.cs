@@ -1,55 +1,69 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using RGLabs.InGame.Behaviours;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Object = UnityEngine.Object;
 
 namespace RGLabs.Common.ResourceManagement
 {
-    public class AssetBundleResource : IResource
+    public interface IAddressableResource<T> : IDisposable
     {
-        private readonly Dictionary<string, AsyncOperationHandle> _resourceCache = new();
+        public UniTask<T> Load(string path);
+        public void Release(string path);
+    }
 
-        public void PreLoad(string path)
+    public class Prefab<T> : IAddressableResource<T> where T : MonoBehaviour
+    {
+        public async UniTask<T> Load(string path)
         {
-            if (!_resourceCache.TryGetValue(path, out var h))
-            {
-                var aoHandle = Addressables.LoadAssetAsync<Object>(path);
-                aoHandle.CompletedTypeless += (typeless) => _resourceCache[path] = typeless;
-            }
+            var go = await Addressables.InstantiateAsync(path);
+            return go.GetComponent<T>();
         }
 
         public void Release(string path)
         {
-            
-        }
-
-        public void Instantiate<T>(string path, Action<T> onComplete) where T : Obj
-        {
-            Addressables.InstantiateAsync(path).Completed += handle =>
-            {
-                var res = handle.Result;
-                var component = res.GetComponent<T>();
-                onComplete?.Invoke(component);
-            };
-        }
-
-        public void Destroy(Obj obj)
-        {
-            Addressables.ReleaseInstance(obj.gameObject);
         }
         
-        public void Load<T>(string path, Action<T> onLoadComplete) where T : Object
+        public void Dispose() { }
+    }
+
+    public class Resource<T> : IAddressableResource<T> where T : Object
+    {
+        private readonly Dictionary<string, AsyncOperationHandle<T>> _cache = new();
+
+        public async UniTask<T> Load(string path)
         {
-            if (!_resourceCache.TryGetValue(path, out var h))
+            if (!_cache.TryGetValue(path, out var handle))
             {
-                var aoHandle = Addressables.LoadAssetAsync<T>(path);
-                aoHandle.CompletedTypeless += (typeless) => _resourceCache[path] = typeless;
-                aoHandle.Completed += handle => onLoadComplete.Invoke(handle.Result);
+                handle = Addressables.LoadAssetAsync<T>(path);
+                await handle.ToUniTask();
+
+                _cache[path] = handle;
             }
-            else
-                onLoadComplete.Invoke(h.Convert<T>().Result);
+
+            return handle.Result;
+        }
+
+        public void Release(string path)
+        {
+            if (!_cache.Remove(path, out var handle))
+                return;
+
+            Addressables.Release(handle);
+        }
+
+        public void Dispose()
+        {
+            var keys = _cache.Keys;
+            foreach (var key in keys)
+            {
+                Release(key);
+            }
+            
+            _cache.Clear();
         }
     }
 }

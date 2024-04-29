@@ -21,7 +21,13 @@ MonoBehaviour:
     m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Global-Spine
+    - Global
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: efd42dc46c19f084490c85e190ee6b4a
+    m_Address: Common
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Global
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 5929c0cb8d0d07d4aa9632acaa1413c5, type: 2}

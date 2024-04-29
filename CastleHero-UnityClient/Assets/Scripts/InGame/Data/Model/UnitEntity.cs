@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace RGLabs.InGame.Data.Model
 {
@@ -10,8 +9,17 @@ namespace RGLabs.InGame.Data.Model
         [field: SerializeField]
         public int Id { get; set; }
         public string name;
+
+        public string icon;
         public string prefab;
         public string skinName;
+
+        public int grade;
+        public int role;
+        public int team;
+        public int atkOrder;
+        public int atkLayer;
+        public int defLayer;
         
         public float size;
         public float hp;
@@ -22,5 +30,6 @@ namespace RGLabs.InGame.Data.Model
         public float atkSpeed;
         public float critical;
         public float criticalAtk;
+        public float recovery;
     }
 }

@@ -1,10 +1,13 @@
 using RGLabs.Common.Pattern;
+using RGLabs.InGame.System;
 using UnityEngine;
 
 namespace RGLabs.InGame.Behaviours
 {
     public abstract class Obj : MonoBehaviour, IObjectPoolItem
     {
+        public PoolContainer Container { get; set; }
+        
         public string ResourcePath { get; set; }
         
         protected virtual void OnActivate()
@@ -23,10 +26,10 @@ namespace RGLabs.InGame.Behaviours
 
         public void DestroySelf()
         {
-            if (InGameContext.pools == null)
+            if (Container == null)
                 return;
             
-            InGameContext.pools.Release(this);
+            Container.Release(this);
         }
     }
 }

@@ -1,5 +1,7 @@
 using RGLabs.Common;
 using RGLabs.InGame.Behaviours;
+using RGLabs.InGame.Data.Model;
+using RGLabs.InGame.Utility;
 using UnityEngine;
 
 namespace RGLabs.InGame.System.Wave
@@ -32,12 +34,10 @@ namespace RGLabs.InGame.System.Wave
         private readonly SpawnEvent[][] _buffers;
         private readonly int _infoLength;
         private readonly float _startTime;
-        
-        private readonly DataStream<SpawnEvent[]> _stream;
 
         private float _timeSinceActive;
 
-        public SpawnEventProvider(WaveGroup data)
+        public SpawnEventProvider(WaveEntity data)
         {
             _startTime = data.startTime;
             _infoLength = data.info.Length;
@@ -53,9 +53,7 @@ namespace RGLabs.InGame.System.Wave
             {
                 _buffers[i] = new SpawnEvent[_progresses[i].spawnPerOnce];
             }
-
             
-            _stream = InGameContext.streams.spawnEvent;
             _timeSinceActive = 0f;
 
             IsDone = false;
@@ -93,7 +91,7 @@ namespace RGLabs.InGame.System.Wave
                 
                 progress.currentTime = 0f;
                 
-                _stream.Emit(_buffers[i]);
+                _buffers[i].Publish();
             }
 
             if (!updated)

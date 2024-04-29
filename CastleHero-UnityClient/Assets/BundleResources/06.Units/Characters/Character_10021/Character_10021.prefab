@@ -49,18 +49,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _skeletonMecanim: {fileID: 8321658665644799341}
-  _meshRenderer: {fileID: 2939138338615412885}
-  _rigidbody: {fileID: 2705414219230316648}
-  _collider: {fileID: 6823501329548866275}
+  <Body>k__BackingField: {fileID: 2705414219230316648}
+  <Collider>k__BackingField: {fileID: 6823501329548866275}
   _animator: {fileID: 7163035223394346074}
   _animationEvents: {fileID: 4892121698718697599}
-  _enemyLayer:
-    serializedVersion: 2
-    m_Bits: 256
   _maxAttackTarget: 1
   _defaultMoveThreshlod: 0.1
-  _canAttack: 1
-  _canMove: 1
   _offset: {x: 0, y: 0.5}
 --- !u!210 &637868188244381656
 SortingGroup:

@@ -6,6 +6,7 @@ using RGLabs.InGame.Common;
 using RGLabs.InGame.Data.DB;
 using RGLabs.InGame.Data.Model;
 using RGLabs.InGame.Utility;
+using UniRx;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -34,20 +35,20 @@ namespace RGLabs.InGame.System.Wave
         private readonly EntitySpace[] _spaceBuffer;
         private readonly UnitCreation[] _creationBuffer;
 
-        public CreationHelper(int areaId, Vector2 cornerA, Vector2 cornerB)
+        public CreationHelper(int areaId, UnitDB db, Vector2 cornerA, Vector2 cornerB)
         {
             _areaId = areaId;
             _cornerA = cornerA;
             _cornerB = cornerB;
-            _bufferSize = Constants.spawnBufferSize;
-            _db = InGameContext.db.monsters;
+            _bufferSize = Constants.SpawnBufferSize;
+            _db = db;
 
             _queue = new();
             _entityBuffer = new UnitEntity[_bufferSize];
             _spaceBuffer = new EntitySpace[_bufferSize];
             _creationBuffer = new UnitCreation[_bufferSize];
 
-            InGameContext.streams.spawnEvent.Collect += OnCollectData;
+            MessageBroker.Default.Receive<SpawnEvent[]>().Subscribe(OnReceiveSpawnEvents);
         }
         
         public void SetUpBuffers(Action<UnitCreation> onResult)
@@ -67,7 +68,7 @@ namespace RGLabs.InGame.System.Wave
             }
         }
 
-        private void OnCollectData(SpawnEvent[] data)
+        private void OnReceiveSpawnEvents(SpawnEvent[] data)
         {
             foreach (var ev in data)
             {

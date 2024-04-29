@@ -15,10 +15,10 @@ TagManager:
   - UI
   - Terrain
   - Castle
-  - Monster
-  - Player
-  - DetectPlayer
-  - DetectMonster
+  - GroundUnit
+  - SkyUnit
+  - BuildingUnit
+  - 
   - 
   - 
   - 
