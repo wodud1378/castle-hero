@@ -29,11 +29,16 @@ MonoBehaviour:
     m_SerializedLabels:
     - InGame
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 45f3ba0eb31bd5d4794f53dcccd9019d
+  - m_GUID: 1013f56a49b57ab43a3799f0bf73ba1b
     m_Address: Monster_20001
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Monster_001
+    - Stage_01_01
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1397519550edc845a573e52f230b42e
+    m_Address: Monster_30003
+    m_ReadOnly: 0
+    m_SerializedLabels:
     - Stage_01_01
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0

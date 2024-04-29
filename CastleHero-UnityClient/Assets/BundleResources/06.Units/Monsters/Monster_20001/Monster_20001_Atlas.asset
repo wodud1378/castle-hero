@@ -10,14 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
-<<<<<<<< HEAD:CastleHero-UnityClient/Assets/BundleResources/06.Units/Monsters/Monster_20001/Monster_001_Farmer_Atlas.asset
-  m_Name: Monster_001_Farmer_Atlas
-========
   m_Name: Monster_20001_Atlas
->>>>>>>> origin/master:CastleHero-UnityClient/Assets/BundleResources/06.Units/Monsters/Monster_20001/Monster_20001_Atlas.asset
   m_EditorClassIdentifier: 
   textureLoadingMode: 0
   onDemandTextureLoader: {fileID: 0}
-  atlasFile: {fileID: 4900000, guid: 96c633ef2f049ca48a67e92a22346bd0, type: 3}
+  atlasFile: {fileID: 4900000, guid: f0eac9742bb74c44bb56595ffb721b8f, type: 3}
   materials:
-  - {fileID: 2100000, guid: 102695fd3aa64c848af3dc74046bdb33, type: 2}
+  - {fileID: 2100000, guid: db6f7717cbaafe84488b6efcef71621a, type: 2}

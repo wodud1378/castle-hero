@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 0c5a506bc9275174990f95aa72c6e156
   m_currentHash:
     serializedVersion: 2
-    Hash: ee7748088a2d9f7778c1db16cae5cca7
+    Hash: 900b8b9cff70503665777df0a0b8d5ed
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -120,8 +120,6 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
-    - Monster_001
-    - Monster_002
     - Stage_01_01
     - InGame
     - Castle_001
