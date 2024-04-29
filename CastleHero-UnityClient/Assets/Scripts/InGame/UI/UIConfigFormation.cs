@@ -30,6 +30,7 @@ namespace RGLabs.InGame.UI
         public void Init()
         {
             _camera = Camera.main;
+            _factory = _formation.Factory;
 
             _hold = null;
         }
