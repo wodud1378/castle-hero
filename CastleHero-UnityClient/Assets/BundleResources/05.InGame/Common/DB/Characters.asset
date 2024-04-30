@@ -29,7 +29,7 @@ MonoBehaviour:
     hp: 3000
     speed: 2
     moveRange: 5
-    atk: 100
+    atk: 110
     atkRange: 1
     atkSpeed: 1
     critical: 0.3
@@ -68,14 +68,14 @@ MonoBehaviour:
     atkLayer: 0
     defLayer: 2
     size: 0.6
-    hp: 3000
+    hp: 2000
     speed: 2
-    moveRange: 15
+    moveRange: 7
     atk: 90
-    atkRange: 10
+    atkRange: 4
     atkSpeed: 1
     critical: 0.5
-    criticalAtk: 1
+    criticalAtk: 1.2
     recovery: 30
   - <Id>k__BackingField: 10024
     name: Castle
@@ -92,9 +92,9 @@ MonoBehaviour:
     hp: 3000
     speed: 1
     moveRange: 5
-    atk: 90
+    atk: 100
     atkRange: 2
     atkSpeed: 1
-    critical: 0.5
-    criticalAtk: 1
+    critical: 1
+    criticalAtk: 1.5
     recovery: 30
