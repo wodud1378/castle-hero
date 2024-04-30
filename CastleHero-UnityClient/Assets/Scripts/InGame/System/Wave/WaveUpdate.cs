@@ -5,6 +5,8 @@ namespace RGLabs.InGame.System.Wave
 {
     public class WaveUpdate : IUpdate
     {
+        public bool Updated { get; private set; }
+        
         private readonly SpawnEventProvider[] _waves;
         
         public WaveUpdate(WaveDB db)
@@ -15,21 +17,21 @@ namespace RGLabs.InGame.System.Wave
             {
                 _waves[i] = new SpawnEventProvider(db[i]);
             }
-
-            MessageBroker.Default.Receive<ReleaseEvent>().Subscribe(OnReceiveReleaseEvent);
         }
-
-        private void OnReceiveReleaseEvent(ReleaseEvent data) => data.unit.DestroySelf();
-
+        
         public void ProcessUpdate(float deltaTime)
         {
+            bool isUpdated = false;
             foreach (var wave in _waves)
             {
                 if (wave.IsDone)
                     continue;
                 
                 wave.ProcessUpdate(deltaTime);
+                isUpdated = true;
             }
+
+            Updated = isUpdated;
         }
     }
 }

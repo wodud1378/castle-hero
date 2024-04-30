@@ -27,7 +27,6 @@ namespace RGLabs.Lobby.Behaviours
         [SerializeField] private UILobby uiLobby;
 
         [SerializeField] private Formation _formation;
-        [SerializeField] private WaveRunner _waveRunner;
         [SerializeField] private SpriteRenderer _map;
 
         private async void Awake()
@@ -57,9 +56,6 @@ namespace RGLabs.Lobby.Behaviours
         
         private void StartGame()
         {
-            _waveRunner.Init(unitFactory, db.monsters, db.waves, gameRepo.castle.Value);
-            _waveRunner.isRunning = true;
-
             MessageBroker.Default.Publish(new StartGame
             {
                 db = db,

@@ -1,10 +1,12 @@
 using System;
+using System.Linq;
 using RGLabs.Data.DB;
 using RGLabs.InGame.System;
 using RGLabs.InGame.System.Wave;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Factory;
 using RGLabs.Utility;
+using UniRx;
 using UnityEditor;
 using UnityEngine;
 
@@ -24,15 +26,32 @@ namespace RGLabs.InGame.Behaviours
         [SerializeField] private SpawnAreaSetUp[] _areaSetUpData;
 
         [NonSerialized] public bool isRunning;
+        
+        public bool Completed { get; private set; }
 
+        private int _totalSpawn;
+        private int _totalDead;
         private WaveUpdate _main;
         private SpawnArea[] _areas;
 
         private IUpdate[] _updates;
 
+        private void Awake()
+        {
+            MessageBroker.Default.Receive<ReleaseEvent>().Subscribe(OnReceiveReleaseEvent);
+        }
+        
+        private void OnReceiveReleaseEvent(ReleaseEvent data)
+        {
+            ++_totalDead;
+            
+            data.unit.DestroySelf();
+        }
+
         public void Init(IUnitFactory factory, UnitDB unitDB, WaveDB waveDB, UnitBehaviour castle)
         {
             isRunning = false;
+            Completed = false;
             
             int length = _areaSetUpData.Length;
 

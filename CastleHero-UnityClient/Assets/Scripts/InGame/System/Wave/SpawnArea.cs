@@ -8,6 +8,8 @@ namespace RGLabs.InGame.System.Wave
 {
     public class SpawnArea : IUpdate
     {
+        public int TotalSpawn { get; private set; }
+        
         public readonly int id;
 
         private readonly Vector2 _position;
@@ -50,6 +52,8 @@ namespace RGLabs.InGame.System.Wave
             unit.canAttack = true;
             unit.autoRelease = false;
             unit.OnDead += OnUnitDead;
+
+            ++TotalSpawn;
         }
 
         private void OnUnitDead(UnitBehaviour unit)
