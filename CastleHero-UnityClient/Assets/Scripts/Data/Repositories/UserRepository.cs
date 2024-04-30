@@ -1,5 +1,6 @@
 using System;
 using RGLabs.Data.User;
+using RGLabs.InGame;
 using RGLabs.InGame.Behaviours;
 using RGLabs.Lobby.Behaviours;
 using RGLabs.Unit.Behaviours;
@@ -54,6 +55,26 @@ namespace RGLabs.Data.Repositories
             fieldCharacters.Subscribe(x => SaveArray(FieldCharactersKey, x));
         }
 
+        public void Save(InGameCharacter[] units)
+        {
+            int length = units.Length;
+            var array = new FieldCharacter[length];
+            for (int i = 0; i < length; ++i)
+            {
+                int index = Array.FindIndex(characters.Value, x => x.id == units[i].character.id);
+                if (!index.IsValidIndex(characters.Value))
+                    continue;
+
+                array[i] = new FieldCharacter
+                {
+                    index = index,
+                    position = units[i].behaviour.position
+                };
+            }
+
+            fieldCharacters.Value = array;
+        }
+        
         public void SaveFieldCharacters(UnitBehaviour[] units)
         {
             int length = units.Length;
@@ -75,6 +96,11 @@ namespace RGLabs.Data.Repositories
             fieldCharacters.Value = array;
         }
 
+        public Character FindCharacter(int id)
+        {
+            return Array.Find(characters.Value, (x) => x.id == id);
+        }
+
         private static int Load(string key, int defaultVal = -1) => PlayerPrefs.GetInt(key, defaultVal);
 
         private static void Save(string key, int value) => PlayerPrefs.SetInt(key, value);
@@ -87,7 +113,6 @@ namespace RGLabs.Data.Repositories
             
             return wrap.array;
         }
-
 
         private static void SaveArray<T>(string key, T[] value)
         {

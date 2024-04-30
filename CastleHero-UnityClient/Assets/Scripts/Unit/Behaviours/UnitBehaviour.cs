@@ -409,7 +409,12 @@ namespace RGLabs.Unit.Behaviours
             _look = targets[0].position;
         }
 
-        private void ProcessHit() => _attack.Process(this, _findAttackTarget.Found);
+        private void ProcessHit()
+        {
+            _attack.Process(this, _findAttackTarget.Found);
+            
+            _findAttackTarget.Clear();
+        }
 
         private void ProcessDead()
         {

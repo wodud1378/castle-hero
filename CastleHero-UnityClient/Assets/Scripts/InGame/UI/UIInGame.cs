@@ -1,3 +1,5 @@
+using System.Linq;
+using Cysharp.Threading.Tasks;
 using RGLabs.Data;
 using RGLabs.Data.Repositories;
 using UnityEngine;
@@ -15,17 +17,16 @@ namespace RGLabs.InGame.UI
         private InGameRepository _repository;
         private DBCollections _db;
         
-        public async void Init()
+        public async UniTask InitAsync()
         {
             _repository = Storage.inGameRepository;
             _db = Storage.DB;
 
-            await CharacterList.Init(_repository.characters.Value, _db.characters);
-
-            foreach (var unit in _repository.units.Value)
-            {
-                
-            }
+            var characters = _repository.characters.Value
+                .Select(x => x.character)
+                .ToArray();
+            
+            await CharacterList.Init(characters, _db.characters);
         }
 
         private void SetPause(bool isPause)
@@ -35,7 +36,7 @@ namespace RGLabs.InGame.UI
 
         private void OnApplicationFocus(bool hasFocus)
         {
-            
+            SetPause(!hasFocus);
         }
     }
 }
