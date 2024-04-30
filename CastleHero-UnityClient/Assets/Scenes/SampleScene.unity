@@ -454,52 +454,52 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _areaSetUpData:
   - id: 1
-    position: {x: -3.5, y: 10}
-    size: 3
+    position: {x: -3.5, y: 14}
+    size: 4
     angle: 0
   - id: 2
-    position: {x: 0, y: 10}
-    size: 3
+    position: {x: 0, y: 14}
+    size: 4
     angle: 0
   - id: 3
-    position: {x: 3.5, y: 10}
-    size: 3
+    position: {x: 3.5, y: 14}
+    size: 4
     angle: 0
   - id: 4
-    position: {x: -6, y: 6}
-    size: 5
+    position: {x: -8, y: 6}
+    size: 8
     angle: 90
   - id: 5
-    position: {x: -6, y: 0}
-    size: 5
+    position: {x: -8, y: 0}
+    size: 8
     angle: 90
   - id: 6
-    position: {x: -6, y: -6}
-    size: 5
+    position: {x: -8, y: -6}
+    size: 8
     angle: 90
   - id: 7
-    position: {x: 6, y: 6}
-    size: 5
+    position: {x: 8, y: 6}
+    size: 8
     angle: -90
   - id: 8
-    position: {x: 6, y: 0}
-    size: 5
+    position: {x: 8, y: 0}
+    size: 8
     angle: -90
   - id: 9
-    position: {x: 6, y: -6}
-    size: 5
+    position: {x: 8, y: -6}
+    size: 8
     angle: -90
   - id: 10
-    position: {x: -3.5, y: -10}
-    size: 3
+    position: {x: -3.5, y: -14}
+    size: 4
     angle: 180
   - id: 11
-    position: {x: 0, y: -10}
-    size: 3
+    position: {x: 0, y: -14}
+    size: 4
     angle: 180
   - id: 12
-    position: {x: 3.5, y: -10}
-    size: 3
+    position: {x: 3.5, y: -14}
+    size: 4
     angle: 180
 --- !u!1 &1008868203
 GameObject:
