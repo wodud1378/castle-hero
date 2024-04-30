@@ -87,6 +87,8 @@ namespace RGLabs.Unit.Behaviours
 
         public void Init(UnitEntity data)
         {
+            state.Value = States.Prepare;
+            
             Data = data;
             status.Init(data);
 
