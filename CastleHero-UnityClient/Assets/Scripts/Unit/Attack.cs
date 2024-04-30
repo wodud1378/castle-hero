@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using RGLabs.InGame.System;
-using RGLabs.InGame.Utility;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 

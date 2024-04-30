@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using RGLabs.Common;
 using RGLabs.Common.Behaviours;
 using RGLabs.Data.Model;
-using RGLabs.InGame.Utility;
 using RGLabs.Utility;
 using Spine.Unity;
 using UniRx;
