@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using RGLabs.Data.DB;
 using RGLabs.Data.User;
+using RGLabs.InGame;
 using RGLabs.Unit.Behaviours;
 using UniRx;
 using UnityEngine.AddressableAssets;
@@ -53,7 +54,6 @@ namespace RGLabs.Data.Repositories
     public class InGameRepository
     {
         public readonly ReactiveProperty<UnitBehaviour> castle = new(null);
-        public readonly ReactiveProperty<UnitBehaviour[]> units = new(null);
-        public readonly ReactiveProperty<Character[]> characters = new(null);
+        public readonly ReactiveProperty<InGameCharacter[]> characters = new(null);
     }
 }

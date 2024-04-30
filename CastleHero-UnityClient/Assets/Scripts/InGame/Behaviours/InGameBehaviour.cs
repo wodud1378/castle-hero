@@ -1,5 +1,6 @@
 using RGLabs.Common.Behaviours;
 using RGLabs.InGame.System;
+using RGLabs.InGame.UI;
 using RGLabs.Lobby.Behaviours;
 using UniRx;
 using UnityEngine;
@@ -8,6 +9,7 @@ namespace RGLabs.InGame.Behaviours
 {
     public class InGameBehaviour : SceneBehaviour
     {
+        [SerializeField] private UIInGame _uiInGame;
         [SerializeField] private WaveRunner _waveRunner;
         
         private void Awake()
@@ -17,7 +19,7 @@ namespace RGLabs.InGame.Behaviours
                 .Subscribe(Run);
         }
 
-        private void Run(StartGame startGame)
+        private async void Run(StartGame startGame)
         {
             db = startGame.db;
             userRepo = startGame.userRepo;
@@ -25,6 +27,8 @@ namespace RGLabs.InGame.Behaviours
             unitFactory = startGame.unitFactory;
             poolContainer = startGame.poolContainer;
 
+            await _uiInGame.InitAsync();
+            
             var processor = new UnitProcessor();
             
             RunWave();
@@ -39,12 +43,22 @@ namespace RGLabs.InGame.Behaviours
             var waves = db.waves.Map(entity.waveGroupId);
             _waveRunner.Init(waves, db.monsters, gameRepo.castle.Value, unitFactory);
             _waveRunner.isRunning = true;
+
+            _waveRunner.completed
+                .Where(x => x)
+                .Subscribe(_ => OnWaveComplete());
+        }
+
+        private void OnWaveComplete()
+        {
+            
         }
         
         private void RunUnits()
         {
-            foreach (var unit in gameRepo.units.Value)
+            foreach (var character in gameRepo.characters.Value)
             {
+                var unit = character.behaviour;
                 unit.canAttack = true;
                 unit.canMove = true;
             }

@@ -6,6 +6,7 @@ using RGLabs.Common;
 using RGLabs.Data.DB;
 using RGLabs.Data.Model;
 using RGLabs.Data.Repositories;
+using RGLabs.InGame;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Factory;
 using RGLabs.Utility;
@@ -50,11 +51,11 @@ namespace RGLabs.Lobby.Behaviours
             if (unit == null)
                 return;
 
-            if (_gameRepo.units.Value == null)
+            if (_gameRepo.characters.Value == null)
                 return;
             
-            _gameRepo.units.Value = _gameRepo.units.Value
-                .Where(x => x != unit)
+            _gameRepo.characters.Value = _gameRepo.characters.Value
+                .Where(x => x.behaviour != unit)
                 .ToArray();
             
             unit.DestroySelf();
@@ -84,24 +85,31 @@ namespace RGLabs.Lobby.Behaviours
 
         private void Register(UnitBehaviour unit)
         {
-            var units = _gameRepo.units.Value;
-            units ??= Array.Empty<UnitBehaviour>();
+            var characters = _gameRepo.characters.Value;
+            characters ??= Array.Empty<InGameCharacter>();
 
-            int index = Array.FindIndex(units, (x) => x.Id == unit.Id);
+            int index = Array.FindIndex(characters, (x) => x.character.id == unit.Id);
             if (index != -1)
             {
-                units[index].DestroySelf();
-                units[index] = null;
+                characters[index].behaviour.DestroySelf();
+                characters[index].behaviour = null;
             }
 
-            units = units
-                .Where(x => x != null)
-                .Append(unit)
+            var character = _userRepo.FindCharacter(unit.Id);
+            characters = (InGameCharacter[])characters
+                .Where(x => x.behaviour != null)
+                .Append(new InGameCharacter
+                {
+                    character = character,
+                    behaviour = unit
+                })
                 .ToArray();
 
-            _gameRepo.units.Value = units;
-            _userRepo.SaveFieldCharacters(units);
+            _gameRepo.characters.Value = characters;
+            _userRepo.Save(characters);
         }
+        
+
 
         private async UniTask LoadCastle()
         {

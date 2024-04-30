@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using RGLabs.Data.DB;
 using RGLabs.Data.Model;
 using RGLabs.InGame.System;
@@ -28,10 +27,11 @@ namespace RGLabs.InGame.Behaviours
 
         [NonSerialized] public bool isRunning;
         
-        public bool Completed { get; private set; }
+        public readonly ReactiveProperty<bool> completed = new(false);
 
         private int _totalSpawn;
         private int _totalDead;
+        
         private WaveUpdate _main;
         private SpawnArea[] _areas;
 
@@ -52,7 +52,7 @@ namespace RGLabs.InGame.Behaviours
         public void Init(WaveEntity[] waves, UnitDB unitDB, UnitBehaviour castle, IUnitFactory factory)
         {
             isRunning = false;
-            Completed = false;
+            completed.Value = false;
             
             int length = _areaSetUpData.Length;
             
@@ -69,18 +69,38 @@ namespace RGLabs.InGame.Behaviours
                 _areas[i] = area;
                 _updates[i + 1] = area;
             }
+
+            _totalSpawn = 0;
+            length = waves.Length;
+            for (int i = 0; i < length; ++i)
+            {
+                _totalSpawn += TotalCount(ref waves[i]);
+            }
+        }
+
+        private int TotalCount(ref WaveEntity entity)
+        {
+            int count = 0;
+            foreach (var info in entity.info)
+            {
+                count += info.count;
+            }
+
+            return count;
         }
 
         private void Update()
         {
             if (!isRunning)
                 return;
-
+            
             var delta = Time.deltaTime;
             foreach (var update in _updates)
             {
                 update.ProcessUpdate(delta);
             }
+
+            completed.Value = _totalDead >= _totalSpawn;
         }
 
 #if UNITY_EDITOR
