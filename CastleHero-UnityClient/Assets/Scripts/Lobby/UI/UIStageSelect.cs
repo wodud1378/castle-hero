@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI;
 using RGLabs.Data.Model;
 using RGLabs.Data.Repositories;
+using RGLabs.Utility;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -33,15 +34,8 @@ namespace RGLabs.Lobby.UI
 
         public void Init()
         {
-            _prev
-                .OnClickAsObservable()
-                .Subscribe(_ => OnPrevStage())
-                .AddTo(this);
-
-            _next
-                .OnClickAsObservable()
-                .Subscribe(_ => OnNextStage())
-                .AddTo(this);
+            this.SubscribeButton(_prev, OnPrevStage);
+            this.SubscribeButton(_next, OnNextStage);
         }
 
         public void Set(UserRepository repository, DBCollections db)

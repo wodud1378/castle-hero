@@ -99,7 +99,7 @@ namespace RGLabs.Lobby.Behaviours
             }
 
             var character = _userRepo.FindCharacter(unit.Id);
-            characters = (InGameCharacter[])characters
+            characters = characters
                 .Where(x => x.behaviour != null)
                 .Append(new InGameCharacter
                 {
@@ -109,10 +109,8 @@ namespace RGLabs.Lobby.Behaviours
                 .ToArray();
 
             _gameRepo.characters.Value = characters;
-            _userRepo.Save(characters);
+            _userRepo.SaveFieldCharacters(characters);
         }
-        
-
 
         private async UniTask LoadCastle()
         {

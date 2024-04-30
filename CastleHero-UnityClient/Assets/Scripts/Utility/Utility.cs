@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data.Model;
+using RGLabs.InGame.Behaviours;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Factory;
 using UniRx;
@@ -15,15 +17,6 @@ namespace RGLabs.Utility
 {
     public static class AddressableHelper
     {
-        public static async UniTask<AsyncOperationHandle<Sprite>> LoadImage(this Image image, string key)
-        {
-            var handle = Addressables.LoadAssetAsync<Sprite>(key);
-            var sprite = await handle.ToUniTask();
-
-            image.sprite = sprite;
-            return handle;
-        }
-
         public static async UniTask<AsyncOperationHandle<T>> Handle<T>(this string key)
         {
             var handle = Addressables.LoadAssetAsync<T>(key);
@@ -31,13 +24,19 @@ namespace RGLabs.Utility
             return handle;
         }
 
-        public static void Release<T>(this AsyncOperationHandle<T> handle) => Addressables.Release(handle);
+        public static void Release<T>(this AsyncOperationHandle<T> handle)
+        {
+            if (!handle.IsValid())
+                return;
+            
+            Addressables.Release(handle);
+        }
     }
 
-    public static class Utility
+    public static class ObjectHelper
     {
         public static void ToUILayer(this GameObject obj) => obj.ToLayer("UI");
-
+        
         public static void ToLayer(this GameObject obj, string layer)
         {
             if (!obj.TryGetComponent(out SortingGroup sortingGroup))
@@ -46,19 +45,40 @@ namespace RGLabs.Utility
             int id = SortingLayer.NameToID(layer);
             sortingGroup.sortingLayerID = id;
         }
-
-
+        
         public static async UniTask<T> Create<T>(this UnitEntity data, Vector2 position, IUnitFactory factory)
             where T : UnitBehaviour
         {
             return await factory.Create<T>(data, position);
         }
-
-        public static void Publish<T>(this T data)
+        
+        public static bool IsValid(this UnitBehaviour unit)
         {
-            MessageBroker.Default.Publish(data);
-        }
+            if (unit == null)
+                return false;
 
+            return unit.state.Value is > UnitBehaviour.States.Prepare and < UnitBehaviour.States.Dead;
+        }
+    }
+
+    public static class RxHelper
+    {
+        public static void Publish(this ExitCode exitCode) =>
+            MessageBroker.Default.Publish(new ExitRequest { code = exitCode });
+        
+        public static void Publish<T>(this T data) => MessageBroker.Default.Publish(data);
+        
+        public static void SubscribeButton(this MonoBehaviour behaviour, Button button, Action onClick)
+        {
+            button
+                .OnClickAsObservable()
+                .Subscribe(_ => onClick.Invoke())
+                .AddTo(behaviour);
+        }
+    }
+
+    public static class MathHelper
+    {
         public static Vector2 ToVector(this float degree)
         {
             float rad = degree * Mathf.Deg2Rad;
@@ -93,7 +113,10 @@ namespace RGLabs.Utility
 
             return distance < thresholdPow;
         }
+    }
 
+    public static class CollectionHelper
+    {
         public static T[] Shuffle<T>(this T[] array) => array.Shuffle(0, array.Length);
 
         public static T[] Shuffle<T>(this T[] array, int length) => array.Shuffle(0, length);
@@ -109,14 +132,6 @@ namespace RGLabs.Utility
             }
 
             return array;
-        }
-
-        public static bool IsValid(this UnitBehaviour unit)
-        {
-            if (unit == null)
-                return false;
-
-            return unit.state.Value is > UnitBehaviour.States.Prepare and < UnitBehaviour.States.Dead;
         }
 
         public static bool IsValidIndex(this int index, IList target) => index >= 0 && target.Count > index;

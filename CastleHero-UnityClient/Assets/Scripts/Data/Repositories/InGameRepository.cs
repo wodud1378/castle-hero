@@ -1,3 +1,4 @@
+using System;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data.DB;
 using RGLabs.Data.User;
@@ -51,9 +52,18 @@ namespace RGLabs.Data.Repositories
             await Addressables.LoadAssetAsync<T>($"{DBRoot}{name}.asset");
     }
 
-    public class InGameRepository
+    public class InGameRepository : IDisposable
     {
         public readonly ReactiveProperty<UnitBehaviour> castle = new(null);
         public readonly ReactiveProperty<InGameCharacter[]> characters = new(null);
+
+        public void Dispose()
+        {
+            castle.Value = null;
+            characters.Value = null;
+            
+            castle.Dispose();
+            characters.Dispose();
+        }
     }
 }

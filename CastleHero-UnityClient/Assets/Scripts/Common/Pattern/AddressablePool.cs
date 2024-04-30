@@ -72,6 +72,9 @@ namespace RGLabs.Common.Pattern
                 Release(obj);
 
             ClearSpares();
+            
+            _activated.Clear();
+            _spares.Clear();
         }
     }
 }

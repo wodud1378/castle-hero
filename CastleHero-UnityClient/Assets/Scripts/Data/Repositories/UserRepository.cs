@@ -1,9 +1,7 @@
 using System;
 using RGLabs.Data.User;
 using RGLabs.InGame;
-using RGLabs.InGame.Behaviours;
 using RGLabs.Lobby.Behaviours;
-using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
@@ -12,18 +10,6 @@ namespace RGLabs.Data.Repositories
 {
     public class UserRepository
     {
-        [Serializable]
-        public struct CharactersWrap
-        {
-            public Character[] array;
-        }
-
-        [Serializable]
-        public struct FieldCharactersWrap
-        {
-            public FieldCharacter[] array;
-        }
-
         [Serializable]
         public class ArrayWrap<T>
         {
@@ -55,7 +41,7 @@ namespace RGLabs.Data.Repositories
             fieldCharacters.Subscribe(x => SaveArray(FieldCharactersKey, x));
         }
 
-        public void Save(InGameCharacter[] units)
+        public void SaveFieldCharacters(InGameCharacter[] units)
         {
             int length = units.Length;
             var array = new FieldCharacter[length];
@@ -68,28 +54,7 @@ namespace RGLabs.Data.Repositories
                 array[i] = new FieldCharacter
                 {
                     index = index,
-                    position = units[i].behaviour.position
-                };
-            }
-
-            fieldCharacters.Value = array;
-        }
-        
-        public void SaveFieldCharacters(UnitBehaviour[] units)
-        {
-            int length = units.Length;
-            var array = new FieldCharacter[length];
-            for (int i = 0; i < length; ++i)
-            {
-                var unit = units[i];
-                int index = Array.FindIndex(characters.Value, (x) => x.id == unit.Id);
-                if (!index.IsValidIndex(characters.Value))
-                    continue;
-
-                array[i] = new FieldCharacter
-                {
-                    index = index,
-                    position = unit.transform.position
+                    position = units[i].behaviour.transform.position
                 };
             }
 
