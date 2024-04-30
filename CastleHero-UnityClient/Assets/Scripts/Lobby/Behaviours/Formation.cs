@@ -51,6 +51,9 @@ namespace RGLabs.Lobby.Behaviours
             if (unit == null)
                 return;
 
+            if (unit == _gameRepo.castle.Value)
+                return;
+
             if (_gameRepo.characters.Value == null)
                 return;
             
