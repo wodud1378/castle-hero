@@ -1,5 +1,3 @@
-using System;
-
 namespace RGLabs.Common.ResourceManagement
 {
     public enum RootAddress

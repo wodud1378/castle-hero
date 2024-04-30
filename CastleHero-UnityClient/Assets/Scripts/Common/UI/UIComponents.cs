@@ -1,7 +1,7 @@
 using System;
-using RGLabs.InGame.Data.DB;
-using RGLabs.InGame.Data.Model;
-using RGLabs.InGame.Utility;
+using RGLabs.Data.DB;
+using RGLabs.Data.Model;
+using RGLabs.Utility;
 using TMPro;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;

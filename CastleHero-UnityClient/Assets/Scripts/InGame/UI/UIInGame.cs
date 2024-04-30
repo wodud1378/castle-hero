@@ -1,5 +1,5 @@
-using RGLabs.InGame.Data;
-using RGLabs.InGame.Data.Repositories;
+using RGLabs.Data;
+using RGLabs.Data.Repositories;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,9 +8,9 @@ namespace RGLabs.InGame.UI
     public class UIInGame : MonoBehaviour
     {
         [field:SerializeField] public UICharacterList CharacterList { get; private set; }
+        [field:SerializeField] public UIGameResult Result { get; private set; }
         
         [SerializeField] private Button _pause;
-        
         
         private InGameRepository _repository;
         private DBCollections _db;

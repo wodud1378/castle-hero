@@ -1,5 +1,5 @@
-using RGLabs.InGame.Behaviours.Unit;
-using RGLabs.InGame.Data.Model;
+using RGLabs.Data.Model;
+using RGLabs.Unit.Behaviours;
 using UnityEngine;
 
 namespace RGLabs.InGame.System.Wave

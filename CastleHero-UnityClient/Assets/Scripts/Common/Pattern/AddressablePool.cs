@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using RGLabs.InGame.Behaviours.Unit;
 using RGLabs.InGame.System;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -11,6 +10,7 @@ namespace RGLabs.Common.Pattern
     public interface IObjectPoolItem
     {
         public PoolContainer Container { get; set; }
+        
         public string ResourcePath { get; set; }
         
         public void Activate();

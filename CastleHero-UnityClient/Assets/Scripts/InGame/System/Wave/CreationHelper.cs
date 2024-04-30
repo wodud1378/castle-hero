@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using RGLabs.Common;
+using RGLabs.Data.DB;
+using RGLabs.Data.Model;
 using RGLabs.InGame.Behaviours;
-using RGLabs.InGame.Common;
-using RGLabs.InGame.Data.DB;
-using RGLabs.InGame.Data.Model;
 using RGLabs.InGame.Utility;
+using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -40,7 +40,7 @@ namespace RGLabs.InGame.System.Wave
             _areaId = areaId;
             _cornerA = cornerA;
             _cornerB = cornerB;
-            _bufferSize = Constants.SpawnBufferSize;
+            _bufferSize = Constants.BufferSize;
             _db = db;
 
             _queue = new();

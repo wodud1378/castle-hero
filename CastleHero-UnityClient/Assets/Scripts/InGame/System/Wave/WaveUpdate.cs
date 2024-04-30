@@ -1,4 +1,4 @@
-using RGLabs.InGame.Data.DB;
+using RGLabs.Data.DB;
 using UniRx;
 
 namespace RGLabs.InGame.System.Wave

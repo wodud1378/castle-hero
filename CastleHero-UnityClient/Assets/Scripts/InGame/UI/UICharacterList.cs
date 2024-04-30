@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using RGLabs.InGame.Data.DB;
-using RGLabs.InGame.Data.Repositories;
-using RGLabs.InGame.Data.User;
+using RGLabs.Data.DB;
+using RGLabs.Data.User;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;

@@ -1,5 +1,4 @@
 using System;
-using RGLabs.InGame.Behaviours;
 using Object = UnityEngine.Object;
 
 namespace RGLabs.Common.ResourceManagement
