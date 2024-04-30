@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using RGLabs.InGame.Behaviours.Unit;
 using RGLabs.InGame.Utility;
@@ -5,14 +6,14 @@ using UnityEngine;
 
 namespace RGLabs.InGame.Unit
 {
+    [Serializable]
     public abstract class FindUnits
     {
         private static readonly Dictionary<Collider2D, UnitBehaviour> CachedUnits = new();
         
         public List<UnitBehaviour> Found { get; }
 
-        public string tag;
-        public LayerMask layerMask;
+        [SerializeField] public LayerMask layerMask;
         
         protected readonly Collider2D[] _castBuffer;
         
@@ -49,12 +50,6 @@ namespace RGLabs.InGame.Unit
         
         protected bool TryGetUnit(Collider2D collider, out UnitBehaviour unit)
         {
-            if (!collider.CompareTag(tag))
-            {
-                unit = null;
-                return false;
-            }
-            
             if (!CachedUnits.TryGetValue(collider, out unit))
             {
                 if (!collider.TryGetComponent(out unit))

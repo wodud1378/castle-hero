@@ -1,7 +1,9 @@
+using System;
 using UnityEngine;
 
 namespace RGLabs.InGame.Unit
 {
+    [Serializable]
     public class FindAttackTarget : FindUnits
     {
         public FindAttackTarget(Collider2D[] castBuffer, int maxTarget) 

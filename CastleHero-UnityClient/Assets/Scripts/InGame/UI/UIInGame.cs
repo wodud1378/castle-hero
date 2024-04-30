@@ -1,13 +1,17 @@
 using RGLabs.InGame.Data;
 using RGLabs.InGame.Data.Repositories;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace RGLabs.InGame.UI
 {
     public class UIInGame : MonoBehaviour
     {
         [field:SerializeField] public UICharacterList CharacterList { get; private set; }
-
+        
+        [SerializeField] private Button _pause;
+        
+        
         private InGameRepository _repository;
         private DBCollections _db;
         
@@ -22,6 +26,16 @@ namespace RGLabs.InGame.UI
             {
                 
             }
+        }
+
+        private void SetPause(bool isPause)
+        {
+            Time.timeScale = isPause ? 0f : 1f;
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            
         }
     }
 }

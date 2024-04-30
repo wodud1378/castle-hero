@@ -52,7 +52,6 @@ namespace RGLabs.InGame.UI
         {
             step
                 .DistinctUntilChanged()
-                //.Skip(1)
                 .Subscribe(OnNextStep)
                 .AddTo(this);
 

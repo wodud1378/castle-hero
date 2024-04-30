@@ -46,7 +46,7 @@ namespace RGLabs.InGame.System.Wave
         {
             var position = request.position;
             var unit = await _factory.Create<UnitBehaviour>(request.entity, position);
-            unit.defaultDestination = unit.ClosestPoint(position, _castle);
+            unit.defaultDestination = unit.ClosestPoint(_castle);
             unit.canMove = true;
             unit.canAttack = true;
             unit.autoRelease = false;

@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using RGLabs.InGame.Behaviours.Unit.Components;
+using RGLabs.InGame.Common;
 using RGLabs.InGame.Data.Model;
 using RGLabs.InGame.Unit;
 using RGLabs.InGame.Utility;
 using Spine.Unity;
 using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -36,6 +38,8 @@ namespace RGLabs.InGame.Behaviours.Unit
             { States.MoveToTarget, Animator.StringToHash("Move") },
             { States.Attack, Animator.StringToHash("Attack") },
         };
+
+        private static readonly int AtkSpeedHash = Animator.StringToHash("AttackSpeed");
 
         private const int LookFrameThreshold = 10;
 
@@ -72,11 +76,11 @@ namespace RGLabs.InGame.Behaviours.Unit
 
         public readonly ReactiveProperty<States> state = new(States.Prepare);
 
-        private readonly Collider2D[] _castBuffer = new Collider2D[20];
+        private readonly Collider2D[] _castBuffer = new Collider2D[Constants.SpawnBufferSize];
 
-        private FindUnits _findMoveTarget;
-        private FindUnits _findAttackTarget;
-        private FindUnits _thrust;
+        [SerializeField] private FindMoveTarget _findMoveTarget;
+        [SerializeField] private FindAttackTarget _findAttackTarget;
+
         private RenderController _renderController;
         private Attack _attack;
 
@@ -84,7 +88,6 @@ namespace RGLabs.InGame.Behaviours.Unit
 
         private Vector2 _look;
         private int _currentLookFrame;
-        private float _thrustRange;
 
         public void Init(UnitEntity data)
         {
@@ -96,79 +99,79 @@ namespace RGLabs.InGame.Behaviours.Unit
 
             _renderController.ApplySkin(data.skinName);
             _currentLookFrame = LookFrameThreshold;
-            
+
             UpdateAnimation(state.Value);
         }
 
         private void InitAlley(int id, int defLayer)
         {
-            var alleyLayer = DefTypeToLayerMask(defLayer);
             var alleyTag = AlleyTag(id);
+            var alleyLayer = DefTypeToLayer(alleyTag, defLayer);
             var go = gameObject;
 
             go.tag = alleyTag;
             go.layer = alleyLayer;
-
-            InitFindUnitComponent(_thrust, alleyLayer, alleyTag);
         }
 
         private void InitEnemy(int id, int atkLayer)
         {
-            var enemyLayerMask = EnemyLayerMask(atkLayer);
-            var enemyTag = EnemyTag(id);
-            InitFindUnitComponent(_findAttackTarget, enemyLayerMask, enemyTag);
-            InitFindUnitComponent(_findAttackTarget, enemyLayerMask, enemyTag);
+            var enemyLayerMask = EnemyLayerMask(id, atkLayer);
+            InitFindUnitComponent(_findMoveTarget, enemyLayerMask);
+            InitFindUnitComponent(_findAttackTarget, enemyLayerMask);
         }
 
         private string AlleyTag(int id) => id.ToString().StartsWith("1") ? "Character" : "Monster";
 
         private string EnemyTag(int id) => id.ToString().StartsWith("1") ? "Monster" : "Character";
 
-        private LayerMask EnemyLayerMask(int atkType)
+        private LayerMask EnemyLayerMask(int id, int atkType)
         {
             LayerMask layerMask = default;
-            int groundUnit = 1 << LayerMask.NameToLayer("GroundUnit");
-            int skyUnit = 1 << LayerMask.NameToLayer("SkyUnit");
+
+            string tag = EnemyTag(id);
+            int groundUnit = 1 << DefTypeToLayer(tag, 1);
+            int flightUnit = 2 << DefTypeToLayer(tag, 2);
             switch (atkType)
             {
                 case 0:
-                    layerMask = groundUnit | skyUnit;
+                    layerMask = groundUnit | flightUnit;
                     break;
                 case 1:
                     layerMask = groundUnit;
                     break;
                 case 2:
-                    layerMask = skyUnit;
+                    layerMask = flightUnit;
                     break;
             }
 
             return layerMask;
         }
 
-        private int DefTypeToLayerMask(int defType)
+        private int DefTypeToLayer(string tag, int defType)
         {
-            switch (defType)
+            string type = defType switch
             {
-                case 1: return LayerMask.NameToLayer("GroundUnit");
-                case 2: return LayerMask.NameToLayer("SkyUnit");
-            }
+                1 => "Ground",
+                2 => "Flight",
+                _ => string.Empty
+            };
 
-            return 0;
+            return LayerMask.NameToLayer($"{type}{tag}");
         }
 
-        private void InitFindUnitComponent(FindUnits component, LayerMask layerMask, string tag)
+        private void InitFindUnitComponent(FindUnits component, LayerMask layerMask)
         {
             component.layerMask = layerMask;
-            component.tag = tag;
             component.Clear();
         }
 
-        public Vector2 ClosestPoint(Vector2 from, UnitBehaviour other)
+        public Vector2 ClosestPoint(UnitBehaviour other)
         {
+            var from = position;
             var closest = other.Collider.ClosestPoint(from);
-            var ranged = (closest - from).normalized * (status.atkRange * 0.9f);
-            var final = closest - ranged;
-            return final;
+            //var ranged = (closest - from).normalized * (status.atkRange * 0.9f);
+            //var final = closest - ranged;
+            return closest;
         }
 
         private void Awake()
@@ -179,7 +182,6 @@ namespace RGLabs.InGame.Behaviours.Unit
                     switch (x)
                     {
                         case States.Idle:
-                            _thrust.Clear();
                             _findMoveTarget.Clear();
                             _findAttackTarget.Clear();
                             UpdateAnimation(x);
@@ -190,12 +192,17 @@ namespace RGLabs.InGame.Behaviours.Unit
                             UpdateAnimation(x);
                             break;
                     }
-                });
+                })
+                .AddTo(this);
 
-            _thrust = new ThrustAlley(Collider, Body, _castBuffer, 5);
             _findMoveTarget = new FindMoveTarget(_castBuffer, 1);
             _findAttackTarget = new FindAttackTarget(_castBuffer, _maxAttackTarget);
             _renderController = new RenderController(_skeletonMecanim, _animator);
+
+            Collider
+                .OnCollisionEnter2DAsObservable()
+                .Subscribe(ThrustAlley)
+                .AddTo(this);
 
             _attack = new Attack();
 
@@ -228,7 +235,10 @@ namespace RGLabs.InGame.Behaviours.Unit
                 return;
 
             status.Update();
-            
+
+            if (_animator != null)
+                _animator.SetFloat(AtkSpeedHash, status.atkSpeed);
+
             UpdateState();
             ProcessState();
             UpdateLookDirection();
@@ -236,8 +246,6 @@ namespace RGLabs.InGame.Behaviours.Unit
 
         private void FixedUpdate()
         {
-            _thrust.Update(position, 0f);
-            
             if (state.Value == States.MoveToTarget)
             {
                 ProcessMoveToTarget();
@@ -358,7 +366,7 @@ namespace RGLabs.InGame.Behaviours.Unit
             if (!target.IsValid())
                 return;
 
-            Move(ClosestPoint(position, target));
+            Move(ClosestPoint(target));
         }
 
         private void Move(Vector2 target)
@@ -371,6 +379,27 @@ namespace RGLabs.InGame.Behaviours.Unit
             position += moveAmount;
 
             _look = target;
+        }
+
+        private void ThrustAlley(Collision2D collision)
+        {
+            foreach (var contact in collision.contacts)
+            {
+                var obj = contact.collider.gameObject;
+                if (!obj.CompareTag(gameObject.tag))
+                    continue;
+
+                if (obj.layer != gameObject.layer)
+                    continue;
+
+                var rigidbody = contact.rigidbody;
+                if (rigidbody == null)
+                    continue;
+
+                var point = contact.point - position;
+                var direction = point.normalized;
+                rigidbody.AddForceAtPosition(direction * 1.5f, point, ForceMode2D.Force);
+            }
         }
 
         private void ProcessAttack()

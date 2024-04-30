@@ -28,9 +28,9 @@ MonoBehaviour:
     size: 0.6
     hp: 300
     speed: 2
-    moveRange: 2
+    moveRange: 10
     atk: 100
-    atkRange: 0.75
+    atkRange: 1
     atkSpeed: 1
     critical: 0.3
     criticalAtk: 1.5
@@ -45,7 +45,7 @@ MonoBehaviour:
     team: 0
     atkOrder: 0
     atkLayer: 0
-    defLayer: 0
+    defLayer: 1
     size: 0
     hp: 30000
     speed: 0

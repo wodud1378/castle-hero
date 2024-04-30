@@ -14,12 +14,12 @@ TagManager:
   - Water
   - UI
   - Terrain
-  - Castle
-  - GroundUnit
-  - SkyUnit
-  - BuildingUnit
   - 
+  - GroundCharacter
+  - FlightCharacter
   - 
+  - GroundMonster
+  - FlightMonster
   - 
   - 
   - 

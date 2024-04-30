@@ -1,8 +1,10 @@
+using System;
 using RGLabs.InGame.Behaviours.Unit;
 using UnityEngine;
 
 namespace RGLabs.InGame.Unit
 {
+    [Serializable]
     public class FindMoveTarget : FindUnits
     {
         public FindMoveTarget(Collider2D[] castBuffer, int maxTarget) 

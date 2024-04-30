@@ -61,6 +61,8 @@ namespace RGLabs.InGame.Behaviours
             _waveRunner.Init(_unitFactory, _dbCollections.monsters, _dbCollections.waves, _inGameRepo.castle.Value);
             _waveRunner.isRunning = true;
 
+            var processor = new UnitProcessor();
+            
             foreach (var unit in _inGameRepo.units.Value)
             {
                 unit.canMove = true;

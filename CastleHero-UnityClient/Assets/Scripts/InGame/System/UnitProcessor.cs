@@ -19,7 +19,6 @@ namespace RGLabs.InGame.System
     {
         public UnitBehaviour from;
         public UnitBehaviour to;
-
         public float amount;
     }
 
