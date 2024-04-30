@@ -112,6 +112,18 @@ namespace RGLabs.Data.Repositories
                     lv = 1,
                     grade = 1,
                     id = 10021
+                },
+                new Character
+                {
+                    lv = 1,
+                    grade = 1,
+                    id = 10024
+                },
+                new Character
+                {
+                    lv = 1,
+                    grade = 1,
+                    id = 10034
                 }
             };
 
