@@ -70,9 +70,9 @@ MonoBehaviour:
     size: 0.6
     hp: 3000
     speed: 2
-    moveRange: 5
+    moveRange: 15
     atk: 90
-    atkRange: 5
+    atkRange: 10
     atkSpeed: 1
     critical: 0.5
     criticalAtk: 1
@@ -90,10 +90,10 @@ MonoBehaviour:
     defLayer: 2
     size: 0.6
     hp: 3000
-    speed: 2
+    speed: 1
     moveRange: 5
     atk: 90
-    atkRange: 5
+    atkRange: 2
     atkSpeed: 1
     critical: 0.5
     criticalAtk: 1

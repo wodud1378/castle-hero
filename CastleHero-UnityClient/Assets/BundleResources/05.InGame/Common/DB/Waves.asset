@@ -24,12 +24,12 @@ MonoBehaviour:
       lv: 1
       area: 1
       timeStep: 3
-    - id: 20001
+    - id: 20002
       count: 3
       lv: 1
       area: 2
       timeStep: 2
-    - id: 20001
+    - id: 20003
       count: 3
       lv: 1
       area: 3
