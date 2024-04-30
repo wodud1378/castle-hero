@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using RGLabs.Common;
 using RGLabs.Data.DB;
 using RGLabs.Data.Model;
-using RGLabs.InGame.Behaviours;
-using RGLabs.InGame.Utility;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
@@ -16,6 +14,7 @@ namespace RGLabs.InGame.System.Wave
     {
         private struct EntitySpace
         {
+            public bool valid;
             public int index;
             public Vector2 size;
         }
@@ -110,14 +109,23 @@ namespace RGLabs.InGame.System.Wave
             leftSpace = _cornerB - _cornerA;
             
             var direction = leftSpace.normalized;
-            for (int i = 0; i < count; ++i)
+            int bufferLength = _spaceBuffer.Length;
+            for (int i = 0; i < bufferLength; ++i)
             {
-                var entity = _entityBuffer[i];
-                var size = new Vector2(entity.size, entity.size) * direction;
-                _spaceBuffer[i].index = i;
-                _spaceBuffer[i].size = size;
-
-                leftSpace -= size;
+                if (i < count)
+                {
+                    var entity = _entityBuffer[i];
+                    var size = new Vector2(entity.size, entity.size) * direction;
+                    _spaceBuffer[i].index = i;
+                    _spaceBuffer[i].size = size;
+                    _spaceBuffer[i].valid = true;
+                    
+                    leftSpace -= size;
+                }
+                else
+                {
+                    _spaceBuffer[i].valid = false;
+                }
             }
         }
         
@@ -138,7 +146,6 @@ namespace RGLabs.InGame.System.Wave
             var blankSpace = availableSpace / random;
             for (int i = startIndex; i < end; ++i)
             {
-                _spaceBuffer[i].index = -1;
                 _spaceBuffer[i].size = blankSpace;
             }
 
@@ -163,10 +170,9 @@ namespace RGLabs.InGame.System.Wave
                 var space = _spaceBuffer[sBufferIndex];
                 var halfSize = space.size * 0.5f;
                 var position = lastPosition + lastHalfSize + halfSize;
-                var entityIndex = space.index;
-                if (entityIndex != -1)
+                if (space.valid)
                 {
-                    _creationBuffer[cBufferIndex].entity = _entityBuffer[entityIndex];
+                    _creationBuffer[cBufferIndex].entity = _entityBuffer[space.index];
                     _creationBuffer[cBufferIndex].position = position;
                     ++cBufferIndex;
                 }
