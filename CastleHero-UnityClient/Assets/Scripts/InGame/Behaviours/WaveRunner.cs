@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using RGLabs.Data.DB;
+using RGLabs.Data.Model;
 using RGLabs.InGame.System;
 using RGLabs.InGame.System.Wave;
 using RGLabs.Unit.Behaviours;
@@ -48,14 +49,14 @@ namespace RGLabs.InGame.Behaviours
             data.unit.DestroySelf();
         }
 
-        public void Init(IUnitFactory factory, UnitDB unitDB, WaveDB waveDB, UnitBehaviour castle)
+        public void Init(WaveEntity[] waves, UnitDB unitDB, UnitBehaviour castle, IUnitFactory factory)
         {
             isRunning = false;
             Completed = false;
             
             int length = _areaSetUpData.Length;
-
-            _main = new WaveUpdate(waveDB);
+            
+            _main = new WaveUpdate(waves);
             _areas = new SpawnArea[length];
             _updates = new IUpdate[length + 1];
 

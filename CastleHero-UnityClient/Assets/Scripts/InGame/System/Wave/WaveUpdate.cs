@@ -1,4 +1,5 @@
 using RGLabs.Data.DB;
+using RGLabs.Data.Model;
 using UniRx;
 
 namespace RGLabs.InGame.System.Wave
@@ -9,13 +10,14 @@ namespace RGLabs.InGame.System.Wave
         
         private readonly SpawnEventProvider[] _waves;
         
-        public WaveUpdate(WaveDB db)
+        public WaveUpdate(WaveEntity[] data)
         {
-            int count = db.Length;
+            int count = data.Length;
+
             _waves = new SpawnEventProvider[count];
             for (int i = 0; i < count; ++i)
             {
-                _waves[i] = new SpawnEventProvider(db[i]);
+                _waves[i] = new SpawnEventProvider(data[i]);
             }
         }
         

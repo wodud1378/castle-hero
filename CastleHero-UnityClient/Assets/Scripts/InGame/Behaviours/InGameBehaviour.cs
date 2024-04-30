@@ -1,4 +1,5 @@
 using RGLabs.Common.Behaviours;
+using RGLabs.InGame.System;
 using RGLabs.Lobby.Behaviours;
 using UniRx;
 using UnityEngine;
@@ -23,6 +24,8 @@ namespace RGLabs.InGame.Behaviours
             gameRepo = startGame.gameRepo;
             unitFactory = startGame.unitFactory;
             poolContainer = startGame.poolContainer;
+
+            var processor = new UnitProcessor();
             
             RunWave();
             RunUnits();
@@ -30,7 +33,11 @@ namespace RGLabs.InGame.Behaviours
 
         private void RunWave()
         {
-            _waveRunner.Init(unitFactory, db.monsters, db.waves, gameRepo.castle.Value);
+            if (!db.stages.TryFind(userRepo.stage.Value, out var entity))
+                return;
+
+            var waves = db.waves.Map(entity.waveGroupId);
+            _waveRunner.Init(waves, db.monsters, gameRepo.castle.Value, unitFactory);
             _waveRunner.isRunning = true;
         }
         
