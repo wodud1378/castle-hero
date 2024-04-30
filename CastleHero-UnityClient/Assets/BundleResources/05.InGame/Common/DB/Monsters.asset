@@ -29,9 +29,9 @@ MonoBehaviour:
     hp: 200
     speed: 1
     moveRange: 2
-    atk: 10
-    atkRange: 2
-    atkSpeed: 2
+    atk: 5
+    atkRange: 1
+    atkSpeed: 1
     critical: 0
     criticalAtk: 0
     recovery: 0
@@ -50,9 +50,9 @@ MonoBehaviour:
     hp: 200
     speed: 1
     moveRange: 2
-    atk: 10
-    atkRange: 2
-    atkSpeed: 2
+    atk: 5
+    atkRange: 1
+    atkSpeed: 1
     critical: 0
     criticalAtk: 0
     recovery: 0
@@ -71,9 +71,30 @@ MonoBehaviour:
     hp: 200
     speed: 1
     moveRange: 2
-    atk: 10
-    atkRange: 2
-    atkSpeed: 2
+    atk: 5
+    atkRange: 1
+    atkSpeed: 1
     critical: 0
     criticalAtk: 0
+    recovery: 0
+  - <Id>k__BackingField: 30003
+    name: "\uAE30\uC0AC\uB2E8\uC7A5"
+    icon: 
+    prefab: Monster_30003/Monster_30003.prefab
+    skinName: 
+    grade: 0
+    role: 2
+    team: 0
+    atkOrder: 0
+    atkLayer: 1
+    defLayer: 1
+    size: 1.2
+    hp: 1000
+    speed: 1
+    moveRange: 2
+    atk: 100
+    atkRange: 1.5
+    atkSpeed: 1
+    critical: 1
+    criticalAtk: 1
     recovery: 0

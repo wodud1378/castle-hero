@@ -26,9 +26,9 @@ MonoBehaviour:
     atkLayer: 1
     defLayer: 1
     size: 0.6
-    hp: 300
+    hp: 3000
     speed: 2
-    moveRange: 10
+    moveRange: 5
     atk: 100
     atkRange: 1
     atkSpeed: 1
@@ -56,3 +56,45 @@ MonoBehaviour:
     critical: 0
     criticalAtk: 0
     recovery: 0
+  - <Id>k__BackingField: 10034
+    name: Castle
+    icon: Common/Portrait/Character_10021.png
+    prefab: Character_10021/Character_10021.prefab
+    skinName: 
+    grade: 0
+    role: 3
+    team: 6
+    atkOrder: 0
+    atkLayer: 0
+    defLayer: 2
+    size: 0.6
+    hp: 3000
+    speed: 2
+    moveRange: 5
+    atk: 90
+    atkRange: 5
+    atkSpeed: 1
+    critical: 0.5
+    criticalAtk: 1
+    recovery: 30
+  - <Id>k__BackingField: 10024
+    name: Castle
+    icon: Common/Portrait/Character_10021.png
+    prefab: Character_10021/Character_10021.prefab
+    skinName: 
+    grade: 0
+    role: 3
+    team: 6
+    atkOrder: 0
+    atkLayer: 0
+    defLayer: 2
+    size: 0.6
+    hp: 3000
+    speed: 2
+    moveRange: 5
+    atk: 90
+    atkRange: 5
+    atkSpeed: 1
+    critical: 0.5
+    criticalAtk: 1
+    recovery: 30

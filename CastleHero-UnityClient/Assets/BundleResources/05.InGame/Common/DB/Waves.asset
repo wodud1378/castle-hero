@@ -16,41 +16,111 @@ MonoBehaviour:
   _entities:
   - <Id>k__BackingField: 0
     groupId: 1
-    startTime: 5
+    startTime: 3
     pattern: 0
     info:
     - id: 20001
       count: 3
       lv: 1
       area: 1
-      timeStep: 0.3
+      timeStep: 3
     - id: 20001
       count: 3
       lv: 1
       area: 2
-      timeStep: 0.3
+      timeStep: 2
     - id: 20001
       count: 3
       lv: 1
       area: 3
-      timeStep: 0.3
-  - <Id>k__BackingField: 0
-    groupId: 1
-    startTime: 7.5
-    pattern: 1
+      timeStep: 2.5
+  - <Id>k__BackingField: 1
+    groupId: 2
+    startTime: 30
+    pattern: 0
     info:
     - id: 20001
       count: 3
       lv: 1
       area: 1
-      timeStep: 0.3
+      timeStep: 2
     - id: 20002
       count: 3
       lv: 1
       area: 2
-      timeStep: 0.3
+      timeStep: 2
     - id: 20003
       count: 3
       lv: 1
       area: 3
-      timeStep: 0.3
+      timeStep: 2
+  - <Id>k__BackingField: 2
+    groupId: 2
+    startTime: 50
+    pattern: 0
+    info:
+    - id: 20001
+      count: 3
+      lv: 1
+      area: 8
+      timeStep: 5
+    - id: 20002
+      count: 3
+      lv: 1
+      area: 11
+      timeStep: 5
+    - id: 20003
+      count: 3
+      lv: 1
+      area: 2
+      timeStep: 5
+    - id: 20001
+      count: 3
+      lv: 1
+      area: 2
+      timeStep: 5
+    - id: 20002
+      count: 3
+      lv: 1
+      area: 2
+      timeStep: 5
+  - <Id>k__BackingField: 0
+    groupId: 2
+    startTime: 70
+    pattern: 0
+    info:
+    - id: 20001
+      count: 3
+      lv: 1
+      area: 1
+      timeStep: 5
+    - id: 20002
+      count: 3
+      lv: 1
+      area: 2
+      timeStep: 5
+    - id: 20003
+      count: 3
+      lv: 1
+      area: 3
+      timeStep: 5
+    - id: 20001
+      count: 5
+      lv: 1
+      area: 10
+      timeStep: 5
+    - id: 20002
+      count: 3
+      lv: 1
+      area: 10
+      timeStep: 5
+  - <Id>k__BackingField: 0
+    groupId: 2
+    startTime: 80
+    pattern: 0
+    info:
+    - id: 30003
+      count: 1
+      lv: 1
+      area: 2
+      timeStep: 5

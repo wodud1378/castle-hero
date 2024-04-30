@@ -17,3 +17,9 @@ MonoBehaviour:
   - <Id>k__BackingField: 1
     waveGroupId: 1
     rewards: 0000000001000000
+  - <Id>k__BackingField: 2
+    waveGroupId: 2
+    rewards: 0000000001000000
+  - <Id>k__BackingField: 3
+    waveGroupId: 3
+    rewards: 0000000001000000
