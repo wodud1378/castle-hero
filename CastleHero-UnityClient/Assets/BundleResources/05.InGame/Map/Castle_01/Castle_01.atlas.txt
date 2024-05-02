@@ -3,24 +3,25 @@ Castle_01.png
 	filter: Linear, Linear
 	scale: 0.5
 Castle
-	bounds: 2, 110, 346, 391
+	bounds: 2, 93, 346, 408
+	offsets: 0, 0, 346, 409
 Fire_01
 	bounds: 350, 320, 69, 88
 	offsets: 6, 2, 79, 94
 Fire_02
-	bounds: 189, 37, 71, 90
+	bounds: 189, 20, 71, 90
 	offsets: 3, 3, 79, 94
 	rotate: 90
 Fire_03
-	bounds: 2, 32, 76, 91
+	bounds: 2, 15, 76, 91
 	offsets: 0, 2, 79, 94
 	rotate: 90
 Fire_04
-	bounds: 95, 38, 70, 92
+	bounds: 95, 21, 70, 92
 	offsets: 7, 0, 79, 94
 	rotate: 90
 Fire_05
-	bounds: 281, 19, 71, 89
+	bounds: 281, 2, 71, 89
 	offsets: 8, 1, 79, 94
 Fire_06
 	bounds: 350, 410, 69, 91
