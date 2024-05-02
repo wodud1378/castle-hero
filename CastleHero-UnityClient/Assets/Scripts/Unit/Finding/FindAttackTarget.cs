@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace RGLabs.Unit
+namespace RGLabs.Unit.Finding
 {
     [Serializable]
     public class FindAttackTarget : FindUnits

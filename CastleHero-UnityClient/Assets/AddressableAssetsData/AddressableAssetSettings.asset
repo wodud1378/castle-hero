@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 0c5a506bc9275174990f95aa72c6e156
   m_currentHash:
     serializedVersion: 2
-    Hash: ea6480c6c8e2db774b4310f87c5e3a9e
+    Hash: 32dcb575225d82f8eb6f432ead85afc1
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -125,6 +125,7 @@ MonoBehaviour:
     - Castle_001
     - Global
     - Global-Atlas
+    - Character_10000
     - Character_10021
     - Character_10023
     - Character_10034

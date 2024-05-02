@@ -20,7 +20,8 @@ MonoBehaviour:
   - m_GUID: a51f4814a78189649babc9241adb1710
     m_Address: Castle_01
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Castle_001
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 5929c0cb8d0d07d4aa9632acaa1413c5, type: 2}

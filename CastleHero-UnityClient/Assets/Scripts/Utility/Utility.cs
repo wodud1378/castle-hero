@@ -145,16 +145,14 @@ namespace RGLabs.Utility
 
         public static float DistanceTo(this Vector2 from, Vector2 to) => (to - from).sqrMagnitude;
 
-        public static bool IsFar(this Vector2 from, Vector2 to, float threshold) => !from.IsNear(to, threshold);
 
-        public static bool IsNear(this Vector2 from, Vector2 to, float threshold)
+        public static bool IsNear(this Vector2 from, Vector2 to)
         {
-            float thresholdPow = Mathf.Pow(threshold, 2);
             float distance = from.DistanceTo(to);
-            if (Mathf.Approximately(distance, thresholdPow))
-                return true;
+            if (distance > 0.015f)
+                return false;
 
-            return distance < thresholdPow;
+            return true;
         }
     }
 

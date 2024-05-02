@@ -2,7 +2,7 @@ using System;
 using RGLabs.Unit.Behaviours;
 using UnityEngine;
 
-namespace RGLabs.Unit
+namespace RGLabs.Unit.Finding
 {
     [Serializable]
     public class FindMoveTarget : FindUnits

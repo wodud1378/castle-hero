@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using RGLabs.Common;
 using RGLabs.Common.Behaviours;
-using RGLabs.Common.Pattern;
 using RGLabs.Data.Model;
+using RGLabs.Unit.Components;
+using RGLabs.Unit.Finding;
 using RGLabs.Utility;
 using Spine.Unity;
 using UniRx;
@@ -21,6 +22,7 @@ namespace RGLabs.Unit.Behaviours
         {
             Prepare,
             Idle,
+            Move,
             DefaultMove,
             MoveToTarget,
             Attack,
@@ -40,11 +42,12 @@ namespace RGLabs.Unit.Behaviours
 
         private const int LookFrameThreshold = 10;
 
-        [SerializeField] private SkeletonMecanim _skeletonMecanim;
         [field: SerializeField] public Rigidbody2D Body { get; private set; }
         [field: SerializeField] public Collider2D Collider { get; private set; }
         [field: SerializeField] public HitEffect Hit { get; private set; }
+        [field: SerializeField] public Look Look { get; private set; }
 
+        [SerializeField] private SkeletonMecanim _skeletonMecanim;
         [SerializeField] private Animator _animator;
         [SerializeField] private AnimationEvents _animationEvents;
 
@@ -52,16 +55,15 @@ namespace RGLabs.Unit.Behaviours
         [SerializeField] private float _defaultMoveThreshlod;
 
         [SerializeField] private Vector2 _offset;
+        [SerializeField] private bool _enableAttack;
+        [SerializeField] private bool _enableMove;
 
         [NonSerialized] public bool autoRelease = true;
         [NonSerialized] public bool canAttack;
         [NonSerialized] public bool canMove;
         [NonSerialized] public Vector2 defaultDestination = default;
 
-        [SerializeField] private float _projectileSpeed;
-
         public int Id => Data.Id;
-        public int spawnId;
 
         public UnitEntity Data { get; private set; }
 
@@ -70,7 +72,7 @@ namespace RGLabs.Unit.Behaviours
             get => Body.position;
             set => Body.MovePosition(value);
         }
-
+        
         public readonly Status status = new();
 
         public Vector2 Center => position + _offset;
@@ -87,36 +89,6 @@ namespace RGLabs.Unit.Behaviours
 
         private Vector2 _look;
         private int _currentLookFrame;
-
-        public void Init(UnitEntity data)
-        {
-            state.Value = States.Prepare;
-            
-            Data = data;
-            status.Init(data);
-
-            _finding.Init(UnitHelper.EnemyLayerMask(data.Id, data.atkLayer));
-            this.InitAlley(data.defLayer);
-
-            _renderController.ApplySkin(data.skinName);
-            _currentLookFrame = LookFrameThreshold;
-
-            UpdateAnimation(state.Value);
-
-            if (!string.IsNullOrEmpty(data.projectile))
-            {
-                _projectileLauncher ??= new ProjectileLauncher(this, data.projectile, _projectileSpeed);
-            }
-        }
-
-        public Vector2 ClosestPoint(UnitBehaviour other)
-        {
-            var from = position;
-            var closest = other.Collider.ClosestPoint(from);
-            //var ranged = (closest - from).normalized * (status.atkRange * 0.9f);
-            //var final = closest - ranged;
-            return closest;
-        }
 
         private void Awake()
         {
@@ -139,27 +111,20 @@ namespace RGLabs.Unit.Behaviours
                 .AddTo(this);
 
             _thrust = new ThrustAlley(this);
-            _finding = new FindingComponents(new Collider2D[Constants.BufferSize], _maxAttackTarget);
             _renderController = new RenderController(_skeletonMecanim, _animator);
+            
+            _finding = new FindingComponents(new Collider2D[Constants.BufferSize], _maxAttackTarget);
 
             Collider
                 .OnCollisionEnter2DAsObservable()
                 .Subscribe(_thrust.Execute)
                 .AddTo(this);
 
-            _attack = new Attack();
+            _attack = new Attack(this);
 
             AttachAnimationEvents();
         }
-
-        private void UpdateAnimation(States state)
-        {
-            if (!AnimationsHash.TryGetValue(state, out var hash))
-                return;
-
-            _renderController.SetAnimation(hash);
-        }
-
+        
         private void AttachAnimationEvents()
         {
             if (_animator == null)
@@ -170,6 +135,44 @@ namespace RGLabs.Unit.Behaviours
 
             _animationEvents.OnReleaseAttackEvent -= OnReleaseAttack;
             _animationEvents.OnReleaseAttackEvent += OnReleaseAttack;
+        }
+        
+        public void Init(UnitEntity data)
+        {
+            state.Value = States.Prepare;
+            
+            Data = data;
+            status.Init(data);
+
+            _finding.Init(UnitHelper.EnemyLayerMask(data.Id, data.atkLayer));
+            this.InitAlley(data.defLayer);
+
+            _renderController.ApplySkin(data.skinName);
+            _currentLookFrame = LookFrameThreshold;
+
+            UpdateAnimation(state.Value);
+
+            if (!string.IsNullOrEmpty(data.projectile))
+            {
+                _projectileLauncher ??= new ProjectileLauncher(this, data.projectile);
+            }
+        }
+
+        public Vector2 ClosestPoint(UnitBehaviour other)
+        {
+            var from = position;
+            var closest = other.Collider.ClosestPoint(from);
+            //var ranged = (closest - from).normalized * (status.atkRange * 0.9f);
+            //var final = closest - ranged;
+            return closest;
+        }
+
+        private void UpdateAnimation(States state)
+        {
+            if (!AnimationsHash.TryGetValue(state, out var hash))
+                return;
+
+            _renderController.SetAnimation(hash);
         }
 
         private void Update()
@@ -213,7 +216,7 @@ namespace RGLabs.Unit.Behaviours
                 return;
             }
 
-            if (canAttack)
+            if (_enableAttack && canAttack)
             {
                 if (_animator != null)
                     _animator.SetFloat(AtkSpeedHash, status.atkSpeed);
@@ -222,7 +225,7 @@ namespace RGLabs.Unit.Behaviours
                     return;
             }
 
-            if (canMove)
+            if (_enableMove && canMove)
             {
                 if (CheckMoveToTarget())
                     return;
@@ -254,7 +257,9 @@ namespace RGLabs.Unit.Behaviours
             if (LookFrameThreshold > _currentLookFrame)
                 return;
 
-            LookAt(_look);
+            if(Look != null)
+                Look.At(position, _look);
+            
             _currentLookFrame = 0;
         }
 
@@ -274,12 +279,9 @@ namespace RGLabs.Unit.Behaviours
 
         private bool CheckMoveToTarget()
         {
-            if (state.Value == States.MoveToTarget)
-                return true;
-
             if (_finding.move.Update(Center, status.moveRange))
             {
-                if (position.IsNear(_finding.move.Found[0].position, 0f))
+                if (position.IsNear(_finding.move.Found[0].position))
                     return false;
 
                 state.Value = States.MoveToTarget;
@@ -291,7 +293,7 @@ namespace RGLabs.Unit.Behaviours
 
         private bool CheckDefaultMove()
         {
-            if (position.IsNear(defaultDestination, _defaultMoveThreshlod))
+            if (position.IsNear(defaultDestination))
                 return false;
 
             state.Value = States.DefaultMove;
@@ -335,7 +337,7 @@ namespace RGLabs.Unit.Behaviours
 
         private void ProcessHit()
         {
-            _attack.Process(this, _finding.attack.Found);
+            _attack.Process(_finding.attack.Found);
             _projectileLauncher?.Launch(_finding.attack.Found);
             
             _finding.attack.Clear();
@@ -358,21 +360,8 @@ namespace RGLabs.Unit.Behaviours
                 state.Value = States.Idle;
         }
 
-        private void LookAt(Vector2 target)
-        {
-            if (_animator == null)
-                return;
-
-            var diff = target - position;
-            var originScale = _animator.transform.localScale;
-            float originX = Mathf.Abs(originScale.x);
-            float scale = diff.x <= 0 ? originX : -originX;
-
-            _animator.transform.localScale = new Vector3(scale, originScale.y, originScale.z);
-        }
-
 #if UNITY_EDITOR
-        private void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
         {
             if (!Application.isPlaying)
                 return;

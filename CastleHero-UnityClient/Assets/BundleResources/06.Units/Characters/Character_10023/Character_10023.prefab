@@ -49,23 +49,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e558861a18304d1a800653781dc32f1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _skeletonMecanim: {fileID: 8321658665644799341}
   <Body>k__BackingField: {fileID: 2705414219230316648}
   <Collider>k__BackingField: {fileID: 6823501329548866275}
   <Hit>k__BackingField: {fileID: -2535613195475802091}
+  <Look>k__BackingField: {fileID: 3983787897395635231}
+  _skeletonMecanim: {fileID: 8321658665644799341}
   _animator: {fileID: 7163035223394346074}
   _animationEvents: {fileID: 4892121698718697599}
   _maxAttackTarget: 1
   _defaultMoveThreshlod: 0.1
   _offset: {x: 0, y: 0.5}
-  _findMoveTarget:
-    layerMask:
-      serializedVersion: 2
-      m_Bits: 0
-  _findAttackTarget:
-    layerMask:
-      serializedVersion: 2
-      m_Bits: 0
+  _enableAttack: 1
+  _enableMove: 1
 --- !u!210 &637868188244381656
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -266,6 +261,7 @@ GameObject:
   - component: {fileID: 8321658665644799341}
   - component: {fileID: 4697671263336751703}
   - component: {fileID: 4892121698718697599}
+  - component: {fileID: 3983787897395635231}
   m_Layer: 8
   m_Name: Spine Mecanim GameObject (Character_10023)
   m_TagString: Untagged
@@ -431,6 +427,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 063d79a6a53f424bb2d035a27a8bc1ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3983787897395635231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7919644939295012117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8273c3a31e548aebdf21d127912df24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &8831559656878782165

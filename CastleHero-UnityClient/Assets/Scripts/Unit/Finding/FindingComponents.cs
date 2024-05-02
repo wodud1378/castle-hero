@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RGLabs.Unit
+namespace RGLabs.Unit.Finding
 {
     public class FindingComponents
     {

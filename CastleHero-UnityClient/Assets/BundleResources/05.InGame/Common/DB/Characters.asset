@@ -58,6 +58,28 @@ MonoBehaviour:
     critical: 0
     criticalAtk: 0
     recovery: 0
+  - <Id>k__BackingField: 10000
+    name: Barriacde
+    icon: Common/Portrait/Character_10000.png
+    prefab: Character_10000/Character_10000.prefab
+    skinName: 
+    projectile: 
+    grade: 0
+    role: 0
+    team: 0
+    atkOrder: 0
+    atkLayer: 0
+    defLayer: 1
+    size: 0
+    hp: 3000
+    speed: 0
+    moveRange: 0
+    atk: 0
+    atkRange: 0
+    atkSpeed: 0
+    critical: 0
+    criticalAtk: 0
+    recovery: 0
   - <Id>k__BackingField: 10034
     name: Castle
     icon: Common/Portrait/Character_10034.png
@@ -80,7 +102,7 @@ MonoBehaviour:
     critical: 0.5
     criticalAtk: 1.2
     recovery: 30
-  - <Id>k__BackingField: 10024
+  - <Id>k__BackingField: 10023
     name: Castle
     icon: Common/Portrait/Character_10023.png
     prefab: Character_10023/Character_10023.prefab

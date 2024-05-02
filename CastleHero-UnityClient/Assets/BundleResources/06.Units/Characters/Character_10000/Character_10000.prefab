@@ -62,23 +62,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e558861a18304d1a800653781dc32f1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _skeletonMecanim: {fileID: 0}
   <Body>k__BackingField: {fileID: 6761137151746313344}
   <Collider>k__BackingField: {fileID: 6819981342643926808}
   <Hit>k__BackingField: {fileID: 3461385075006033567}
+  <Look>k__BackingField: {fileID: 0}
+  _skeletonMecanim: {fileID: 0}
   _animator: {fileID: 0}
   _animationEvents: {fileID: 0}
   _maxAttackTarget: 0
   _defaultMoveThreshlod: 0
   _offset: {x: 0, y: 0}
-  _findMoveTarget:
-    layerMask:
-      serializedVersion: 2
-      m_Bits: 0
-  _findAttackTarget:
-    layerMask:
-      serializedVersion: 2
-      m_Bits: 0
+  _enableAttack: 0
+  _enableMove: 0
 --- !u!50 &6761137151746313344
 Rigidbody2D:
   serializedVersion: 4
@@ -208,7 +203,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 52ccabe3c012d174a875db8102eba2db, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

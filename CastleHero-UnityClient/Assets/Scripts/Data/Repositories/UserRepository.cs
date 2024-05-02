@@ -75,7 +75,7 @@ namespace RGLabs.Data.Repositories
             var wrap = JsonUtility.FromJson<ArrayWrap<T>>(PlayerPrefs.GetString(key, defaultVal));
             if (wrap == null)
                 return null;
-            
+
             return wrap.array;
         }
 
@@ -83,7 +83,7 @@ namespace RGLabs.Data.Repositories
         {
             var wrap = new ArrayWrap<T> { array = value };
             var data = JsonUtility.ToJson(wrap);
-            
+
             Debug.Log(data);
             PlayerPrefs.SetString(key, data);
         }
@@ -114,7 +114,13 @@ namespace RGLabs.Data.Repositories
                     lv = 1,
                     grade = 1,
                     id = 10034
-                }
+                },
+                new Character
+                {
+                    lv = 1,
+                    grade = 1,
+                    id = 10000
+                },
             };
 
             return JsonUtility.ToJson(new ArrayWrap<Character> { array = array });

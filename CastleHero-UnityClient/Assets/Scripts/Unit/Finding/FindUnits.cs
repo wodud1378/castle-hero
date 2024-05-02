@@ -4,7 +4,7 @@ using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using UnityEngine;
 
-namespace RGLabs.Unit
+namespace RGLabs.Unit.Finding
 {
     [Serializable]
     public abstract class FindUnits

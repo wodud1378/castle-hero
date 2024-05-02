@@ -57,9 +57,12 @@ namespace RGLabs.Lobby.Behaviours
             if (_gameRepo.characters.Value == null)
                 return;
             
-            _gameRepo.characters.Value = _gameRepo.characters.Value
-                .Where(x => x.behaviour != unit)
+            var characters = _gameRepo.characters.Value
+                .Where(x => x.behaviour.Id != unit.Id)
                 .ToArray();
+
+            _gameRepo.characters.Value = characters;
+            _userRepo.SaveFieldCharacters(characters);
             
             unit.DestroySelf();
         }

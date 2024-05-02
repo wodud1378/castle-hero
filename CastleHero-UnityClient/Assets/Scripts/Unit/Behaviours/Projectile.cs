@@ -8,18 +8,18 @@ namespace RGLabs.Unit.Behaviours
 {
     public class Projectile : PoolItemBase
     {
+        [SerializeField] private float _speed;
+        
         private UnitBehaviour _target;
         private Vector2 _destination;
-        private float _speed;
         private bool _isDeadTarget;
         
-        public void Fire(UnitBehaviour target, float speed)
+        public void Fire(UnitBehaviour target)
         {
             if (!target.IsValid())
                 return;
             
             _target = target;
-            _speed = speed;
             _isDeadTarget = false;
             
             this

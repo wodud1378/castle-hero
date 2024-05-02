@@ -9,13 +9,11 @@ namespace RGLabs.Unit
     {
         private readonly UnitBehaviour _unit;
         private readonly AddressablePool<PoolItemBase> _pool;
-        private readonly float _speed;
 
-        public ProjectileLauncher(UnitBehaviour unit, string prefab, float speed)
+        public ProjectileLauncher(UnitBehaviour unit, string prefab)
         {
             _unit = unit;
             _pool = unit.Container.Get(prefab);
-            _speed = speed;
         }
 
         public async void Launch(UnitBehaviour target)
@@ -26,7 +24,7 @@ namespace RGLabs.Unit
 
             projectile.Container = _unit.Container;
             projectile.transform.position = _unit.Center;
-            projectile.Fire(target, _speed);
+            projectile.Fire(target);
         }
 
         public void Launch(IEnumerable<UnitBehaviour> targets)
