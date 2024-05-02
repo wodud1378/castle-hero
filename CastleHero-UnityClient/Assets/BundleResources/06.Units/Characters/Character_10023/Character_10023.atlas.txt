@@ -1,0 +1,71 @@
+Character_10023.png
+	size: 512, 512
+	filter: Linear, Linear
+	scale: 0.5
+Blusher
+	bounds: 2, 257, 188, 31
+Body
+	bounds: 2, 289, 273, 197
+	offsets: 0, 0, 274, 197
+Crown
+	bounds: 256, 310, 176, 141
+	rotate: 270
+Crown_Back
+	bounds: 213, 249, 149, 60
+	offsets: 5, 5, 159, 78
+Elipse
+	bounds: 161, 182, 65, 65
+Eye
+	bounds: 2, 297, 42, 42
+	offsets: 5, 5, 52, 52
+Hair
+	bounds: 285, 129, 57, 56
+	offsets: 3, 3, 63, 61
+HitWave_01
+	bounds: 442, 145, 30, 29
+	offsets: 29, 29, 91, 91
+HitWave_02
+	bounds: 228, 183, 62, 64
+	offsets: 12, 10, 91, 91
+HitWave_03
+	bounds: 292, 187, 60, 66
+	offsets: 15, 10, 91, 91
+	rotate: 90
+HitWave_04
+	bounds: 88, 194, 61, 71
+	offsets: 14, 9, 91, 91
+	rotate: 90
+Iris
+	bounds: 194, 150, 30, 30
+	offsets: 5, 5, 40, 40
+Mustache
+	bounds: 397, 272, 214, 89
+	offsets: 1, 1, 217, 91
+	rotate: 270
+Piece
+	bounds: 405, 140, 35, 34
+	offsets: 5, 5, 45, 44
+Steam_01
+	bounds: 343, 148, 60, 26
+	offsets: 5, 39, 141, 141
+Steam_02
+	bounds: 360, 176, 98, 40
+	offsets: 7, 37, 141, 141
+Steam_03
+	bounds: 364, 218, 93, 54
+	offsets: 37, 37, 141, 141
+Steam_04
+	bounds: 2, 202, 84, 53
+	offsets: 50, 40, 141, 141
+Steam_05
+	bounds: 2, 148, 72, 52
+	offsets: 63, 43, 141, 141
+Steam_06
+	bounds: 76, 141, 58, 51
+	offsets: 76, 44, 141, 141
+Steam_07
+	bounds: 228, 142, 55, 39
+	offsets: 78, 56, 141, 141
+Steam_08
+	bounds: 136, 144, 56, 36
+	offsets: 78, 59, 141, 141
