@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using RGLabs.Common.Behaviours;
+using UnityEngine;
 
 namespace RGLabs.Common.Pattern
 {

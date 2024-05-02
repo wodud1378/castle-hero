@@ -1,9 +1,11 @@
 using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Pattern;
 using RGLabs.Data;
 using RGLabs.Data.Repositories;
 using RGLabs.InGame.Behaviours;
+using RGLabs.InGame.System;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
@@ -16,12 +18,16 @@ namespace RGLabs.InGame.UI
         [field:SerializeField] public UICharacterList CharacterList { get; private set; }
         [field:SerializeField] public UIGameResult Result { get; private set; }
         [field:SerializeField] public UIPause Pause { get; private set; }
+
+        [SerializeField] private RectTransform _damageRoot;
+        [SerializeField] private string _damagePrefab;
         
         [SerializeField] private Button _pause;
         
         private InGameRepository _repository;
         private DBCollections _db;
-
+        private PoolContainer _poolContainer;
+        
         private void Awake()
         {
             this.SubscribeButton(_pause, ()=> SetPause(true));
@@ -30,11 +36,31 @@ namespace RGLabs.InGame.UI
                 .Receive<Result>()
                 .Subscribe(OnResult)
                 .AddTo(this);
+            
+            MessageBroker.Default
+                .Receive<AtkResult>()
+                .Subscribe(OnAtkResult)
+                .AddTo(this);
+        }
+        
+        private async void OnAtkResult(AtkResult result)
+        {
+            var pool = _poolContainer.Get(_damagePrefab);
+            var uiDamage = await pool.Get() as UIDamage;
+            if (uiDamage == null)
+                return;
+
+            var tr = uiDamage.transform;
+            tr.parent = _damageRoot;
+            tr.localScale = Vector3.one;
+            uiDamage.Container = _poolContainer;
+            uiDamage.Show(result);
         }
 
-        public async UniTask InitAsync()
+        public async UniTask InitAsync(PoolContainer poolContainer)
         {
             _repository = Storage.inGameRepository;
+            _poolContainer = poolContainer;
             _db = Storage.DB;
 
             var characters = _repository.characters.Value

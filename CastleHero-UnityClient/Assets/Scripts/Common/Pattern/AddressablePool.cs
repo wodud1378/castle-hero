@@ -23,14 +23,16 @@ namespace RGLabs.Common.Pattern
         private readonly Queue<T> _spares;
 
         private readonly string _path;
+        private readonly Transform _parent;
 
         private bool HasSpare => _spares.Count > 0;
 
-        public AddressablePool(string path)
+        public AddressablePool(string path, Transform parent = null)
         {
             _path = path;
             _activated = new List<T>();
             _spares = new Queue<T>();
+            _parent = parent;
         }
 
         public async UniTask<T> Get(Vector2 position = default)
@@ -40,7 +42,7 @@ namespace RGLabs.Common.Pattern
                 obj = _spares.Dequeue();
             else
             {
-                var go = await Addressables.InstantiateAsync(_path);
+                var go = await Addressables.InstantiateAsync(_path, _parent);
                 obj = go.GetComponent<T>();
                 obj.ResourcePath = _path;
             }
