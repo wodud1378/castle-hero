@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 0c5a506bc9275174990f95aa72c6e156
   m_currentHash:
     serializedVersion: 2
-    Hash: 900b8b9cff70503665777df0a0b8d5ed
+    Hash: ea6480c6c8e2db774b4310f87c5e3a9e
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -126,6 +126,8 @@ MonoBehaviour:
     - Global
     - Global-Atlas
     - Character_10021
+    - Character_10023
+    - Character_10034
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: bf7473db48ca79b4692539b8b256c4ee, type: 2}
