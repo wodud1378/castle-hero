@@ -13,6 +13,7 @@ namespace RGLabs.Data.Model
         public string icon;
         public string prefab;
         public string skinName;
+        public string projectile;
 
         public int grade;
         public int role;

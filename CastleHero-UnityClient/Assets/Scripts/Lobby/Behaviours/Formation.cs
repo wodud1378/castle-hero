@@ -159,7 +159,7 @@ namespace RGLabs.Lobby.Behaviours
 
         private async UniTask<UnitBehaviour> CreateUnit(UnitEntity entity, Vector2 position)
         {
-            var unit = await entity.Create<UnitBehaviour>(position, Factory);
+            var unit = await Factory.Create(entity, position);
             unit.defaultDestination = position;
             unit.canMove = false;
             unit.canAttack = false;

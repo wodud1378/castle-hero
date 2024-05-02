@@ -40,7 +40,7 @@ namespace RGLabs.Lobby.Behaviours
             userRepo = Storage.userRepository;
             db = Storage.DB;
             poolContainer = new PoolContainer();
-            unitFactory = new DefaultUnitFactory(poolContainer);
+            unitFactory = new UnitFactory(poolContainer);
 
             await _formation.Init(db.characters, userRepo, gameRepo, unitFactory);
            

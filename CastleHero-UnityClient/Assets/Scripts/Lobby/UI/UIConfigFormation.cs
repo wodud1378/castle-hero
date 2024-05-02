@@ -47,7 +47,7 @@ namespace RGLabs.Lobby.UI
 
         private async UniTask<UnitBehaviour> CreateUnitFromSlot(UICharacterSlot slot)
         {
-            var unit = await _factory.Create<UnitBehaviour>(slot.Entity, slot.transform.position);
+            var unit = await _factory.Create(slot.Entity, slot.transform.position);
             unit.canMove = false;
             unit.canAttack = false;
             unit.Collider.isTrigger = true;

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using RGLabs.Common;
 using RGLabs.Common.Behaviours;
+using RGLabs.Common.Pattern;
 using RGLabs.Data.Model;
 using RGLabs.Utility;
 using Spine.Unity;
@@ -57,7 +58,10 @@ namespace RGLabs.Unit.Behaviours
         [NonSerialized] public bool canMove;
         [NonSerialized] public Vector2 defaultDestination = default;
 
+        [SerializeField] private float _projectileSpeed;
+
         public int Id => Data.Id;
+        public int spawnId;
 
         public UnitEntity Data { get; private set; }
 
@@ -69,19 +73,17 @@ namespace RGLabs.Unit.Behaviours
 
         public readonly Status status = new();
 
-        private Vector2 Center => position + _offset;
+        public Vector2 Center => position + _offset;
 
         public readonly ReactiveProperty<States> state = new(States.Prepare);
 
-        private readonly Collider2D[] _castBuffer = new Collider2D[Constants.BufferSize];
-
-        [SerializeField] private FindMoveTarget _findMoveTarget;
-        [SerializeField] private FindAttackTarget _findAttackTarget;
+        private FindingComponents _finding;
+        private ThrustAlley _thrust;
 
         private RenderController _renderController;
         private Attack _attack;
 
-        private LayerMask _enemyLayer;
+        private ProjectileLauncher _projectileLauncher;
 
         private Vector2 _look;
         private int _currentLookFrame;
@@ -93,75 +95,18 @@ namespace RGLabs.Unit.Behaviours
             Data = data;
             status.Init(data);
 
-            InitAlley(data.Id, data.defLayer);
-            InitEnemy(data.Id, data.atkLayer);
+            _finding.Init(UnitHelper.EnemyLayerMask(data.Id, data.atkLayer));
+            this.InitAlley(data.defLayer);
 
             _renderController.ApplySkin(data.skinName);
             _currentLookFrame = LookFrameThreshold;
 
             UpdateAnimation(state.Value);
-        }
 
-        private void InitAlley(int id, int defLayer)
-        {
-            var alleyTag = AlleyTag(id);
-            var alleyLayer = DefTypeToLayer(alleyTag, defLayer);
-            var go = gameObject;
-
-            go.tag = alleyTag;
-            go.layer = alleyLayer;
-        }
-
-        private void InitEnemy(int id, int atkLayer)
-        {
-            var enemyLayerMask = EnemyLayerMask(id, atkLayer);
-            InitFindUnitComponent(_findMoveTarget, enemyLayerMask);
-            InitFindUnitComponent(_findAttackTarget, enemyLayerMask);
-        }
-
-        private string AlleyTag(int id) => id.ToString().StartsWith("1") ? "Character" : "Monster";
-
-        private string EnemyTag(int id) => id.ToString().StartsWith("1") ? "Monster" : "Character";
-
-        private LayerMask EnemyLayerMask(int id, int atkType)
-        {
-            LayerMask layerMask = default;
-
-            string tag = EnemyTag(id);
-            int groundUnit = 1 << DefTypeToLayer(tag, 1);
-            int flightUnit = 2 << DefTypeToLayer(tag, 2);
-            switch (atkType)
+            if (!string.IsNullOrEmpty(data.projectile))
             {
-                case 0:
-                    layerMask = groundUnit | flightUnit;
-                    break;
-                case 1:
-                    layerMask = groundUnit;
-                    break;
-                case 2:
-                    layerMask = flightUnit;
-                    break;
+                _projectileLauncher ??= new ProjectileLauncher(this, data.projectile, _projectileSpeed);
             }
-
-            return layerMask;
-        }
-
-        private int DefTypeToLayer(string tag, int defType)
-        {
-            string type = defType switch
-            {
-                1 => "Ground",
-                2 => "Flight",
-                _ => string.Empty
-            };
-
-            return LayerMask.NameToLayer($"{type}{tag}");
-        }
-
-        private void InitFindUnitComponent(FindUnits component, LayerMask layerMask)
-        {
-            component.layerMask = layerMask;
-            component.Clear();
         }
 
         public Vector2 ClosestPoint(UnitBehaviour other)
@@ -181,8 +126,7 @@ namespace RGLabs.Unit.Behaviours
                     switch (x)
                     {
                         case States.Idle:
-                            _findMoveTarget.Clear();
-                            _findAttackTarget.Clear();
+                            _finding.Clear();
                             UpdateAnimation(x);
                             break;
                         case States.Dead:
@@ -194,13 +138,13 @@ namespace RGLabs.Unit.Behaviours
                 })
                 .AddTo(this);
 
-            _findMoveTarget = new FindMoveTarget(_castBuffer, 1);
-            _findAttackTarget = new FindAttackTarget(_castBuffer, _maxAttackTarget);
+            _thrust = new ThrustAlley(this);
+            _finding = new FindingComponents(new Collider2D[Constants.BufferSize], _maxAttackTarget);
             _renderController = new RenderController(_skeletonMecanim, _animator);
 
             Collider
                 .OnCollisionEnter2DAsObservable()
-                .Subscribe(ThrustAlley)
+                .Subscribe(_thrust.Execute)
                 .AddTo(this);
 
             _attack = new Attack();
@@ -319,7 +263,7 @@ namespace RGLabs.Unit.Behaviours
             if (state.Value == States.Attack)
                 return true;
 
-            if (_findAttackTarget.Update(Center, status.atkRange))
+            if (_finding.attack.Update(Center, status.atkRange))
             {
                 state.Value = States.Attack;
                 return true;
@@ -333,9 +277,9 @@ namespace RGLabs.Unit.Behaviours
             if (state.Value == States.MoveToTarget)
                 return true;
 
-            if (_findMoveTarget.Update(Center, status.moveRange))
+            if (_finding.move.Update(Center, status.moveRange))
             {
-                if (position.IsNear(_findMoveTarget.Found[0].position, 0f))
+                if (position.IsNear(_finding.move.Found[0].position, 0f))
                     return false;
 
                 state.Value = States.MoveToTarget;
@@ -361,7 +305,7 @@ namespace RGLabs.Unit.Behaviours
 
         private void ProcessMoveToTarget()
         {
-            var target = _findMoveTarget.Found[0];
+            var target = _finding.move.Found[0];
             if (!target.IsValid())
                 return;
 
@@ -380,30 +324,9 @@ namespace RGLabs.Unit.Behaviours
             _look = target;
         }
 
-        private void ThrustAlley(Collision2D collision)
-        {
-            foreach (var contact in collision.contacts)
-            {
-                var obj = contact.collider.gameObject;
-                if (!obj.CompareTag(gameObject.tag))
-                    continue;
-
-                if (obj.layer != gameObject.layer)
-                    continue;
-
-                var rigidbody = contact.rigidbody;
-                if (rigidbody == null)
-                    continue;
-
-                var point = contact.point - position;
-                var direction = point.normalized;
-                rigidbody.AddForceAtPosition(direction * 1.5f, point, ForceMode2D.Force);
-            }
-        }
-
         private void ProcessAttack()
         {
-            var targets = _findAttackTarget.Found;
+            var targets = _finding.attack.Found;
             if (targets.Count == 0)
                 return;
 
@@ -412,9 +335,10 @@ namespace RGLabs.Unit.Behaviours
 
         private void ProcessHit()
         {
-            _attack.Process(this, _findAttackTarget.Found);
+            _attack.Process(this, _finding.attack.Found);
+            _projectileLauncher?.Launch(_finding.attack.Found);
             
-            _findAttackTarget.Clear();
+            _finding.attack.Clear();
         }
 
         private void ProcessDead()

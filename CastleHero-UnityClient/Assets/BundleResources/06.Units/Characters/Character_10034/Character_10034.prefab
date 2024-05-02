@@ -57,15 +57,9 @@ MonoBehaviour:
   _animationEvents: {fileID: 4892121698718697599}
   _maxAttackTarget: 1
   _defaultMoveThreshlod: 0.1
-  _offset: {x: 0, y: 0.5}
-  _findMoveTarget:
-    layerMask:
-      serializedVersion: 2
-      m_Bits: 0
-  _findAttackTarget:
-    layerMask:
-      serializedVersion: 2
-      m_Bits: 0
+  _offset: {x: 0, y: 0.75}
+  _projectileSpeed: 30
+  spawnId: 0
 --- !u!114 &851462692768116119
 MonoBehaviour:
   m_ObjectHideFlags: 0

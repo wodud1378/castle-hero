@@ -10,7 +10,7 @@ namespace RGLabs.Unit.Behaviours
     {
         [SerializeField] private Renderer _renderer;
         [SerializeField] private Color _color = Color.white;
-        [SerializeField] private float _duration = 0.2f;
+        [SerializeField] private float _duration = 0.1f;
 
         private float _halfDuration;
         private int _propertyId;

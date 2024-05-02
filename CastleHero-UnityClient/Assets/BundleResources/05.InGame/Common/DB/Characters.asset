@@ -19,6 +19,7 @@ MonoBehaviour:
     icon: Common/Portrait/Character_10021.png
     prefab: Character_10021/Character_10021.prefab
     skinName: 
+    projectile: 
     grade: 0
     role: 2
     team: 6
@@ -40,6 +41,7 @@ MonoBehaviour:
     icon: 
     prefab: Castle_01/Castle_01.prefab
     skinName: 
+    projectile: 
     grade: 0
     role: 0
     team: 0
@@ -61,6 +63,7 @@ MonoBehaviour:
     icon: Common/Portrait/Character_10034.png
     prefab: Character_10034/Character_10034.prefab
     skinName: 
+    projectile: Character_10034/Character_10034_Projectile.prefab
     grade: 0
     role: 3
     team: 6
@@ -82,6 +85,7 @@ MonoBehaviour:
     icon: Common/Portrait/Character_10023.png
     prefab: Character_10023/Character_10023.prefab
     skinName: 
+    projectile: 
     grade: 0
     role: 3
     team: 6

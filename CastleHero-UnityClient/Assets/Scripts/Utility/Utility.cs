@@ -33,6 +33,66 @@ namespace RGLabs.Utility
         }
     }
 
+    public static class UnitHelper
+    {
+        public static LayerMask EnemyLayerMask(int id, int atkType)
+        {
+            LayerMask layerMask = default;
+
+            string tag = EnemyTag(id);
+            int groundUnit = 1 << DefTypeToLayer(tag, 1);
+            int flightUnit = 2 << DefTypeToLayer(tag, 2);
+            switch (atkType)
+            {
+                case 0:
+                    layerMask = groundUnit | flightUnit;
+                    break;
+                case 1:
+                    layerMask = groundUnit;
+                    break;
+                case 2:
+                    layerMask = flightUnit;
+                    break;
+            }
+
+            return layerMask;
+        }
+        
+        public static void InitAlley(this UnitBehaviour unit, int defLayer)
+        {
+            var alleyTag = AlleyTag(unit.Id);
+            var alleyLayer = DefTypeToLayer(alleyTag, defLayer);
+            var go = unit.gameObject;
+
+            go.tag = alleyTag;
+            go.layer = alleyLayer;
+        }
+
+        public static string AlleyTag(this int id) => id.ToString().StartsWith("1") ? "Character" : "Monster";
+
+        public static string EnemyTag(this int id) => id.ToString().StartsWith("1") ? "Monster" : "Character";
+        
+        private static int DefTypeToLayer(string tag, int defType)
+        {
+            string type = defType switch
+            {
+                1 => "Ground",
+                2 => "Flight",
+                _ => string.Empty
+            };
+
+            return LayerMask.NameToLayer($"{type}{tag}");
+        }
+        
+        public static bool IsValid(this UnitBehaviour unit)
+        {
+            if (unit == null)
+                return false;
+
+            return unit.state.Value is > UnitBehaviour.States.Prepare and < UnitBehaviour.States.Dead;
+        }
+    }
+    
     public static class ObjectHelper
     {
         public static void ToUILayer(this GameObject obj) => obj.ToLayer("UI");
@@ -44,20 +104,6 @@ namespace RGLabs.Utility
 
             int id = SortingLayer.NameToID(layer);
             sortingGroup.sortingLayerID = id;
-        }
-        
-        public static async UniTask<T> Create<T>(this UnitEntity data, Vector2 position, IUnitFactory factory)
-            where T : UnitBehaviour
-        {
-            return await factory.Create<T>(data, position);
-        }
-        
-        public static bool IsValid(this UnitBehaviour unit)
-        {
-            if (unit == null)
-                return false;
-
-            return unit.state.Value is > UnitBehaviour.States.Prepare and < UnitBehaviour.States.Dead;
         }
     }
 
