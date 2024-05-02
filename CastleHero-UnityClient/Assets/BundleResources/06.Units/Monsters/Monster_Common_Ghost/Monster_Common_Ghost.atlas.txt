@@ -3,20 +3,47 @@ Monster_Common_Ghost.png
 	filter: Linear, Linear
 	scale: 0.4
 Arm
-	bounds: 2, 19, 93, 118
+	bounds: 2, 37, 93, 118
 	offsets: 2, 2, 96, 121
 	rotate: 90
 Body_1
-	bounds: 131, 2, 223, 272
+	bounds: 131, 20, 223, 272
 	offsets: 1, 0, 224, 272
 	rotate: 270
 Body_2
-	bounds: 210, 215, 223, 272
+	bounds: 210, 233, 223, 272
 	offsets: 1, 0, 224, 272
 	rotate: 180
 Body_3
-	bounds: 2, 215, 223, 272
+	bounds: 2, 233, 223, 272
 	offsets: 1, 0, 224, 272
+Effect_Smoke_01
+	bounds: 2, 490, 18, 15
+	offsets: 25, 26, 68, 68
+Effect_Smoke_02
+	bounds: 88, 191, 39, 40
+	offsets: 16, 14, 68, 68
+Effect_Smoke_03
+	bounds: 90, 2, 50, 49
+	offsets: 10, 9, 68, 68
+Effect_Smoke_04
+	bounds: 402, 44, 53, 53
+	offsets: 8, 7, 68, 68
+Effect_Smoke_05
+	bounds: 434, 328, 54, 55
+	offsets: 7, 5, 68, 68
+Effect_Smoke_06
+	bounds: 434, 385, 57, 57
+	offsets: 5, 4, 68, 68
+Effect_Smoke_07
+	bounds: 431, 240, 59, 60
+	offsets: 4, 2, 68, 68
+Effect_Smoke_08
+	bounds: 419, 444, 60, 61
+	offsets: 3, 1, 68, 68
+Effect_Smoke_09
+	bounds: 396, 175, 61, 63
+	offsets: 2, 0, 68, 68
 Face
-	bounds: 2, 114, 121, 102
+	bounds: 2, 132, 121, 102
 	offsets: 0, 1, 121, 103
