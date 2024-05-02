@@ -2,10 +2,9 @@ using RGLabs.Common.Behaviours;
 using RGLabs.Common.Pattern;
 using RGLabs.Data;
 using RGLabs.Data.Repositories;
-using RGLabs.InGame.Behaviours;
-using RGLabs.InGame.System;
 using RGLabs.Lobby.UI;
 using RGLabs.Unit.Factory;
+using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
 
@@ -31,6 +30,8 @@ namespace RGLabs.Lobby.Behaviours
 
         private async void Awake()
         {
+            activated.Add(this);
+            
             await Storage.InitAsync();
             
             gameRepo = Storage.inGameRepository;
@@ -40,11 +41,19 @@ namespace RGLabs.Lobby.Behaviours
             unitFactory = new DefaultUnitFactory(poolContainer);
 
             await _formation.Init(db.characters, userRepo, gameRepo, unitFactory);
-            
+           
             uiLobby.Init();
             uiLobby.step.Subscribe(OnNextStep);
+
+            var step = Storage.StartUpData.step;
+            if (step == UILobby.Step.InGame)
+            {
+                userRepo.stage.Value = Storage.StartUpData.stage;
+                uiLobby.step.Value = step;
+                
+                OnNextStep(step);
+            }
         }
-        
 
         private void OnNextStep(UILobby.Step step)
         {
@@ -56,14 +65,21 @@ namespace RGLabs.Lobby.Behaviours
         
         private void StartGame()
         {
-            MessageBroker.Default.Publish(new StartGame
+            new StartGame
             {
                 db = db,
                 userRepo = userRepo,
                 gameRepo = gameRepo,
                 poolContainer = poolContainer,
                 unitFactory = unitFactory
-            });
+            }.Publish();
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            
+            uiLobby.Dispose();
         }
     }
 }

@@ -1,22 +1,37 @@
+using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data;
 using RGLabs.Data.Repositories;
+using RGLabs.InGame.Behaviours;
+using RGLabs.Utility;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace RGLabs.InGame.UI
 {
-    public class UIInGame : MonoBehaviour
+    public class UIInGame : MonoBehaviour, IDisposable
     {
         [field:SerializeField] public UICharacterList CharacterList { get; private set; }
         [field:SerializeField] public UIGameResult Result { get; private set; }
+        [field:SerializeField] public UIPause Pause { get; private set; }
         
         [SerializeField] private Button _pause;
         
         private InGameRepository _repository;
         private DBCollections _db;
-        
+
+        private void Awake()
+        {
+            this.SubscribeButton(_pause, ()=> SetPause(true));
+            
+            MessageBroker.Default
+                .Receive<Result>()
+                .Subscribe(OnResult)
+                .AddTo(this);
+        }
+
         public async UniTask InitAsync()
         {
             _repository = Storage.inGameRepository;
@@ -31,12 +46,25 @@ namespace RGLabs.InGame.UI
 
         private void SetPause(bool isPause)
         {
-            Time.timeScale = isPause ? 0f : 1f;
+            if(isPause)
+                Pause.Open();
+            else
+                Pause.Close();
         }
 
-        private void OnApplicationFocus(bool hasFocus)
+        // private void OnApplicationFocus(bool hasFocus)
+        // {
+        //     SetPause(!hasFocus);
+        // }
+
+        private void OnResult(Result result)
         {
-            SetPause(!hasFocus);
+            Result.Open(result.isCleared);
+        }
+
+        public void Dispose()
+        {
+            CharacterList.Dispose();
         }
     }
 }

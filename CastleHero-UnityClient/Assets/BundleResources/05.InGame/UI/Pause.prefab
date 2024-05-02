@@ -856,7 +856,7 @@ GameObject:
   - component: {fileID: 7388477840054737772}
   - component: {fileID: 1428459877056158644}
   m_Layer: 5
-  m_Name: Restart
+  m_Name: Retry
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1072,6 +1072,7 @@ GameObject:
   - component: {fileID: 3263626251098371271}
   - component: {fileID: 7445328126156579480}
   - component: {fileID: 3147416713599757037}
+  - component: {fileID: 3282907446693555183}
   m_Layer: 5
   m_Name: Pause
   m_TagString: Untagged
@@ -1139,3 +1140,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3282907446693555183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9026695059497432583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e955815c33a44e6a03bc398faaf2927, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _exitButton: {fileID: 3558618722763141145}
+  _resumeButton: {fileID: 1017382810284125969}
+  _retryButton: {fileID: 7388477840054737772}

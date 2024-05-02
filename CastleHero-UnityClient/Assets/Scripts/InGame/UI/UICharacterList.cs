@@ -1,14 +1,14 @@
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data.DB;
 using RGLabs.Data.User;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.UI;
 
 namespace RGLabs.InGame.UI
 {
-    public class UICharacterList : MonoBehaviour
+    public class UICharacterList : MonoBehaviour, IDisposable
     {
         private static readonly int UnFold = Animator.StringToHash("UnFold");
         private static readonly int Fold = Animator.StringToHash("Fold");

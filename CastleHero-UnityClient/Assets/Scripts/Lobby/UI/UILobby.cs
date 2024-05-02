@@ -1,13 +1,15 @@
 using System;
+using System.Collections.Generic;
 using RGLabs.Data;
 using RGLabs.InGame.UI;
+using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace RGLabs.Lobby.UI
 {
-    public class UILobby : MonoBehaviour
+    public class UILobby : MonoBehaviour, IDisposable
     {
         public enum Step
         {
@@ -34,7 +36,7 @@ namespace RGLabs.Lobby.UI
         [SerializeField] private Button _endConfig;
         
         [SerializeField] private TriggerSet[] _triggerSets;
-        
+
         public readonly ReactiveProperty<Step> step = new(Step.Lobby);
         
         public void Init()
@@ -56,25 +58,10 @@ namespace RGLabs.Lobby.UI
                 .Subscribe(OnNextStep)
                 .AddTo(this);
 
-            NextStepButton
-                .OnClickAsObservable()
-                .Subscribe(_ => NextStep())
-                .AddTo(this);
-
-            GoToLobbyButton
-                .OnClickAsObservable()
-                .Subscribe(_ => GoToLobby())
-                .AddTo(this);
-            
-            _startConfig
-                .OnClickAsObservable()
-                .Subscribe(_ => StartConfig())
-                .AddTo(this);
-
-            _endConfig
-                .OnClickAsObservable()
-                .Subscribe(_ => EndConfig())
-                .AddTo(this);
+            this.SubscribeButton(NextStepButton, NextStep);
+            this.SubscribeButton(GoToLobbyButton, GoToLobby);
+            this.SubscribeButton(_startConfig, StartConfig);
+            this.SubscribeButton(_endConfig, EndConfig);
         }
 
         private void GoToLobby()
@@ -133,6 +120,14 @@ namespace RGLabs.Lobby.UI
             bool isStageStep = step == Step.Stage;
             _startConfig.gameObject.SetActive(isStageStep);
             _endConfig.gameObject.SetActive(isStageStep);
+        }
+
+        public void Dispose()
+        {
+            step.Dispose();
+            CharacterList.Dispose();
+            StageSelect.Dispose();
+            ConfigFormation.Dispose();
         }
     }
 }

@@ -1,5 +1,4 @@
 using RGLabs.Common.Pattern;
-using RGLabs.InGame.System;
 using UnityEngine;
 
 namespace RGLabs.Common.Behaviours

@@ -51,7 +51,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <CharacterList>k__BackingField: {fileID: 0}
-  <Result>k__BackingField: {fileID: 0}
+  <Result>k__BackingField: {fileID: 7220368289702903142}
+  <Pause>k__BackingField: {fileID: 105931751104324134}
   _pause: {fileID: 0}
 --- !u!1001 &3240166965333281225
 PrefabInstance:
@@ -154,6 +155,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: baacb20a0fe8f5e4f89e2db3c3b0b52e, type: 3}
+--- !u!114 &105931751104324134 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3282907446693555183, guid: baacb20a0fe8f5e4f89e2db3c3b0b52e, type: 3}
+  m_PrefabInstance: {fileID: 3240166965333281225}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e955815c33a44e6a03bc398faaf2927, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &125494377328868622 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3263626251098371271, guid: baacb20a0fe8f5e4f89e2db3c3b0b52e, type: 3}
@@ -580,6 +592,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d417cafe5845d00479792b21a2a39cc7, type: 3}
+--- !u!114 &7220368289702903142 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1762947114671092470, guid: d417cafe5845d00479792b21a2a39cc7, type: 3}
+  m_PrefabInstance: {fileID: 8954521356854710160}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4551eb7b67044b3f85a286cbd8a0ffaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &7381804564867897350 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1888602119296489366, guid: d417cafe5845d00479792b21a2a39cc7, type: 3}

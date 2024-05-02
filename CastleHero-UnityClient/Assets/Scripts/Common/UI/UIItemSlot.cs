@@ -19,8 +19,7 @@ namespace RGLabs.Common.UI
 
         public async UniTask InitAsync(string spritePath, string text = "")
         {
-            _handle = Addressables.LoadAssetAsync<Sprite>(spritePath);
-            await _handle.ToUniTask();
+            _handle = await spritePath.Handle<Sprite>();
             
             var sprite = _handle.Result;
             
