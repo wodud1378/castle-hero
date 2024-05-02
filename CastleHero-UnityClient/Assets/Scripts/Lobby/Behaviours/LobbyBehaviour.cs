@@ -28,8 +28,10 @@ namespace RGLabs.Lobby.Behaviours
         [SerializeField] private Formation _formation;
         [SerializeField] private SpriteRenderer _map;
 
-        private async void Awake()
+        protected override async void OnAwake()
         {
+            base.OnAwake();
+            
             activated.Add(this);
             
             await Storage.InitAsync();

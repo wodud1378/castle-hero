@@ -20,6 +20,13 @@ namespace RGLabs.Common.Behaviours
         protected IUnitFactory unitFactory;
         protected PoolContainer poolContainer;
 
+        private void Awake() => OnAwake();
+
+        protected virtual void OnAwake()
+        {
+            activated.Add(this);
+        }
+        
         public virtual void Dispose()
         {
             gameRepo.Dispose();
@@ -32,11 +39,8 @@ namespace RGLabs.Common.Behaviours
                 behaviour.Dispose();
             
             activated.Clear();
-            
-            var current = SceneManager.GetActiveScene();
-            Loading.prevScene = current;
-            Loading.nextScene = sceneName;
-            
+
+            Loading.NextScene = sceneName;
             SceneManager.LoadScene("Loading", LoadSceneMode.Additive);
         }
     }

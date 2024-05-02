@@ -63,9 +63,6 @@ namespace RGLabs.Utility
 
     public static class RxHelper
     {
-        public static void Publish(this ExitCode exitCode) =>
-            MessageBroker.Default.Publish(new ExitRequest { code = exitCode });
-        
         public static void Publish<T>(this T data) => MessageBroker.Default.Publish(data);
         
         public static void SubscribeButton(this MonoBehaviour behaviour, Button button, Action onClick)

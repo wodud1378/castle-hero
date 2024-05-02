@@ -20,11 +20,6 @@ namespace RGLabs.InGame.Behaviours
         Next,
     }
 
-    public struct ExitRequest
-    {
-        public ExitCode code;
-    }
-
     public struct Result
     {
         public bool isCleared;
@@ -35,17 +30,21 @@ namespace RGLabs.InGame.Behaviours
         [SerializeField] private UIInGame _uiInGame;
         [SerializeField] private WaveRunner _waveRunner;
 
-        private void Awake()
+        protected override void OnAwake()
         {
+            base.OnAwake();
+            
             activated.Add(this);
             
             MessageBroker.Default
                 .Receive<StartGame>()
-                .Subscribe(Run);
+                .Subscribe(Run)
+                .AddTo(this);
 
             MessageBroker.Default
-                .Receive<ExitRequest>()
-                .Subscribe(Exit);
+                .Receive<ExitCode>()
+                .Subscribe(Exit)
+                .AddTo(this);
         }
 
         private async void Run(StartGame startGame)
@@ -105,16 +104,15 @@ namespace RGLabs.InGame.Behaviours
             }
         }
 
-        private void Exit(ExitRequest exitRequest)
+        private void Exit(ExitCode exitCode)
         {
-            var code = exitRequest.code;
             int stage = 0;
             UILobby.Step step;
-            if (code != ExitCode.Exit)
+            if (exitCode != ExitCode.Exit)
             {
                 step = UILobby.Step.InGame;
                 int currentStage = userRepo.stage.Value;
-                if (code == ExitCode.Retry)
+                if (exitCode == ExitCode.Retry)
                 {
                     stage = currentStage;
                 }
