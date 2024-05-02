@@ -51,7 +51,6 @@ namespace RGLabs.Lobby.UI
             unit.canMove = false;
             unit.canAttack = false;
             unit.Collider.isTrigger = true;
-            unit.transform.localScale = Vector3.one * 2f;
 
             _originLayer = unit.gameObject.layer;
             unit.gameObject.ToUILayer();
@@ -80,7 +79,6 @@ namespace RGLabs.Lobby.UI
                 _hold.Collider.isTrigger = false;
                 _hold.defaultDestination = _hold.position;
                 _hold.gameObject.layer = _originLayer;
-                _hold.transform.localScale = Vector3.one;
             }
 
             _hold = null;
