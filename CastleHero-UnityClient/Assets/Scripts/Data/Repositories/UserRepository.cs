@@ -107,7 +107,7 @@ namespace RGLabs.Data.Repositories
                 {
                     lv = 1,
                     grade = 1,
-                    id = 10024
+                    id = 10023
                 },
                 new Character
                 {
