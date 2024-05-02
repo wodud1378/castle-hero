@@ -1,7 +1,9 @@
+using System;
+using System.Collections.Generic;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using UniRx;
-using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace RGLabs.InGame.System
 {
@@ -22,12 +24,15 @@ namespace RGLabs.InGame.System
         public float amount;
     }
 
-    public class UnitProcessor
+    public class UnitProcessor : IDisposable
     {
+        private readonly List<IDisposable> _disposables;
+        
         public UnitProcessor()
         {
-            MessageBroker.Default.Receive<AtkEvent>().Subscribe(OnReceiveAtkEvent);
-            MessageBroker.Default.Receive<HealEvent>().Subscribe(OnReceiveHealEvent);
+            _disposables = new();
+            _disposables.Add(MessageBroker.Default.Receive<AtkEvent>().Subscribe(OnReceiveAtkEvent));
+            _disposables.Add(MessageBroker.Default.Receive<HealEvent>().Subscribe(OnReceiveHealEvent));
         }
 
         private void OnReceiveAtkEvent(AtkEvent ev)
@@ -38,6 +43,9 @@ namespace RGLabs.InGame.System
 
             float amount = CalcAmount(ev.amount, ev.critical, ev.criticalMul);
             to.status.hp.Decrease(amount);
+            
+            if(to.Hit != null)
+                to.Hit.Play();
         }
 
         private void OnReceiveHealEvent(HealEvent ev)
@@ -53,6 +61,14 @@ namespace RGLabs.InGame.System
         {
             bool isCritical = Random.Range(0f, 1f) <= critical;
             return isCritical ? atk * criticalAtk : atk;
+        }
+
+        public void Dispose()
+        {
+            foreach (var disposable in _disposables)
+            {
+                disposable.Dispose();
+            }
         }
     }
 }

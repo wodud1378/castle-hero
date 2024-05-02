@@ -30,6 +30,8 @@ namespace RGLabs.InGame.Behaviours
         [SerializeField] private UIInGame _uiInGame;
         [SerializeField] private WaveRunner _waveRunner;
 
+        private UnitProcessor _unitProcessor;
+        
         protected override void OnAwake()
         {
             base.OnAwake();
@@ -63,7 +65,7 @@ namespace RGLabs.InGame.Behaviours
 
             await _uiInGame.InitAsync();
 
-            var processor = new UnitProcessor();
+            _unitProcessor = new UnitProcessor();
 
             RunWave();
             RunUnits();
@@ -146,6 +148,7 @@ namespace RGLabs.InGame.Behaviours
             base.Dispose();
             
             _uiInGame.Dispose();
+            _unitProcessor?.Dispose();
         }
     }
 }

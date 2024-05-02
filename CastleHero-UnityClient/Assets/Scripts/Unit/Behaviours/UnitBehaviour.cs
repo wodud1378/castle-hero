@@ -42,6 +42,7 @@ namespace RGLabs.Unit.Behaviours
         [SerializeField] private SkeletonMecanim _skeletonMecanim;
         [field: SerializeField] public Rigidbody2D Body { get; private set; }
         [field: SerializeField] public Collider2D Collider { get; private set; }
+        [field: SerializeField] public HitEffect Hit { get; private set; }
 
         [SerializeField] private Animator _animator;
         [SerializeField] private AnimationEvents _animationEvents;
@@ -234,9 +235,6 @@ namespace RGLabs.Unit.Behaviours
 
             status.Update();
 
-            if (_animator != null)
-                _animator.SetFloat(AtkSpeedHash, status.atkSpeed);
-
             UpdateState();
             ProcessState();
             UpdateLookDirection();
@@ -273,6 +271,9 @@ namespace RGLabs.Unit.Behaviours
 
             if (canAttack)
             {
+                if (_animator != null)
+                    _animator.SetFloat(AtkSpeedHash, status.atkSpeed);
+                
                 if (CheckAttack())
                     return;
             }

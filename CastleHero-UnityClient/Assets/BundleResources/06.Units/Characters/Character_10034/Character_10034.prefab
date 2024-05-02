@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5900795364294552485}
   - component: {fileID: 674638289851239800}
+  - component: {fileID: 851462692768116119}
   - component: {fileID: 637868188244381656}
   - component: {fileID: 2705414219230316648}
   - component: {fileID: 6823501329548866275}
@@ -51,11 +52,35 @@ MonoBehaviour:
   _skeletonMecanim: {fileID: 8321658665644799341}
   <Body>k__BackingField: {fileID: 2705414219230316648}
   <Collider>k__BackingField: {fileID: 6823501329548866275}
+  <Hit>k__BackingField: {fileID: 851462692768116119}
   _animator: {fileID: 7163035223394346074}
   _animationEvents: {fileID: 4892121698718697599}
   _maxAttackTarget: 1
   _defaultMoveThreshlod: 0.1
   _offset: {x: 0, y: 0.5}
+  _findMoveTarget:
+    layerMask:
+      serializedVersion: 2
+      m_Bits: 0
+  _findAttackTarget:
+    layerMask:
+      serializedVersion: 2
+      m_Bits: 0
+--- !u!114 &851462692768116119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2985652818029949293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27cd2c6cc6c34c7798dc46dd5d7e181e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderer: {fileID: 2939138338615412885}
+  _color: {r: 1, g: 1, b: 1, a: 1}
+  _duration: 0.1
 --- !u!210 &637868188244381656
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -76,7 +101,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2985652818029949293}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0

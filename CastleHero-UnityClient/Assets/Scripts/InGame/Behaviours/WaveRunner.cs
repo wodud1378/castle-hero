@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace RGLabs.InGame.Behaviours
 {
-    public class WaveRunner : MonoBehaviour
+    public class WaveRunner : MonoBehaviour, IDisposable
     {
         [Serializable]
         public struct SpawnAreaSetUp
@@ -37,6 +37,8 @@ namespace RGLabs.InGame.Behaviours
 
         private IUpdate[] _updates;
 
+        private bool _disposed = false;
+
         private void Awake()
         {
             MessageBroker.Default.Receive<ReleaseEvent>().Subscribe(OnReceiveReleaseEvent);
@@ -51,6 +53,7 @@ namespace RGLabs.InGame.Behaviours
 
         public void Init(WaveEntity[] waves, UnitDB unitDB, UnitBehaviour castle, IUnitFactory factory)
         {
+            _disposed = false;
             isRunning = false;
             completed.Value = false;
             
@@ -91,6 +94,9 @@ namespace RGLabs.InGame.Behaviours
 
         private void Update()
         {
+            if (_disposed)
+                return;
+            
             if (!isRunning)
                 return;
             
@@ -103,6 +109,14 @@ namespace RGLabs.InGame.Behaviours
             completed.Value = _totalDead >= _totalSpawn;
         }
 
+        public void Dispose()
+        {
+            _main = null;
+            _areas = null;
+            
+            _disposed = true;
+        }
+        
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {

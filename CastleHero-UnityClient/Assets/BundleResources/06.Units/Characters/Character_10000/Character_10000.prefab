@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8682722783856227644}
   - component: {fileID: 6761137151746313344}
   - component: {fileID: 6819981342643926808}
+  - component: {fileID: 3461385075006033567}
   m_Layer: 0
   m_Name: Character_10000
   m_TagString: Untagged
@@ -64,6 +65,7 @@ MonoBehaviour:
   _skeletonMecanim: {fileID: 0}
   <Body>k__BackingField: {fileID: 6761137151746313344}
   <Collider>k__BackingField: {fileID: 6819981342643926808}
+  <Hit>k__BackingField: {fileID: 3461385075006033567}
   _animator: {fileID: 0}
   _animationEvents: {fileID: 0}
   _maxAttackTarget: 0
@@ -139,6 +141,21 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &3461385075006033567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8174836243430003678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27cd2c6cc6c34c7798dc46dd5d7e181e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderer: {fileID: 2955198113419623787}
+  _color: {r: 1, g: 1, b: 1, a: 1}
+  _duration: 0.1
 --- !u!1 &8729120243523537663
 GameObject:
   m_ObjectHideFlags: 0
