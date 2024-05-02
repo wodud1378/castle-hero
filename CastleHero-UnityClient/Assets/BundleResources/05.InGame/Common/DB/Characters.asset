@@ -26,12 +26,12 @@ MonoBehaviour:
     atkLayer: 1
     defLayer: 1
     size: 0.6
-    hp: 3000
+    hp: 1000
     speed: 2
     moveRange: 5
     atk: 110
     atkRange: 1
-    atkSpeed: 1
+    atkSpeed: 1.2
     critical: 0.3
     criticalAtk: 1.5
     recovery: 30
@@ -68,12 +68,12 @@ MonoBehaviour:
     atkLayer: 0
     defLayer: 2
     size: 0.6
-    hp: 2000
+    hp: 800
     speed: 2
     moveRange: 7
     atk: 90
     atkRange: 4
-    atkSpeed: 1
+    atkSpeed: 1.5
     critical: 0.5
     criticalAtk: 1.2
     recovery: 30
@@ -89,7 +89,7 @@ MonoBehaviour:
     atkLayer: 0
     defLayer: 2
     size: 0.6
-    hp: 3000
+    hp: 1200
     speed: 1
     moveRange: 5
     atk: 100
