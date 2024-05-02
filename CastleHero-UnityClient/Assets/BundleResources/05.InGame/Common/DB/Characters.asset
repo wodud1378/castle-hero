@@ -58,8 +58,8 @@ MonoBehaviour:
     recovery: 0
   - <Id>k__BackingField: 10034
     name: Castle
-    icon: Common/Portrait/Character_10021.png
-    prefab: Character_10021/Character_10021.prefab
+    icon: Common/Portrait/Character_10034.png
+    prefab: Character_10034/Character_10034.prefab
     skinName: 
     grade: 0
     role: 3
@@ -79,8 +79,8 @@ MonoBehaviour:
     recovery: 30
   - <Id>k__BackingField: 10024
     name: Castle
-    icon: Common/Portrait/Character_10021.png
-    prefab: Character_10021/Character_10021.prefab
+    icon: Common/Portrait/Character_10023.png
+    prefab: Character_10023/Character_10023.prefab
     skinName: 
     grade: 0
     role: 3
