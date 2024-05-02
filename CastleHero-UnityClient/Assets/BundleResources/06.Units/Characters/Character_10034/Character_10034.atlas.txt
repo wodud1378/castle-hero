@@ -10,7 +10,7 @@ Arm_R
 	offsets: 3, 3, 87, 53
 	rotate: 180
 Beard
-	bounds: 132, 379, 14, 39
+	bounds: 174, 471, 14, 39
 	offsets: 5, 5, 24, 49
 Bluser
 	bounds: 2, 255, 81, 24
@@ -21,12 +21,49 @@ Ear_R
 Elipse
 	bounds: 341, 444, 65, 65
 Eyebrow_L
-	bounds: 148, 408, 15, 10
+	bounds: 174, 459, 15, 10
 Eyebrow_R
-	bounds: 174, 484, 11, 10
+	bounds: 174, 434, 11, 10
 Eyes
 	bounds: 131, 419, 91, 42
 	rotate: 90
+GroundSmoke_01
+	bounds: 174, 446, 11, 11
+	offsets: 25, 14, 65, 65
+GroundSmoke_02
+	bounds: 231, 439, 27, 22
+	offsets: 18, 14, 65, 65
+GroundSmoke_03
+	bounds: 2, 198, 41, 24
+	offsets: 11, 14, 65, 65
+GroundSmoke_04
+	bounds: 361, 207, 45, 26
+	offsets: 9, 14, 65, 65
+GroundSmoke_05
+	bounds: 214, 208, 47, 28
+	offsets: 9, 14, 65, 65
+GroundSmoke_06
+	bounds: 165, 209, 47, 28
+	offsets: 9, 14, 65, 65
+GroundSmoke_07
+	bounds: 115, 209, 48, 28
+	offsets: 9, 14, 65, 65
+GroundSmoke_08
+	bounds: 267, 214, 48, 29
+	offsets: 9, 14, 65, 65
+GroundSmoke_09
+	bounds: 461, 215, 49, 29
+	offsets: 9, 14, 65, 65
+GroundSmoke_10
+	bounds: 2, 224, 49, 29
+	offsets: 10, 14, 65, 65
+GroundSmoke_11
+	bounds: 84, 230, 49, 29
+	offsets: 10, 14, 65, 65
+	rotate: 90
+GroundSmoke_12
+	bounds: 132, 390, 35, 28
+	offsets: 24, 14, 65, 65
 Hair_Base
 	bounds: 2, 394, 127, 116
 	offsets: 5, 5, 137, 126
@@ -43,14 +80,14 @@ Hair_Deco_3
 	offsets: 5, 5, 98, 45
 	rotate: 90
 Hair_Deco_4
-	bounds: 84, 246, 42, 33
+	bounds: 317, 206, 42, 33
 	offsets: 5, 5, 52, 43
 Hair_Front_L
-	bounds: 2, 213, 40, 56
+	bounds: 53, 193, 40, 56
 	offsets: 3, 3, 46, 62
 	rotate: 90
 Hair_Front_R
-	bounds: 174, 214, 33, 55
+	bounds: 407, 195, 33, 55
 	offsets: 3, 4, 39, 62
 	rotate: 90
 Hair_Tail
@@ -68,9 +105,9 @@ Leg
 	bounds: 417, 277, 52, 105
 	offsets: 2, 3, 57, 111
 Mouth
-	bounds: 174, 496, 23, 14
+	bounds: 132, 374, 23, 14
 Nose
-	bounds: 231, 442, 26, 19
+	bounds: 228, 333, 26, 19
 Torso
 	bounds: 315, 252, 64, 75
 	offsets: 3, 2, 71, 80
