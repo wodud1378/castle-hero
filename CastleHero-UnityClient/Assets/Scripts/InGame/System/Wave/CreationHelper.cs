@@ -151,7 +151,7 @@ namespace RGLabs.InGame.System.Wave
             if (leftSlot <= 0)
                 return startIndex;
 
-            int random = Mathf.Min(Random.Range(1, leftSlot), 5);
+            int random = Mathf.Min(2, 4);
             int end = startIndex + random;
             var blankSpace = availableSpace / random;
             for (int i = startIndex; i < end; ++i)
