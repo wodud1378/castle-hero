@@ -57,7 +57,7 @@ namespace RGLabs.InGame.UI
             uiDamage.Show(result);
         }
 
-        public async UniTask InitAsync(PoolContainer poolContainer)
+        public void InitAsync(PoolContainer poolContainer)
         {
             _repository = Storage.inGameRepository;
             _poolContainer = poolContainer;

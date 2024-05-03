@@ -64,8 +64,7 @@ namespace RGLabs.InGame.Behaviours
                 .Subscribe(_ => OnCastleDestroy())
                 .AddTo(this);
 
-            await _uiInGame.InitAsync(poolContainer);
-
+            _uiInGame.InitAsync(poolContainer);
             _unitProcessor = new UnitProcessor();
 
             RunWave();
