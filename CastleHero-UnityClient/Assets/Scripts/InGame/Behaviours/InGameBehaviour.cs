@@ -140,7 +140,7 @@ namespace RGLabs.InGame.Behaviours
                 stage = stage
             };
             
-            LoadSceneAfterDispose("SampleScene");
+            LoadSceneAfterDispose("Main");
         }
 
         public override void Dispose()

@@ -14,6 +14,7 @@ namespace RGLabs.Lobby.UI
         public enum Step
         {
             Lobby,
+            ReturnLobby,
             Stage,
             InGame,
         }
@@ -37,10 +38,12 @@ namespace RGLabs.Lobby.UI
         
         [SerializeField] private TriggerSet[] _triggerSets;
 
-        public readonly ReactiveProperty<Step> step = new(Step.Lobby);
+        public ReactiveProperty<Step> step;
         
-        public void Init()
+        public void Init(Step initialStep)
         {
+            step = new ReactiveProperty<Step>(initialStep);
+            
             InitUI();
             InitSubscriptions();
         }
@@ -66,18 +69,20 @@ namespace RGLabs.Lobby.UI
 
         private void GoToLobby()
         {
-            if (step.Value == Step.Lobby)
+            if (step.Value == Step.ReturnLobby)
                 return;
 
-            step.Value = Step.Lobby;
+            step.Value = Step.ReturnLobby;
         }
         
         private void NextStep()
         {
             if (step.Value == Step.InGame)
                 return;
-
-            ++step.Value;
+            if (step.Value == Step.Lobby)
+                step.Value += 2;
+            else
+                ++step.Value;
         }
         
         private async void StartConfig()
@@ -111,7 +116,7 @@ namespace RGLabs.Lobby.UI
                 set.animator.SetTrigger(set.trigger);
             }
 
-            bool isLobby = step == Step.Lobby;
+            bool isLobby = step == Step.ReturnLobby || step == Step.Lobby;
             StageSelect.enabled = isLobby;
             
             if(isLobby)

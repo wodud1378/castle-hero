@@ -43,18 +43,15 @@ namespace RGLabs.Lobby.Behaviours
             unitFactory = new UnitFactory(poolContainer);
 
             await _formation.Init(db.characters, userRepo, gameRepo, unitFactory);
-           
-            uiLobby.Init();
+
+            var initialStep = Storage.StartUpData.step;
+            if(initialStep == UILobby.Step.InGame)
+                userRepo.stage.Value = Storage.StartUpData.stage;
+            
+            uiLobby.Init(initialStep);
             uiLobby.step
                 .Subscribe(OnNextStep)
                 .AddTo(this);
-
-            var step = Storage.StartUpData.step;
-            if (step == UILobby.Step.InGame)
-            {
-                userRepo.stage.Value = Storage.StartUpData.stage;
-                uiLobby.step.Value = step;
-            }
         }
 
         private void OnNextStep(UILobby.Step step)
