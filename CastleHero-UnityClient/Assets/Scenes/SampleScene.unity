@@ -1593,6 +1593,7 @@ RectTransform:
   m_Children:
   - {fileID: 1016306489}
   - {fileID: 7553431283870839160}
+  - {fileID: 1229892094}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1720,6 +1721,41 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1229892093
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1229892094}
+  m_Layer: 5
+  m_Name: Damage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1229892094
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1229892093}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1039712983}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1636158183
 GameObject:
   m_ObjectHideFlags: 0
@@ -1895,6 +1931,14 @@ PrefabInstance:
       propertyPath: _pause
       value: 
       objectReference: {fileID: 687751307}
+    - target: {fileID: 1596773640808591245, guid: 13c8b7492a5027d43af12e9c7d9624cd, type: 3}
+      propertyPath: _damageRoot
+      value: 
+      objectReference: {fileID: 1229892094}
+    - target: {fileID: 1596773640808591245, guid: 13c8b7492a5027d43af12e9c7d9624cd, type: 3}
+      propertyPath: _damagePrefab
+      value: Common/Prefabs/UIDamage.prefab
+      objectReference: {fileID: 0}
     - target: {fileID: 1596773640808591245, guid: 13c8b7492a5027d43af12e9c7d9624cd, type: 3}
       propertyPath: <CharacterList>k__BackingField
       value: 

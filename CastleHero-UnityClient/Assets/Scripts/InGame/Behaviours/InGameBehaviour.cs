@@ -9,6 +9,7 @@ using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
 
 namespace RGLabs.InGame.Behaviours
@@ -63,7 +64,7 @@ namespace RGLabs.InGame.Behaviours
                 .Subscribe(_ => OnCastleDestroy())
                 .AddTo(this);
 
-            await _uiInGame.InitAsync();
+            await _uiInGame.InitAsync(poolContainer);
 
             _unitProcessor = new UnitProcessor();
 

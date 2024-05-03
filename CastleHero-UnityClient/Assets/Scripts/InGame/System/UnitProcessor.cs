@@ -24,6 +24,14 @@ namespace RGLabs.InGame.System
         public float amount;
     }
 
+    public struct AtkResult
+    {
+        public UnitBehaviour from;
+        public UnitBehaviour to;
+        public bool isCritical;
+        public float amount;
+    }
+
     public class UnitProcessor : IDisposable
     {
         private readonly List<IDisposable> _disposables;
@@ -41,11 +49,19 @@ namespace RGLabs.InGame.System
             if (!to.IsValid())
                 return;
 
-            float amount = CalcAmount(ev.amount, ev.critical, ev.criticalMul);
+            float amount = CalcAmount(ev.amount, ev.critical, ev.criticalMul, out bool isCritical);
             to.status.hp.Decrease(amount);
             
             if(to.Hit != null)
                 to.Hit.Play();
+
+            new AtkResult
+            {
+                from = ev.from,
+                to = ev.to,
+                isCritical = isCritical,
+                amount = amount
+            }.Publish();
         }
 
         private void OnReceiveHealEvent(HealEvent ev)
@@ -57,9 +73,9 @@ namespace RGLabs.InGame.System
             to.status.hp.Increase(ev.amount);
         }
 
-        private float CalcAmount(float atk, float critical, float criticalAtk)
+        private float CalcAmount(float atk, float critical, float criticalAtk, out bool isCritical)
         {
-            bool isCritical = Random.Range(0f, 1f) <= critical;
+            isCritical = Random.Range(0f, 1f) <= critical;
             return isCritical ? atk * criticalAtk : atk;
         }
 

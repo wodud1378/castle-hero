@@ -356,6 +356,9 @@ namespace RGLabs.Unit.Behaviours
 
         private void OnReleaseAttack()
         {
+            if (!CheckAttack())
+                state.Value = States.Attack;
+            
             if (!CheckMoveToTarget())
                 state.Value = States.Idle;
         }
