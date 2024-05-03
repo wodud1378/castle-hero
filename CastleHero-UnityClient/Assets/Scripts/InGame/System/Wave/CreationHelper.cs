@@ -49,18 +49,28 @@ namespace RGLabs.InGame.System.Wave
 
             MessageBroker.Default.Receive<SpawnEvent[]>().Subscribe(OnReceiveSpawnEvents);
         }
-        
+
         public void SetUpBuffers(Action<UnitCreation> onResult)
         {
             if (_queue.Count == 0)
                 return;
-            
+
             int bufferLength = SetUpEntityBuffer();
+            int start = bufferLength;
             SetUpSpaceBuffer(bufferLength, out var leftSpace);
-            
+
             bufferLength = ApplyBlank(bufferLength, leftSpace);
+            int emptySpace = bufferLength - start;
+
             bufferLength = SetUpCreationBuffer(bufferLength);
-            
+
+            int end = bufferLength;
+            bool result = start <= end;
+            if (!result)
+            {
+                Debug.Log($"[SpawnArea_{_areaId}] Count : {start}, Spawned : {bufferLength}, Empty : {emptySpace}");
+            }
+
             for (int i = 0; i < bufferLength; ++i)
             {
                 onResult.Invoke(_creationBuffer[i]);
@@ -71,7 +81,7 @@ namespace RGLabs.InGame.System.Wave
         {
             foreach (var ev in data)
             {
-                if(ev.area == _areaId)
+                if (ev.area == _areaId)
                     _queue.Enqueue(ev);
             }
         }
@@ -92,13 +102,13 @@ namespace RGLabs.InGame.System.Wave
                     --count;
                 else
                     _entityBuffer[i++] = entity;
-                
+
                 --left;
             }
-
+            
             return count;
         }
-        
+
         /// <summary>
         /// 공간 버퍼 할당
         /// </summary>
@@ -107,7 +117,7 @@ namespace RGLabs.InGame.System.Wave
         private void SetUpSpaceBuffer(int count, out Vector2 leftSpace)
         {
             leftSpace = _cornerB - _cornerA;
-            
+
             var direction = leftSpace.normalized;
             int bufferLength = _spaceBuffer.Length;
             for (int i = 0; i < bufferLength; ++i)
@@ -119,7 +129,7 @@ namespace RGLabs.InGame.System.Wave
                     _spaceBuffer[i].index = i;
                     _spaceBuffer[i].size = size;
                     _spaceBuffer[i].valid = true;
-                    
+
                     leftSpace -= size;
                 }
                 else
@@ -128,7 +138,7 @@ namespace RGLabs.InGame.System.Wave
                 }
             }
         }
-        
+
         /// <summary>
         /// 빈 공간을 랜덤하게 적용
         /// </summary>
@@ -165,6 +175,7 @@ namespace RGLabs.InGame.System.Wave
 
             int sBufferIndex = 0;
             int cBufferIndex = 0;
+
             for (; sBufferIndex < count; ++sBufferIndex)
             {
                 var space = _spaceBuffer[sBufferIndex];

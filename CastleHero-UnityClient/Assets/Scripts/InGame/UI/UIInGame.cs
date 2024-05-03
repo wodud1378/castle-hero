@@ -51,7 +51,7 @@ namespace RGLabs.InGame.UI
                 return;
 
             var tr = uiDamage.transform;
-            tr.parent = _damageRoot;
+            tr.SetParent(_damageRoot);
             tr.localScale = Vector3.one;
             uiDamage.Container = _poolContainer;
             uiDamage.Show(result);
@@ -63,11 +63,11 @@ namespace RGLabs.InGame.UI
             _poolContainer = poolContainer;
             _db = Storage.DB;
 
-            var characters = _repository.characters.Value
-                .Select(x => x.character)
-                .ToArray();
-            
-            await CharacterList.Init(characters, _db.characters);
+            // var characters = _repository.characters.Value
+            //     .Select(x => x.character)
+            //     .ToArray();
+            //
+            // await CharacterList.Init(characters, _db.characters);
         }
 
         private void SetPause(bool isPause)

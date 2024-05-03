@@ -166,8 +166,8 @@ namespace RGLabs.Utility
         {
             for (int i = index; i < length; ++i)
             {
-                var a = Random.Range(0, array.Length);
-                var b = Random.Range(0, array.Length);
+                var a = Random.Range(0, length);
+                var b = Random.Range(0, length);
 
                 (array[a], array[b]) = (array[b], array[a]);
             }

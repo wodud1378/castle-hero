@@ -84,13 +84,9 @@ namespace RGLabs.InGame.System.Wave
                     --left;
                     
                     ++progress.spawned;
-                    
-                    Debug.Log($"[{progress.info.id}] {progress.spawned}/{progress.info.count}");
                 }
                 
-                
                 progress.currentTime = 0f;
-                
                 _buffers[i].Publish();
             }
 
