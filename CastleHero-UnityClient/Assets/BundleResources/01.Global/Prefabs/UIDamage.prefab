@@ -61,8 +61,8 @@ MonoBehaviour:
   _label: {fileID: 3859263765589514149}
   _normalDamage: {r: 1, g: 1, b: 1, a: 1}
   _criticalDamage: {r: 1, g: 0, b: 0, a: 1}
-  _yPosAmount: 50
-  _punchAmount: 1.2
+  _yPosAmount: 25
+  _punchAmount: 1.1
   _duration: 0.25
 --- !u!114 &3859263765589514149
 MonoBehaviour:

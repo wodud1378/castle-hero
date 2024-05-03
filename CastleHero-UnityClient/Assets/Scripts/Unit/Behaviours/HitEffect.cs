@@ -1,7 +1,6 @@
-using System;
 using System.Collections;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
+using RGLabs.Common;
 using UnityEngine;
 
 namespace RGLabs.Unit.Behaviours
@@ -10,7 +9,6 @@ namespace RGLabs.Unit.Behaviours
     {
         [SerializeField] private Renderer _renderer;
         [SerializeField] private Color _color = Color.white;
-        [SerializeField] private float _duration = 0.1f;
 
         private float _halfDuration;
         private int _propertyId;
@@ -18,7 +16,7 @@ namespace RGLabs.Unit.Behaviours
         
         private void Start()
         {
-            _halfDuration = _duration * 0.5f;
+            _halfDuration = Constants.HitEffectDuration * 0.5f;
             _propertyBlock = new MaterialPropertyBlock();
             _renderer.SetPropertyBlock(_propertyBlock);
 

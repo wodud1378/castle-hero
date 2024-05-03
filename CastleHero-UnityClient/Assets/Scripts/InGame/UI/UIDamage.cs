@@ -37,8 +37,12 @@ namespace RGLabs.InGame.UI
 
             var yTarget = _rectTransform.localPosition.y + _yPosAmount;
             _rectTransform.DOLocalMoveY(yTarget, _duration);
-            _rectTransform.DOPunchScale(Vector3.one * _punchAmount, _duration);
+            _rectTransform.DOScale(_punchAmount, _duration).From(Vector2.one);
 
+            float halfDuration = _duration * 0.5f;
+            await UniTask.Delay(TimeSpan.FromSeconds(halfDuration));
+
+            _label.DOFade(0f, halfDuration).From(1f);
             await UniTask.Delay(TimeSpan.FromSeconds(_duration));
 
             DestroySelf();
