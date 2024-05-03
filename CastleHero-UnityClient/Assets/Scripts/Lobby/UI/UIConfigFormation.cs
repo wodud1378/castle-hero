@@ -16,12 +16,12 @@ namespace RGLabs.Lobby.UI
     public class UIConfigFormation : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler, IDisposable
     {
         [SerializeField] private Graphic _rayTarget;
-        [SerializeField] private Rect _areaBounds;
-
         [SerializeField] private Formation _formation;
-
         [SerializeField] private UICharacterList _characterList;
-
+        [SerializeField] private PolygonDrawer _circleDrawer;
+        [SerializeField] private Color _validColor;
+        [SerializeField] private Color _invalidColor;
+        
         private Camera _camera;
         private int _originLayer;
         private UnitBehaviour _hold;
@@ -104,6 +104,8 @@ namespace RGLabs.Lobby.UI
             
             _hold.transform.position = ScreenToWorld(eventData.position);
             bool isValid = _formation.IsValid(_hold.Collider, _originLayer);
+
+            _circleDrawer.Color = isValid ? _validColor : _invalidColor;
         }
 
         public void OnPointerUp(PointerEventData eventData)
@@ -117,6 +119,8 @@ namespace RGLabs.Lobby.UI
             _ctk?.Cancel();
             
             ReleaseHeldUnit();
+
+            _circleDrawer.Color = _validColor;
         }
 
         private Vector3 ScreenToWorld(Vector3 screenPoint)
@@ -144,7 +148,7 @@ namespace RGLabs.Lobby.UI
 
         private async UniTask<UnitBehaviour> GetUnitFromPosition(Vector2 position)
         {
-            if (_areaBounds.Contains(position))
+            if (_formation.InArea(position))
                 return FindFromRay(position);
             
             var slot = _characterList.GetSlot(position);
@@ -158,23 +162,26 @@ namespace RGLabs.Lobby.UI
         {
         }
 
-        private void OnDrawGizmos()
-        {
-            Gizmos.DrawWireCube(_areaBounds.position, _areaBounds.size);
-        }
-
         private void OnEnable()
         {
-            _camera.DOOrthoSize(10f, 0.25f);
+            _camera.transform.DOMoveY(-3.75f, 0.25f);
+            _camera.DOOrthoSize(12.5f, 0.25f);
 
             _rayTarget.enabled = true;
+            
+            _circleDrawer.Init();
+            _circleDrawer.gameObject.SetActive(true);
+            _circleDrawer.Color = _validColor;
         }
 
         private void OnDisable()
         {
+            _camera.transform.DOMoveY(0, 0.25f);
             _camera.DOOrthoSize(15f, 0.25f);
 
             _rayTarget.enabled = false;
+            
+            _circleDrawer.gameObject.SetActive(false);
         }
     }
 }

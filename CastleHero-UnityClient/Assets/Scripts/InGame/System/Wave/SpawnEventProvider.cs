@@ -84,6 +84,8 @@ namespace RGLabs.InGame.System.Wave
                     --left;
                     
                     ++progress.spawned;
+                    
+                    Debug.Log($"[{progress.info.id}] {progress.spawned}/{progress.info.count}");
                 }
                 
                 

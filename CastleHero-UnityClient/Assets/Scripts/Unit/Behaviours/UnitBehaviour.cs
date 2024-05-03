@@ -18,6 +18,12 @@ namespace RGLabs.Unit.Behaviours
     {
         public event Action<UnitBehaviour> OnDead;
 
+        public enum BehaviourType
+        {
+            Unit,
+            Barricade
+        }
+        
         public enum States
         {
             Prepare,
@@ -42,6 +48,7 @@ namespace RGLabs.Unit.Behaviours
 
         private const int LookFrameThreshold = 10;
 
+        [field:SerializeField] public BehaviourType Type { get; private set; }
         [field: SerializeField] public Rigidbody2D Body { get; private set; }
         [field: SerializeField] public Collider2D Collider { get; private set; }
         [field: SerializeField] public HitEffect Hit { get; private set; }

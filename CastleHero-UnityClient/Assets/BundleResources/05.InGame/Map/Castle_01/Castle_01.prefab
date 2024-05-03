@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.45, y: 0.45, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6492477957367575439}
@@ -196,45 +196,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e558861a18304d1a800653781dc32f1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _skeletonMecanim: {fileID: 1425611714954103692}
+  <Type>k__BackingField: 0
   <Body>k__BackingField: {fileID: 5057493854964016350}
   <Collider>k__BackingField: {fileID: 2729130189829634113}
+  <Hit>k__BackingField: {fileID: 0}
+  <Look>k__BackingField: {fileID: 0}
+  _skeletonMecanim: {fileID: 1425611714954103692}
   _animator: {fileID: 0}
   _animationEvents: {fileID: 0}
   _maxAttackTarget: 0
   _defaultMoveThreshlod: 0
   _offset: {x: 0, y: 0}
-  _findMoveTarget:
-    tag: 
-    layerMask:
-      serializedVersion: 2
-      m_Bits: 0
-  _findAttackTarget:
-    tag: 
-    layerMask:
-      serializedVersion: 2
-      m_Bits: 0
-  _thrust:
-    tag: 
-    layerMask:
-      serializedVersion: 2
-      m_Bits: 0
-    _collider: {fileID: 0}
-    _rigidbody: {fileID: 0}
-    _contactFilter:
-      useTriggers: 0
-      useLayerMask: 0
-      useDepth: 0
-      useOutsideDepth: 0
-      useNormalAngle: 0
-      useOutsideNormalAngle: 0
-      layerMask:
-        serializedVersion: 2
-        m_Bits: 0
-      minDepth: 0
-      maxDepth: 0
-      minNormalAngle: 0
-      maxNormalAngle: 0
+  _enableAttack: 0
+  _enableMove: 0
 --- !u!50 &5057493854964016350
 Rigidbody2D:
   serializedVersion: 4
@@ -296,7 +270,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0.75}
   serializedVersion: 2
-  m_Radius: 2
+  m_Radius: 1.5
 --- !u!210 &2846901028330482152
 SortingGroup:
   m_ObjectHideFlags: 0

@@ -11,6 +11,7 @@ using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Factory;
 using RGLabs.Utility;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace RGLabs.Lobby.Behaviours
 {
@@ -83,22 +84,40 @@ namespace RGLabs.Lobby.Behaviours
         {
             var layerMask = new LayerMask { value = 1 << layer };
             var distance = Vector2.Distance(col.transform.position, transform.position);
-            if (distance > Radius || distance < 1f)
-                return false;
+            bool isValid;
+            if (distance > Radius)
+            {
+                isValid = false;
+            }
+            else
+            {
+                int overlapped = Physics2D.OverlapCollider(col, new ContactFilter2D { layerMask = layerMask }, _buffer);
+                isValid = overlapped <= 0;
+            }
 
-            return Physics2D.OverlapCollider(col, new ContactFilter2D { layerMask = layerMask }, _buffer) <= 0;
+            return isValid;
         }
+
+        public bool InArea(Vector2 position) => Vector2.Distance(transform.position, position) <= Radius;
 
         private void Register(UnitBehaviour unit)
         {
+            int limit = unit.Type == UnitBehaviour.BehaviourType.Barricade ? 3 : 1;
             var characters = _gameRepo.characters.Value;
             characters ??= Array.Empty<InGameCharacter>();
-
-            int index = Array.FindIndex(characters, (x) => x.character.id == unit.Id);
-            if (index != -1)
+            
+            int current = Array.FindAll(characters, (character) => character.behaviour.Id == unit.Id).Length;
+            if (current >= limit)
             {
-                characters[index].behaviour.DestroySelf();
-                characters[index].behaviour = null;
+                int index = Array.FindIndex(characters, (x) => x.character.id == unit.Id);
+                if (index != -1)
+                {
+                    var behaviour = characters[index].behaviour;
+                    if (behaviour != unit)
+                        behaviour.DestroySelf();
+                    
+                    characters[index].behaviour = null;
+                }
             }
 
             var character = _userRepo.FindCharacter(unit.Id);
