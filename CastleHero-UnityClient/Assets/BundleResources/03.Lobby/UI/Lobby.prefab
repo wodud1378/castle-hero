@@ -6520,14 +6520,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rayTarget: {fileID: 5325081551698377488}
-  _areaBounds:
-    serializedVersion: 2
-    x: 0
-    y: 2.5
-    width: 10
-    height: 10
   _formation: {fileID: 0}
   _characterList: {fileID: 8955051544456603353}
+  _circleDrawer: {fileID: 0}
+  _validColor: {r: 0, g: 0, b: 0, a: 0}
+  _invalidColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!222 &2508992198311352879
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10458,7 +10455,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &31795303546475194
 RectTransform:
   m_ObjectHideFlags: 0
