@@ -1,9 +1,13 @@
+using System;
 using UnityEngine;
 
 namespace RGLabs.Common.Behaviours
 {
     public abstract class UIMain : MonoBehaviour
     {
+        public event Action OnOpenAnimationEnd;
+        public event Action OnCloseAnimationEnd;
+        
         public bool IsOpen { get; private set; }
         
         [SerializeField] private Animator _animator;
@@ -24,5 +28,23 @@ namespace RGLabs.Common.Behaviours
             
             _animator.SetTrigger(_closeHashId);
         }
+
+        #region Animation Events.
+
+        public void OnOpened()
+        {
+            OnOpenAnimationEnd?.Invoke();
+
+            OnOpenAnimationEnd = null;
+        }
+
+        public void OnClosed()
+        {
+            OnCloseAnimationEnd?.Invoke();
+
+            OnCloseAnimationEnd = null;
+        }
+
+        #endregion
     }
 }

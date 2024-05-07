@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using RGLabs.Common.Flow;
+using RGLabs.Common.UI;
 using RGLabs.Data;
 using RGLabs.Utility;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace RGLabs.Common.Behaviours
 {
@@ -17,14 +19,17 @@ namespace RGLabs.Common.Behaviours
         public static readonly Transition Transition = new();
         
         public static StartButton startButton;
+        public static UILock uiLock;
 
         [SerializeField] private int _frameRate;
+        [SerializeField] private UILock _uiLock;
         [SerializeField] private StartButton _startButton;
 
         private async void Load()
         {
             await Storage.InitAsync();
-            
+
+            uiLock = _uiLock;
             startButton = _startButton;
             startButton.StageSelect.Init();
             
