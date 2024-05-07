@@ -111,10 +111,11 @@ namespace RGLabs.Utility
     {
         public static void Publish<T>(this T data) => MessageBroker.Default.Publish(data);
         
-        public static void SubscribeButton(this MonoBehaviour behaviour, Button button, Action onClick)
+        public static void SubscribeButton(this MonoBehaviour behaviour, Button button, Action onClick, float clickThreshold = 0.25f)
         {
             button
                 .OnClickAsObservable()
+                .ThrottleFirst(TimeSpan.FromSeconds(clickThreshold))
                 .Subscribe(_ => onClick.Invoke())
                 .AddTo(behaviour);
         }

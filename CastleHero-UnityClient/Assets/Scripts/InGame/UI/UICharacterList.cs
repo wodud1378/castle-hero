@@ -15,8 +15,8 @@ namespace RGLabs.InGame.UI
 
         [field: SerializeField] public RectTransform SlotParent { get; private set; }
 
-        [SerializeField] private Animator _animator;
         [SerializeField] private AssetReference _slotPrefab;
+        [SerializeField] private Animator _animator;
         
         public bool IsOpen { get; private set; }
         

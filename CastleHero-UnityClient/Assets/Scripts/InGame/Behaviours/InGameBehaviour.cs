@@ -1,5 +1,6 @@
 using System;
 using RGLabs.Common.Behaviours;
+using RGLabs.Common.Flow;
 using RGLabs.Data;
 using RGLabs.InGame.System;
 using RGLabs.InGame.UI;
@@ -37,8 +38,6 @@ namespace RGLabs.InGame.Behaviours
         {
             base.OnAwake();
             
-            activated.Add(this);
-            
             MessageBroker.Default
                 .Receive<StartGame>()
                 .Subscribe(Run)
@@ -50,11 +49,8 @@ namespace RGLabs.InGame.Behaviours
                 .AddTo(this);
         }
 
-        private async void Run(StartGame startGame)
+        private void Run(StartGame startGame)
         {
-            db = startGame.db;
-            userRepo = startGame.userRepo;
-            gameRepo = startGame.gameRepo;
             unitFactory = startGame.unitFactory;
             poolContainer = startGame.poolContainer;
 
@@ -64,7 +60,11 @@ namespace RGLabs.InGame.Behaviours
                 .Subscribe(_ => OnCastleDestroy())
                 .AddTo(this);
 
-            _uiInGame.InitAsync(poolContainer);
+            Context.startButton.enabled = false;
+            
+            _uiInGame.Init(poolContainer);
+            _uiInGame.Open();
+            
             _unitProcessor = new UnitProcessor();
 
             RunWave();
@@ -108,11 +108,13 @@ namespace RGLabs.InGame.Behaviours
 
         private void Exit(ExitCode exitCode)
         {
+            _waveRunner.isRunning = false;
+            
             int stage = 0;
-            UILobby.Step step;
+            State state;
             if (exitCode != ExitCode.Exit)
             {
-                step = UILobby.Step.InGame;
+                state = State.InGame;
                 int currentStage = userRepo.stage.Value;
                 if (exitCode == ExitCode.Retry)
                 {
@@ -131,12 +133,12 @@ namespace RGLabs.InGame.Behaviours
             }
             else
             {
-                step = UILobby.Step.Lobby;
+                state = State.Lobby;
             }
 
-            Storage.StartUpData = new LobbyStartUp
+            Storage.entranceData = new Entrance
             {
-                step = step,
+                state = state,
                 stage = stage
             };
             

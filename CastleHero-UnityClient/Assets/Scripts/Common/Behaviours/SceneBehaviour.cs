@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using RGLabs.Common.Pattern;
+using RGLabs.Data;
 using RGLabs.Data.Repositories;
 using RGLabs.Unit.Factory;
 using UnityEngine;
@@ -20,7 +21,19 @@ namespace RGLabs.Common.Behaviours
         protected IUnitFactory unitFactory;
         protected PoolContainer poolContainer;
 
-        private void Awake() => OnAwake();
+        private void Awake()
+        {
+            Context.OnLoadCompleteQueue.Enqueue(OnLoaded);
+            
+            OnAwake();
+        }
+
+        protected virtual void OnLoaded()
+        {
+            gameRepo = Storage.inGameRepository;
+            userRepo = Storage.userRepository;
+            db = Storage.DB;
+        }
 
         protected virtual void OnAwake()
         {

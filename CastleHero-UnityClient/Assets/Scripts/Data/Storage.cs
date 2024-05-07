@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Flow;
 using RGLabs.Data.Repositories;
 using RGLabs.Lobby.UI;
 using UnityEngine.AddressableAssets;
 
 namespace RGLabs.Data
 {
-    public struct LobbyStartUp
+    public struct Entrance
     {
-        public UILobby.Step step;
+        public State state;
         public int stage;
     }
     
@@ -17,8 +18,8 @@ namespace RGLabs.Data
         public static readonly UserRepository userRepository = new();
         public static readonly InGameRepository inGameRepository = new();
 
-        public static LobbyStartUp StartUpData = new();
-        
+        public static Entrance entranceData = new() { state = State.Lobby, };
+
         public static DBCollections DB { get; private set; }
         
         public static async UniTask InitAsync()

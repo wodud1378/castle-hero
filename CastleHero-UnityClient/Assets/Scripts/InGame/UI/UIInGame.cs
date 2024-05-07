@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Behaviours;
 using RGLabs.Common.Pattern;
 using RGLabs.Data;
 using RGLabs.Data.Repositories;
@@ -13,9 +14,9 @@ using UnityEngine.UI;
 
 namespace RGLabs.InGame.UI
 {
-    public class UIInGame : MonoBehaviour, IDisposable
+    public class UIInGame : UIMain, IDisposable
     {
-        [field:SerializeField] public UICharacterList CharacterList { get; private set; }
+        [field:SerializeField] public UICharacterList DeadCharacters { get; private set; }
         [field:SerializeField] public UIGameResult Result { get; private set; }
         [field:SerializeField] public UIPause Pause { get; private set; }
 
@@ -57,7 +58,7 @@ namespace RGLabs.InGame.UI
             uiDamage.Show(result);
         }
 
-        public void InitAsync(PoolContainer poolContainer)
+        public void Init(PoolContainer poolContainer)
         {
             _repository = Storage.inGameRepository;
             _poolContainer = poolContainer;
@@ -90,7 +91,7 @@ namespace RGLabs.InGame.UI
 
         public void Dispose()
         {
-            CharacterList.Dispose();
+            DeadCharacters.Dispose();
         }
     }
 }

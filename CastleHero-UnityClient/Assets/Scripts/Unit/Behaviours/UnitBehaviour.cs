@@ -151,6 +151,9 @@ namespace RGLabs.Unit.Behaviours
             Data = data;
             status.Init(data);
 
+            if(Hit != null)
+                Hit.Init();
+            
             _finding.Init(UnitHelper.EnemyLayerMask(data.Id, data.atkLayer));
             this.InitAlley(data.defLayer);
 

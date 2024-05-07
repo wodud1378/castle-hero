@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -27,6 +26,8 @@ namespace RGLabs.Common.Behaviours
 
         private IEnumerator LoadSceneCoroutine(Scene unload, string load)
         {
+            Context.Back.enabled = false;
+            
             var loadHandle = SceneManager.LoadSceneAsync(load, LoadSceneMode.Additive);
             yield return UniTask.WaitUntil(() => loadHandle.isDone);
             yield return UniTask.Yield();
@@ -38,7 +39,11 @@ namespace RGLabs.Common.Behaviours
             var scene = SceneManager.GetSceneByName(load);
             SceneManager.SetActiveScene(scene);
             
-            SceneManager.UnloadSceneAsync("Loading");
+            Context.Back.enabled = true;
+            
+            var finishHandle = SceneManager.UnloadSceneAsync("Loading");
+            yield return UniTask.WaitUntil(() => finishHandle.isDone);
+            yield return UniTask.Yield();
         }
     }
 }
