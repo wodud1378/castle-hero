@@ -78,7 +78,7 @@ namespace RGLabs.Lobby.Behaviours
             
             Action onClosed = () =>
             {
-                Context.uiLock.Set(lockKey);
+                Context.uiLock.Release(lockKey);
                 SetMainUIActive(to, true);
             };
 
