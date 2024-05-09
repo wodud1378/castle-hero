@@ -33,8 +33,6 @@ namespace RGLabs.Common.Behaviours
             startButton = _startButton;
             startButton.StageSelect.Init();
             
-            startButton.enabled = true;
-            
             InitSubscriptions();
 
             while (OnLoadCompleteQueue.Count > 0)
@@ -56,8 +54,12 @@ namespace RGLabs.Common.Behaviours
         private void SetEntranceTransition()
         {
             if (Storage.entranceData.state == State.InGame)
+            {
                 Storage.userRepository.stage.Value = Storage.entranceData.stage;
+                return;
+            }
 
+            startButton.enabled = true;
             Transition.CurrentState = Storage.entranceData.state;
         }
 

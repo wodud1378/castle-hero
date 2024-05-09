@@ -19,6 +19,8 @@ namespace RGLabs.Lobby.Behaviours
 
     public class LobbyBehaviour : SceneBehaviour
     {
+        private const string UILockKey = "LobbyTransition";
+        
         [SerializeField] private UILobby _uiLobby;
         [SerializeField] private UIStage _uiStage;
 
@@ -40,56 +42,50 @@ namespace RGLabs.Lobby.Behaviours
                 .Subscribe(OnNextState)
                 .AddTo(this);
         }
-
+        
         private void OnNextState(State state)
-        {
-            TransitionTo(state);
-
-            if (state == State.InGame)
-                StartGame();
-        }
-
-        private void TransitionTo(State state)
         {
             if (state == State.InGame)
             {
-                _uiLobby.Close();
-                _uiStage.Close();
+                TransitionTo(_uiStage, null, StartGame);
+                return;
             }
-
-            UIMain from;
-            UIMain to;
+            
             StartButton.Mode mode;
             if (state == State.Lobby)
             {
-                from = _uiStage;
-                to = _uiLobby;
+                TransitionTo(_uiStage, _uiLobby);   
                 mode = StartButton.Mode.Lobby;
             }
             else
             {
-                from = _uiLobby;
-                to = _uiStage;
+                TransitionTo(_uiLobby, _uiStage);
                 mode = StartButton.Mode.Stage;
             }
-
-            string lockKey = "LobbyTransition";
-            Context.uiLock.Set(lockKey);
-            
-            Action onClosed = () =>
-            {
-                Context.uiLock.Release(lockKey);
-                SetMainUIActive(to, true);
-            };
-
-            if (!from.IsOpen)
-                onClosed.Invoke();
-            else
-                from.OnCloseAnimationEnd += onClosed;
-
-            SetMainUIActive(from, false);
             
             Context.startButton.mode.Value = mode;
+        }
+
+        private void TransitionTo(UIMain from, UIMain to = null, Action onTransitionEnd = null)
+        {
+            Context.uiLock.Set(UILockKey);
+
+            if (!from.IsOpen)
+                OnTransitionEnd(to, onTransitionEnd);
+            else
+                from.OnCloseAnimationEnd += () => OnTransitionEnd(to, onTransitionEnd);
+
+            SetMainUIActive(from, false);
+        }
+
+        private void OnTransitionEnd(UIMain target, Action onTransitionEnd)
+        {
+            onTransitionEnd?.Invoke();
+            
+            Context.uiLock.Release(UILockKey);
+
+            if(target != null)
+                SetMainUIActive(target, true);
         }
 
         private void SetMainUIActive(UIMain ui, bool isActive)

@@ -6,6 +6,29 @@ using UnityEngine;
 
 namespace RGLabs.Data.DB
 {
+    public interface IDataBase
+    {
+    }
+    
+    public class DataFieldAttribute : Attribute
+    {
+        public string Name { get; }
+
+        public DataFieldAttribute(string name) => Name = name;
+    }
+    
+    public class DataBaseAttribute : Attribute
+    {
+        public string LocalFile { get; }
+        public string Api { get; }
+
+        public DataBaseAttribute(string localFile, string api = "")
+        {
+            LocalFile = localFile;
+            Api = api;
+        }
+    }
+    
     public abstract class DB<T> : ScriptableObject where T : IEntity
     {
         [field:SerializeField] public int Id { get; set; }
