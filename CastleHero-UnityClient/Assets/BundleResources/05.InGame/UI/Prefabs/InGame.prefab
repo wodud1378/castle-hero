@@ -3166,7 +3166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 733dab7a5465444f9839ca0359714ebb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _atlasCollections: {fileID: 5270345621307383480}
+  _spriteCollection: {fileID: 5270345621307383480}
   _animator: {fileID: 610378122393592268}
   <DeadCharacters>k__BackingField: {fileID: 9023251383617856824}
   <Result>k__BackingField: {fileID: 2450989168676422717}

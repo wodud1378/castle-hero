@@ -1,25 +1,31 @@
+using System;
+using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace RGLabs.Common.UI
 {
-    public class UIAtlasedSpriteCollection : MonoBehaviour
+    public class UIAtlasedSpriteCollection : MonoBehaviour, IDisposable
     {
         public UIAtlasedSprite[] sprites;
 
-        private void OnEnable()
+        public async UniTask LoadAll()
         {
+            var tasks = new List<UniTask>();
             foreach (var sprite in sprites)
             {
-                sprite.enabled = true;
+                tasks.Add(sprite.Load());
             }
-        }
 
-        private void OnDisable()
+            await UniTask.WhenAll(tasks);
+        }
+        
+        public void Dispose()
         {
             foreach (var sprite in sprites)
             {
-                sprite.enabled = false;
-            }
+                sprite.Dispose();
+            }    
         }
     }
 }

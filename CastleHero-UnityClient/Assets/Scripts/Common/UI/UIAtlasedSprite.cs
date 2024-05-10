@@ -10,13 +10,13 @@ namespace RGLabs.Common.UI
 {
     [RequireComponent(typeof(Image))]
     public class UIAtlasedSprite : MonoBehaviour, IDisposable
-    {
+    {    
         public AssetReferenceAtlasedSprite reference;
         public Image image;
 
         private AsyncOperationHandle<Sprite> _handle;
 
-        private async UniTask Load()
+        public async UniTask Load()
         {
             _handle = reference.LoadAssetAsync();
 
@@ -29,21 +29,6 @@ namespace RGLabs.Common.UI
 
             image.sprite = sprite;
             image.enabled = true;
-        }
-
-        private async void OnEnable()
-        {
-            await Load();
-
-            gameObject.SetActive(true);
-        }
-
-        private void OnDisable()
-        {
-            image.sprite = null;
-            gameObject.SetActive(false);
-
-            Dispose();
         }
 
         private void Fallback()

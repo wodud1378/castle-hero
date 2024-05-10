@@ -1009,7 +1009,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StageSelect: {fileID: 5577797177903681822}
-  _atlasCollection: {fileID: 5791175246620594682}
+  _spriteCollection: {fileID: 5791175246620594682}
   _button: {fileID: 3293814572851862643}
   _animator: {fileID: 8240188203900132896}
 --- !u!114 &5577797177903681822

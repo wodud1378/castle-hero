@@ -126,7 +126,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   reference:
     m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Button_RoundSquare_01
+    m_SubObjectName: Button_RoundSquare_Base
     m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
     m_EditorAssetChanged: 1
@@ -646,7 +646,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   reference:
     m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Button_RoundSquare_01
+    m_SubObjectName: Button_RoundSquare_Base
     m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
     m_EditorAssetChanged: 1
@@ -717,7 +717,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2925,7 +2925,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8448dabe05b94abfb2c175693a1691d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _atlasCollections: {fileID: 4859838879178708124}
+  _spriteCollection: {fileID: 4859838879178708124}
   _animator: {fileID: 1332606653677324598}
   _configFormation: {fileID: 4102815110993701601}
   _characterList: {fileID: 8582809710443067920}

@@ -3,6 +3,7 @@ using RGLabs.Common.UI;
 using RGLabs.Stage.UI;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace RGLabs.Common.Behaviours
@@ -29,7 +30,7 @@ namespace RGLabs.Common.Behaviours
 
         [field: SerializeField] public UIStageSelect StageSelect;
 
-        [SerializeField] private UIAtlasedSpriteCollection _atlasCollection;
+        [SerializeField] private UIAtlasedSpriteCollection _spriteCollection;
         [SerializeField] private Button _button;
         [SerializeField] private Animator _animator;
 
@@ -50,9 +51,10 @@ namespace RGLabs.Common.Behaviours
             _animator.SetTrigger(ModeHash[value]);
         }
 
-        private void OnEnable()
+        private async void OnEnable()
         {
-            _atlasCollection.enabled = true;
+            await _spriteCollection.LoadAll();
+            
             _button.enabled = true;
             
             _animator.SetTrigger(ActiveHash[true]);
@@ -65,6 +67,12 @@ namespace RGLabs.Common.Behaviours
             _animator.SetTrigger(ActiveHash[false]);
         }
 
+        #region Animation Events
+
+        public void OnDisabled() => _spriteCollection.Dispose();
+
+        #endregion
+        
         public static implicit operator Button(StartButton it) => it._button;
     }
 }

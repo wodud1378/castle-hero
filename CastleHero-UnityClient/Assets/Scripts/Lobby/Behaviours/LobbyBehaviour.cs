@@ -101,6 +101,12 @@ namespace RGLabs.Lobby.Behaviours
 
         private void StartGame()
         {
+            _uiLobby.Dispose();
+            _uiStage.Dispose();
+            
+            Destroy(_uiLobby.gameObject);
+            Destroy(_uiStage.gameObject);
+            
             new StartGame
             {
                 poolContainer = poolContainer,

@@ -3,10 +3,7 @@ using RGLabs.Common.Behaviours;
 
 namespace RGLabs.Lobby.UI
 {
-    public class UILobby : UIMain, IDisposable
+    public class UILobby : UIMain
     {
-        public void Dispose()
-        {
-        }
     }
 }
