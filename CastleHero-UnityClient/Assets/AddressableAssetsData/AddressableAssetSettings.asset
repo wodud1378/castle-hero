@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 0c5a506bc9275174990f95aa72c6e156
   m_currentHash:
     serializedVersion: 2
-    Hash: 9ac916fb71f27954b88dbda27b4d4dcc
+    Hash: 1c54f4486d9be8cfbbfbc13fab1b76c1
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -52,6 +52,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 00538f6da9877dc4db6dd8de206a083f, type: 2}
   - {fileID: 11400000, guid: c21dce8dec219474c9caec99f4d5386c, type: 2}
   - {fileID: 11400000, guid: 5b4817c2b7ec60646b78d6ce3df5dd70, type: 2}
+  - {fileID: 11400000, guid: 7011948e53cf5ae43bc0d2ff58d69b16, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -120,16 +121,6 @@ MonoBehaviour:
     m_ProfileVersion: 1
   m_LabelTable:
     m_LabelNames:
-    - default
-    - Stage_01_01
-    - InGame
-    - Castle_001
-    - Global
-    - Global-Atlas
-    - Character_10000
-    - Character_10021
-    - Character_10023
-    - Character_10034
     - KR
   m_SchemaTemplates: []
   m_GroupTemplateObjects:

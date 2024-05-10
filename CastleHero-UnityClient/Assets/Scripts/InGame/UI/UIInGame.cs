@@ -1,10 +1,5 @@
-using System;
-using System.Linq;
-using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Pattern;
-using RGLabs.Data;
-using RGLabs.Data.Repositories;
 using RGLabs.InGame.Behaviours;
 using RGLabs.InGame.System;
 using RGLabs.Utility;
@@ -14,19 +9,16 @@ using UnityEngine.UI;
 
 namespace RGLabs.InGame.UI
 {
-    public class UIInGame : UIMain, IDisposable
+    public class UIInGame : UIMain
     {
         [field:SerializeField] public UICharacterList DeadCharacters { get; private set; }
         [field:SerializeField] public UIGameResult Result { get; private set; }
         [field:SerializeField] public UIPause Pause { get; private set; }
 
+        [SerializeField] private Button _pause;
         [SerializeField] private RectTransform _damageRoot;
         [SerializeField] private string _damagePrefab;
         
-        [SerializeField] private Button _pause;
-        
-        private InGameRepository _repository;
-        private DBCollections _db;
         private PoolContainer _poolContainer;
         
         private void Awake()
@@ -60,9 +52,7 @@ namespace RGLabs.InGame.UI
 
         public void Init(PoolContainer poolContainer)
         {
-            _repository = Storage.inGameRepository;
             _poolContainer = poolContainer;
-            _db = Storage.DB;
 
             // var characters = _repository.characters.Value
             //     .Select(x => x.character)
@@ -89,8 +79,10 @@ namespace RGLabs.InGame.UI
             Result.Open(result.isCleared);
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
+            base.Dispose();
+            
             DeadCharacters.Dispose();
         }
     }

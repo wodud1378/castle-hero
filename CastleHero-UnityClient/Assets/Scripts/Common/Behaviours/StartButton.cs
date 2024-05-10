@@ -3,7 +3,6 @@ using RGLabs.Common.UI;
 using RGLabs.Stage.UI;
 using UniRx;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace RGLabs.Common.Behaviours
@@ -51,9 +50,9 @@ namespace RGLabs.Common.Behaviours
             _animator.SetTrigger(ModeHash[value]);
         }
 
-        private async void OnEnable()
+        private void OnEnable()
         {
-            await _spriteCollection.LoadAll();
+            //await _spriteCollection.LoadAll();
             
             _button.enabled = true;
             
@@ -69,7 +68,10 @@ namespace RGLabs.Common.Behaviours
 
         #region Animation Events
 
-        public void OnDisabled() => _spriteCollection.Dispose();
+        public void OnDisabled()
+        {
+            //_spriteCollection.Dispose();
+        }
 
         #endregion
         

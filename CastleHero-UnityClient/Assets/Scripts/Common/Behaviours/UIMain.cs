@@ -1,6 +1,7 @@
 using System;
 using RGLabs.Common.UI;
 using UnityEngine;
+using UnityEngine.U2D;
 
 namespace RGLabs.Common.Behaviours
 {
@@ -17,9 +18,9 @@ namespace RGLabs.Common.Behaviours
         private readonly int _openHashId = Animator.StringToHash("Entrance");
         private readonly int _closeHashId = Animator.StringToHash("Exit");
 
-        public async void Open()
+        public void Open()
         {
-            await _spriteCollection.LoadAll();
+            //await _spriteCollection.LoadAll();
             
             IsOpen = true;
             
@@ -51,7 +52,7 @@ namespace RGLabs.Common.Behaviours
             _spriteCollection.Dispose();
             
             OnCloseAnimationEnd?.Invoke();
-            OnCloseAnimationEnd = null;
+            //OnCloseAnimationEnd = null;
         }
 
         #endregion

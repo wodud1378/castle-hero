@@ -10,6 +10,7 @@ using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.U2D;
 using UnityEngine.UI;
 
 namespace RGLabs.Stage.UI
@@ -22,6 +23,7 @@ namespace RGLabs.Stage.UI
         [SerializeField] private TMP_Text _title;
         [SerializeField] private RectTransform _rewardParent;
         [SerializeField] private AssetReference _rewardPrefab;
+        [SerializeField] private AssetReferenceT<SpriteAtlas> _rewardIconAtlas;
 
         private readonly List<UIItemSlot> _uiSlots = new();
         private readonly ReactiveProperty<StageEntity> _stageData = new(default);
@@ -70,7 +72,7 @@ namespace RGLabs.Stage.UI
             {
                 if (!_db.items.TryFind(reward.itemId, out var entity))
                     continue;
-
+                
                 var obj = await Addressables.InstantiateAsync(_rewardPrefab, _rewardParent);
                 if (!obj.TryGetComponent(out UIItemSlot slot))
                     continue;

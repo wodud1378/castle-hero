@@ -20,26 +20,22 @@ MonoBehaviour:
   - m_GUID: ddb0e27aa2258854a8d171196f395b87
     m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - Global
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: efd42dc46c19f084490c85e190ee6b4a
     m_Address: Common
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - Global
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1d501202d55cacd40bc08f83696be3ad
     m_Address: Common/Shaders
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - Global
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dd48fe0dbae9a964f864999041b0f235
     m_Address: Common/Materials
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - Global
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 5929c0cb8d0d07d4aa9632acaa1413c5, type: 2}

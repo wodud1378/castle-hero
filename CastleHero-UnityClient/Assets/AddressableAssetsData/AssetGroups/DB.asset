@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Castles
+  m_Name: DB
   m_EditorClassIdentifier: 
-  m_GroupName: Castles
+  m_GroupName: DB
   m_Data:
     m_SerializedData: []
-  m_GUID: 0f3411f6dae1336468dcab44b93bf6ff
+  m_GUID: aa7583d0f8b809044ae626e04b330cb6
   m_SerializeEntries:
-  - m_GUID: a51f4814a78189649babc9241adb1710
-    m_Address: Castle_01
+  - m_GUID: 3aafcd9b2ab3fb541bb1c861ab3f392e
+    m_Address: DB
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -26,5 +26,5 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: 5929c0cb8d0d07d4aa9632acaa1413c5, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: d0aa3abb8a8299d4aa951cf2ca1ee681, type: 2}
-    - {fileID: 11400000, guid: d7463105cf481dc4a80653febb82794c, type: 2}
+    - {fileID: 11400000, guid: 7657667f62f080242ae40016ff9c7abc, type: 2}
+    - {fileID: 11400000, guid: c27de3565a36d854990cabbfb551df7c, type: 2}

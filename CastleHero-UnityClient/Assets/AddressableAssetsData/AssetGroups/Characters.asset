@@ -20,26 +20,22 @@ MonoBehaviour:
   - m_GUID: 6db1fd01acaac1b44ac4b9957e57fd17
     m_Address: Character_10021
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - Character_10021
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fde71adbfa49ed04aba72dce6a6bf2b0
     m_Address: Character_10023
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - Character_10023
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 07c7d45191f510142941debf1f0abb45
     m_Address: Character_10034
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - Character_10034
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c031b8eeb0f915f4199e31778716df80
     m_Address: Character_10000
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - Character_10000
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 5929c0cb8d0d07d4aa9632acaa1413c5, type: 2}

@@ -1,4 +1,3 @@
-using System;
 using RGLabs.Common.Behaviours;
 
 namespace RGLabs.Lobby.UI
