@@ -3,7 +3,6 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Utility;
 using TMPro;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 

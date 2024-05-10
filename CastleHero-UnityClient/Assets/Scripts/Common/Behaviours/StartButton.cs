@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RGLabs.Common.UI;
 using RGLabs.Stage.UI;
 using UniRx;
 using UnityEngine;
@@ -28,6 +29,7 @@ namespace RGLabs.Common.Behaviours
 
         [field: SerializeField] public UIStageSelect StageSelect;
 
+        [SerializeField] private UIAtlasedSpriteCollection _atlasCollection;
         [SerializeField] private Button _button;
         [SerializeField] private Animator _animator;
 
@@ -50,6 +52,7 @@ namespace RGLabs.Common.Behaviours
 
         private void OnEnable()
         {
+            _atlasCollection.enabled = true;
             _button.enabled = true;
             
             _animator.SetTrigger(ActiveHash[true]);

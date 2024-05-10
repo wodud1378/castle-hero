@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: GlobalUI
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 211083ba8a53b2a4f93492ff1a3deca0, type: 3}
+    bindAsDefault: 0
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - c46c65208c43375459ce1af9880ea68b: 21300000
+    - c9f7eda0e2476934c84efdaca259d17d: 21300000
+    - 0e723f01ec8b73c4a8cf66e64c0661f6: 21300000
+    - 0787bd215fc5b964fa2923ec9bf16c76: 21300000
+    - 1f938731d504d824dbc0f53cc9bc5a9e: 21300000
+    - f66eaa71670c28e4db87a6e9b59bb892: 21300000
+    - c8f374f229990b24d910c75283d3843a: 21300000
+    - 663ef57396088f449b1ed9430808abf7: 21300000
+    - 85b28d93bd5dc3b4081e282b7ea14141: 21300000
+    - d03851642d0e37043b47d275c5162e05: 21300000
+    - b9d1f5646085b974dabe73a2469ce86f: 21300000
+    - f3ddfe19defca1d4aa31d7e62d89830a: 21300000
+    - 01eb1c2988e2c5c4b836ddf8a8ed4d42: 21300000
+    - 2954d52c99a71c5408878dea54f0d21e: 21300000
+    - af339b0d40710d64f87f0a0b2b185ffb: 21300000
+    - 3a97d08fee9e4d94cb1317400ff458a1: 21300000
+    - deebe9ef608813843b368895a8b4fd77: 21300000
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: c46c65208c43375459ce1af9880ea68b, type: 3}
+  - {fileID: 21300000, guid: c9f7eda0e2476934c84efdaca259d17d, type: 3}
+  - {fileID: 21300000, guid: 0e723f01ec8b73c4a8cf66e64c0661f6, type: 3}
+  - {fileID: 21300000, guid: 0787bd215fc5b964fa2923ec9bf16c76, type: 3}
+  - {fileID: 21300000, guid: 1f938731d504d824dbc0f53cc9bc5a9e, type: 3}
+  - {fileID: 21300000, guid: f66eaa71670c28e4db87a6e9b59bb892, type: 3}
+  - {fileID: 21300000, guid: c8f374f229990b24d910c75283d3843a, type: 3}
+  - {fileID: 21300000, guid: 663ef57396088f449b1ed9430808abf7, type: 3}
+  - {fileID: 21300000, guid: 85b28d93bd5dc3b4081e282b7ea14141, type: 3}
+  - {fileID: 21300000, guid: d03851642d0e37043b47d275c5162e05, type: 3}
+  - {fileID: 21300000, guid: b9d1f5646085b974dabe73a2469ce86f, type: 3}
+  - {fileID: 21300000, guid: f3ddfe19defca1d4aa31d7e62d89830a, type: 3}
+  - {fileID: 21300000, guid: 01eb1c2988e2c5c4b836ddf8a8ed4d42, type: 3}
+  - {fileID: 21300000, guid: 2954d52c99a71c5408878dea54f0d21e, type: 3}
+  - {fileID: 21300000, guid: af339b0d40710d64f87f0a0b2b185ffb, type: 3}
+  - {fileID: 21300000, guid: 3a97d08fee9e4d94cb1317400ff458a1, type: 3}
+  - {fileID: 21300000, guid: deebe9ef608813843b368895a8b4fd77, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Gauge_Bar_R
+  - Button_Pause
+  - Slot_RoundSquare_01
+  - Button_Middle_G
+  - Button_Back_B
+  - Button_Auto
+  - Button_RoundSquare_01
+  - Button_Speed
+  - Frame_Portrait_01
+  - Frame_Porrait_02
+  - BG_Portrait_01
+  - Button_Close_01
+  - BG_Result
+  - Button_Back_Y
+  - Frame_Porrait_Mask
+  - Gauge_Bar_G
+  - Gauge_BG
+  m_RenderDataMap: {}
+  m_Tag: GlobalUI
+  m_IsVariant: 0

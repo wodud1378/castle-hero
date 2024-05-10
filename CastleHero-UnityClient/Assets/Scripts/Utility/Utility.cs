@@ -31,6 +31,14 @@ namespace RGLabs.Utility
             
             Addressables.Release(handle);
         }
+
+        public static void Release(this AsyncOperationHandle handle)
+        {
+            if (!handle.IsValid())
+                return;
+            
+            Addressables.Release(handle);
+        }
     }
 
     public static class UnitHelper

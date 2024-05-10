@@ -1,4 +1,5 @@
 using RGLabs.Data.DB;
+using RGLabs.InGame.System.Wave.Creation;
 using UnityEngine;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Factory;
@@ -16,7 +17,7 @@ namespace RGLabs.InGame.System.Wave
         private readonly float _size;
         private readonly float _angle;
         private readonly IUnitFactory _factory;
-        private readonly CreationHelper _creationHelper;
+        private readonly ICreationHelper _creationHelper;
         private readonly UnitBehaviour _castle;
         
         public SpawnArea(int id, Vector2 position, float size, float angle, UnitDB db, IUnitFactory factory, UnitBehaviour castle)
@@ -34,7 +35,7 @@ namespace RGLabs.InGame.System.Wave
             _creationHelper = new CreationHelper(id, db, cornerA, cornerB);
         }
 
-        public void ProcessUpdate(float _) => _creationHelper.SetUpBuffers(Create);
+        public void ProcessUpdate(float _) => _creationHelper.SetUpCreations(Create);
         
         private void GetCorners(out Vector2 a, out Vector2 b)
         {

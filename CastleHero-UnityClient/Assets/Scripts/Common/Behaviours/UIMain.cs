@@ -1,4 +1,5 @@
 using System;
+using RGLabs.Common.UI;
 using UnityEngine;
 
 namespace RGLabs.Common.Behaviours
@@ -9,7 +10,8 @@ namespace RGLabs.Common.Behaviours
         public event Action OnCloseAnimationEnd;
         
         public bool IsOpen { get; private set; }
-        
+
+        [SerializeField] private UIAtlasedSpriteCollection _atlasCollections;
         [SerializeField] private Animator _animator;
         
         private readonly int _openHashId = Animator.StringToHash("Entrance");
@@ -17,6 +19,8 @@ namespace RGLabs.Common.Behaviours
 
         public void Open()
         {
+            _atlasCollections.enabled = true;
+            
             IsOpen = true;
             
             _animator.SetTrigger(_openHashId);
@@ -43,6 +47,8 @@ namespace RGLabs.Common.Behaviours
             OnCloseAnimationEnd?.Invoke();
 
             OnCloseAnimationEnd = null;
+
+            _atlasCollections.enabled = false;
         }
 
         #endregion

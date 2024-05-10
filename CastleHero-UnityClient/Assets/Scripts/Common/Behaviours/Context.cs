@@ -7,7 +7,6 @@ using RGLabs.Utility;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace RGLabs.Common.Behaviours
 {
