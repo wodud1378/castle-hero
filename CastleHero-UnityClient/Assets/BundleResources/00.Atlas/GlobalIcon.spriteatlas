@@ -43,6 +43,7 @@ SpriteAtlas:
     - d71ea1b45087be8489ab7286b78c8ecf: 21300000
     - 42c856eb3dd7222409e4c7f1f4165bc3: 21300000
     - 7b1dbf6df1322254cae94f51254bb0d2: 21300000
+    - 071713eed0b3589488805ad652bd8a6f: 21300000
     - 4400e64fca7ad7c429a94a528527af8c: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -52,6 +53,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: d71ea1b45087be8489ab7286b78c8ecf, type: 3}
   - {fileID: 21300000, guid: 42c856eb3dd7222409e4c7f1f4165bc3, type: 3}
   - {fileID: 21300000, guid: 7b1dbf6df1322254cae94f51254bb0d2, type: 3}
+  - {fileID: 21300000, guid: 071713eed0b3589488805ad652bd8a6f, type: 3}
   - {fileID: 21300000, guid: 4400e64fca7ad7c429a94a528527af8c, type: 3}
   m_PackedSpriteNamesToIndex:
   - Icon_Diamond
@@ -60,6 +62,7 @@ SpriteAtlas:
   - Icon_Gold
   - Icon_Energy
   - Icon_Mana
+  - Icon_Skill_Global_03
   - Icon_Timer
   m_RenderDataMap: {}
   m_Tag: GlobalIcon
