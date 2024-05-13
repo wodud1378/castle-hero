@@ -50,7 +50,7 @@ namespace RGLabs.InGame.System
                 return;
 
             float amount = CalcAmount(ev.amount, ev.critical, ev.criticalMul, out bool isCritical);
-            to.status.hp.Decrease(amount);
+            to.Core.status.hp.Decrease(amount);
             
             if(to.Hit != null)
                 to.Hit.Play();

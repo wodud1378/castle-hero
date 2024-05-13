@@ -2,19 +2,21 @@ using UnityEngine;
 
 namespace RGLabs.Unit.Components
 {
-    public class Look : MonoBehaviour
+    public class Look
     {
-        public void At(Vector2 from, Vector2 target)
+        private readonly Transform _transform;
+        
+        public Look(Transform transform) => _transform = transform;
+        
+        public void At(Vector2 at)
         {
-            if (transform == null)
-                return;
-
-            var diff = target - from;
-            var originScale = transform.transform.localScale;
+            var originScale = _transform.transform.localScale;
             float originX = Mathf.Abs(originScale.x);
-            float scale = diff.x <= 0 ? originX : -originX;
+            float scale = at.x <= 0 ? originX : -originX;
 
-            transform.localScale = new Vector3(scale, originScale.y, originScale.z);
+            _transform.localScale = new Vector3(scale, originScale.y, originScale.z);
         }
+
+        public void At(Vector2 from, Vector2 target) => At(target - from);
     }
 }

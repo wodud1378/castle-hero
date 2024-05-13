@@ -15,5 +15,16 @@ namespace RGLabs.Data.DB
                 hp = 0,
                 speed = 0,
             };
+        
+        public void Load(object[] data)
+        {
+            int length = data.Length;
+            _entities = new UnitEntity[length];
+
+            for (int i = 0; i < length; ++i)
+            {
+                _entities[i] = (UnitEntity)data[i];
+            }
+        }
     }
 }

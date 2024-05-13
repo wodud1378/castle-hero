@@ -49,8 +49,8 @@ namespace RGLabs.Lobby.UI
         private async UniTask<UnitBehaviour> CreateUnitFromSlot(UICharacterSlot slot)
         {
             var unit = await _factory.Create(slot.Entity, slot.transform.position);
-            unit.canMove = false;
-            unit.canAttack = false;
+            unit.CanMove = false;
+            unit.CanAttack = false;
             unit.Collider.isTrigger = true;
 
             _originLayer = unit.gameObject.layer;
@@ -77,8 +77,9 @@ namespace RGLabs.Lobby.UI
             }
             else
             {
+                _hold.Core.defaultDestination = _hold.position;
+                _hold.CanMove = true;
                 _hold.Collider.isTrigger = false;
-                _hold.defaultDestination = _hold.position;
                 _hold.gameObject.layer = _originLayer;
             }
 

@@ -29,8 +29,8 @@ namespace RGLabs.Unit.Factory
             }
 
             unit.Container = _pools;
-            unit.position = position;
             unit.Init(entity);
+            unit.position = position;
             return unit;
         }
     }

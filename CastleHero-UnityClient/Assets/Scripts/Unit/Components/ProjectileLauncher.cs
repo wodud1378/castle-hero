@@ -3,7 +3,7 @@ using RGLabs.Common.Behaviours;
 using RGLabs.Common.Pattern;
 using RGLabs.Unit.Behaviours;
 
-namespace RGLabs.Unit
+namespace RGLabs.Unit.Components
 {
     public class ProjectileLauncher
     {
@@ -23,7 +23,7 @@ namespace RGLabs.Unit
                 return;
 
             projectile.Container = _unit.Container;
-            projectile.transform.position = _unit.Center;
+            projectile.transform.position = _unit.position;
             projectile.Fire(target);
         }
 

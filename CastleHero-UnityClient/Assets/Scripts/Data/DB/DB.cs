@@ -8,6 +8,7 @@ namespace RGLabs.Data.DB
 {
     public interface IDataBase
     {
+        public void Load(object[] data);
     }
     
     public class DataFieldAttribute : Attribute

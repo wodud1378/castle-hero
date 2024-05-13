@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Data.Model;
 using RGLabs.InGame.Behaviours;
 using RGLabs.Unit.Behaviours;
+using RGLabs.Unit.Components;
 using RGLabs.Unit.Factory;
 using UniRx;
 using UnityEngine;
@@ -97,7 +98,7 @@ namespace RGLabs.Utility
             if (unit == null)
                 return false;
 
-            return unit.state.Value is > UnitBehaviour.States.Prepare and < UnitBehaviour.States.Dead;
+            return unit.state.Value is > UnitCore.States.Prepare and < UnitCore.States.Dead;
         }
     }
     

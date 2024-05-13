@@ -68,7 +68,7 @@ namespace RGLabs.Lobby.Behaviours
 
         private void TransitionTo(UIMain from, UIMain to = null, Action onTransitionEnd = null)
         {
-            Context.uiLock.Set(UILockKey);
+            //Context.uiLock.Set(UILockKey);
 
             if (!from.IsOpen)
                 OnTransitionEnd(to, onTransitionEnd);
@@ -82,7 +82,7 @@ namespace RGLabs.Lobby.Behaviours
         {
             onTransitionEnd?.Invoke();
             
-            Context.uiLock.Release(UILockKey);
+            //Context.uiLock.Release(UILockKey);
 
             if(target != null)
                 SetMainUIActive(target, true);
