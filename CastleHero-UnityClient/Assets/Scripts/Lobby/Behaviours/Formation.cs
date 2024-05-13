@@ -11,7 +11,6 @@ using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Factory;
 using RGLabs.Utility;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace RGLabs.Lobby.Behaviours
 {

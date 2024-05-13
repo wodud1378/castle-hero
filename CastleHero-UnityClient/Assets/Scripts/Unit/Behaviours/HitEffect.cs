@@ -14,7 +14,7 @@ namespace RGLabs.Unit.Behaviours
         private int _propertyId;
         private MaterialPropertyBlock _propertyBlock;
         
-        private void Start()
+        public void Init()
         {
             _halfDuration = Constants.HitEffectDuration * 0.5f;
             _propertyBlock = new MaterialPropertyBlock();

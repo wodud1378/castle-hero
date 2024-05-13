@@ -1,8 +1,9 @@
+using System;
 using RGLabs.Common.Behaviours;
+using RGLabs.Common.Flow;
 using RGLabs.Common.Pattern;
-using RGLabs.Data;
-using RGLabs.Data.Repositories;
 using RGLabs.Lobby.UI;
+using RGLabs.Stage.UI;
 using RGLabs.Unit.Factory;
 using RGLabs.Utility;
 using UniRx;
@@ -12,63 +13,102 @@ namespace RGLabs.Lobby.Behaviours
 {
     public struct StartGame
     {
-        public DBCollections db;
-        
-        public UserRepository userRepo;
-        public InGameRepository gameRepo;
-        
         public PoolContainer poolContainer;
         public IUnitFactory unitFactory;
     }
-    
+
     public class LobbyBehaviour : SceneBehaviour
     {
-        [SerializeField] private UILobby uiLobby;
+        private const string UILockKey = "LobbyTransition";
+        
+        [SerializeField] private UILobby _uiLobby;
+        [SerializeField] private UIStage _uiStage;
 
         [SerializeField] private Formation _formation;
         [SerializeField] private SpriteRenderer _map;
 
-        protected override async void OnAwake()
+        protected override async void OnLoaded()
         {
-            base.OnAwake();
-            
-            activated.Add(this);
-            
-            await Storage.InitAsync();
-            
-            gameRepo = Storage.inGameRepository;
-            userRepo = Storage.userRepository;
-            db = Storage.DB;
+            base.OnLoaded();
+
             poolContainer = new PoolContainer();
             unitFactory = new UnitFactory(poolContainer);
 
             await _formation.Init(db.characters, userRepo, gameRepo, unitFactory);
 
-            var initialStep = Storage.StartUpData.step;
-            if(initialStep == UILobby.Step.InGame)
-                userRepo.stage.Value = Storage.StartUpData.stage;
-            
-            uiLobby.Init(initialStep);
-            uiLobby.step
-                .Subscribe(OnNextStep)
+            _uiStage.Init();
+            Context.Transition.StateObserver
+                .DistinctUntilChanged()
+                .Subscribe(OnNextState)
                 .AddTo(this);
         }
-
-        private void OnNextStep(UILobby.Step step)
-        {
-            if (step != UILobby.Step.InGame)
-                return;
-            
-            StartGame();
-        }
         
+        private void OnNextState(State state)
+        {
+            if (state == State.InGame)
+            {
+                TransitionTo(_uiStage, null, StartGame);
+                return;
+            }
+            
+            StartButton.Mode mode;
+            if (state == State.Lobby)
+            {
+                TransitionTo(_uiStage, _uiLobby);   
+                mode = StartButton.Mode.Lobby;
+            }
+            else
+            {
+                TransitionTo(_uiLobby, _uiStage);
+                mode = StartButton.Mode.Stage;
+            }
+            
+            Context.startButton.mode.Value = mode;
+        }
+
+        private void TransitionTo(UIMain from, UIMain to = null, Action onTransitionEnd = null)
+        {
+            Context.uiLock.Set(UILockKey);
+
+            if (!from.IsOpen)
+                OnTransitionEnd(to, onTransitionEnd);
+            else
+                from.OnCloseAnimationEnd += () => OnTransitionEnd(to, onTransitionEnd);
+
+            SetMainUIActive(from, false);
+        }
+
+        private void OnTransitionEnd(UIMain target, Action onTransitionEnd)
+        {
+            onTransitionEnd?.Invoke();
+            
+            Context.uiLock.Release(UILockKey);
+
+            if(target != null)
+                SetMainUIActive(target, true);
+        }
+
+        private void SetMainUIActive(UIMain ui, bool isActive)
+        {
+            if (isActive)
+            {
+                if (!ui.IsOpen)
+                    ui.Open();
+            }
+            else if (ui.IsOpen)
+                ui.Close();
+        }
+
         private void StartGame()
         {
+            _uiLobby.Dispose();
+            _uiStage.Dispose();
+            
+            Destroy(_uiLobby.gameObject);
+            Destroy(_uiStage.gameObject);
+            
             new StartGame
             {
-                db = db,
-                userRepo = userRepo,
-                gameRepo = gameRepo,
                 poolContainer = poolContainer,
                 unitFactory = unitFactory
             }.Publish();
@@ -77,8 +117,8 @@ namespace RGLabs.Lobby.Behaviours
         public override void Dispose()
         {
             base.Dispose();
-            
-            uiLobby.Dispose();
+
+            _uiLobby.Dispose();
         }
     }
 }

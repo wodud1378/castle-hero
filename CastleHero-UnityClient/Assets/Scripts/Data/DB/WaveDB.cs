@@ -5,7 +5,7 @@ using UnityEngine;
 namespace RGLabs.Data.DB
 {
     [CreateAssetMenu(fileName = "Waves", menuName = "Scriptable Object/Waves")]
-    public class WaveDB : DB<WaveEntity>
+    public class WaveDB : DB<WaveEntity>, IDataBase
     {
         protected override WaveEntity FallBackEntity() =>
             new()

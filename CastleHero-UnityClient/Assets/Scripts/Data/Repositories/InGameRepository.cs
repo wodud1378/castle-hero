@@ -25,7 +25,7 @@ namespace RGLabs.Data.Repositories
 
         private static DBCollections _loaded = null;
 
-        private const string DBRoot = "Common/DB/";
+        private const string DBRoot = "DB/";
 
         public StageDB stages;
         public WaveDB waves;

@@ -13,6 +13,8 @@ namespace RGLabs.Unit.Behaviours
         private UnitBehaviour _target;
         private Vector2 _destination;
         private bool _isDeadTarget;
+
+        private float _arrivalTime;
         
         public void Fire(UnitBehaviour target)
         {
@@ -21,6 +23,7 @@ namespace RGLabs.Unit.Behaviours
             
             _target = target;
             _isDeadTarget = false;
+            _arrivalTime = Vector2.Distance(_target.Center, transform.position) / _speed;
             
             this
                 .UpdateAsObservable()
@@ -39,11 +42,18 @@ namespace RGLabs.Unit.Behaviours
 
         private void UpdatePosition()
         {
+            _arrivalTime -= Time.deltaTime;
             if (!_isDeadTarget)
                 _destination = _target.Center;
 
             var diff = _destination - (Vector2)transform.position;
-            if (diff.sqrMagnitude < 0.01f)
+            if (diff.sqrMagnitude < 0.015f)
+            {
+                DestroySelf();
+                return;
+            }
+            
+            if (_arrivalTime < 0f)
             {
                 DestroySelf();
                 return;

@@ -3,7 +3,6 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Utility;
 using TMPro;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 
@@ -13,15 +12,14 @@ namespace RGLabs.Common.UI
     {
         public Image icon;
         public TMP_Text label;
-        public Button button;
 
-        private AsyncOperationHandle<Sprite> _handle;
+        private AsyncOperationHandle<Sprite> _spriteHandle;
 
         public async UniTask InitAsync(string spritePath, string text = "")
         {
-            _handle = await spritePath.Handle<Sprite>();
+            _spriteHandle = await spritePath.Handle<Sprite>();
             
-            var sprite = _handle.Result;
+            var sprite = _spriteHandle.Result;
             
             Init(sprite, text);
         }
@@ -38,10 +36,9 @@ namespace RGLabs.Common.UI
                 label.text = text;
         }
 
-
         public virtual void Dispose()
         {
-            _handle.Release();
+            _spriteHandle.Release();
         }
     }
 }

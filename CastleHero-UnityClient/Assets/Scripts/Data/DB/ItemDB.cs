@@ -4,7 +4,7 @@ using UnityEngine;
 namespace RGLabs.Data.DB
 {
     [CreateAssetMenu(fileName = "Items", menuName = "Scriptable Object/Items")]
-    public class ItemDB : DB<ItemEntity>
+    public class ItemDB : DB<ItemEntity>, IDataBase
     {
         protected override ItemEntity FallBackEntity() =>
             new()

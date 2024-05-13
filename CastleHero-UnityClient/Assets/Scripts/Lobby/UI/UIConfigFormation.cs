@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using RGLabs.Common.Behaviours;
 using RGLabs.InGame.UI;
 using RGLabs.Lobby.Behaviours;
 using RGLabs.Unit.Behaviours;
@@ -172,6 +173,8 @@ namespace RGLabs.Lobby.UI
             _circleDrawer.Init();
             _circleDrawer.gameObject.SetActive(true);
             _circleDrawer.Color = _validColor;
+
+            Context.startButton.enabled = false;
         }
 
         private void OnDisable()
@@ -182,6 +185,8 @@ namespace RGLabs.Lobby.UI
             _rayTarget.enabled = false;
             
             _circleDrawer.gameObject.SetActive(false);
+            
+            Context.startButton.enabled = true;
         }
     }
 }
