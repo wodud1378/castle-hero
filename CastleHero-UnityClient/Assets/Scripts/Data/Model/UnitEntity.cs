@@ -70,6 +70,12 @@ namespace RGLabs.Data.Model
         
         [DataField("Character_Range_Move")]
         public float moveRange;
+
+        [DataField("Character_Property_Atk")] 
+        public int elementalAtk;
+            
+        [DataField("Character_Property_Def")]
+        public int elementalDef;
         
         public float size;
     }

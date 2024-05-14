@@ -138,7 +138,8 @@ namespace RGLabs.Unit.Components
         public void SetData(UnitEntity data)
         {
             status.Init(data);
-            //elemental.atkType = data.
+            elemental.atkType = (Elemental.Type)data.elementalAtk;
+            elemental.defType = (Elemental.Type)data.elementalDef;
 
             _finding.Init(UnitHelper.EnemyLayerMask(data.Id, data.atkLayer));
             _renderController.ApplySkin(data.skinName);

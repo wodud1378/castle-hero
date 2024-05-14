@@ -1,5 +1,6 @@
 using RGLabs.Data.Model;
 using RGLabs.Unit.Behaviours;
+using RGLabs.Unit.Components;
 using RGLabs.Utility;
 using UniRx;
 using UniRx.Triggers;
@@ -66,11 +67,17 @@ namespace RGLabs.InGame.System
 
         private void OnReceiveAtkEvent(AtkEvent ev)
         {
+            var from = ev.from;
             var to = ev.to;
             if (!to.IsValid())
                 return;
 
-            float amount = CalcAmount(ev.amount, ev.critical, ev.criticalMul, out bool isCritical);
+            float amount;
+            amount = CalcAmount(ev.amount, ev.critical, ev.criticalMul, out bool isCritical);
+
+            if (from.IsValid())
+                amount = CalcElemental(amount, from.Core.elemental.atkType, to.Core.elemental.defType);
+                    
             to.Core.status.hp.Decrease(amount);
             
             if(to.Hit != null)
@@ -121,5 +128,7 @@ namespace RGLabs.InGame.System
             isCritical = Random.Range(0f, 1f) <= critical;
             return isCritical ? atk * criticalAtk : atk;
         }
+
+        private float CalcElemental(float amount, Elemental.Type atk, Elemental.Type def) => amount * Elemental.AtkMultiplier(atk, def);
     }
 }
