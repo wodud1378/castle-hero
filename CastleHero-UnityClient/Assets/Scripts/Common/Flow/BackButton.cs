@@ -26,6 +26,8 @@ namespace RGLabs.Common.Flow
         
         public void Remove(IBackButtonListener listener) => _listeners.Remove(listener);
 
+        public void Clear() => _listeners.Clear();
+
         public bool ProcessBack(out FailedCause cause)
         {
             if (!enabled)

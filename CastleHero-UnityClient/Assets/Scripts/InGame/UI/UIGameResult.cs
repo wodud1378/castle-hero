@@ -1,3 +1,5 @@
+using RGLabs.Common.Behaviours;
+using RGLabs.Common.Flow;
 using RGLabs.InGame.Behaviours;
 using RGLabs.Utility;
 using UnityEngine;
@@ -5,7 +7,7 @@ using UnityEngine.UI;
 
 namespace RGLabs.InGame.UI
 {
-    public class UIGameResult : MonoBehaviour
+    public class UIGameResult : MonoBehaviour, IBackButtonListener
     {
         [SerializeField] private Button _exitButton;
         [SerializeField] private Button _retryButton;
@@ -26,6 +28,8 @@ namespace RGLabs.InGame.UI
             UpdateUI(isCleared);
             
             gameObject.SetActive(true);
+            
+            Context.Back.Add(this);
         }
 
         public void Close()
@@ -47,5 +51,11 @@ namespace RGLabs.InGame.UI
         private void Retry() => ExitCode.Retry.Publish();
 
         private void Next() => ExitCode.Next.Publish();
+        
+        public bool OnProcessBack()
+        {
+            Exit();
+            return true;
+        }
     }
 }

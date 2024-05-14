@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using PolyNav;
 using RGLabs.Common;
 using RGLabs.Data.Model;
+using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Finding;
 using RGLabs.Utility;
@@ -38,6 +39,7 @@ namespace RGLabs.Unit.Components
         public readonly ReactiveProperty<States> state;
         public readonly Status status;
         public readonly PolyNavAgent navAgent;
+        public readonly Elemental elemental;
 
         private readonly UnitBehaviour _owner;
         private readonly Look _look;
@@ -75,8 +77,8 @@ namespace RGLabs.Unit.Components
             _enableMove = enableMove;
             _enableAnimation = enableAnimation;
 
+            elemental = new();
             navAgent = _owner.GetComponent<PolyNavAgent>();
-            _look = new Look(_owner.transform);
             _finding = new FindingComponents(new Collider2D[Constants.BufferSize], status);
 
             if (_enableAttack)
@@ -85,6 +87,7 @@ namespace RGLabs.Unit.Components
             var skeleton = _owner.GetComponentInChildren<SkeletonMecanim>();
             var animator = _owner.GetComponentInChildren<Animator>();
             _renderController = new RenderController(skeleton, animator, _enableAnimation);
+            _look = new Look(animator.transform);
 
             state = new(States.Prepare);
             state
@@ -118,15 +121,28 @@ namespace RGLabs.Unit.Components
 
             _update?.Dispose();
             state.Value = States.Dead;
+
+            if (status.recovery > 0f)
+            {
+                new ReserveRecovery
+                {
+                    behaviour = _owner,
+                    position = defaultDestination,
+                    time = status.recovery
+                }.Publish();
+            }
+            
             return true;
         }
 
         public void SetData(UnitEntity data)
         {
             status.Init(data);
+            //elemental.atkType = data.
 
             _finding.Init(UnitHelper.EnemyLayerMask(data.Id, data.atkLayer));
             _renderController.ApplySkin(data.skinName);
+            UpdateLookDirection(defaultDestination);
 
             if (!string.IsNullOrEmpty(data.projectile) && _attack != null)
             {
@@ -199,7 +215,7 @@ namespace RGLabs.Unit.Components
             _renderController.SetAnimation(hash);
         }
 
-        private void UpdateLookDirection(Vector2 direction) => _look.At(direction);
+        private void UpdateLookDirection(Vector2 direction) => _look.At(navAgent.position, direction);
 
         private void OnPrepare()
         {
@@ -227,6 +243,7 @@ namespace RGLabs.Unit.Components
                 return true;
 
             state.Value = States.Attack;
+            _lookDirection.Value = _finding.attack.Found[0].position;
 
             _attack.Execute();
             navAgent.Stop();
@@ -265,11 +282,15 @@ namespace RGLabs.Unit.Components
 
         private void OnMove()
         {
+            _lookDirection.Value = _finding.move.Found[0].position;
+            
             TrySetToAttack();
         }
 
         private void OnReturn()
         {
+            _lookDirection.Value = defaultDestination;
+            
             if (TrySetToAttack())
                 return;
 

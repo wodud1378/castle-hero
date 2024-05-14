@@ -18,7 +18,7 @@ MonoBehaviour:
   m_GUID: 154f901927bb9404a8717c5c6066dcaa
   m_SerializeEntries:
   - m_GUID: 0a1345d4d471fa94ca483ad8f9741712
-    m_Address: Fonts/KR
+    m_Address: Fonts
     m_ReadOnly: 0
     m_SerializedLabels:
     - KR

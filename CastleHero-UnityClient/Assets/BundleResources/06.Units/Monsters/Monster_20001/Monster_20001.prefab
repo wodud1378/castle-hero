@@ -292,6 +292,7 @@ GameObject:
   - component: {fileID: 955834530629895259}
   - component: {fileID: 8689379413697046180}
   - component: {fileID: 7019538615470507033}
+  - component: {fileID: -3909336267085701341}
   m_Layer: 0
   m_Name: Monster_20001
   m_TagString: Untagged
@@ -408,9 +409,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _map: {fileID: 0}
   maxSpeed: 3.5
-  maxForce: 10
+  maxForce: 20
   stoppingDistance: 0.1
-  slowingDistance: 1
+  slowingDistance: 0.1
   lookAheadDistance: 1
   avoidRadius: 0.3
   avoidanceConsiderStuckedTime: 99999
@@ -422,6 +423,33 @@ MonoBehaviour:
   restrict: 0
   closerPointOnInvalid: 1
   debugPath: 1
+--- !u!50 &-3909336267085701341
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6391860083955039845}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 10
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &6953692823064498941
 GameObject:
   m_ObjectHideFlags: 0

@@ -17,10 +17,8 @@ namespace RGLabs.Lobby.Behaviours
         public IUnitFactory unitFactory;
     }
 
-    public class LobbyBehaviour : SceneBehaviour
+    public class LobbyBehaviour : SceneBehaviour, IBackButtonListener
     {
-        private const string UILockKey = "LobbyTransition";
-        
         [SerializeField] private UILobby _uiLobby;
         [SerializeField] private UIStage _uiStage;
 
@@ -37,6 +35,7 @@ namespace RGLabs.Lobby.Behaviours
             await _formation.Init(db.characters, userRepo, gameRepo, unitFactory);
 
             _uiStage.Init();
+            Context.currentBehaviour = this;
             Context.Transition.StateObserver
                 .DistinctUntilChanged()
                 .Subscribe(OnNextState)
@@ -51,25 +50,24 @@ namespace RGLabs.Lobby.Behaviours
                 return;
             }
             
-            StartButton.Mode mode;
             if (state == State.Lobby)
             {
                 TransitionTo(_uiStage, _uiLobby);   
-                mode = StartButton.Mode.Lobby;
+
+                Context.startButton.mode.Value = StartButton.Mode.Lobby;
+                Context.Back.Remove(this);
             }
             else
             {
                 TransitionTo(_uiLobby, _uiStage);
-                mode = StartButton.Mode.Stage;
+                
+                Context.startButton.mode.Value = StartButton.Mode.Stage;
+                Context.Back.Add(this);
             }
-            
-            Context.startButton.mode.Value = mode;
         }
 
         private void TransitionTo(UIMain from, UIMain to = null, Action onTransitionEnd = null)
         {
-            //Context.uiLock.Set(UILockKey);
-
             if (!from.IsOpen)
                 OnTransitionEnd(to, onTransitionEnd);
             else
@@ -81,8 +79,6 @@ namespace RGLabs.Lobby.Behaviours
         private void OnTransitionEnd(UIMain target, Action onTransitionEnd)
         {
             onTransitionEnd?.Invoke();
-            
-            //Context.uiLock.Release(UILockKey);
 
             if(target != null)
                 SetMainUIActive(target, true);
@@ -112,6 +108,8 @@ namespace RGLabs.Lobby.Behaviours
                 poolContainer = poolContainer,
                 unitFactory = unitFactory
             }.Publish();
+            
+            Context.Back.Clear();
         }
 
         public override void Dispose()
@@ -119,6 +117,16 @@ namespace RGLabs.Lobby.Behaviours
             base.Dispose();
 
             _uiLobby.Dispose();
+        }
+
+        public bool OnProcessBack()
+        {
+            var state = Context.Transition.CurrentState;
+            if (state != State.Stage)
+                return false;
+
+            Context.Transition.CurrentState = State.Lobby;
+            return true;
         }
     }
 }

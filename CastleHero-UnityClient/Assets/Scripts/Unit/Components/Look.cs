@@ -10,7 +10,7 @@ namespace RGLabs.Unit.Components
         
         public void At(Vector2 at)
         {
-            var originScale = _transform.transform.localScale;
+            var originScale = _transform.localScale;
             float originX = Mathf.Abs(originScale.x);
             float scale = at.x <= 0 ? originX : -originX;
 

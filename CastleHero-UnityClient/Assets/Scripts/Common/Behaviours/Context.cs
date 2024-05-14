@@ -13,10 +13,10 @@ namespace RGLabs.Common.Behaviours
     public class Context : MonoBehaviour
     {
         public static Queue<Action> OnLoadCompleteQueue = new();
-        
         public static readonly BackButton Back = new();
         public static readonly Transition Transition = new();
-        
+
+        public static SceneBehaviour currentBehaviour;
         public static StartButton startButton;
         public static UILock uiLock;
 

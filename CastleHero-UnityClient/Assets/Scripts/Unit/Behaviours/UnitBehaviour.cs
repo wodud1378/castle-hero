@@ -30,7 +30,7 @@ namespace RGLabs.Unit.Behaviours
 
         [NonSerialized] public bool autoRelease = true;
 
-        public int Id => _data.Id;
+        public int Id => Data.Id;
 
         public Vector2 position
         {
@@ -55,7 +55,7 @@ namespace RGLabs.Unit.Behaviours
         
         public bool Released { get; private set; }
 
-        private UnitEntity _data;
+        public UnitEntity Data { get; private set; }
 
         private void Awake()
         {
@@ -68,7 +68,7 @@ namespace RGLabs.Unit.Behaviours
 
         public void Init(UnitEntity entity)
         {
-            _data = entity;
+            Data = entity;
             Core.SetData(entity);
             if (Hit != null)
                 Hit.Init();

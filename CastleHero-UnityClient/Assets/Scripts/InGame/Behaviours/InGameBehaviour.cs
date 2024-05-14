@@ -52,6 +52,8 @@ namespace RGLabs.InGame.Behaviours
 
         private void Run(StartGame startGame)
         {
+            Context.currentBehaviour = this;
+            
             unitFactory = startGame.unitFactory;
             poolContainer = startGame.poolContainer;
 
@@ -66,7 +68,7 @@ namespace RGLabs.InGame.Behaviours
             _uiInGame.Init(poolContainer);
             _uiInGame.Open();
             
-            _unitProcessor = new UnitProcessor();
+            _unitProcessor = new UnitProcessor(this);
 
             RunWave();
             RunUnits();
@@ -151,7 +153,6 @@ namespace RGLabs.InGame.Behaviours
             base.Dispose();
             
             _uiInGame.Dispose();
-            _unitProcessor?.Dispose();
         }
     }
 }
