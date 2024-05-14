@@ -1,4 +1,3 @@
-using System;
 using RGLabs.Common.Behaviours;
 using RGLabs.InGame.System;
 using RGLabs.Utility;
@@ -10,17 +9,6 @@ namespace RGLabs.InGame.UI
 { 
     public class UIDamage : PoolItemBase
     {
-        [Serializable]
-        public struct Set
-        {
-            public DamageType type;
-            public bool isCritical;
-            public Color mainColor;
-            public Color outlineColor;
-        }
-
-        [SerializeField] private Set[] _sets;
-        
         [SerializeField] private Animator _animator;
         [SerializeField] private TMP_Text _label;
 
@@ -33,6 +21,7 @@ namespace RGLabs.InGame.UI
 
         public void Show(AtkResult atk)
         {
+            _label.text = ((int)atk.amount).ToString();
             _rectTransform.position = CalculatePosition(atk);
         }
 

@@ -1,3 +1,5 @@
+using System;
+using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Pattern;
 using RGLabs.InGame.Behaviours;
@@ -9,6 +11,12 @@ using UnityEngine.UI;
 
 namespace RGLabs.InGame.UI
 {
+    [Serializable]
+    public struct DamagePrefabs
+    {
+        public string normal;
+    }
+    
     public class UIInGame : UIMain
     {
         [field:SerializeField] public UICharacterList DeadCharacters { get; private set; }
@@ -17,6 +25,7 @@ namespace RGLabs.InGame.UI
 
         [SerializeField] private Button _pause;
         [SerializeField] private RectTransform _damageRoot;
+        [SerializeField] private DamagePrefabs _damagePrefabs;
         [SerializeField] private string _damagePrefab;
         
         private PoolContainer _poolContainer;
@@ -38,8 +47,7 @@ namespace RGLabs.InGame.UI
         
         private async void OnAtkResult(AtkResult result)
         {
-            var pool = _poolContainer.Get(_damagePrefab);
-            var uiDamage = await pool.Get() as UIDamage;
+            var uiDamage = await GetUIDamage(result);
             if (uiDamage == null)
                 return;
 
@@ -48,6 +56,13 @@ namespace RGLabs.InGame.UI
             tr.localScale = Vector3.one;
             uiDamage.Container = _poolContainer;
             uiDamage.Show(result);
+        }
+
+        private async UniTask<UIDamage> GetUIDamage(AtkResult result)
+        {
+            // TODO : 데미지 타입에 따라서 프리팹 로드
+            var pool = _poolContainer.Get(_damagePrefab);
+            return await pool.Get() as UIDamage;
         }
 
         public void Init(PoolContainer poolContainer)
