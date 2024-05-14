@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using RGLabs.Data.Model;
 using UnityEngine;
 
@@ -6,6 +7,8 @@ namespace RGLabs.Data.DB
     [CreateAssetMenu(fileName = "Units", menuName = "Scriptable Object/Units")]
     public class UnitDB : DB<UnitEntity>, IDataBase
     {
+        public readonly Dictionary<int, float> sizeCache = new();
+        
         protected override UnitEntity FallBackEntity() =>
             new()
             {
@@ -24,6 +27,14 @@ namespace RGLabs.Data.DB
             for (int i = 0; i < length; ++i)
             {
                 _entities[i] = (UnitEntity)data[i];
+            }
+        }
+
+        public void CacheUnitSizes()
+        {
+            foreach (var entity in _entities)
+            {
+                sizeCache.TryAdd(entity.Id, entity.size);
             }
         }
     }

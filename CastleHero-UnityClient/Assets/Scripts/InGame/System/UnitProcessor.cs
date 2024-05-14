@@ -1,4 +1,6 @@
-using RGLabs.Data.Model;
+using System.Linq;
+using RGLabs.Common.Behaviours;
+using RGLabs.Data.User;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Components;
 using RGLabs.Utility;
@@ -15,7 +17,7 @@ namespace RGLabs.InGame.System
         DeBuff,
     }
     
-    public struct ReserveRecovery
+    public struct WaitRecover
     {
         public UnitBehaviour behaviour;
         public Vector2 position;
@@ -50,9 +52,9 @@ namespace RGLabs.InGame.System
 
     public class UnitProcessor
     {
-        private readonly MonoBehaviour _root;
+        private readonly SceneBehaviour _root;
         
-        public UnitProcessor(MonoBehaviour root)
+        public UnitProcessor(SceneBehaviour root)
         {
             _root = root;
             
@@ -67,8 +69,14 @@ namespace RGLabs.InGame.System
                 .AddTo(_root);
 
             MessageBroker.Default
-                .Receive<ReserveRecovery>()
+                .Receive<WaitRecover>()
                 .Subscribe(OnReserveRecovery)
+                .AddTo(_root);
+            
+            _root
+                .UpdateAsObservable()
+                .Select(_ => Time.deltaTime)
+                .Subscribe(UpdateRecovery)
                 .AddTo(_root);
         }
 
@@ -108,26 +116,34 @@ namespace RGLabs.InGame.System
             to.status.hp.Increase(ev.amount);
         }
 
-        private void OnReserveRecovery(ReserveRecovery recovery)
+        private void OnReserveRecovery(WaitRecover recovery)
         {
-            float currentTime = recovery.time;
-            _root
-                .UpdateAsObservable()
-                .Select(_ => Time.deltaTime)
-                .Where(x =>
-                {
-                    currentTime -= x;
-                    return currentTime <= 0f;
-                })
-                // TODO 유닛 부활 로직
-                .Subscribe(_ =>
-                {
-                    var behaviour = recovery.behaviour;
-                    behaviour.Activate();
-                    behaviour.Init(behaviour.Data);
-                    behaviour.position = recovery.position;
-                })
-                .AddTo(_root);
+            var array = _root.gameRepo.waitRecover.Value;
+            _root.gameRepo.waitRecover.Value = array.Append(recovery).ToArray();
+        }
+
+        private void UpdateRecovery(float deltaTime)
+        {
+            var targets = _root.gameRepo.waitRecover.Value;
+            for (int i = 0; i < targets.Length; ++i)
+            {
+                targets[i].time -= deltaTime;
+                if (targets[i].time > 0f)
+                    continue;
+                
+                Recovery(targets[i].behaviour, targets[i].position);
+            }
+
+            targets = targets.Where(x => x.time > 0f).ToArray();
+            _root.gameRepo.waitRecover.Value = targets;
+        }
+
+        private void Recovery(UnitBehaviour behaviour, Vector2 position)
+        {
+            behaviour.ForceActivate();
+            behaviour.Init(behaviour.Info, behaviour.Data);
+            behaviour.position = position;
+            behaviour.Core.defaultDestination = position;
         }
 
         private float CalcAmount(float atk, float critical, float criticalAtk, out bool isCritical)

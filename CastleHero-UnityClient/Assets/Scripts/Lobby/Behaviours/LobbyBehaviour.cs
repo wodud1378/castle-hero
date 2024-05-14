@@ -13,8 +13,7 @@ namespace RGLabs.Lobby.Behaviours
 {
     public struct StartGame
     {
-        public PoolContainer poolContainer;
-        public IUnitFactory unitFactory;
+        public SceneBehaviour from;
     }
 
     public class LobbyBehaviour : SceneBehaviour, IBackButtonListener
@@ -30,9 +29,9 @@ namespace RGLabs.Lobby.Behaviours
             base.OnLoaded();
 
             poolContainer = new PoolContainer();
-            unitFactory = new UnitFactory(poolContainer);
+            characterFactory = new UnitFactory(poolContainer, db.characters);
 
-            await _formation.Init(db.characters, userRepo, gameRepo, unitFactory);
+            await _formation.Init(db.characters, userRepo, gameRepo, characterFactory);
 
             _uiStage.Init();
             Context.currentBehaviour = this;
@@ -41,7 +40,7 @@ namespace RGLabs.Lobby.Behaviours
                 .Subscribe(OnNextState)
                 .AddTo(this);
         }
-        
+
         private void OnNextState(State state)
         {
             if (state == State.InGame)
@@ -49,10 +48,10 @@ namespace RGLabs.Lobby.Behaviours
                 TransitionTo(_uiStage, null, StartGame);
                 return;
             }
-            
+
             if (state == State.Lobby)
             {
-                TransitionTo(_uiStage, _uiLobby);   
+                TransitionTo(_uiStage, _uiLobby);
 
                 Context.startButton.mode.Value = StartButton.Mode.Lobby;
                 Context.Back.Remove(this);
@@ -60,7 +59,7 @@ namespace RGLabs.Lobby.Behaviours
             else
             {
                 TransitionTo(_uiLobby, _uiStage);
-                
+
                 Context.startButton.mode.Value = StartButton.Mode.Stage;
                 Context.Back.Add(this);
             }
@@ -80,7 +79,7 @@ namespace RGLabs.Lobby.Behaviours
         {
             onTransitionEnd?.Invoke();
 
-            if(target != null)
+            if (target != null)
                 SetMainUIActive(target, true);
         }
 
@@ -99,16 +98,15 @@ namespace RGLabs.Lobby.Behaviours
         {
             _uiLobby.Dispose();
             _uiStage.Dispose();
-            
+
             Destroy(_uiLobby.gameObject);
             Destroy(_uiStage.gameObject);
-            
+
             new StartGame
             {
-                poolContainer = poolContainer,
-                unitFactory = unitFactory
+                from = this
             }.Publish();
-            
+
             Context.Back.Clear();
         }
 

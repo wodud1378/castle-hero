@@ -5,7 +5,7 @@ namespace RGLabs.InGame
 {
     public struct InGameCharacter
     {
-        public Character character;
+        public UnitInfo unitInfo;
         public UnitBehaviour behaviour;
     }
 }

@@ -11,7 +11,13 @@ namespace RGLabs.InGame.System.Wave.Creation
 {
     public class CreationHelper : ICreationHelper
     {
-        private struct EntitySpace
+        private struct Unit
+        {
+            public int lv;
+            public int id;
+        }
+        
+        private struct UnitSpace
         {
             public bool valid;
             public int index;
@@ -29,8 +35,8 @@ namespace RGLabs.InGame.System.Wave.Creation
         private readonly UnitDB _db;
         private readonly Queue<SpawnEvent> _queue;
 
-        private readonly UnitEntity[] _entityBuffer;
-        private readonly EntitySpace[] _spaceBuffer;
+        private readonly Unit[] _unitBuffer;
+        private readonly UnitSpace[] _spaceBuffer;
         private readonly UnitCreation[] _creationBuffer;
 
         public CreationHelper(int areaId, UnitDB db, Vector2 cornerA, Vector2 cornerB)
@@ -42,8 +48,8 @@ namespace RGLabs.InGame.System.Wave.Creation
             _db = db;
 
             _queue = new();
-            _entityBuffer = new UnitEntity[_bufferSize];
-            _spaceBuffer = new EntitySpace[_bufferSize];
+            _unitBuffer = new Unit[_bufferSize];
+            _spaceBuffer = new UnitSpace[_bufferSize];
             _creationBuffer = new UnitCreation[_bufferSize];
 
             MessageBroker.Default.Receive<SpawnEvent[]>().Subscribe(OnReceiveSpawnEvents);
@@ -54,7 +60,7 @@ namespace RGLabs.InGame.System.Wave.Creation
             if (_queue.Count == 0)
                 return;
 
-            int bufferLength = SetUpEntityBuffer();
+            int bufferLength = SetUpUnitBuffer();
             SetUpSpaceBuffer(bufferLength, out var leftSpace);
             bufferLength = ApplyBlank(bufferLength, leftSpace);
             bufferLength = SetUpCreationBuffer(bufferLength);
@@ -77,22 +83,20 @@ namespace RGLabs.InGame.System.Wave.Creation
         /// 유닛 데이터 버퍼 할당
         /// </summary>
         /// <returns>버퍼의 유효 길이</returns>
-        private int SetUpEntityBuffer()
+        private int SetUpUnitBuffer()
         {
             int count = Mathf.Min(_queue.Count, _bufferSize);
-            int left = count;
             int i = 0;
-            while (left > 0)
+            while (_queue.Count > 0)
             {
                 var data = _queue.Dequeue();
-                if (!_db.TryFind(data.id, out var entity))
-                    --count;
-                else
-                    _entityBuffer[i++] = entity;
-
-                --left;
+                _unitBuffer[i++] = new Unit
+                {
+                    lv = data.lv,
+                    id = data.id
+                };
             }
-            
+
             return count;
         }
 
@@ -111,8 +115,8 @@ namespace RGLabs.InGame.System.Wave.Creation
             {
                 if (i < count)
                 {
-                    var entity = _entityBuffer[i];
-                    var diameter = entity.size * 2f;
+                    var unit = _unitBuffer[i];
+                    var diameter = _db.sizeCache.GetValueOrDefault(unit.id, 0.3f) * 2f;
                     var size = new Vector2(diameter, diameter) * direction;
                     _spaceBuffer[i].index = i;
                     _spaceBuffer[i].size = size;
@@ -171,7 +175,9 @@ namespace RGLabs.InGame.System.Wave.Creation
                 var position = lastPosition + lastHalfSize + halfSize;
                 if (space.valid)
                 {
-                    _creationBuffer[cBufferIndex].entity = _entityBuffer[space.index];
+                    var unit = _unitBuffer[space.index];
+                    _creationBuffer[cBufferIndex].id = unit.id;
+                    _creationBuffer[cBufferIndex].lv = unit.lv;
                     _creationBuffer[cBufferIndex].position = position;
                     ++cBufferIndex;
                 }

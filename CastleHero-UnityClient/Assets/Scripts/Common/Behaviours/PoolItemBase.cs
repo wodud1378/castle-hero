@@ -7,6 +7,10 @@ namespace RGLabs.Common.Behaviours
     {
         public PoolContainer Container { get; set; }
         
+        public AddressablePool<PoolItemBase> Pool { get; set; }
+
+        public bool Activated => gameObject.activeSelf;
+        
         public string ResourcePath { get; set; }
         
         protected virtual void OnActivate()
@@ -19,6 +23,8 @@ namespace RGLabs.Common.Behaviours
             gameObject.SetActive(false);
         }
 
+        public void ForceActivate() => Pool.ForceActivate(this);
+        
         public void Activate() => OnActivate();
 
         public void Inactivate() => OnInactivate();

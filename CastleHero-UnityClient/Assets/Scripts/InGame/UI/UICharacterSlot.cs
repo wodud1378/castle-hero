@@ -8,18 +8,15 @@ namespace RGLabs.InGame.UI
 {
     public class UICharacterSlot : UIItemSlot
     {
-        public Character Data { get; private set; }
-        public UnitEntity Entity { get; private set; }
+        public UnitInfo Info { get; private set; }
  
-        public async UniTask InitAsync(Character data, UnitDB db)
+        public async UniTask InitAsync(UnitInfo info, UnitDB db)
         {
-            Data = data;
+            Info = info;
 
-            if (!db.TryFind(data.id, out var entity))
+            if (!db.TryFind(info.id, out var entity))
                 return;
-
-            Entity = entity;
-
+            
             await base.InitAsync(entity.icon);
         }
     }

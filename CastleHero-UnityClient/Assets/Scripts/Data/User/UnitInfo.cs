@@ -3,7 +3,7 @@ using System;
 namespace RGLabs.Data.User
 {
     [Serializable]
-    public struct Character
+    public struct UnitInfo
     {
         public int lv;
         public int grade;

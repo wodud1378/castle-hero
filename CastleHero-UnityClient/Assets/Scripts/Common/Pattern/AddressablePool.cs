@@ -13,6 +13,8 @@ namespace RGLabs.Common.Pattern
         
         public string ResourcePath { get; set; }
         
+        public bool Activated { get; }
+        
         public void Activate();
         public void Inactivate();
     }
@@ -20,7 +22,7 @@ namespace RGLabs.Common.Pattern
     public class AddressablePool<T> : IDisposable where T : MonoBehaviour, IObjectPoolItem
     {
         private readonly List<T> _activated;
-        private readonly Queue<T> _spares;
+        private readonly List<T> _spares;
 
         private readonly string _path;
         private readonly Transform _parent;
@@ -31,15 +33,30 @@ namespace RGLabs.Common.Pattern
         {
             _path = path;
             _activated = new List<T>();
-            _spares = new Queue<T>();
+            _spares = new List<T>();
             _parent = parent;
+        }
+
+        public void ForceActivate(T obj)
+        {
+            if (obj.Activated)
+                return;
+
+            if (_spares.Contains(obj))
+                _spares.Remove(obj);
+            
+            obj.Activate();
+            _activated.Add(obj);
         }
 
         public async UniTask<T> Get(Vector2 position = default)
         {
             T obj;
             if (HasSpare)
-                obj = _spares.Dequeue();
+            {
+                obj = _spares[0];
+                _spares.RemoveAt(0);
+            }
             else
             {
                 var go = await Addressables.InstantiateAsync(_path, _parent);
@@ -57,7 +74,7 @@ namespace RGLabs.Common.Pattern
         public void Release(T obj)
         {
             obj.Inactivate();
-            _spares.Enqueue(obj);
+            _spares.Add(obj);
         }
 
         public void ClearSpares()

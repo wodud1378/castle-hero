@@ -2,7 +2,9 @@ using System;
 using PolyNav;
 using RGLabs.Common.Behaviours;
 using RGLabs.Data.Model;
+using RGLabs.Data.User;
 using RGLabs.Unit.Components;
+using RGLabs.Unit.Factory;
 using RGLabs.Utility;
 using UniRx;
 using UnityEditor;
@@ -55,7 +57,10 @@ namespace RGLabs.Unit.Behaviours
         
         public bool Released { get; private set; }
 
+        public UnitInfo Info { get; private set; }
         public UnitEntity Data { get; private set; }
+
+        public IUnitFactory factory;
 
         private void Awake()
         {
@@ -66,8 +71,16 @@ namespace RGLabs.Unit.Behaviours
                 .AddTo(this);
         }
 
-        public void Init(UnitEntity entity)
+        public void Init(int lv, UnitEntity entity)
         {
+            var info = new UnitInfo { lv = lv };
+            
+            Init(info, entity);
+        }
+
+        public void Init(UnitInfo info, UnitEntity entity)
+        {
+            Info = info;
             Data = entity;
             Core.SetData(entity);
             if (Hit != null)

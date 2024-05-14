@@ -22,7 +22,7 @@ namespace RGLabs.InGame.UI
         
         private readonly List<UICharacterSlot> _slots = new();
 
-        public async UniTask Init(Character[] characters, UnitDB db)
+        public async UniTask Init(UnitInfo[] characters, UnitDB db)
         {
             var tasks = new List<UniTask>();
             foreach (var character in characters)
@@ -33,11 +33,11 @@ namespace RGLabs.InGame.UI
             await UniTask.WhenAll(tasks);
         }
 
-        private async UniTask<UICharacterSlot> AddSlot(Character character, UnitDB db)
+        private async UniTask<UICharacterSlot> AddSlot(UnitInfo unitInfo, UnitDB db)
         {
             var obj = await Addressables.InstantiateAsync(_slotPrefab, SlotParent);
             var slot = obj.GetComponent<UICharacterSlot>();
-            await slot.InitAsync(character, db);
+            await slot.InitAsync(unitInfo, db);
 
             _slots.Add(slot);
             return slot;
