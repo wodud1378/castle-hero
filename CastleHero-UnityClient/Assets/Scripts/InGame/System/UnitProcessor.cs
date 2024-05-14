@@ -9,6 +9,12 @@ using Random = UnityEngine.Random;
 
 namespace RGLabs.InGame.System
 {
+    public enum DamageType
+    {
+        Normal,
+        DeBuff,
+    }
+    
     public struct ReserveRecovery
     {
         public UnitBehaviour behaviour;
@@ -35,6 +41,7 @@ namespace RGLabs.InGame.System
 
     public struct AtkResult
     {
+        public DamageType type;
         public UnitBehaviour from;
         public UnitBehaviour to;
         public bool isCritical;
