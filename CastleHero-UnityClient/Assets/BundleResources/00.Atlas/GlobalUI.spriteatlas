@@ -45,11 +45,13 @@ SpriteAtlas:
     - f66eaa71670c28e4db87a6e9b59bb892: 21300000
     - c8f374f229990b24d910c75283d3843a: 21300000
     - 288b5c3316c8c1c4db95ae1961b0addb: 21300000
+    - be3599431a07a6d429b1537efd5b2bb2: 21300000
     - 663ef57396088f449b1ed9430808abf7: 21300000
     - 85b28d93bd5dc3b4081e282b7ea14141: 21300000
     - d03851642d0e37043b47d275c5162e05: 21300000
     - b9d1f5646085b974dabe73a2469ce86f: 21300000
     - 9e177fa52716c42498bfd29c6a855362: 21300000
+    - 3a28fe06aba001e4fa394e6523a1b8e7: 21300000
     - f3ddfe19defca1d4aa31d7e62d89830a: 21300000
     - 01eb1c2988e2c5c4b836ddf8a8ed4d42: 21300000
     - 88a49aca2beebb047ac698c8a2d4db33: 21300000
@@ -67,11 +69,13 @@ SpriteAtlas:
   - {fileID: 21300000, guid: f66eaa71670c28e4db87a6e9b59bb892, type: 3}
   - {fileID: 21300000, guid: c8f374f229990b24d910c75283d3843a, type: 3}
   - {fileID: 21300000, guid: 288b5c3316c8c1c4db95ae1961b0addb, type: 3}
+  - {fileID: 21300000, guid: be3599431a07a6d429b1537efd5b2bb2, type: 3}
   - {fileID: 21300000, guid: 663ef57396088f449b1ed9430808abf7, type: 3}
   - {fileID: 21300000, guid: 85b28d93bd5dc3b4081e282b7ea14141, type: 3}
   - {fileID: 21300000, guid: d03851642d0e37043b47d275c5162e05, type: 3}
   - {fileID: 21300000, guid: b9d1f5646085b974dabe73a2469ce86f, type: 3}
   - {fileID: 21300000, guid: 9e177fa52716c42498bfd29c6a855362, type: 3}
+  - {fileID: 21300000, guid: 3a28fe06aba001e4fa394e6523a1b8e7, type: 3}
   - {fileID: 21300000, guid: f3ddfe19defca1d4aa31d7e62d89830a, type: 3}
   - {fileID: 21300000, guid: 01eb1c2988e2c5c4b836ddf8a8ed4d42, type: 3}
   - {fileID: 21300000, guid: 88a49aca2beebb047ac698c8a2d4db33, type: 3}
@@ -88,11 +92,13 @@ SpriteAtlas:
   - Button_Auto
   - Button_RoundSquare_Base
   - Button_RoundSquare_Y
+  - Button_Reset
   - Button_Speed
   - Frame_Portrait_01
   - Frame_Porrait_02
   - BG_Portrait_01
   - Button_RoundSquare_G
+  - Frame_Item
   - Button_Close_01
   - BG_Result
   - Button_RoundSquare_R

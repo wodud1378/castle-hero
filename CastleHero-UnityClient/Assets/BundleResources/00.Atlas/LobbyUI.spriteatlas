@@ -45,9 +45,13 @@ SpriteAtlas:
     - 317cc355bbeced845bc0520d96aa8bf4: 21300000
     - 78c98f55d25c17542821c9fceb4984c6: 21300000
     - 86ed5716f80547744898dcc83b857a4f: 21300000
+    - 12f8dbd6416443e40a0b2b0457f7240e: 21300000
+    - 02ab95070a075cd478f11389c81e5f93: 21300000
     - 09b1146756359154b92d4ed792bdc3d0: 21300000
     - 524ad678fe0e3af44b23079388ad79ae: 21300000
     - 0408d5e8195846c4383fe93c991d50dc: 21300000
+    - 9b8a169acc4d56a47a5f1ac6e7a9ad8b: 21300000
+    - 1c08934b15e536841be62cabfa64a2f7: 21300000
     - 2ce1647b039eda1488c00ac011dece6d: 21300000
     - 2683429c194383f42bc2dc2ac3fa78d4: 21300000
     - f5ddbf0d7347e014cbbe7ef90d328176: 21300000
@@ -66,9 +70,13 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 317cc355bbeced845bc0520d96aa8bf4, type: 3}
   - {fileID: 21300000, guid: 78c98f55d25c17542821c9fceb4984c6, type: 3}
   - {fileID: 21300000, guid: 86ed5716f80547744898dcc83b857a4f, type: 3}
+  - {fileID: 21300000, guid: 12f8dbd6416443e40a0b2b0457f7240e, type: 3}
+  - {fileID: 21300000, guid: 02ab95070a075cd478f11389c81e5f93, type: 3}
   - {fileID: 21300000, guid: 09b1146756359154b92d4ed792bdc3d0, type: 3}
   - {fileID: 21300000, guid: 524ad678fe0e3af44b23079388ad79ae, type: 3}
   - {fileID: 21300000, guid: 0408d5e8195846c4383fe93c991d50dc, type: 3}
+  - {fileID: 21300000, guid: 9b8a169acc4d56a47a5f1ac6e7a9ad8b, type: 3}
+  - {fileID: 21300000, guid: 1c08934b15e536841be62cabfa64a2f7, type: 3}
   - {fileID: 21300000, guid: 2ce1647b039eda1488c00ac011dece6d, type: 3}
   - {fileID: 21300000, guid: 2683429c194383f42bc2dc2ac3fa78d4, type: 3}
   - {fileID: 21300000, guid: f5ddbf0d7347e014cbbe7ef90d328176, type: 3}
@@ -86,9 +94,13 @@ SpriteAtlas:
   - Button_PanelSize_Down
   - Stamp
   - Panel_Bottom
+  - Inventory_Category_Enable
+  - Inventory_Category_Disable
   - Button_Start
   - Button_StageSelect
   - Panel_Top
+  - Panel_Inventory
+  - Box_Round
   - Box_Elipse
   - Button_Start_Dust
   - Portrait_Dummy
