@@ -158,10 +158,10 @@ GameObject:
   m_Component:
   - component: {fileID: 6492477957367575439}
   - component: {fileID: 6527101768759275983}
-  - component: {fileID: 5057493854964016350}
   - component: {fileID: 2729130189829634113}
   - component: {fileID: 2846901028330482152}
   - component: {fileID: 64773160747894567}
+  - component: {fileID: 7383902604929630426}
   m_Layer: 7
   m_Name: Castle_01
   m_TagString: Player
@@ -198,45 +198,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Type>k__BackingField: 0
-  <Body>k__BackingField: {fileID: 5057493854964016350}
   <Collider>k__BackingField: {fileID: 2729130189829634113}
   <Hit>k__BackingField: {fileID: 64773160747894567}
-  <Look>k__BackingField: {fileID: 0}
-  _skeletonMecanim: {fileID: 1425611714954103692}
-  _animator: {fileID: 0}
-  _animationEvents: {fileID: 0}
-  _maxAttackTarget: 0
-  _defaultMoveThreshlod: 0
-  _offset: {x: 0, y: 0}
   _enableAttack: 0
   _enableMove: 0
---- !u!50 &5057493854964016350
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7611493108381504404}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 7
+  data:
+    value:
+      <Id>k__BackingField: 0
+      name: 
+      icon: 
+      prefab: 
+      skinName: 
+      projectile: 
+      grade: 0
+      team: 0
+      role: 0
+      atkLayer: 0
+      defLayer: 0
+      atkOrder: 0
+      recovery: 0
+      hp: 0
+      atk: 0
+      critical: 0
+      criticalAtk: 0
+      atkSpeed: 0
+      speed: 0
+      atkRange: 0
+      moveRange: 0
+      size: 0
 --- !u!58 &2729130189829634113
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -298,3 +287,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _renderer: {fileID: 8692215242325790824}
   _color: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &7383902604929630426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7611493108381504404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93cc6a4987f7c684798156c56d545838, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _map: {fileID: 0}
+  maxSpeed: 0
+  maxForce: 0
+  stoppingDistance: 0
+  slowingDistance: 0
+  lookAheadDistance: 0
+  avoidRadius: 1.5
+  avoidanceConsiderStuckedTime: 3
+  avoidanceConsiderReachedDistance: 1
+  rotateTransform: 0
+  rotateSpeed: 350
+  centerOffset: {x: 0, y: 0.75}
+  repath: 1
+  restrict: 0
+  closerPointOnInvalid: 1
+  debugPath: 1

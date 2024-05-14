@@ -1,7 +1,5 @@
 using RGLabs.Common.Behaviours;
 using RGLabs.Utility;
-using UniRx;
-using UniRx.Triggers;
 using UnityEngine;
 
 namespace RGLabs.Unit.Behaviours
@@ -12,7 +10,6 @@ namespace RGLabs.Unit.Behaviours
         
         private UnitBehaviour _target;
         private Vector2 _destination;
-        private bool _isDeadTarget;
 
         private float _arrivalTime;
         
@@ -22,29 +19,29 @@ namespace RGLabs.Unit.Behaviours
                 return;
             
             _target = target;
-            _isDeadTarget = false;
-            _arrivalTime = Vector2.Distance(_target.Center, transform.position) / _speed;
+            _arrivalTime = Vector2.Distance(transform.position, _target.position) / _speed;
             
-            this
-                .UpdateAsObservable()
-                .RepeatUntilDisable(this)
-                .Subscribe(_=> UpdatePosition());
-
             target.OnDead += OnTargetDead;
         }
 
         private void OnTargetDead(UnitBehaviour unit)
         {
-            _isDeadTarget = true;
+            _target = null;
 
             unit.OnDead -= OnTargetDead;
         }
 
-        private void UpdatePosition()
+        private void Update()
         {
             _arrivalTime -= Time.deltaTime;
-            if (!_isDeadTarget)
-                _destination = _target.Center;
+            if (_arrivalTime < 0f)
+            {
+                DestroySelf();
+                return;
+            }
+            
+            if (_target.IsValid())
+                _destination = _target.position;
 
             var diff = _destination - (Vector2)transform.position;
             if (diff.sqrMagnitude < 0.015f)
@@ -53,15 +50,9 @@ namespace RGLabs.Unit.Behaviours
                 return;
             }
             
-            if (_arrivalTime < 0f)
-            {
-                DestroySelf();
-                return;
-            }
-            
             var direction = diff.normalized;
             transform.localRotation = Quaternion.Euler(0, 0, 180f - direction.ToFloat());
-            transform.Translate(direction * _speed * Time.deltaTime, Space.World);
+            transform.Translate(direction * (_speed * Time.deltaTime), Space.World);
         }
     }
 }

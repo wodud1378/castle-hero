@@ -7,6 +7,7 @@ using RGLabs.InGame.UI;
 using RGLabs.Lobby.Behaviours;
 using RGLabs.Lobby.UI;
 using RGLabs.Unit.Behaviours;
+using RGLabs.Unit.Components;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
@@ -51,12 +52,14 @@ namespace RGLabs.InGame.Behaviours
 
         private void Run(StartGame startGame)
         {
+            Context.currentBehaviour = this;
+            
             unitFactory = startGame.unitFactory;
             poolContainer = startGame.poolContainer;
 
             var castle = gameRepo.castle.Value;
             castle.state
-                .Where(x => x == UnitBehaviour.States.Dead)
+                .Where(x => x == UnitCore.States.Dead)
                 .Subscribe(_ => OnCastleDestroy())
                 .AddTo(this);
 
@@ -65,7 +68,7 @@ namespace RGLabs.InGame.Behaviours
             _uiInGame.Init(poolContainer);
             _uiInGame.Open();
             
-            _unitProcessor = new UnitProcessor();
+            _unitProcessor = new UnitProcessor(this);
 
             RunWave();
             RunUnits();
@@ -101,8 +104,8 @@ namespace RGLabs.InGame.Behaviours
             foreach (var character in gameRepo.characters.Value)
             {
                 var unit = character.behaviour;
-                unit.canAttack = true;
-                unit.canMove = true;
+                unit.CanAttack = true;
+                unit.CanMove = true;
             }
         }
 
@@ -150,7 +153,6 @@ namespace RGLabs.InGame.Behaviours
             base.Dispose();
             
             _uiInGame.Dispose();
-            _unitProcessor?.Dispose();
         }
     }
 }

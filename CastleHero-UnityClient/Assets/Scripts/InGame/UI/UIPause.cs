@@ -1,3 +1,5 @@
+using RGLabs.Common.Behaviours;
+using RGLabs.Common.Flow;
 using RGLabs.InGame.Behaviours;
 using RGLabs.Utility;
 using UnityEngine;
@@ -5,7 +7,7 @@ using UnityEngine.UI;
 
 namespace RGLabs.InGame.UI
 {
-    public class UIPause : MonoBehaviour
+    public class UIPause : MonoBehaviour, IBackButtonListener
     {
         [SerializeField] private Button _exitButton;
         [SerializeField] private Button _resumeButton;
@@ -23,6 +25,8 @@ namespace RGLabs.InGame.UI
             Time.timeScale = 0f;
             
             gameObject.SetActive(true);
+            
+            Context.Back.Add(this);
         }
 
         public void Close()
@@ -44,6 +48,13 @@ namespace RGLabs.InGame.UI
             ExitCode.Retry.Publish();
             
             Close();
+        }
+
+        public bool OnProcessBack()
+        {
+            Close();
+            
+            return true;
         }
     }
 }

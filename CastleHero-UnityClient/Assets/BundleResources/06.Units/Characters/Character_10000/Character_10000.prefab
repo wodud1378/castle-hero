@@ -372,9 +372,9 @@ GameObject:
   - component: {fileID: 3091143028093403263}
   - component: {fileID: 4335173723894397296}
   - component: {fileID: 8682722783856227644}
-  - component: {fileID: 6761137151746313344}
   - component: {fileID: 6819981342643926808}
   - component: {fileID: 3461385075006033567}
+  - component: {fileID: 3073889935844821490}
   m_Layer: 0
   m_Name: Character_10000
   m_TagString: Untagged
@@ -423,45 +423,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Type>k__BackingField: 1
-  <Body>k__BackingField: {fileID: 6761137151746313344}
   <Collider>k__BackingField: {fileID: 6819981342643926808}
   <Hit>k__BackingField: {fileID: 3461385075006033567}
-  <Look>k__BackingField: {fileID: 0}
-  _skeletonMecanim: {fileID: 0}
-  _animator: {fileID: 0}
-  _animationEvents: {fileID: 0}
-  _maxAttackTarget: 0
-  _defaultMoveThreshlod: 0
-  _offset: {x: 0, y: 0}
   _enableAttack: 0
   _enableMove: 0
---- !u!50 &6761137151746313344
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8174836243430003678}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 7
+  data:
+    value:
+      <Id>k__BackingField: 0
+      name: 
+      icon: 
+      prefab: 
+      skinName: 
+      projectile: 
+      grade: 0
+      team: 0
+      role: 0
+      atkLayer: 0
+      defLayer: 0
+      atkOrder: 0
+      recovery: 0
+      hp: 0
+      atk: 0
+      critical: 0
+      criticalAtk: 0
+      atkSpeed: 0
+      speed: 0
+      atkRange: 0
+      moveRange: 0
+      size: 0
 --- !u!58 &6819981342643926808
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -511,4 +500,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _renderer: {fileID: 1672696428132634757}
   _color: {r: 1, g: 1, b: 1, a: 1}
-  _duration: 0.1
+--- !u!114 &3073889935844821490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8174836243430003678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93cc6a4987f7c684798156c56d545838, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _map: {fileID: 0}
+  maxSpeed: 0
+  maxForce: 0
+  stoppingDistance: 0
+  slowingDistance: 0
+  lookAheadDistance: 0
+  avoidRadius: 0.5
+  avoidanceConsiderStuckedTime: 3
+  avoidanceConsiderReachedDistance: 1
+  rotateTransform: 0
+  rotateSpeed: 350
+  centerOffset: {x: 0, y: 0.35}
+  repath: 1
+  restrict: 0
+  closerPointOnInvalid: 1
+  debugPath: 1

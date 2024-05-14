@@ -6,20 +6,19 @@ using UnityEngine;
 
 namespace RGLabs.Unit.Finding
 {
-    [Serializable]
     public abstract class FindUnits
     {
         private static readonly Dictionary<Collider2D, UnitBehaviour> CachedUnits = new();
         
         public List<UnitBehaviour> Found { get; }
-
-        [SerializeField] public LayerMask layerMask;
+        public LayerMask layerMask;
+        public float range;
         
         protected readonly Collider2D[] _castBuffer;
-        
-        protected readonly int _maxTarget;
-        
-        public FindUnits(Collider2D[] castBuffer, int maxTarget)
+
+        private readonly int _maxTarget;
+
+        protected FindUnits(Collider2D[] castBuffer, int maxTarget)
         {
             _castBuffer = castBuffer;
             _maxTarget = maxTarget;
@@ -29,9 +28,11 @@ namespace RGLabs.Unit.Finding
 
         protected abstract bool OnUpdate(int found);
 
-        public bool Update(Vector2 position, float range)
+        public bool Update(Vector2 position)
         {
-            if (!TrySearch(position, range, out int found))
+            Found.Clear();
+            
+            if (!TrySearch(position, out int found))
                 return false;
             
             return OnUpdate(found);
@@ -39,7 +40,7 @@ namespace RGLabs.Unit.Finding
         
         public void Clear() => Found.Clear();
         
-        protected virtual bool TrySearch(Vector2 position, float range, out int found)
+        protected virtual bool TrySearch(Vector2 position, out int found)
         {
             found =  Physics2D.OverlapCircleNonAlloc(position, range, _castBuffer, layerMask);
             if (_maxTarget > 0)

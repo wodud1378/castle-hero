@@ -14,5 +14,16 @@ namespace RGLabs.Data.DB
                 name = string.Empty,
                 desc = string.Empty
             };
+
+        public void Load(object[] data)
+        {
+            int length = data.Length;
+            _entities = new ItemEntity[length];
+
+            for (int i = 0; i < length; ++i)
+            {
+                _entities[i] = (ItemEntity)data[i];
+            }
+        }
     }
 }

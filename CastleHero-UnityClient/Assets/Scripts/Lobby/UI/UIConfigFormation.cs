@@ -3,6 +3,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using RGLabs.Common.Behaviours;
+using RGLabs.Common.Flow;
 using RGLabs.InGame.UI;
 using RGLabs.Lobby.Behaviours;
 using RGLabs.Unit.Behaviours;
@@ -14,7 +15,7 @@ using UnityEngine.UI;
 
 namespace RGLabs.Lobby.UI
 {
-    public class UIConfigFormation : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler, IDisposable
+    public class UIConfigFormation : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler, IBackButtonListener, IDisposable
     {
         [SerializeField] private Graphic _rayTarget;
         [SerializeField] private Formation _formation;
@@ -49,8 +50,8 @@ namespace RGLabs.Lobby.UI
         private async UniTask<UnitBehaviour> CreateUnitFromSlot(UICharacterSlot slot)
         {
             var unit = await _factory.Create(slot.Entity, slot.transform.position);
-            unit.canMove = false;
-            unit.canAttack = false;
+            unit.CanMove = false;
+            unit.CanAttack = false;
             unit.Collider.isTrigger = true;
 
             _originLayer = unit.gameObject.layer;
@@ -77,8 +78,9 @@ namespace RGLabs.Lobby.UI
             }
             else
             {
+                _hold.Core.defaultDestination = _hold.position;
+                _hold.CanMove = true;
                 _hold.Collider.isTrigger = false;
-                _hold.defaultDestination = _hold.position;
                 _hold.gameObject.layer = _originLayer;
             }
 
@@ -114,6 +116,7 @@ namespace RGLabs.Lobby.UI
             if (!_characterList.IsOpen)
             {
                 _characterList.Open();
+                Context.Back.Add(this);
                 return;
             }
             
@@ -174,6 +177,7 @@ namespace RGLabs.Lobby.UI
             _circleDrawer.gameObject.SetActive(true);
             _circleDrawer.Color = _validColor;
 
+            Context.Back.Add(this);
             Context.startButton.enabled = false;
         }
 
@@ -187,6 +191,18 @@ namespace RGLabs.Lobby.UI
             _circleDrawer.gameObject.SetActive(false);
             
             Context.startButton.enabled = true;
+        }
+
+        public bool OnProcessBack()
+        {
+            if (_characterList.IsOpen)
+            {
+                _characterList.Close();
+                return true;
+            }
+
+            enabled = false;
+            return true;
         }
     }
 }

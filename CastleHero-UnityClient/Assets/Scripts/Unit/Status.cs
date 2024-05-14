@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RGLabs.Data.Model;
+using UniRx;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace RGLabs.Unit
 {
@@ -44,7 +46,7 @@ namespace RGLabs.Unit
                 float increase = _increase.Sum(t => t.value);
                 float decrease = _decrease.Sum(t => t.value);
 
-                return _default + increase + decrease;
+                return _default + increase - decrease;
             }
         }
 
@@ -149,7 +151,6 @@ namespace RGLabs.Unit
         public readonly Ability recovery = new();
 
         private List<Ability> _abilities;
-        
 
         public void Init(UnitEntity data)
         {

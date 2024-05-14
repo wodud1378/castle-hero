@@ -54,7 +54,7 @@ namespace RGLabs.Data.Repositories
                 array[i] = new FieldCharacter
                 {
                     index = index,
-                    position = units[i].behaviour.transform.position
+                    position = units[i].behaviour.position,
                 };
             }
 

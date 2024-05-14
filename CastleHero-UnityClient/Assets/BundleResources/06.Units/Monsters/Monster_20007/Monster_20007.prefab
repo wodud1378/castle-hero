@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 7405764224175786417}
   - component: {fileID: 7154187406837400977}
   - component: {fileID: 1244821699734531410}
-  - component: {fileID: 7564609263448706904}
   m_Layer: 0
   m_Name: Spine Mecanim GameObject (Monster_20007)
   m_TagString: Untagged
@@ -183,18 +182,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 063d79a6a53f424bb2d035a27a8bc1ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7564609263448706904
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 465181937184145386}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8273c3a31e548aebdf21d127912df24, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1401594709473735656
 GameObject:
   m_ObjectHideFlags: 0
@@ -303,8 +290,9 @@ GameObject:
   - component: {fileID: 6927557205221649431}
   - component: {fileID: 1471205272056356808}
   - component: {fileID: 955834530629895259}
-  - component: {fileID: 4340606988630425823}
   - component: {fileID: 8689379413697046180}
+  - component: {fileID: 649420869344247722}
+  - component: {fileID: -1948975894533021499}
   m_Layer: 0
   m_Name: Monster_20007
   m_TagString: Untagged
@@ -341,18 +329,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Type>k__BackingField: 0
-  <Body>k__BackingField: {fileID: 4340606988630425823}
   <Collider>k__BackingField: {fileID: 955834530629895259}
   <Hit>k__BackingField: {fileID: 8689379413697046180}
-  <Look>k__BackingField: {fileID: 7564609263448706904}
-  _skeletonMecanim: {fileID: 7405764224175786417}
-  _animator: {fileID: 7174810689259680027}
-  _animationEvents: {fileID: 1244821699734531410}
-  _maxAttackTarget: 1
-  _defaultMoveThreshlod: 0
-  _offset: {x: 0, y: 0.5}
   _enableAttack: 1
   _enableMove: 1
+  _enableAnimation: 1
 --- !u!210 &1471205272056356808
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -400,33 +381,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0.3}
   serializedVersion: 2
   m_Radius: 0.3
---- !u!50 &4340606988630425823
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6391860083955039845}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0.5
-  m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
 --- !u!114 &8689379413697046180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -441,6 +395,61 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _renderer: {fileID: 6677911987457325467}
   _color: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &649420869344247722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6391860083955039845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93cc6a4987f7c684798156c56d545838, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _map: {fileID: 0}
+  maxSpeed: 3.5
+  maxForce: 20
+  stoppingDistance: 0.1
+  slowingDistance: 0.1
+  lookAheadDistance: 1
+  avoidRadius: 0.3
+  avoidanceConsiderStuckedTime: 99999
+  avoidanceConsiderReachedDistance: 1
+  rotateTransform: 0
+  rotateSpeed: 350
+  centerOffset: {x: 0, y: 0.3}
+  repath: 1
+  restrict: 0
+  closerPointOnInvalid: 1
+  debugPath: 1
+--- !u!50 &-1948975894533021499
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6391860083955039845}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 10
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &6953692823064498941
 GameObject:
   m_ObjectHideFlags: 0

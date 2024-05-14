@@ -71,8 +71,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: -15
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 35b78c3957e206d41b80378cfad05e72, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 8a3add0430af70f4cbb990de637cfcd9, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b2e30944874a15545876a27cbb65a879, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 026de58f61cae5a469ddc11ef0bdb2ce, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1033,6 +1033,11 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
+  _rewardIconAtlas:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!95 &8240188203900132896
 Animator:
   serializedVersion: 5
@@ -1332,8 +1337,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 35b78c3957e206d41b80378cfad05e72, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 8a3add0430af70f4cbb990de637cfcd9, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b2e30944874a15545876a27cbb65a879, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 026de58f61cae5a469ddc11ef0bdb2ce, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

@@ -14,5 +14,16 @@ namespace RGLabs.Data.DB
                 minQuantity = 0,
                 maxQuantity = 0,
             };
+        
+        public void Load(object[] data)
+        {
+            int length = data.Length;
+            _entities = new RewardEntity[length];
+
+            for (int i = 0; i < length; ++i)
+            {
+                _entities[i] = (RewardEntity)data[i];
+            }
+        }
     }
 }

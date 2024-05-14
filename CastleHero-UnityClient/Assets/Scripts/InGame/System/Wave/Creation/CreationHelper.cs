@@ -112,7 +112,8 @@ namespace RGLabs.InGame.System.Wave.Creation
                 if (i < count)
                 {
                     var entity = _entityBuffer[i];
-                    var size = new Vector2(entity.size, entity.size) * direction;
+                    var diameter = entity.size * 2f;
+                    var size = new Vector2(diameter, diameter) * direction;
                     _spaceBuffer[i].index = i;
                     _spaceBuffer[i].size = size;
                     _spaceBuffer[i].valid = true;

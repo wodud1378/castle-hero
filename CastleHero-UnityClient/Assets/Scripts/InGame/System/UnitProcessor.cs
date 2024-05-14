@@ -1,12 +1,21 @@
-using System;
-using System.Collections.Generic;
+using RGLabs.Data.Model;
 using RGLabs.Unit.Behaviours;
+using RGLabs.Unit.Components;
 using RGLabs.Utility;
 using UniRx;
+using UniRx.Triggers;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace RGLabs.InGame.System
 {
+    public struct ReserveRecovery
+    {
+        public UnitBehaviour behaviour;
+        public Vector2 position;
+        public float time;
+    }
+    
     public struct AtkEvent
     {
         public UnitBehaviour from;
@@ -32,25 +41,44 @@ namespace RGLabs.InGame.System
         public float amount;
     }
 
-    public class UnitProcessor : IDisposable
+    public class UnitProcessor
     {
-        private readonly List<IDisposable> _disposables;
+        private readonly MonoBehaviour _root;
         
-        public UnitProcessor()
+        public UnitProcessor(MonoBehaviour root)
         {
-            _disposables = new();
-            _disposables.Add(MessageBroker.Default.Receive<AtkEvent>().Subscribe(OnReceiveAtkEvent));
-            _disposables.Add(MessageBroker.Default.Receive<HealEvent>().Subscribe(OnReceiveHealEvent));
+            _root = root;
+            
+            MessageBroker.Default
+                .Receive<AtkEvent>()
+                .Subscribe(OnReceiveAtkEvent)
+                .AddTo(_root);
+
+            MessageBroker.Default
+                .Receive<HealEvent>()
+                .Subscribe(OnReceiveHealEvent)
+                .AddTo(_root);
+
+            MessageBroker.Default
+                .Receive<ReserveRecovery>()
+                .Subscribe(OnReserveRecovery)
+                .AddTo(_root);
         }
 
         private void OnReceiveAtkEvent(AtkEvent ev)
         {
+            var from = ev.from;
             var to = ev.to;
             if (!to.IsValid())
                 return;
 
-            float amount = CalcAmount(ev.amount, ev.critical, ev.criticalMul, out bool isCritical);
-            to.status.hp.Decrease(amount);
+            float amount;
+            amount = CalcAmount(ev.amount, ev.critical, ev.criticalMul, out bool isCritical);
+
+            if (from.IsValid())
+                amount = CalcElemental(amount, from.Core.elemental.atkType, to.Core.elemental.defType);
+                    
+            to.Core.status.hp.Decrease(amount);
             
             if(to.Hit != null)
                 to.Hit.Play();
@@ -73,18 +101,34 @@ namespace RGLabs.InGame.System
             to.status.hp.Increase(ev.amount);
         }
 
+        private void OnReserveRecovery(ReserveRecovery recovery)
+        {
+            float currentTime = recovery.time;
+            _root
+                .UpdateAsObservable()
+                .Select(_ => Time.deltaTime)
+                .Where(x =>
+                {
+                    currentTime -= x;
+                    return currentTime <= 0f;
+                })
+                // TODO 유닛 부활 로직
+                .Subscribe(_ =>
+                {
+                    var behaviour = recovery.behaviour;
+                    behaviour.Activate();
+                    behaviour.Init(behaviour.Data);
+                    behaviour.position = recovery.position;
+                })
+                .AddTo(_root);
+        }
+
         private float CalcAmount(float atk, float critical, float criticalAtk, out bool isCritical)
         {
             isCritical = Random.Range(0f, 1f) <= critical;
             return isCritical ? atk * criticalAtk : atk;
         }
 
-        public void Dispose()
-        {
-            foreach (var disposable in _disposables)
-            {
-                disposable.Dispose();
-            }
-        }
+        private float CalcElemental(float amount, Elemental.Type atk, Elemental.Type def) => amount * Elemental.AtkMultiplier(atk, def);
     }
 }
