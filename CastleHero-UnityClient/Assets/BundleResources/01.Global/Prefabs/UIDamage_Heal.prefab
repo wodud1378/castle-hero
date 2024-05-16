@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7151656531099706463}
-  - component: {fileID: 7905395245950892103}
   m_Layer: 5
   m_Name: UIDamage_Heal
   m_TagString: Untagged
@@ -37,27 +36,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!95 &7905395245950892103
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 735659825525702012}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e038ee91eb4f4bb409a7d12190ee5a9c, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7441587137642633735
 GameObject:
   m_ObjectHideFlags: 0
@@ -68,8 +46,8 @@ GameObject:
   m_Component:
   - component: {fileID: 473467641619496196}
   - component: {fileID: 8571339310271111499}
-  - component: {fileID: 21114633791912373}
   - component: {fileID: 3188070048162260836}
+  - component: {fileID: 7860463245713804954}
   m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
@@ -104,25 +82,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7441587137642633735}
   m_CullTransparentMesh: 1
---- !u!114 &21114633791912373
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7441587137642633735}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60c7e611c82d478fb1b0616722cdf0a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _sets:
-  - type: 0
-    isCritical: 0
-    mainColor: {r: 0, g: 0, b: 0, a: 0}
-    outlineColor: {r: 0, g: 0, b: 0, a: 0}
-  _animator: {fileID: 7905395245950892103}
-  _label: {fileID: 3188070048162260836}
 --- !u!114 &3188070048162260836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,3 +171,24 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!95 &7860463245713804954
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7441587137642633735}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e038ee91eb4f4bb409a7d12190ee5a9c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
