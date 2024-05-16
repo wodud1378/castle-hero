@@ -59,7 +59,7 @@ namespace RGLabs.Lobby.Behaviours
                 return;
             
             var characters = _gameRepo.characters.Value
-                .Where(x => x.behaviour.Id != unit.Id)
+                .Where(x => x.Id != unit.Id)
                 .ToArray();
 
             _gameRepo.characters.Value = characters;
@@ -104,30 +104,25 @@ namespace RGLabs.Lobby.Behaviours
         {
             int limit = unit.Type == UnitBehaviour.BehaviourType.Barricade ? 3 : 1;
             var characters = _gameRepo.characters.Value;
-            characters ??= Array.Empty<InGameCharacter>();
+            characters ??= Array.Empty<UnitBehaviour>();
             
-            int current = Array.FindAll(characters, (character) => character.behaviour.Id == unit.Id).Length;
+            int current = Array.FindAll(characters, (character) => character.Id == unit.Id).Length;
             if (current >= limit)
             {
-                int index = Array.FindIndex(characters, (x) => x.unitInfo.id == unit.Id);
+                int index = Array.FindIndex(characters, (x) => x.Id == unit.Id);
                 if (index != -1)
                 {
-                    var behaviour = characters[index].behaviour;
+                    var behaviour = characters[index];
                     if (behaviour != unit)
                         behaviour.DestroySelf();
                     
-                    characters[index].behaviour = null;
+                    characters[index] = null;
                 }
             }
 
-            var character = _userRepo.FindCharacter(unit.Id);
             characters = characters
-                .Where(x => x.behaviour != null)
-                .Append(new InGameCharacter
-                {
-                    unitInfo = character,
-                    behaviour = unit
-                })
+                .Where(x => x != null)
+                .Append(unit)
                 .ToArray();
 
             _gameRepo.characters.Value = characters;

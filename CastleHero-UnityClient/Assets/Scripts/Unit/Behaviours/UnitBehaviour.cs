@@ -9,6 +9,7 @@ using RGLabs.Utility;
 using UniRx;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace RGLabs.Unit.Behaviours
 {
@@ -58,7 +59,10 @@ namespace RGLabs.Unit.Behaviours
         public bool Released { get; private set; }
 
         public UnitInfo Info { get; private set; }
+
         public UnitEntity Data { get; private set; }
+        
+        private UnitLevelEntity _level;
 
         public IUnitFactory factory;
 
@@ -70,25 +74,29 @@ namespace RGLabs.Unit.Behaviours
                 .Subscribe(_=> ProcessDead())
                 .AddTo(this);
         }
-
-        public void Init(int lv, UnitEntity entity)
-        {
-            var info = new UnitInfo { lv = lv };
-            
-            Init(info, entity);
-        }
-
-        public void Init(UnitInfo info, UnitEntity entity)
+        
+        public void Init(UnitInfo info, UnitEntity entity, UnitLevelEntity levelData)
         {
             Info = info;
+            
             Data = entity;
-            Core.SetData(entity);
+            _level = levelData;
+            Core.SetData(entity, info.lv, levelData);
             if (Hit != null)
                 Hit.Init();
 
             this.InitAlley(entity.defLayer);
 
             Released = false;
+        }
+
+        public void Recovery(Vector2 at)
+        {
+            ForceActivate();
+            Init(Info, Data, _level);
+
+            position = at;
+            Core.defaultDestination = at;
         }
         
         private void ProcessDead()

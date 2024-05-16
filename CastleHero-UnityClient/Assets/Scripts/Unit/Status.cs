@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RGLabs.Data.Model;
-using UniRx;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace RGLabs.Unit
 {
@@ -140,30 +138,63 @@ namespace RGLabs.Unit
 
     public class Status
     {
+        public enum Type
+        {
+            Hp = 0,
+            Atk,
+            Critical,
+            CriticalAtk,
+            AtkSpeed,
+            MoveSpeed,
+            AtkRange,
+            MoveRange,
+            Recovery,
+        }
+
+        public readonly Dictionary<Type, Ability> abilities;
+
+        public Ability this[Type type] => abilities.GetValueOrDefault(type);
+
         public readonly Hp hp = new();
-        public readonly Ability speed = new();
         public readonly Ability atk = new();
-        public readonly Ability moveRange = new();
-        public readonly Ability atkRange = new();
-        public readonly Ability atkSpeed = new();
         public readonly Ability critical = new();
         public readonly Ability criticalAtk = new();
+        public readonly Ability atkSpeed = new();
+        public readonly Ability speed = new();
+        public readonly Ability atkRange = new();
+        public readonly Ability moveRange = new();
         public readonly Ability recovery = new();
 
         private List<Ability> _abilities;
 
-        public void Init(UnitEntity data)
+        public Status()
+        {
+            abilities = new Dictionary<Type, Ability>
+            {
+                { Type.Hp, hp },
+                { Type.Atk, atk },
+                { Type.Critical, critical },
+                { Type.CriticalAtk, criticalAtk },
+                { Type.AtkSpeed, atkSpeed },
+                { Type.MoveSpeed, speed },
+                { Type.AtkRange, atkRange },
+                { Type.MoveRange, moveRange },
+                { Type.Recovery, recovery },
+            };
+        }
+
+        public void Init(UnitEntity data, int lv, UnitLevelEntity levelData)
         {
             _abilities = new List<Ability>();
 
-            hp.Init(_abilities, data.hp);
-            speed.Init(_abilities, data.speed);
-            atk.Init(_abilities, data.atk);
-            moveRange.Init(_abilities, data.moveRange);
-            atkRange.Init(_abilities, data.atkRange);
-            atkSpeed.Init(_abilities, data.atkSpeed);
-            critical.Init(_abilities, data.critical);
-            criticalAtk.Init(_abilities, data.criticalAtk);
+            hp.Init(_abilities, data.hp + (lv * levelData.hp));
+            atk.Init(_abilities, data.atk + (lv * levelData.atk));
+            critical.Init(_abilities, data.critical + (lv * levelData.critical));
+            criticalAtk.Init(_abilities, data.criticalAtk + (lv * levelData.criticalAtk));
+            atkSpeed.Init(_abilities, data.atkSpeed + (lv * levelData.atkSpeed));
+            speed.Init(_abilities, data.speed + (lv * levelData.speed));
+            atkRange.Init(_abilities, data.atkRange + (lv * levelData.atkRange));
+            moveRange.Init(_abilities, data.moveRange + (lv * levelData.moveRange));
             recovery.Init(_abilities, data.recovery);
         }
 

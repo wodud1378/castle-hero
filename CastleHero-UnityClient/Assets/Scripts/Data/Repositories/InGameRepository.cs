@@ -33,6 +33,8 @@ namespace RGLabs.Data.Repositories
         public ItemDB items;
         public UnitDB characters;
         public UnitDB monsters;
+        public UnitLevelDB characterLevels;
+        public UnitLevelDB monsterLevels;
 
         private DBCollections()
         {
@@ -41,11 +43,13 @@ namespace RGLabs.Data.Repositories
         private async UniTask Init()
         {
             stages = await LoadDB<StageDB>("Stages");
-            characters = await LoadDB<UnitDB>("Characters");
-            monsters = await LoadDB<UnitDB>("Monsters");
             waves = await LoadDB<WaveDB>("Waves");
             rewards = await LoadDB<RewardDB>("Rewards");
             items = await LoadDB<ItemDB>("Items");
+            characters = await LoadDB<UnitDB>("Characters");
+            monsters = await LoadDB<UnitDB>("Monsters");
+            characterLevels = await LoadDB<UnitLevelDB>("CharacterLevels");
+            monsterLevels = await LoadDB<UnitLevelDB>("MonsterLevels");
             
             monsters.CacheUnitSizes();
         }
@@ -57,8 +61,7 @@ namespace RGLabs.Data.Repositories
     public class InGameRepository : IDisposable
     {
         public readonly ReactiveProperty<UnitBehaviour> castle = new(null);
-        public readonly ReactiveProperty<InGameCharacter[]> characters = new(null);
-        public readonly ReactiveProperty<WaitRecover[]> waitRecover = new(null);
+        public readonly ReactiveProperty<UnitBehaviour[]> characters = new(null);
 
         public readonly ReactiveCollection<WaitRecover> recovers = new();
 
@@ -66,7 +69,7 @@ namespace RGLabs.Data.Repositories
         {
             castle.Value = null;
             characters.Value = null;
-            waitRecover.Value = null;
+            recovers.Clear();
             
             castle.Dispose();
             characters.Dispose();
