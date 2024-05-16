@@ -20,8 +20,9 @@ namespace RGLabs.InGame.System.Wave
     
     public struct UnitCreation
     {
+        public int id;
+        public int lv;
         public Vector2 position;
-        public UnitEntity entity;
     }
 
     public struct ReleaseEvent

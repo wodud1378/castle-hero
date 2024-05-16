@@ -40,12 +40,20 @@ SpriteAtlas:
     - d1313870f2a48344283ccbaf9115aeb3: 21300000
     - 7a14aa91be436334094bb09dea2eed11: 21300000
     - 0a4f8e22bee9273438bdbb21c086c293: 21300000
+    - 0f24ab4395f87f6438703e6ef0a165db: 21300000
     - 0c9f13639f046e240b8dfec2fb286366: 21300000
+    - 0a769804e05f14140b81d93e2825dc0a: 21300000
     - 558b0c64e421b004a875faf65706e48c: 21300000
+    - 67624084f6d0f2a4887ec56a14d049c9: 21300000
+    - 77f742a4123a362458d1c1f00e3fee00: 21300000
     - 58da98073d9fae9479363255cb28d581: 21300000
+    - 031a2d274053b334d97578b7566dafb4: 21300000
     - 2e4d2d37305fef24091122e3253e4947: 21300000
     - f903a0e87fcf6444194e63c838686b2d: 21300000
     - 4a9b3daa11d565f4598d604e0a50a437: 21300000
+    - 496a086b297d7e645b455a589cbee192: 21300000
+    - 042d1facc934b8e4d866d707782dbde9: 21300000
+    - 08299fec3457604439b26bd1c9f7dca0: 21300000
     - bb3b6c6db040f784c903aacd39799aa0: 21300000
     - 80f5afbdc4b057a4d9a849d1af36e7de: 21300000
     - 2b5e718f8285b7743b9a5ce5d749f416: 21300000
@@ -54,12 +62,20 @@ SpriteAtlas:
   - {fileID: 21300000, guid: d1313870f2a48344283ccbaf9115aeb3, type: 3}
   - {fileID: 21300000, guid: 7a14aa91be436334094bb09dea2eed11, type: 3}
   - {fileID: 21300000, guid: 0a4f8e22bee9273438bdbb21c086c293, type: 3}
+  - {fileID: 21300000, guid: 0f24ab4395f87f6438703e6ef0a165db, type: 3}
   - {fileID: 21300000, guid: 0c9f13639f046e240b8dfec2fb286366, type: 3}
+  - {fileID: 21300000, guid: 0a769804e05f14140b81d93e2825dc0a, type: 3}
   - {fileID: 21300000, guid: 558b0c64e421b004a875faf65706e48c, type: 3}
+  - {fileID: 21300000, guid: 67624084f6d0f2a4887ec56a14d049c9, type: 3}
+  - {fileID: 21300000, guid: 77f742a4123a362458d1c1f00e3fee00, type: 3}
   - {fileID: 21300000, guid: 58da98073d9fae9479363255cb28d581, type: 3}
+  - {fileID: 21300000, guid: 031a2d274053b334d97578b7566dafb4, type: 3}
   - {fileID: 21300000, guid: 2e4d2d37305fef24091122e3253e4947, type: 3}
   - {fileID: 21300000, guid: f903a0e87fcf6444194e63c838686b2d, type: 3}
   - {fileID: 21300000, guid: 4a9b3daa11d565f4598d604e0a50a437, type: 3}
+  - {fileID: 21300000, guid: 496a086b297d7e645b455a589cbee192, type: 3}
+  - {fileID: 21300000, guid: 042d1facc934b8e4d866d707782dbde9, type: 3}
+  - {fileID: 21300000, guid: 08299fec3457604439b26bd1c9f7dca0, type: 3}
   - {fileID: 21300000, guid: bb3b6c6db040f784c903aacd39799aa0, type: 3}
   - {fileID: 21300000, guid: 80f5afbdc4b057a4d9a849d1af36e7de, type: 3}
   - {fileID: 21300000, guid: 2b5e718f8285b7743b9a5ce5d749f416, type: 3}
@@ -67,12 +83,20 @@ SpriteAtlas:
   - Icon_Character
   - Button_Event
   - Button_DailyCheck
+  - Icon_Weapon
   - Button_Post
+  - Icon_Material
   - Icon_Buff_Dummy03
+  - Icon_Neckless
+  - Icon_All
   - Icon_Gacha
+  - Icon_Box
   - Button_Shop
   - Icon_Inventory
   - Icon_Buff_Dummy01
+  - Icon_Ring
+  - Icon_Use
+  - Icon_Armor
   - Icon_Buff_Dummy02
   - Button_Setting
   - Icon_WorldMap

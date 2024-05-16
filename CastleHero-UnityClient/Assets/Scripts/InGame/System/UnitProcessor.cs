@@ -1,4 +1,5 @@
-using RGLabs.Data.Model;
+using System;
+using RGLabs.Common.Behaviours;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Components;
 using RGLabs.Utility;
@@ -9,126 +10,178 @@ using Random = UnityEngine.Random;
 
 namespace RGLabs.InGame.System
 {
-    public struct ReserveRecovery
+    public class WaitRecover : IDisposable
     {
         public UnitBehaviour behaviour;
         public Vector2 position;
-        public float time;
-    }
-    
-    public struct AtkEvent
-    {
-        public UnitBehaviour from;
-        public UnitBehaviour to;
+        public float leftTime;
 
-        public float amount;
-        public float critical;
-        public float criticalMul;
+        private IDisposable _subscription;
+        private ReactiveCollection<WaitRecover> _root;
+
+        public void Bind(ReactiveCollection<WaitRecover> root, IDisposable subscription)
+        {
+            _root = root;
+            _subscription = subscription;
+        }
+
+        public void Dispose()
+        {
+            _root?.Remove(this);
+            _subscription?.Dispose();
+        }
     }
-    
-    public struct HealEvent
+
+    public enum DamageType
     {
-        public UnitBehaviour from;
-        public UnitBehaviour to;
-        public float amount;
+        Normal,
+        Debuff
+    }
+
+    public enum HealType
+    {
+        Heal,
+        Shield
+    }
+
+    public interface IModifier
+    {
+        public UnitBehaviour From { get; }
+        public UnitBehaviour To { get; }
+        public float Amount { get; }
+    }
+
+    public struct AtkEvent : IModifier
+    {
+        public DamageType Type { get; set; }
+        public UnitBehaviour From { get; set; }
+        public UnitBehaviour To { get; set; }
+        public float Amount { get; set; }
+    }
+
+    public struct HealEvent : IModifier
+    {
+        public HealType Type { get; set; }
+        public UnitBehaviour From { get; set; }
+        public UnitBehaviour To { get; set; }
+        public float Amount { get; set; }
     }
 
     public struct AtkResult
     {
-        public UnitBehaviour from;
-        public UnitBehaviour to;
-        public bool isCritical;
-        public float amount;
+        public AtkEvent Event { get; set; }
+
+        public bool IsCritical { get; set; }
+    }
+
+    public struct HealResult
+    {
+        public HealEvent Event { get; set; }
     }
 
     public class UnitProcessor
     {
-        private readonly MonoBehaviour _root;
-        
-        public UnitProcessor(MonoBehaviour root)
+        private readonly SceneBehaviour _root;
+
+        public UnitProcessor(SceneBehaviour root)
         {
             _root = root;
-            
-            MessageBroker.Default
-                .Receive<AtkEvent>()
-                .Subscribe(OnReceiveAtkEvent)
-                .AddTo(_root);
 
-            MessageBroker.Default
-                .Receive<HealEvent>()
-                .Subscribe(OnReceiveHealEvent)
-                .AddTo(_root);
+            SubscribeMessage<AtkEvent>(OnReceiveAtkEvent);
+            SubscribeMessage<HealEvent>(OnReceiveHealEvent);
+            SubscribeMessage<WaitRecover>(OnCreatedRecover);
+        }
 
+        private void SubscribeMessage<T>(Action<T> onReceive)
+        {
             MessageBroker.Default
-                .Receive<ReserveRecovery>()
-                .Subscribe(OnReserveRecovery)
+                .Receive<T>()
+                .Subscribe(onReceive)
                 .AddTo(_root);
         }
 
         private void OnReceiveAtkEvent(AtkEvent ev)
         {
-            var from = ev.from;
-            var to = ev.to;
+            var from = ev.From;
+            var to = ev.To;
             if (!to.IsValid())
                 return;
 
-            float amount;
-            amount = CalcAmount(ev.amount, ev.critical, ev.criticalMul, out bool isCritical);
-
+            float critical = 0f;
+            float criticalMul = 0f;
+            float elementalMul = 1f;
             if (from.IsValid())
-                amount = CalcElemental(amount, from.Core.elemental.atkType, to.Core.elemental.defType);
-                    
+            {
+                critical = from.status.critical;
+                criticalMul = from.status.criticalAtk;
+                elementalMul = Elemental.AtkMultiplier(from.Core.elemental);
+            }
+
+            float amount = CalcAmount(ev.Amount, critical, criticalMul, elementalMul, out bool isCritical);
+
             to.Core.status.hp.Decrease(amount);
-            
-            if(to.Hit != null)
+
+            if (to.Hit != null)
                 to.Hit.Play();
 
-            new AtkResult
-            {
-                from = ev.from,
-                to = ev.to,
-                isCritical = isCritical,
-                amount = amount
-            }.Publish();
+            new AtkResult { Event = ev, IsCritical = isCritical }.Publish();
         }
 
         private void OnReceiveHealEvent(HealEvent ev)
         {
-            var to = ev.to;
+            var to = ev.To;
             if (!to.IsValid())
                 return;
 
-            to.status.hp.Increase(ev.amount);
+            to.status.hp.Increase(ev.Amount);
+
+            new HealResult { Event = ev }.Publish();
         }
 
-        private void OnReserveRecovery(ReserveRecovery recovery)
+        private void OnCreatedRecover(WaitRecover recover)
         {
-            float currentTime = recovery.time;
-            _root
+            var subscription = ReserveRecover(recover);
+            var collection = _root.gameRepo.recovers;
+            collection.Add(recover);
+
+            recover.Bind(collection, subscription);
+        }
+
+        private IDisposable ReserveRecover(WaitRecover recover)
+        {
+            var stream = _root
                 .UpdateAsObservable()
                 .Select(_ => Time.deltaTime)
                 .Where(x =>
                 {
-                    currentTime -= x;
-                    return currentTime <= 0f;
-                })
-                // TODO 유닛 부활 로직
-                .Subscribe(_ =>
-                {
-                    var behaviour = recovery.behaviour;
-                    behaviour.Activate();
-                    behaviour.Init(behaviour.Data);
-                    behaviour.position = recovery.position;
-                })
+                    recover.leftTime -= x;
+                    return recover.leftTime <= 0;
+                });
+
+            var subscription = stream
+                .Subscribe(_ => Recovery(recover))
                 .AddTo(_root);
+
+            return subscription;
         }
 
-        private float CalcAmount(float atk, float critical, float criticalAtk, out bool isCritical)
+        private void Recovery(WaitRecover recover)
+        {
+            var behaviour = recover.behaviour;
+            var position = recover.position;
+
+            behaviour.ForceActivate();
+            behaviour.Init(behaviour.Info, behaviour.Data);
+            behaviour.position = position;
+            behaviour.Core.defaultDestination = position;
+
+            recover.Dispose();
+        }
+
+        private float CalcAmount(float atk, float critical, float criticalAtk, float elementalAtk, out bool isCritical)
         {
             isCritical = Random.Range(0f, 1f) <= critical;
-            return isCritical ? atk * criticalAtk : atk;
+            return (isCritical ? atk * criticalAtk : atk) * elementalAtk;
         }
-
-        private float CalcElemental(float amount, Elemental.Type atk, Elemental.Type def) => amount * Elemental.AtkMultiplier(atk, def);
     }
 }

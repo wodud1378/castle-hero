@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using PolyNav;
 using RGLabs.Common;
 using RGLabs.Data.Model;
+using RGLabs.Data.User;
 using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Finding;
@@ -60,7 +61,7 @@ namespace RGLabs.Unit.Components
         public bool canAttack;
 
         public Vector2 defaultDestination;
-
+        
         private readonly ReactiveProperty<Vector2> _lookDirection;
 
         private bool AllowMove => _enableMove && canMove;
@@ -124,11 +125,11 @@ namespace RGLabs.Unit.Components
 
             if (status.recovery > 0f)
             {
-                new ReserveRecovery
+                new WaitRecover
                 {
                     behaviour = _owner,
                     position = defaultDestination,
-                    time = status.recovery
+                    leftTime = status.recovery
                 }.Publish();
             }
             

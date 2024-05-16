@@ -17,6 +17,8 @@ namespace RGLabs.Common.UI
 
         public async UniTask InitAsync(string spritePath, string text = "")
         {
+            icon.enabled = false;
+            
             _spriteHandle = await spritePath.Handle<Sprite>();
             
             var sprite = _spriteHandle.Result;

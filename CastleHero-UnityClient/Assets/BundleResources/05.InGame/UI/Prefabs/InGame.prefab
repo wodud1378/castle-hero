@@ -3173,6 +3173,13 @@ MonoBehaviour:
   <Pause>k__BackingField: {fileID: 4420886906921359635}
   _pause: {fileID: 5986724365978457604}
   _damageRoot: {fileID: 8797528834993109522}
+  _damagePrefabs:
+    normal: UI/Prefabs/UIDamage_Normal.prefab
+    critical: UI/Prefabs/UIDamage_Critical.prefab
+    debuff: UI/Prefabs/UIDamage_Debuff.prefab
+  _healPrefabs:
+    heal: UI/Prefabs/UIDamage_Heal.prefab
+    shield: UI/Prefabs/UIDamage_Shield.prefab
   _damagePrefab: Common/Prefabs/UIDamage.prefab
 --- !u!114 &5270345621307383480
 MonoBehaviour:

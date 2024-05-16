@@ -8,6 +8,7 @@ using RGLabs.Lobby.Behaviours;
 using RGLabs.Lobby.UI;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Components;
+using RGLabs.Unit.Factory;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
@@ -39,23 +40,23 @@ namespace RGLabs.InGame.Behaviours
         {
             base.OnAwake();
             
-            MessageBroker.Default
-                .Receive<StartGame>()
-                .Subscribe(Run)
-                .AddTo(this);
-
-            MessageBroker.Default
-                .Receive<ExitCode>()
-                .Subscribe(Exit)
-                .AddTo(this);
+            this.SubscribeMessage<StartGame>(Run);
+            this.SubscribeMessage<ExitCode>(Exit);
         }
 
         private void Run(StartGame startGame)
         {
             Context.currentBehaviour = this;
+
+            var last = startGame.from;
+
+            db = last.db;
+            poolContainer = last.poolContainer;
+            userRepo = last.userRepo;
+            gameRepo = last.gameRepo;
             
-            unitFactory = startGame.unitFactory;
-            poolContainer = startGame.poolContainer;
+            characterFactory = last.characterFactory;
+            monsterFactory = new UnitFactory(poolContainer, db.monsters);
 
             var castle = gameRepo.castle.Value;
             castle.state
@@ -65,7 +66,7 @@ namespace RGLabs.InGame.Behaviours
 
             Context.startButton.enabled = false;
             
-            _uiInGame.Init(poolContainer);
+            _uiInGame.Init(poolContainer, gameRepo, db.characters);
             _uiInGame.Open();
             
             _unitProcessor = new UnitProcessor(this);
@@ -80,7 +81,7 @@ namespace RGLabs.InGame.Behaviours
                 return;
 
             var waves = db.waves.Map(entity.waveGroupId);
-            _waveRunner.Init(waves, db.monsters, gameRepo.castle.Value, unitFactory);
+            _waveRunner.Init(waves, db.monsters, gameRepo.castle.Value, monsterFactory);
             _waveRunner.isRunning = true;
 
             _waveRunner.completed

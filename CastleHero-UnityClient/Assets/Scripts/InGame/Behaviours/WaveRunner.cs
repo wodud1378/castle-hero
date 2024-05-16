@@ -41,7 +41,7 @@ namespace RGLabs.InGame.Behaviours
 
         private void Awake()
         {
-            MessageBroker.Default.Receive<ReleaseEvent>().Subscribe(OnReceiveReleaseEvent);
+            this.SubscribeMessage<ReleaseEvent>(OnReceiveReleaseEvent);
         }
         
         private void OnReceiveReleaseEvent(ReleaseEvent data)

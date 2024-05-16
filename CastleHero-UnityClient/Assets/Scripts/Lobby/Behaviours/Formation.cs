@@ -6,6 +6,7 @@ using RGLabs.Common;
 using RGLabs.Data.DB;
 using RGLabs.Data.Model;
 using RGLabs.Data.Repositories;
+using RGLabs.Data.User;
 using RGLabs.InGame;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Factory;
@@ -108,7 +109,7 @@ namespace RGLabs.Lobby.Behaviours
             int current = Array.FindAll(characters, (character) => character.behaviour.Id == unit.Id).Length;
             if (current >= limit)
             {
-                int index = Array.FindIndex(characters, (x) => x.character.id == unit.Id);
+                int index = Array.FindIndex(characters, (x) => x.unitInfo.id == unit.Id);
                 if (index != -1)
                 {
                     var behaviour = characters[index].behaviour;
@@ -124,7 +125,7 @@ namespace RGLabs.Lobby.Behaviours
                 .Where(x => x.behaviour != null)
                 .Append(new InGameCharacter
                 {
-                    character = character,
+                    unitInfo = character,
                     behaviour = unit
                 })
                 .ToArray();
@@ -135,14 +136,9 @@ namespace RGLabs.Lobby.Behaviours
 
         private async UniTask LoadCastle()
         {
-            if (!_db.TryFind(_userRepo.castle.Value, out var entity))
-            {
-                if (!_db.TryFind(_defaultCastleId, out entity))
-                    return;
-            }
-
-            _userRepo.castle.Value = entity.Id;
-            _gameRepo.castle.Value = await CreateUnit(entity, Vector2.zero);
+            int id = _userRepo.castle.Value;
+            var unit = await Factory.Create(id, 1, 1, Vector2.zero);
+            _gameRepo.castle.Value = unit;
         }
 
         private async UniTask LoadSavedUnits()
@@ -163,27 +159,22 @@ namespace RGLabs.Lobby.Behaviours
                     continue;
 
                 var character = characters[index];
-                if (!_db.TryFind(character.id, out var entity))
-                    continue;
-
-                tasks.Add(CreateCharacter(entity, data.position));
+                tasks.Add(CreateCharacter(character, data.position));
             }
 
             await UniTask.WhenAll(tasks);
         }
 
-        private async UniTask CreateCharacter(UnitEntity entity, Vector2 position)
+        private async UniTask CreateCharacter(UnitInfo info, Vector2 position)
         {
-            var unit = await CreateUnit(entity, position);
-            Register(unit);
-        }
-
-        private async UniTask<UnitBehaviour> CreateUnit(UnitEntity entity, Vector2 position)
-        {
-            var unit = await Factory.Create(entity, position);
+            var unit = await Factory.Create(info, position);
+            if (unit == null)
+                return;
+            
             unit.Core.defaultDestination = position;
             unit.CanMove = true;
-            return unit;
+            
+            Register(unit);
         }
 
         private void OnDrawGizmosSelected()

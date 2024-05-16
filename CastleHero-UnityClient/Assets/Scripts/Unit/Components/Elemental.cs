@@ -70,7 +70,9 @@ namespace RGLabs.Unit.Components
         public Type atkType;
         public Type defType;
 
-        public static float AtkMultiplier(Type atk, Type def)
+        public static float AtkMultiplier(Elemental elemental) => AtkMultiplier(elemental.atkType, elemental.defType);
+        
+        private static float AtkMultiplier(Type atk, Type def)
         {
             if (!Map.TryGetValue(atk, out var subMap))
                 return 1f;

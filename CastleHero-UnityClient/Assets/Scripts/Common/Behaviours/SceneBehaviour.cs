@@ -13,13 +13,15 @@ namespace RGLabs.Common.Behaviours
     {
         protected static List<SceneBehaviour> activated = new();
 
-        protected DBCollections db;
+        public DBCollections db;
 
-        protected InGameRepository gameRepo;
-        protected UserRepository userRepo;
+        public InGameRepository gameRepo;
+        public UserRepository userRepo;
 
-        protected IUnitFactory unitFactory;
-        protected PoolContainer poolContainer;
+        public PoolContainer poolContainer;
+        
+        public IUnitFactory monsterFactory;
+        public IUnitFactory characterFactory;
 
         private void Awake()
         {

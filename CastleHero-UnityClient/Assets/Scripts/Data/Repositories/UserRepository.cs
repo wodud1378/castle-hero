@@ -23,7 +23,7 @@ namespace RGLabs.Data.Repositories
 
         public readonly ReactiveProperty<int> stage;
         public readonly ReactiveProperty<int> castle;
-        public readonly ReactiveProperty<Character[]> characters;
+        public readonly ReactiveProperty<UnitInfo[]> characters;
         public readonly ReactiveProperty<FieldCharacter[]> fieldCharacters;
 
         public UserRepository()
@@ -31,10 +31,10 @@ namespace RGLabs.Data.Repositories
             stage = new(Load(SavedStageKey, 1));
             stage.Subscribe(x => Save(SavedStageKey, x));
 
-            castle = new(Load(CastleKey));
+            castle = new(Load(CastleKey, 1));
             castle.Subscribe(x => Save(CastleKey, x));
 
-            characters = new(LoadArray<Character>(CharactersKey, TestData()));
+            characters = new(LoadArray<UnitInfo>(CharactersKey, TestData()));
             characters.Subscribe(x => SaveArray(CharactersKey, x));
 
             fieldCharacters = new(LoadArray<FieldCharacter>(FieldCharactersKey));
@@ -47,7 +47,7 @@ namespace RGLabs.Data.Repositories
             var array = new FieldCharacter[length];
             for (int i = 0; i < length; ++i)
             {
-                int index = Array.FindIndex(characters.Value, x => x.id == units[i].character.id);
+                int index = Array.FindIndex(characters.Value, x => x.id == units[i].unitInfo.id);
                 if (!index.IsValidIndex(characters.Value))
                     continue;
 
@@ -61,7 +61,7 @@ namespace RGLabs.Data.Repositories
             fieldCharacters.Value = array;
         }
 
-        public Character FindCharacter(int id)
+        public UnitInfo FindCharacter(int id)
         {
             return Array.Find(characters.Value, (x) => x.id == id);
         }
@@ -97,25 +97,25 @@ namespace RGLabs.Data.Repositories
         {
             var array = new[]
             {
-                new Character
+                new UnitInfo
                 {
                     lv = 1,
                     grade = 1,
                     id = 10021
                 },
-                new Character
+                new UnitInfo
                 {
                     lv = 1,
                     grade = 1,
                     id = 10023
                 },
-                new Character
+                new UnitInfo
                 {
                     lv = 1,
                     grade = 1,
                     id = 10034
                 },
-                new Character
+                new UnitInfo
                 {
                     lv = 1,
                     grade = 1,
@@ -123,7 +123,7 @@ namespace RGLabs.Data.Repositories
                 },
             };
 
-            return JsonUtility.ToJson(new ArrayWrap<Character> { array = array });
+            return JsonUtility.ToJson(new ArrayWrap<UnitInfo> { array = array });
         }
     }
 }

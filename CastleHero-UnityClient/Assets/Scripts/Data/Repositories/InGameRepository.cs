@@ -1,8 +1,8 @@
 using System;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data.DB;
-using RGLabs.Data.User;
 using RGLabs.InGame;
+using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
 using UniRx;
 using UnityEngine.AddressableAssets;
@@ -46,6 +46,8 @@ namespace RGLabs.Data.Repositories
             waves = await LoadDB<WaveDB>("Waves");
             rewards = await LoadDB<RewardDB>("Rewards");
             items = await LoadDB<ItemDB>("Items");
+            
+            monsters.CacheUnitSizes();
         }
 
         private async UniTask<T> LoadDB<T>(string name) =>
@@ -56,11 +58,15 @@ namespace RGLabs.Data.Repositories
     {
         public readonly ReactiveProperty<UnitBehaviour> castle = new(null);
         public readonly ReactiveProperty<InGameCharacter[]> characters = new(null);
+        public readonly ReactiveProperty<WaitRecover[]> waitRecover = new(null);
+
+        public readonly ReactiveCollection<WaitRecover> recovers = new();
 
         public void Dispose()
         {
             castle.Value = null;
             characters.Value = null;
+            waitRecover.Value = null;
             
             castle.Dispose();
             characters.Dispose();
