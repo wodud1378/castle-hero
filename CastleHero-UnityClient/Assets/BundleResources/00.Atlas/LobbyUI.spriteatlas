@@ -44,6 +44,7 @@ SpriteAtlas:
     - 003b8e438338eeb4c9fb51d580fe88f0: 21300000
     - 3c64ea73e21a7e847ae74b15cbe0bde0: 21300000
     - 81be8af3a756eaa4dbd677e4c7a74e40: 21300000
+    - e4beee84c482cf44cba4c9879b089667: 21300000
     - 317cc355bbeced845bc0520d96aa8bf4: 21300000
     - 78c98f55d25c17542821c9fceb4984c6: 21300000
     - 86ed5716f80547744898dcc83b857a4f: 21300000
@@ -56,8 +57,10 @@ SpriteAtlas:
     - 1c08934b15e536841be62cabfa64a2f7: 21300000
     - 2ce1647b039eda1488c00ac011dece6d: 21300000
     - 2683429c194383f42bc2dc2ac3fa78d4: 21300000
+    - 44048a9ca5787c943bab233c11a8c5d3: 21300000
     - f5ddbf0d7347e014cbbe7ef90d328176: 21300000
     - 73750d7d85acc6a418d08750bffc6afc: 21300000
+    - 17fef89d46871a0478affe42bc0d8b3d: 21300000
     - f1b199fd112e9d54b9e522a025928904: 21300000
     - 2e65b02ff59d7c143b624a949039976c: 21300000
     - a23da59f087092d4aab06451e56cabe4: 21300000
@@ -71,6 +74,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 003b8e438338eeb4c9fb51d580fe88f0, type: 3}
   - {fileID: 21300000, guid: 3c64ea73e21a7e847ae74b15cbe0bde0, type: 3}
   - {fileID: 21300000, guid: 81be8af3a756eaa4dbd677e4c7a74e40, type: 3}
+  - {fileID: 21300000, guid: e4beee84c482cf44cba4c9879b089667, type: 3}
   - {fileID: 21300000, guid: 317cc355bbeced845bc0520d96aa8bf4, type: 3}
   - {fileID: 21300000, guid: 78c98f55d25c17542821c9fceb4984c6, type: 3}
   - {fileID: 21300000, guid: 86ed5716f80547744898dcc83b857a4f, type: 3}
@@ -83,8 +87,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 1c08934b15e536841be62cabfa64a2f7, type: 3}
   - {fileID: 21300000, guid: 2ce1647b039eda1488c00ac011dece6d, type: 3}
   - {fileID: 21300000, guid: 2683429c194383f42bc2dc2ac3fa78d4, type: 3}
+  - {fileID: 21300000, guid: 44048a9ca5787c943bab233c11a8c5d3, type: 3}
   - {fileID: 21300000, guid: f5ddbf0d7347e014cbbe7ef90d328176, type: 3}
   - {fileID: 21300000, guid: 73750d7d85acc6a418d08750bffc6afc, type: 3}
+  - {fileID: 21300000, guid: 17fef89d46871a0478affe42bc0d8b3d, type: 3}
   - {fileID: 21300000, guid: f1b199fd112e9d54b9e522a025928904, type: 3}
   - {fileID: 21300000, guid: 2e65b02ff59d7c143b624a949039976c, type: 3}
   - {fileID: 21300000, guid: a23da59f087092d4aab06451e56cabe4, type: 3}
@@ -97,6 +103,7 @@ SpriteAtlas:
   - Button_Start_SwordGrip
   - Box_Stock
   - Button_Start_Sword
+  - Panel_Character
   - Button_PanelSize_Down
   - Stamp
   - Panel_Bottom
@@ -109,8 +116,10 @@ SpriteAtlas:
   - Box_Round
   - Box_Elipse
   - Button_Start_Dust
+  - MagicCircle
   - Portrait_Dummy
   - Button_Start_Effect
+  - Panel_Dropdown
   - Reward_First
   - Panel_Top_Gauge_Bar
   - Panel_Top_Parent
