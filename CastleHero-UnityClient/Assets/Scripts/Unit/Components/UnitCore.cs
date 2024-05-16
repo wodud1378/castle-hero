@@ -129,7 +129,7 @@ namespace RGLabs.Unit.Components
                 {
                     behaviour = _owner,
                     position = defaultDestination,
-                    time = status.recovery
+                    leftTime = status.recovery
                 }.Publish();
             }
             

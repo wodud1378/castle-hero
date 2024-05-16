@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using RGLabs.Common.Behaviours;
 using RGLabs.Data.User;
@@ -17,11 +19,26 @@ namespace RGLabs.InGame.System
         DeBuff,
     }
     
-    public struct WaitRecover
+    public class WaitRecover : IDisposable
     {
         public UnitBehaviour behaviour;
         public Vector2 position;
-        public float time;
+        public float leftTime;
+
+        private IDisposable _subscription;
+        private ReactiveCollection<WaitRecover> _root;
+
+        public void Bind(ReactiveCollection<WaitRecover> root, IDisposable subscription)
+        {
+            _root = root;
+            _subscription = subscription;
+        }
+        
+        public void Dispose()
+        {
+            _root?.Remove(this);
+            _subscription?.Dispose();
+        }
     }
     
     public struct AtkEvent
@@ -70,13 +87,7 @@ namespace RGLabs.InGame.System
 
             MessageBroker.Default
                 .Receive<WaitRecover>()
-                .Subscribe(OnReserveRecovery)
-                .AddTo(_root);
-            
-            _root
-                .UpdateAsObservable()
-                .Select(_ => Time.deltaTime)
-                .Subscribe(UpdateRecovery)
+                .Subscribe(OnCreatedRecover)
                 .AddTo(_root);
         }
 
@@ -87,9 +98,7 @@ namespace RGLabs.InGame.System
             if (!to.IsValid())
                 return;
 
-            float amount;
-            amount = CalcAmount(ev.amount, ev.critical, ev.criticalMul, out bool isCritical);
-
+            float amount = CalcAmount(ev.amount, ev.critical, ev.criticalMul, out bool isCritical);
             if (from.IsValid())
                 amount = CalcElemental(amount, from.Core.elemental.atkType, to.Core.elemental.defType);
                     
@@ -116,34 +125,45 @@ namespace RGLabs.InGame.System
             to.status.hp.Increase(ev.amount);
         }
 
-        private void OnReserveRecovery(WaitRecover recovery)
+        private void OnCreatedRecover(WaitRecover recover)
         {
-            var array = _root.gameRepo.waitRecover.Value;
-            _root.gameRepo.waitRecover.Value = array.Append(recovery).ToArray();
+            var subscription = ReserveRecover(recover);
+            var collection = _root.gameRepo.recovers;
+            collection.Add(recover);
+            
+            recover.Bind(collection, subscription);
         }
 
-        private void UpdateRecovery(float deltaTime)
+        private IDisposable ReserveRecover(WaitRecover recover)
         {
-            var targets = _root.gameRepo.waitRecover.Value;
-            for (int i = 0; i < targets.Length; ++i)
-            {
-                targets[i].time -= deltaTime;
-                if (targets[i].time > 0f)
-                    continue;
-                
-                Recovery(targets[i].behaviour, targets[i].position);
-            }
+            float deltaTime = recover.leftTime;
+            var stream = _root
+                .UpdateAsObservable()
+                .Select(_ => Time.deltaTime)
+                .Where(x =>
+                {
+                    recover.leftTime -= deltaTime;
+                    return recover.leftTime <= 0;
+                });
+            
+            var subscription = stream
+                .Subscribe(_=> Recovery(recover))
+                .AddTo(_root);
 
-            targets = targets.Where(x => x.time > 0f).ToArray();
-            _root.gameRepo.waitRecover.Value = targets;
+            return subscription;
         }
-
-        private void Recovery(UnitBehaviour behaviour, Vector2 position)
+        
+        private void Recovery(WaitRecover recover)
         {
+            var behaviour = recover.behaviour;
+            var position = recover.position;
+            
             behaviour.ForceActivate();
             behaviour.Init(behaviour.Info, behaviour.Data);
             behaviour.position = position;
             behaviour.Core.defaultDestination = position;
+            
+            recover.Dispose();
         }
 
         private float CalcAmount(float atk, float critical, float criticalAtk, out bool isCritical)

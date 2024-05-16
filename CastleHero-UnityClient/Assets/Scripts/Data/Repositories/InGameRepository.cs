@@ -60,6 +60,8 @@ namespace RGLabs.Data.Repositories
         public readonly ReactiveProperty<InGameCharacter[]> characters = new(null);
         public readonly ReactiveProperty<WaitRecover[]> waitRecover = new(null);
 
+        public readonly ReactiveCollection<WaitRecover> recovers = new();
+
         public void Dispose()
         {
             castle.Value = null;

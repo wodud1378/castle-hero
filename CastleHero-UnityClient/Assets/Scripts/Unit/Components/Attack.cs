@@ -48,7 +48,7 @@ namespace RGLabs.Unit.Components
                     criticalMul = status.criticalAtk
                 };
 
-                data.Publish();
+                //data.Publish();
             }
 
             projectileLauncher?.Launch(targets);

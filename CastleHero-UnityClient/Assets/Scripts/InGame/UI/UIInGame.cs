@@ -1,7 +1,10 @@
 using System;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Pattern;
+using RGLabs.Data.DB;
+using RGLabs.Data.Repositories;
 using RGLabs.InGame.Behaviours;
 using RGLabs.InGame.System;
 using RGLabs.Utility;
@@ -29,6 +32,8 @@ namespace RGLabs.InGame.UI
         [SerializeField] private string _damagePrefab;
         
         private PoolContainer _poolContainer;
+        private InGameRepository _repository;
+        private UnitDB _db;
         
         private void Awake()
         {
@@ -65,15 +70,31 @@ namespace RGLabs.InGame.UI
             return await pool.Get() as UIDamage;
         }
 
-        public void Init(PoolContainer poolContainer)
+        public void Init(PoolContainer poolContainer, InGameRepository repository, UnitDB db)
         {
             _poolContainer = poolContainer;
+            _repository = repository;
+            _db = db;
 
-            // var characters = _repository.characters.Value
-            //     .Select(x => x.character)
-            //     .ToArray();
-            //
-            // await CharacterList.Init(characters, _db.characters);
+            _repository.recovers
+                .ObserveAdd()
+                .Subscribe(_=> OnRecoveryCollectionChanged())
+                .AddTo(this);
+
+            _repository.recovers
+                .ObserveRemove()
+                .Subscribe(_=> OnRecoveryCollectionChanged())
+                .AddTo(this);
+        }
+
+        private async void OnRecoveryCollectionChanged()
+        {
+            var recovers = _repository.recovers;
+            var info = recovers
+                .Select(x => x.behaviour.Info)
+                .ToArray();
+
+            await DeadCharacters.Init(info, _db);
         }
 
         private void SetPause(bool isPause)
