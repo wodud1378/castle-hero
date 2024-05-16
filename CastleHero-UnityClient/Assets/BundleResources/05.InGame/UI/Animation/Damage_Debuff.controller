@@ -29,7 +29,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Damage_Heal
+  m_Name: Damage_Debuff
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -42,7 +42,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: d14f8181100fa544596d4c8c58ea450d, type: 2}
+  m_Motion: {fileID: 7400000, guid: 59e0fd3fe10413240b6dfd3785155b47, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
