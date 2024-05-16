@@ -57,6 +57,7 @@ namespace RGLabs.Unit.Factory
             }
 
             unit.Container = _pools;
+            unit.Pool = pool;
             unit.factory = this;
             return unit;
         }

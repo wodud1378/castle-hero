@@ -38,6 +38,7 @@ SpriteAtlas:
     cachedData: {fileID: 0}
     packedSpriteRenderDataKeys:
     - c46c65208c43375459ce1af9880ea68b: 21300000
+    - b55ae1a0826481845b9426670836316e: 21300000
     - c9f7eda0e2476934c84efdaca259d17d: 21300000
     - 0e723f01ec8b73c4a8cf66e64c0661f6: 21300000
     - 0787bd215fc5b964fa2923ec9bf16c76: 21300000
@@ -50,18 +51,26 @@ SpriteAtlas:
     - 85b28d93bd5dc3b4081e282b7ea14141: 21300000
     - d03851642d0e37043b47d275c5162e05: 21300000
     - b9d1f5646085b974dabe73a2469ce86f: 21300000
+    - 008dbf05848dd424e8cc79fd8e6ae658: 21300000
     - 9e177fa52716c42498bfd29c6a855362: 21300000
     - 3a28fe06aba001e4fa394e6523a1b8e7: 21300000
+    - e3be4a16b68de6541860074123900bf2: 21300000
+    - 8bcd3ae6b087e0e4d8f3b2276b7d2495: 21300000
+    - 28c266477316f644c900721b7612284c: 21300000
+    - 53816868dff18b6409c1dd3c56b3b561: 21300000
     - f3ddfe19defca1d4aa31d7e62d89830a: 21300000
     - 01eb1c2988e2c5c4b836ddf8a8ed4d42: 21300000
+    - a23488e94bf26cb4ebfebb593a8a1b19: 21300000
     - 88a49aca2beebb047ac698c8a2d4db33: 21300000
     - 2954d52c99a71c5408878dea54f0d21e: 21300000
     - af339b0d40710d64f87f0a0b2b185ffb: 21300000
+    - f5fdfbedb713f204fa92716ae93e4bbc: 21300000
     - 3a97d08fee9e4d94cb1317400ff458a1: 21300000
     - deebe9ef608813843b368895a8b4fd77: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: c46c65208c43375459ce1af9880ea68b, type: 3}
+  - {fileID: 21300000, guid: b55ae1a0826481845b9426670836316e, type: 3}
   - {fileID: 21300000, guid: c9f7eda0e2476934c84efdaca259d17d, type: 3}
   - {fileID: 21300000, guid: 0e723f01ec8b73c4a8cf66e64c0661f6, type: 3}
   - {fileID: 21300000, guid: 0787bd215fc5b964fa2923ec9bf16c76, type: 3}
@@ -74,17 +83,25 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 85b28d93bd5dc3b4081e282b7ea14141, type: 3}
   - {fileID: 21300000, guid: d03851642d0e37043b47d275c5162e05, type: 3}
   - {fileID: 21300000, guid: b9d1f5646085b974dabe73a2469ce86f, type: 3}
+  - {fileID: 21300000, guid: 008dbf05848dd424e8cc79fd8e6ae658, type: 3}
   - {fileID: 21300000, guid: 9e177fa52716c42498bfd29c6a855362, type: 3}
   - {fileID: 21300000, guid: 3a28fe06aba001e4fa394e6523a1b8e7, type: 3}
+  - {fileID: 21300000, guid: e3be4a16b68de6541860074123900bf2, type: 3}
+  - {fileID: 21300000, guid: 8bcd3ae6b087e0e4d8f3b2276b7d2495, type: 3}
+  - {fileID: 21300000, guid: 28c266477316f644c900721b7612284c, type: 3}
+  - {fileID: 21300000, guid: 53816868dff18b6409c1dd3c56b3b561, type: 3}
   - {fileID: 21300000, guid: f3ddfe19defca1d4aa31d7e62d89830a, type: 3}
   - {fileID: 21300000, guid: 01eb1c2988e2c5c4b836ddf8a8ed4d42, type: 3}
+  - {fileID: 21300000, guid: a23488e94bf26cb4ebfebb593a8a1b19, type: 3}
   - {fileID: 21300000, guid: 88a49aca2beebb047ac698c8a2d4db33, type: 3}
   - {fileID: 21300000, guid: 2954d52c99a71c5408878dea54f0d21e, type: 3}
   - {fileID: 21300000, guid: af339b0d40710d64f87f0a0b2b185ffb, type: 3}
+  - {fileID: 21300000, guid: f5fdfbedb713f204fa92716ae93e4bbc, type: 3}
   - {fileID: 21300000, guid: 3a97d08fee9e4d94cb1317400ff458a1, type: 3}
   - {fileID: 21300000, guid: deebe9ef608813843b368895a8b4fd77, type: 3}
   m_PackedSpriteNamesToIndex:
   - Gauge_Bar_R
+  - Grade_Epic
   - Button_Pause
   - Slot_RoundSquare_01
   - Button_Middle_G
@@ -92,18 +109,25 @@ SpriteAtlas:
   - Button_Auto
   - Button_RoundSquare_Base
   - Button_RoundSquare_Y
-  - Button_Reset
+  - Button_AlignReset
   - Button_Speed
   - Frame_Portrait_01
   - Frame_Porrait_02
   - BG_Portrait_01
+  - Grade_Legendary
   - Button_RoundSquare_G
   - Frame_Item
+  - Grade_Normal
+  - Popup_01
+  - Grade_Rare
+  - Button_AlignAuto
   - Button_Close_01
   - BG_Result
+  - Button_Increse
   - Button_RoundSquare_R
   - Button_Back_Y
   - Frame_Porrait_Mask
+  - GradationArea
   - Gauge_Bar_G
   - Gauge_BG
   m_RenderDataMap: {}

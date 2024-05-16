@@ -149,13 +149,12 @@ namespace RGLabs.InGame.System
 
         private IDisposable ReserveRecover(WaitRecover recover)
         {
-            float deltaTime = recover.leftTime;
             var stream = _root
                 .UpdateAsObservable()
                 .Select(_ => Time.deltaTime)
                 .Where(x =>
                 {
-                    recover.leftTime -= deltaTime;
+                    recover.leftTime -= x;
                     return recover.leftTime <= 0;
                 });
 

@@ -24,6 +24,8 @@ namespace RGLabs.InGame.UI
 
         public async UniTask Init(UnitInfo[] characters, UnitDB db)
         {
+            Clear();
+            
             var tasks = new List<UniTask>();
             foreach (var character in characters)
             {
@@ -45,13 +47,7 @@ namespace RGLabs.InGame.UI
 
         public void Dispose()
         {
-            foreach (var slot in _slots)
-            {
-                slot.Dispose();
-                Addressables.ReleaseInstance(slot.gameObject);
-            }
-
-            _slots.Clear();
+            Clear();
         }
 
         public UICharacterSlot GetSlot(Vector2 position)
@@ -95,6 +91,17 @@ namespace RGLabs.InGame.UI
             IsOpen = false;
 
             _animator.SetTrigger(Fold);
+        }
+
+        public void Clear()
+        {
+            foreach (var slot in _slots)
+            {
+                slot.Dispose();
+                Addressables.ReleaseInstance(slot.gameObject);
+            }
+
+            _slots.Clear();
         }
 
         #region Animation Events.

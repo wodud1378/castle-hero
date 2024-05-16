@@ -9,8 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7151656531099706463}
+  - component: {fileID: -4603463049674793663}
   m_Layer: 5
-  m_Name: UIDamage_Shield
+  m_Name: UIDamage_Normal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36,6 +37,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &-4603463049674793663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 735659825525702012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60c7e611c82d478fb1b0616722cdf0a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 8636539289959383121}
+  _label: {fileID: 3188070048162260836}
+  _position: 1
 --- !u!1 &7441587137642633735
 GameObject:
   m_ObjectHideFlags: 0
@@ -47,7 +63,8 @@ GameObject:
   - component: {fileID: 473467641619496196}
   - component: {fileID: 8571339310271111499}
   - component: {fileID: 3188070048162260836}
-  - component: {fileID: 7967399796423223662}
+  - component: {fileID: 8636539289959383121}
+  - component: {fileID: 6478233521734762478}
   m_Layer: 5
   m_Name: Value
   m_TagString: Untagged
@@ -105,7 +122,7 @@ MonoBehaviour:
   m_text: 1000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b2e30944874a15545876a27cbb65a879, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 5cdffc03db47de741ba2fdd3ac51115b, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: d800a39af608ee64e81365c003bb374d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -171,7 +188,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!95 &7967399796423223662
+--- !u!95 &8636539289959383121
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -181,7 +198,7 @@ Animator:
   m_GameObject: {fileID: 7441587137642633735}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: a2ccabc72e90b0147a02e12f0e9c597a, type: 2}
+  m_Controller: {fileID: 9100000, guid: fb4a73347902ea0408fb7f1048b3a060, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -192,3 +209,33 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6478233521734762478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7441587137642633735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bd4abd1343a407c96de22faa987cdf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onStart:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: -4603463049674793663}
+        m_TargetAssemblyTypeName: RGLabs.Common.Behaviours.PoolItemBase, Assembly-CSharp
+        m_MethodName: DestroySelf
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2

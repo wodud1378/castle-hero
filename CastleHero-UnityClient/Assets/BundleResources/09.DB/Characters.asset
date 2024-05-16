@@ -21,21 +21,23 @@ MonoBehaviour:
     skinName: 
     projectile: 
     grade: 0
-    role: 2
     team: 6
-    atkOrder: 0
+    role: 2
     atkLayer: 1
     defLayer: 1
-    size: 0.6
+    atkOrder: 0
+    recovery: 5
     hp: 1000
-    speed: 2
-    moveRange: 5
     atk: 110
-    atkRange: 1
-    atkSpeed: 1.2
     critical: 0.3
     criticalAtk: 1.5
-    recovery: 30
+    atkSpeed: 1.2
+    speed: 2
+    atkRange: 1
+    moveRange: 5
+    elementalAtk: 0
+    elementalDef: 0
+    size: 0.6
   - <Id>k__BackingField: 1
     name: Castle
     icon: 
@@ -43,21 +45,23 @@ MonoBehaviour:
     skinName: 
     projectile: 
     grade: 0
-    role: 0
     team: 0
-    atkOrder: 0
+    role: 0
     atkLayer: 0
     defLayer: 1
-    size: 0
+    atkOrder: 0
+    recovery: 0
     hp: 30000
-    speed: 0
-    moveRange: 0
     atk: 0
-    atkRange: 0
-    atkSpeed: 0
     critical: 0
     criticalAtk: 0
-    recovery: 0
+    atkSpeed: 0
+    speed: 0
+    atkRange: 0
+    moveRange: 0
+    elementalAtk: 0
+    elementalDef: 0
+    size: 0
   - <Id>k__BackingField: 10000
     name: Barriacde
     icon: Common/Portrait/Character_10000.png
@@ -65,21 +69,23 @@ MonoBehaviour:
     skinName: 
     projectile: 
     grade: 0
-    role: 0
     team: 0
-    atkOrder: 0
+    role: 0
     atkLayer: 0
     defLayer: 1
-    size: 0
+    atkOrder: 0
+    recovery: 0
     hp: 3000
-    speed: 0
-    moveRange: 0
     atk: 0
-    atkRange: 0
-    atkSpeed: 0
     critical: 0
     criticalAtk: 0
-    recovery: 0
+    atkSpeed: 0
+    speed: 0
+    atkRange: 0
+    moveRange: 0
+    elementalAtk: 0
+    elementalDef: 0
+    size: 0
   - <Id>k__BackingField: 10034
     name: Castle
     icon: Common/Portrait/Character_10034.png
@@ -87,21 +93,23 @@ MonoBehaviour:
     skinName: 
     projectile: Character_10034/Character_10034_Projectile.prefab
     grade: 0
-    role: 3
     team: 6
-    atkOrder: 0
+    role: 3
     atkLayer: 0
     defLayer: 2
-    size: 0.6
+    atkOrder: 0
+    recovery: 5
     hp: 800
-    speed: 2
-    moveRange: 7
     atk: 90
-    atkRange: 4
-    atkSpeed: 1.5
     critical: 0.5
     criticalAtk: 1.2
-    recovery: 30
+    atkSpeed: 1.5
+    speed: 2
+    atkRange: 4
+    moveRange: 7
+    elementalAtk: 0
+    elementalDef: 0
+    size: 0.6
   - <Id>k__BackingField: 10023
     name: Castle
     icon: Common/Portrait/Character_10023.png
@@ -109,18 +117,20 @@ MonoBehaviour:
     skinName: 
     projectile: 
     grade: 0
-    role: 3
     team: 6
-    atkOrder: 0
+    role: 3
     atkLayer: 0
     defLayer: 2
-    size: 0.6
+    atkOrder: 0
+    recovery: 5
     hp: 1200
-    speed: 1
-    moveRange: 5
     atk: 100
-    atkRange: 2
-    atkSpeed: 1
     critical: 1
     criticalAtk: 1.5
-    recovery: 30
+    atkSpeed: 1
+    speed: 1
+    atkRange: 2
+    moveRange: 5
+    elementalAtk: 0
+    elementalDef: 0
+    size: 0.6

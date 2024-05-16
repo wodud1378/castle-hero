@@ -37,8 +37,10 @@ SpriteAtlas:
     isAtlasV2: 0
     cachedData: {fileID: 0}
     packedSpriteRenderDataKeys:
+    - 4ef387408de809d44b710b1215ae0cc8: 21300000
     - cf7a7a91523970e42a4cff969fcdc9b0: 21300000
     - f1ef9802ea12e2c40abd986dbffd8113: 21300000
+    - a768447259a831d478861231c44f3b16: 21300000
     - 003b8e438338eeb4c9fb51d580fe88f0: 21300000
     - 3c64ea73e21a7e847ae74b15cbe0bde0: 21300000
     - 81be8af3a756eaa4dbd677e4c7a74e40: 21300000
@@ -62,8 +64,10 @@ SpriteAtlas:
     - 5a78b0dfd5c75b848976fb75bc452101: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: 4ef387408de809d44b710b1215ae0cc8, type: 3}
   - {fileID: 21300000, guid: cf7a7a91523970e42a4cff969fcdc9b0, type: 3}
   - {fileID: 21300000, guid: f1ef9802ea12e2c40abd986dbffd8113, type: 3}
+  - {fileID: 21300000, guid: a768447259a831d478861231c44f3b16, type: 3}
   - {fileID: 21300000, guid: 003b8e438338eeb4c9fb51d580fe88f0, type: 3}
   - {fileID: 21300000, guid: 3c64ea73e21a7e847ae74b15cbe0bde0, type: 3}
   - {fileID: 21300000, guid: 81be8af3a756eaa4dbd677e4c7a74e40, type: 3}
@@ -86,8 +90,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: a23da59f087092d4aab06451e56cabe4, type: 3}
   - {fileID: 21300000, guid: 5a78b0dfd5c75b848976fb75bc452101, type: 3}
   m_PackedSpriteNamesToIndex:
+  - Button_Inventory
   - Panel_CharList
   - Button_PanelSize_Up
+  - Slider_BG
   - Button_Start_SwordGrip
   - Box_Stock
   - Button_Start_Sword
