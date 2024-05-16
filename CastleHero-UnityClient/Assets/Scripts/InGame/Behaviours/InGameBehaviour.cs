@@ -73,7 +73,7 @@ namespace RGLabs.InGame.Behaviours
 
             Context.startButton.enabled = false;
             
-            _uiInGame.Init(poolContainer);
+            _uiInGame.Init(poolContainer, gameRepo, db.characters);
             _uiInGame.Open();
             
             _unitProcessor = new UnitProcessor(this);
