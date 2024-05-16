@@ -19,6 +19,21 @@ namespace RGLabs.InGame.Test
             }
         }
 
+        private void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.Alpha1))
+                KillCharacter(0);
+            
+            if(Input.GetKeyDown(KeyCode.Alpha2))
+                KillCharacter(1);
+            
+            if(Input.GetKeyDown(KeyCode.Alpha3))
+                KillCharacter(2);
+            
+            if(Input.GetKeyDown(KeyCode.Alpha4))
+                KillCharacter(3);
+        }
+
         private void SetKeyAction(KeyCode keyCode, Action action)
         {
             this.UpdateAsObservable()
@@ -34,13 +49,12 @@ namespace RGLabs.InGame.Test
                 return;
 
             var behaviour = characters[index].behaviour;
-            new AtkResult
+            new AtkEvent
             {
-                type = DamageType.Normal,
-                from = null,
-                to = behaviour,
-                amount = behaviour.status.hp.Max,
-                isCritical = false
+                Type = DamageType.Normal,
+                From = null,
+                To = behaviour,
+                Amount = behaviour.status.hp.Max
             }.Publish();
         }
     }

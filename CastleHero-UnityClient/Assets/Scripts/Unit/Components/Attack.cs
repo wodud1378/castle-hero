@@ -38,17 +38,15 @@ namespace RGLabs.Unit.Components
                 if (!target.IsValid())
                     continue;
 
-                var status = _unit.status;
                 var data = new AtkEvent
                 {
-                    from = _unit,
-                    to = target,
-                    amount = status.atk,
-                    critical = status.critical,
-                    criticalMul = status.criticalAtk
+                    Type = DamageType.Normal,
+                    From = _unit,
+                    To = target,
+                    Amount = _unit.status.atk
                 };
 
-                //data.Publish();
+                data.Publish();
             }
 
             projectileLauncher?.Launch(targets);

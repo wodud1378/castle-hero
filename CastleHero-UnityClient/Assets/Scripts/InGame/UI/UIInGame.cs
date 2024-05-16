@@ -18,6 +18,15 @@ namespace RGLabs.InGame.UI
     public struct DamagePrefabs
     {
         public string normal;
+        public string critical;
+        public string debuff;
+    }
+
+    [Serializable]
+    public struct HealPrefabs
+    {
+        public string heal;
+        public string shield;
     }
     
     public class UIInGame : UIMain
@@ -29,6 +38,7 @@ namespace RGLabs.InGame.UI
         [SerializeField] private Button _pause;
         [SerializeField] private RectTransform _damageRoot;
         [SerializeField] private DamagePrefabs _damagePrefabs;
+        [SerializeField] private HealPrefabs _healPrefabs;
         [SerializeField] private string _damagePrefab;
         
         private PoolContainer _poolContainer;
@@ -38,21 +48,15 @@ namespace RGLabs.InGame.UI
         private void Awake()
         {
             this.SubscribeButton(_pause, ()=> SetPause(true));
-            
-            MessageBroker.Default
-                .Receive<Result>()
-                .Subscribe(OnResult)
-                .AddTo(this);
-            
-            MessageBroker.Default
-                .Receive<AtkResult>()
-                .Subscribe(OnAtkResult)
-                .AddTo(this);
+            this.SubscribeMessage<Result>(OnResult);
+            this.SubscribeMessage<AtkResult>(OnAtkResult);
+            this.SubscribeMessage<HealResult>(OnHealResult);
         }
         
         private async void OnAtkResult(AtkResult result)
         {
-            var uiDamage = await GetUIDamage(result);
+            var ev = result.Event;
+            var uiDamage = await GetUIDamage(ev.Type, result.IsCritical);
             if (uiDamage == null)
                 return;
 
@@ -60,13 +64,65 @@ namespace RGLabs.InGame.UI
             tr.SetParent(_damageRoot);
             tr.localScale = Vector3.one;
             uiDamage.Container = _poolContainer;
-            uiDamage.Show(result);
+            uiDamage.Show(result.Event);
+        }
+        
+        private async void OnHealResult(HealResult result)
+        {
+            var ev = result.Event;
+            var uiDamage = await GetUIDamage(ev.Type);
+            if (uiDamage == null)
+                return;
+
+            var tr = uiDamage.transform;
+            tr.SetParent(_damageRoot);
+            tr.localScale = Vector3.one;
+            uiDamage.Container = _poolContainer;
+            uiDamage.Show(result.Event);
         }
 
-        private async UniTask<UIDamage> GetUIDamage(AtkResult result)
+        private async UniTask<UIDamage> GetUIDamage(DamageType type, bool isCritical)
         {
-            // TODO : 데미지 타입에 따라서 프리팹 로드
-            var pool = _poolContainer.Get(_damagePrefab);
+            string prefab = string.Empty;
+            if (isCritical)
+                prefab =_damagePrefabs.critical;
+            else
+            {
+                switch (type)
+                {
+                    case DamageType.Normal:
+                        prefab = _damagePrefabs.normal;
+                        break;
+                    case DamageType.Debuff:
+                        prefab = _damagePrefabs.debuff;
+                        break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(prefab))
+                return null;
+            
+            var pool = _poolContainer.Get(prefab);
+            return await pool.Get() as UIDamage;
+        }
+
+        private async UniTask<UIDamage> GetUIDamage(HealType type)
+        {
+            string prefab = string.Empty;
+            switch (type)
+            {
+                case HealType.Heal:
+                    prefab = _healPrefabs.heal;
+                    break;
+                case HealType.Shield:
+                    prefab = _healPrefabs.shield;
+                    break;
+            }
+            
+            if (string.IsNullOrEmpty(prefab))
+                return null;
+            
+            var pool = _poolContainer.Get(prefab);
             return await pool.Get() as UIDamage;
         }
 

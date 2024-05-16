@@ -40,15 +40,8 @@ namespace RGLabs.InGame.Behaviours
         {
             base.OnAwake();
             
-            MessageBroker.Default
-                .Receive<StartGame>()
-                .Subscribe(Run)
-                .AddTo(this);
-
-            MessageBroker.Default
-                .Receive<ExitCode>()
-                .Subscribe(Exit)
-                .AddTo(this);
+            this.SubscribeMessage<StartGame>(Run);
+            this.SubscribeMessage<ExitCode>(Exit);
         }
 
         private void Run(StartGame startGame)

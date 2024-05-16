@@ -118,6 +118,14 @@ namespace RGLabs.Utility
 
     public static class RxHelper
     {
+        public static void SubscribeMessage<T>(this MonoBehaviour behaviour, Action<T> onReceive)
+        {
+            MessageBroker.Default
+                .Receive<T>()
+                .Subscribe(onReceive)
+                .AddTo(behaviour);
+        }
+        
         public static void Publish<T>(this T data) => MessageBroker.Default.Publish(data);
         
         public static void SubscribeButton(this MonoBehaviour behaviour, Button button, Action onClick, float clickThreshold = 0.25f)
