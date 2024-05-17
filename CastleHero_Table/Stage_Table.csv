@@ -1,0 +1,4 @@
+Stage_index,Stage_Act,Stage_Time,Stage_Rwd_First,Stage_Rwd_First_Value,Stage_Rwd_Exp,Stage_Rwd_Gold_Min,Stage_Rwd_Gold_Max,Stage_Rwd_Item_Per,Stage_Rwd_Item_ID,Stage_Rwd_Item_Value,Stage_Mob_Wave
+1,10,60,0,10,200,100,500,0.5,300,1,1
+2,10,90,0,100,300,200,600,0.5,200,1,2
+3,10,120,0,500,400,300,700,0.5,100,1,3

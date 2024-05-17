@@ -1,8 +1,8 @@
 Character_ID,Character_Icon,Character_Prefab,Character_Skin,Character_Name,Character_Class,Character_Team,Character_Skill,Character_Position,Character_Atk_type,Character_Def_type,Character_Order_atk,Character_Recovery,Character_Hp,Character_Atk,Character_Cri,Character_Cri_Damage,Character_Speed_Atk,Character_Speed_Move,Character_Range_Atk,Character_Range_Move,Character_Property_Atk,Character_Property_Def
 10021,10021,Character_10021,,æœªÏ¿⁄,0,6,10021,2,1,1,1,30,3000,100,0.3,1.5,1,3,1,3,0,0
 10034,10034,Character_10034,,«œ««,0,9,10034,3,0,2,1,30,3000,100,0.5,1,1,3,5,8,0,0
-20001,20001,Monster_20001,01,º“¿€≥Û,3,1,20001,2,1,1,1,0,200,5,0,0,2,1,1,1,0,0
-20002,20002,Monster_20001,02,¿‚∫Œ,3,1,20002,2,1,1,1,0,200,5,0,0,2,1,1,1,0,0
-20003,20003,Monster_20001,03,≥ÛªÁ≤€,3,1,20003,2,1,1,1,0,300,5,0,0,3,1,1,1,0,0
+20001,20001,Monster_20001,1,º“¿€≥Û,3,1,20001,2,1,1,1,0,200,5,0,0,2,1,1,1,0,0
+20002,20002,Monster_20001,2,¿‚∫Œ,3,1,20002,2,1,1,1,0,200,5,0,0,2,1,1,1,0,0
+20003,20003,Monster_20001,3,≥ÛªÁ≤€,3,1,20003,2,1,1,1,0,300,5,0,0,3,1,1,1,0,0
 30003,30003,Monster_30003,,±‚ªÁ¥‹¿Â,0,3,30003,2,1,1,1,0,1000,100,0.1,1,1,1,2,3,0,0
 10023,10023,Character_10023,,ΩΩ∂Û¿”≈∑,0,7,10023,2,1,1,1,30,3500,100,0.1,1,1,1,1,3,0,0
