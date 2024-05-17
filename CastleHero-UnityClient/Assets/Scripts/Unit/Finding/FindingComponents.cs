@@ -6,7 +6,7 @@ namespace RGLabs.Unit.Finding
     public class FindingComponents
     {
         public readonly FindMoveTarget move;
-        public readonly FindAttackTarget attack;
+        public readonly FindUnits attack;
 
         private readonly Status _status;
         

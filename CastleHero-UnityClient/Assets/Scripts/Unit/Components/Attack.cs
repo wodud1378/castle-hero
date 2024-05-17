@@ -8,14 +8,14 @@ namespace RGLabs.Unit.Components
     public class Attack
     {
         private readonly UnitBehaviour _unit;
-        private readonly FindAttackTarget _finder;
+        private readonly FindUnits _finder;
         private readonly AnimationEvents _animationEvents;
         
         public bool InProgress { get; private set; }
 
         public ProjectileLauncher projectileLauncher;
 
-        public Attack(UnitBehaviour unit, FindAttackTarget finder, AnimationEvents animationEvents)
+        public Attack(UnitBehaviour unit, FindUnits finder, AnimationEvents animationEvents)
         {
             _unit = unit;
             _finder = finder;

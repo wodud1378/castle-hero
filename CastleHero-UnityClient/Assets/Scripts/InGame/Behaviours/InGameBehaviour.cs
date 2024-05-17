@@ -56,7 +56,7 @@ namespace RGLabs.InGame.Behaviours
             gameRepo = last.gameRepo;
             
             characterFactory = last.characterFactory;
-            monsterFactory = new UnitFactory(poolContainer, db.monsters);
+            monsterFactory = new UnitFactory(poolContainer, db.monsters, db.monsterLevels);
 
             var castle = gameRepo.castle.Value;
             castle.state
@@ -104,9 +104,8 @@ namespace RGLabs.InGame.Behaviours
         {
             foreach (var character in gameRepo.characters.Value)
             {
-                var unit = character.behaviour;
-                unit.CanAttack = true;
-                unit.CanMove = true;
+                character.CanAttack = true;
+                character.CanMove = true;
             }
         }
 

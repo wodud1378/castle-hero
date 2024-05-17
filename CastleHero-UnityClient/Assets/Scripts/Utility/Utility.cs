@@ -29,7 +29,7 @@ namespace RGLabs.Utility
         {
             if (!handle.IsValid())
                 return;
-            
+
             Addressables.Release(handle);
         }
 
@@ -37,7 +37,7 @@ namespace RGLabs.Utility
         {
             if (!handle.IsValid())
                 return;
-            
+
             Addressables.Release(handle);
         }
     }
@@ -66,7 +66,7 @@ namespace RGLabs.Utility
 
             return layerMask;
         }
-        
+
         public static void InitAlley(this UnitBehaviour unit, int defLayer)
         {
             var alleyTag = AlleyTag(unit.Id);
@@ -77,10 +77,12 @@ namespace RGLabs.Utility
             go.layer = alleyLayer;
         }
 
+        public static bool IsAlley(this UnitBehaviour a, UnitBehaviour b) => a.gameObject.CompareTag(b.tag);
+
         public static string AlleyTag(this int id) => id.ToString().StartsWith("1") ? "Character" : "Monster";
 
         public static string EnemyTag(this int id) => id.ToString().StartsWith("1") ? "Monster" : "Character";
-        
+
         private static int DefTypeToLayer(string tag, int defType)
         {
             string type = defType switch
@@ -92,7 +94,7 @@ namespace RGLabs.Utility
 
             return LayerMask.NameToLayer($"{type}{tag}");
         }
-        
+
         public static bool IsValid(this UnitBehaviour unit)
         {
             if (unit == null)
@@ -101,11 +103,11 @@ namespace RGLabs.Utility
             return unit.state.Value is > UnitCore.States.Prepare and < UnitCore.States.Dead;
         }
     }
-    
+
     public static class ObjectHelper
     {
         public static void ToUILayer(this GameObject obj) => obj.ToLayer("UI");
-        
+
         public static void ToLayer(this GameObject obj, string layer)
         {
             if (!obj.TryGetComponent(out SortingGroup sortingGroup))
@@ -125,10 +127,11 @@ namespace RGLabs.Utility
                 .Subscribe(onReceive)
                 .AddTo(behaviour);
         }
-        
+
         public static void Publish<T>(this T data) => MessageBroker.Default.Publish(data);
-        
-        public static void SubscribeButton(this MonoBehaviour behaviour, Button button, Action onClick, float clickThreshold = 0.25f)
+
+        public static void SubscribeButton(this MonoBehaviour behaviour, Button button, Action onClick,
+            float clickThreshold = 0.25f)
         {
             button
                 .OnClickAsObservable()

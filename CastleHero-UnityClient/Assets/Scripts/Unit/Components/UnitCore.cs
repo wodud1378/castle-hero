@@ -7,6 +7,7 @@ using RGLabs.Data.User;
 using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Finding;
+using RGLabs.Unit.Skill;
 using RGLabs.Utility;
 using Spine.Unity;
 using UniRx;
@@ -24,6 +25,7 @@ namespace RGLabs.Unit.Components
             Move,
             Return,
             Attack,
+            Skill,
             Dead,
         }
 
@@ -33,6 +35,7 @@ namespace RGLabs.Unit.Components
             { States.Move, Animator.StringToHash("Move") },
             { States.Return, Animator.StringToHash("Move") },
             { States.Attack, Animator.StringToHash("Attack") },
+            { States.Skill, Animator.StringToHash("Skill") },
         };
 
         private static readonly int AtkSpeedHash = Animator.StringToHash("AttackSpeed");
@@ -47,6 +50,7 @@ namespace RGLabs.Unit.Components
         private readonly Attack _attack;
         private readonly RenderController _renderController;
         private readonly FindingComponents _finding;
+        private readonly ISkill _skill;
 
         private readonly bool _enableAttack;
         private readonly bool _enableMove;
@@ -77,6 +81,9 @@ namespace RGLabs.Unit.Components
             _enableAttack = enableAttack;
             _enableMove = enableMove;
             _enableAnimation = enableAnimation;
+
+            var type = Type.GetType($"RGLabs.Unit.Skill.Skill{owner.Data.Id}");
+            if (type != null) _skill = (ISkill)Activator.CreateInstance(type);
 
             elemental = new();
             navAgent = _owner.GetComponent<PolyNavAgent>();
@@ -136,9 +143,9 @@ namespace RGLabs.Unit.Components
             return true;
         }
 
-        public void SetData(UnitEntity data)
+        public void SetData(UnitEntity data, int lv, UnitLevelEntity levelData)
         {
-            status.Init(data);
+            status.Init(data, lv, levelData);
             elemental.atkType = (Elemental.Type)data.elementalAtk;
             elemental.defType = (Elemental.Type)data.elementalDef;
 
@@ -228,9 +235,21 @@ namespace RGLabs.Unit.Components
 
         private void OnIdle()
         {
+            if (TrySetToSkill()) return;
             if (TrySetToAttack()) return;
             if (TrySetToMove()) return;
             if (TrySetToReturn()) return;
+        }
+
+        private bool TrySetToSkill()
+        {
+            if (_skill == null)
+                return false;
+
+            if (!_skill.IsReady())
+                return false;
+
+            return false;
         }
 
         private bool TrySetToAttack()

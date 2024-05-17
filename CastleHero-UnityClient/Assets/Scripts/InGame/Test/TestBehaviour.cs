@@ -48,7 +48,7 @@ namespace RGLabs.InGame.Test
             if (!index.IsValidIndex(characters))
                 return;
 
-            var behaviour = characters[index].behaviour;
+            var behaviour = characters[index];
             new AtkEvent
             {
                 Type = DamageType.Normal,

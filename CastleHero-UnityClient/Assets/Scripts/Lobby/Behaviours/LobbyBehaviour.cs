@@ -29,7 +29,7 @@ namespace RGLabs.Lobby.Behaviours
             base.OnLoaded();
 
             poolContainer = new PoolContainer();
-            characterFactory = new UnitFactory(poolContainer, db.characters);
+            characterFactory = new UnitFactory(poolContainer, db.characters, db.characterLevels);
 
             await _formation.Init(db.characters, userRepo, gameRepo, characterFactory);
 

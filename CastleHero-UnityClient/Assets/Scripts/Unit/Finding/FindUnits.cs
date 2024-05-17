@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RGLabs.Unit.Finding
 {
-    public abstract class FindUnits
+    public class FindUnits
     {
         private static readonly Dictionary<Collider2D, UnitBehaviour> CachedUnits = new();
         
@@ -18,7 +18,7 @@ namespace RGLabs.Unit.Finding
 
         private readonly int _maxTarget;
 
-        protected FindUnits(Collider2D[] castBuffer, int maxTarget)
+        public FindUnits(Collider2D[] castBuffer, int maxTarget)
         {
             _castBuffer = castBuffer;
             _maxTarget = maxTarget;
@@ -26,7 +26,20 @@ namespace RGLabs.Unit.Finding
             Found = new();
         }
 
-        protected abstract bool OnUpdate(int found);
+        protected virtual bool OnUpdate(int found)
+        {
+            int added = 0;
+            for (int i = 0; i < found; ++i)
+            {
+                if (!TryGetUnit(_castBuffer[i], out var unit))
+                    continue;
+
+                Found.Add(unit);
+                ++added;
+            }
+
+            return added > 0;
+        }
 
         public bool Update(Vector2 position)
         {

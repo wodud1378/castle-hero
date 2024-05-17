@@ -10,12 +10,14 @@ namespace RGLabs.Unit.Factory
     public class UnitFactory : IUnitFactory
     {
         private readonly PoolContainer _pools;
-        private readonly UnitDB _db;
+        private readonly UnitDB _unitDB;
+        private readonly UnitLevelDB _levelDB;
 
-        public UnitFactory(PoolContainer pools, UnitDB db)
+        public UnitFactory(PoolContainer pools, UnitDB unitDB, UnitLevelDB levelDB)
         {
             _pools = pools;
-            _db = db;
+            _unitDB = unitDB;
+            _levelDB = levelDB;
         }
         
         public async UniTask<UnitBehaviour> Create(int id, int lv, int grade, Vector2 position)
@@ -32,14 +34,17 @@ namespace RGLabs.Unit.Factory
 
         public async UniTask<UnitBehaviour> Create(UnitInfo info, Vector2 position)
         {
-            if (!_db.TryFind(info.id, out var entity))
+            if (!_unitDB.TryFind(info.id, out var unitEntity))
                 return null;
 
-            var unit = await CreateInternal(entity.prefab, position);
+            var unit = await CreateInternal(unitEntity.prefab, position);
             if (unit == null)
                 return null;
 
-            unit.Init(info, entity);
+            if (!_levelDB.TryFind(info.id, out var levelEntity))
+                levelEntity = default;
+            
+            unit.Init(info, unitEntity, levelEntity);
             unit.position = position;
             return unit;
         }

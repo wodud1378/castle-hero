@@ -167,14 +167,7 @@ namespace RGLabs.InGame.System
 
         private void Recovery(WaitRecover recover)
         {
-            var behaviour = recover.behaviour;
-            var position = recover.position;
-
-            behaviour.ForceActivate();
-            behaviour.Init(behaviour.Info, behaviour.Data);
-            behaviour.position = position;
-            behaviour.Core.defaultDestination = position;
-
+            recover.behaviour.Recovery(recover.position);
             recover.Dispose();
         }
 
