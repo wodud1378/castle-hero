@@ -68,7 +68,9 @@ SpriteAtlas:
     - f3ddfe19defca1d4aa31d7e62d89830a: 21300000
     - 01eb1c2988e2c5c4b836ddf8a8ed4d42: 21300000
     - fca3ac29805f0c64abbf3ba534b53fe7: 21300000
+    - 5357a049280659040a25dd9f560269d5: 21300000
     - a23488e94bf26cb4ebfebb593a8a1b19: 21300000
+    - 1dc9c41aa1a366b418ca33883395d68a: 21300000
     - 87c5c17a7310a8f42b63bf49da8b318f: 21300000
     - 8fb37dbac196f1f40aeff68ee15b8885: 21300000
     - 88a49aca2beebb047ac698c8a2d4db33: 21300000
@@ -80,6 +82,7 @@ SpriteAtlas:
     - 42c5302d2b8eab442bf5f02ebd2edc16: 21300000
     - f5fdfbedb713f204fa92716ae93e4bbc: 21300000
     - 66a3c5ee315645f48b3520ff12727304: 21300000
+    - b966ff6ff22379e4a8d8ffc9cdaa2f84: 21300000
     - 3a97d08fee9e4d94cb1317400ff458a1: 21300000
     - deebe9ef608813843b368895a8b4fd77: 21300000
   m_MasterAtlas: {fileID: 0}
@@ -115,7 +118,9 @@ SpriteAtlas:
   - {fileID: 21300000, guid: f3ddfe19defca1d4aa31d7e62d89830a, type: 3}
   - {fileID: 21300000, guid: 01eb1c2988e2c5c4b836ddf8a8ed4d42, type: 3}
   - {fileID: 21300000, guid: fca3ac29805f0c64abbf3ba534b53fe7, type: 3}
+  - {fileID: 21300000, guid: 5357a049280659040a25dd9f560269d5, type: 3}
   - {fileID: 21300000, guid: a23488e94bf26cb4ebfebb593a8a1b19, type: 3}
+  - {fileID: 21300000, guid: 1dc9c41aa1a366b418ca33883395d68a, type: 3}
   - {fileID: 21300000, guid: 87c5c17a7310a8f42b63bf49da8b318f, type: 3}
   - {fileID: 21300000, guid: 8fb37dbac196f1f40aeff68ee15b8885, type: 3}
   - {fileID: 21300000, guid: 88a49aca2beebb047ac698c8a2d4db33, type: 3}
@@ -127,6 +132,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 42c5302d2b8eab442bf5f02ebd2edc16, type: 3}
   - {fileID: 21300000, guid: f5fdfbedb713f204fa92716ae93e4bbc, type: 3}
   - {fileID: 21300000, guid: 66a3c5ee315645f48b3520ff12727304, type: 3}
+  - {fileID: 21300000, guid: b966ff6ff22379e4a8d8ffc9cdaa2f84, type: 3}
   - {fileID: 21300000, guid: 3a97d08fee9e4d94cb1317400ff458a1, type: 3}
   - {fileID: 21300000, guid: deebe9ef608813843b368895a8b4fd77, type: 3}
   m_PackedSpriteNamesToIndex:
@@ -161,7 +167,9 @@ SpriteAtlas:
   - Button_Close_01
   - BG_Result
   - Button_Info
+  - Button_Increse_Up
   - Button_Increse
+  - Button_Increse_Down
   - BG_Skill
   - Icon_AttackSpeed
   - Button_RoundSquare_R
@@ -173,6 +181,7 @@ SpriteAtlas:
   - Icon_Attack
   - GradationArea
   - Icon_Critical
+  - Slot_Equipment
   - Gauge_Bar_G
   - Gauge_BG
   m_RenderDataMap: {}
