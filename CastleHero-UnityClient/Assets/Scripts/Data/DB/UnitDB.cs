@@ -5,6 +5,7 @@ using UnityEngine;
 namespace RGLabs.Data.DB
 {
     [CreateAssetMenu(fileName = "Units", menuName = "Scriptable Object/Units")]
+    [DataBase("Character_Table")]
     public class UnitDB : DB<UnitEntity>, IDataBase
     {
         public readonly Dictionary<int, float> sizeCache = new();

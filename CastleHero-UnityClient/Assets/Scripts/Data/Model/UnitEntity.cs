@@ -31,6 +31,9 @@ namespace RGLabs.Data.Model
         
         [DataField("Character_Team")]
         public int team;
+
+        [DataField("Character_Skill")] 
+        public int skill;
         
         [DataField("Character_Position")]
         public int role;

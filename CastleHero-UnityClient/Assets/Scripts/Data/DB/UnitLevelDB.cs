@@ -2,6 +2,7 @@ using RGLabs.Data.Model;
 
 namespace RGLabs.Data.DB
 {
+    [DataBase("Character_Upgrade_Table")]
     public class UnitLevelDB : DB<UnitLevelEntity>, IDataBase
     {
         protected override UnitLevelEntity FallBackEntity() => default;

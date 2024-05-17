@@ -5,9 +5,9 @@ namespace RGLabs.Unit.Components
 {
     public class RenderController
     {
-        private readonly SkeletonMecanim _skeletonMecanim;
-        private readonly Animator _animator;
-        private readonly bool _enableAnimation;
+        public readonly Animator animator;
+        public readonly SkeletonMecanim skeletonMecanim;
+        public readonly bool enableAnimation;
 
         // Null-Check 비용 소모를 줄이기 위해 캐싱.
         private readonly bool _hasSkeleton;
@@ -15,9 +15,9 @@ namespace RGLabs.Unit.Components
 
         public RenderController(SkeletonMecanim skeletonMecanim, Animator animator, bool enableAnimation)
         {
-            _skeletonMecanim = skeletonMecanim;
-            _animator = animator;
-            _enableAnimation = enableAnimation;
+            this.skeletonMecanim = skeletonMecanim;
+            this.animator = animator;
+            this.enableAnimation = enableAnimation;
 
             _hasSkeleton = skeletonMecanim != null;
             _hasAnimator = animator != null;
@@ -31,25 +31,25 @@ namespace RGLabs.Unit.Components
             if (string.IsNullOrEmpty(skinName))
                 return;
 
-            var skeleton = _skeletonMecanim.skeleton;
+            var skeleton = skeletonMecanim.skeleton;
             skeleton.SetSkin(skinName);
             skeleton.SetToSetupPose();
         }
 
         public void SetAnimation(int hash)
         {
-            if (!_enableAnimation || !_hasAnimator)
+            if (!enableAnimation || !_hasAnimator)
                 return;
 
-            _animator.SetTrigger(hash);
+            animator.SetTrigger(hash);
         }
 
         public void SetFloat(int hash, float value)
         {
-            if (!_enableAnimation || !_hasAnimator)
+            if (!enableAnimation || !_hasAnimator)
                 return;
 
-            _animator.SetFloat(hash, value);
+            animator.SetFloat(hash, value);
         }
     }
 }

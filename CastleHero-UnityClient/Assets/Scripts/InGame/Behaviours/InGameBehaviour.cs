@@ -54,9 +54,9 @@ namespace RGLabs.InGame.Behaviours
             poolContainer = last.poolContainer;
             userRepo = last.userRepo;
             gameRepo = last.gameRepo;
-            
+
             characterFactory = last.characterFactory;
-            monsterFactory = new UnitFactory(poolContainer, db.monsters, db.monsterLevels);
+            monsterFactory = last.monsterFactory;
 
             var castle = gameRepo.castle.Value;
             castle.state
@@ -66,7 +66,7 @@ namespace RGLabs.InGame.Behaviours
 
             Context.startButton.enabled = false;
             
-            _uiInGame.Init(poolContainer, gameRepo, db.characters);
+            _uiInGame.Init(poolContainer, gameRepo, db.units);
             _uiInGame.Open();
             
             _unitProcessor = new UnitProcessor(this);
@@ -81,7 +81,7 @@ namespace RGLabs.InGame.Behaviours
                 return;
 
             var waves = db.waves.Map(entity.waveGroupId);
-            _waveRunner.Init(waves, db.monsters, gameRepo.castle.Value, monsterFactory);
+            _waveRunner.Init(waves, db.units, gameRepo.castle.Value, monsterFactory);
             _waveRunner.isRunning = true;
 
             _waveRunner.completed
