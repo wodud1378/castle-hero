@@ -67,27 +67,29 @@ namespace RGLabs.Data.Load
 
         public DataLoader(ICsvProvider csvProvider) => _csvProvider = csvProvider;
         
-        public async UniTask<T> Load<T>() where T : class, IDataBase
+        public async UniTask Load<T>(Action<T> onLoadComplete) where T : class, IDataBase
         {
             var type = typeof(T);
             var attribute = GetDataBaseAttribute(type);
             if (attribute == null)
-                return null;
+                return;
             
             var entityType = GetEntityType(type);
             if (entityType == null)
-                return null;
+                return;
             
             var text = await _csvProvider.LoadCsvText(attribute);
             if (string.IsNullOrEmpty(text))
-                return null;
+                return;
 
+            await UniTask.SwitchToThreadPool();
+            
             var dataMap = Map(text);
             int rowCount = dataMap.Length;
             int fieldNameRow = (int)Row.FieldName;
             int fieldValueRow = (int)Row.FieldValue;
             if (rowCount <= fieldNameRow)
-                return null;
+                return;
 
             var dataFields =
                 entityType
@@ -99,7 +101,7 @@ namespace RGLabs.Data.Load
                     .ToArray();
 
             if (dataFields.Length == 0)
-                return null;
+                return;
 
             var entities = new List<object>();
             var arrayMap = new Dictionary<int, Dictionary<IDataField, IList>>();
@@ -169,7 +171,9 @@ namespace RGLabs.Data.Load
             if (instance is IDataBase db)
                 db.Load(entities.ToArray());
 
-            return (T)instance;
+            await UniTask.SwitchToMainThread();
+            
+            onLoadComplete.Invoke((T)instance);
         }
 
         private bool TryParse(string value, Type type, out object result)

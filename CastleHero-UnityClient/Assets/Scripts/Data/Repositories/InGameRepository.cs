@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data.DB;
 using RGLabs.Data.Load;
@@ -16,7 +17,8 @@ namespace RGLabs.Data.Repositories
         private readonly IngredientDB _ingredientItems;
         private readonly ChestDB _chestItems;
 
-        public ItemDBAccessor(EquipmentDB equipmentItems, ConsumableDB consumableItems, IngredientDB ingredientItems, ChestDB chestItems)
+        public ItemDBAccessor(EquipmentDB equipmentItems, ConsumableDB consumableItems, IngredientDB ingredientItems,
+            ChestDB chestItems)
         {
             _equipmentItems = equipmentItems;
             _consumableItems = consumableItems;
@@ -96,13 +98,11 @@ namespace RGLabs.Data.Repositories
             return _loaded;
         }
 
-        private static DBCollections _loaded = null;
-
-        private const string DBRoot = "DB/";
+        private static DBCollections _loaded;
 
         public StageDB stages;
         public WaveDB waves;
-        
+
         public ItemDBAccessor itemDBAccessor;
 
         public UnitDB units;
@@ -113,26 +113,35 @@ namespace RGLabs.Data.Repositories
 
         private DBCollections()
         {
-            _loader = new(new LocalCsvProvider());
+            _loader = new DataLoader(new LocalCsvProvider());
         }
 
         private async UniTask Init()
         {
-            stages = await _loader.Load<StageDB>();
-            waves = await _loader.Load<WaveDB>();
-            units = await _loader.Load<UnitDB>();
-            levels = await _loader.Load<UnitLevelDB>();
-            skills = await _loader.Load<SkillDB>();
+            var tasks = new List<UniTask>
+            {
+                _loader.Load<StageDB>(x => stages = x),
+                _loader.Load<WaveDB>(x => waves = x),
+                _loader.Load<UnitDB>(x => units = x),
+                _loader.Load<UnitLevelDB>(x => levels = x),
+                _loader.Load<SkillDB>(x => skills = x)
+            };
 
-            var equipmentItems = await _loader.Load<EquipmentDB>();;
-            var consumableItems = await _loader.Load<ConsumableDB>();;
-            var ingredientItems = await _loader.Load<IngredientDB>();;
-            var chestItems = await _loader.Load<ChestDB>();
+            EquipmentDB equipmentItems = null;
+            tasks.Add(_loader.Load<EquipmentDB>(x => equipmentItems = x));
+
+            ConsumableDB consumableItems = null;
+            tasks.Add(_loader.Load<ConsumableDB>(x => consumableItems = x));
+
+            IngredientDB ingredientItems = null;
+            tasks.Add(_loader.Load<IngredientDB>(x => ingredientItems = x));
+
+            ChestDB chestItems = null;
+            tasks.Add(_loader.Load<ChestDB>(x => chestItems = x));
+
+            await UniTask.WhenAll(tasks);
 
             itemDBAccessor = new ItemDBAccessor(equipmentItems, consumableItems, ingredientItems, chestItems);
-    
-            // 추 후 네트워크 연동을 위해 비동기 구조 유지.
-            await UniTask.NextFrame();
 
             units.CacheUnitSizes();
         }
