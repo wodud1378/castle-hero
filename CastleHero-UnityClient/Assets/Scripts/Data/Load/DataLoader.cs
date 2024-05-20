@@ -105,6 +105,7 @@ namespace RGLabs.Data.Load
 
             var entities = new List<object>();
             var arrayMap = new Dictionary<int, Dictionary<IDataField, IList>>();
+            var fails = new HashSet<string>();
             for (int i = fieldValueRow; i < rowCount; ++i)
             {
                 var entity = Activator.CreateInstance(entityType);
@@ -117,7 +118,7 @@ namespace RGLabs.Data.Load
                     var dataField = dataFields.FirstOrDefault(x => x.Attribute.Name == fieldName);
                     if (dataField == null)
                     {
-                        Debug.LogError($"\"{fieldName}\" 데이터를 찾을 수 없습니다.");
+                        fails.Add(fieldName);
                         continue;
                     }
 
@@ -172,6 +173,11 @@ namespace RGLabs.Data.Load
                 db.Load(entities.ToArray());
 
             await UniTask.SwitchToMainThread();
+
+            foreach (var fail in fails)
+            {
+                Debug.LogError($"\"{fail}\" 데이터를 찾을 수 없습니다.");
+            }
             
             onLoadComplete.Invoke((T)instance);
         }
@@ -256,7 +262,21 @@ namespace RGLabs.Data.Load
 
             int rowCount = rows.Length;
             var map = new string[rowCount][];
-            for (int i = 0; i < rowCount; ++i)
+
+            map[0] = splitColumns.Split(rows[0])
+                .Select(x =>
+                {
+                    if (x.EndsWith(')'))
+                        x = x.Remove(x.IndexOf('('));
+
+                    if (!char.IsDigit(x[^1]))
+                        return x;
+
+                    return x.Remove(x.Length - 2, 2);
+                })
+                .ToArray();
+            
+            for (int i = 1; i < rowCount; ++i)
             {
                 map[i] = splitColumns.Split(rows[i]);
             }
