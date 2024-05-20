@@ -56,7 +56,7 @@ namespace RGLabs.Data.Model
         [DataField("Character_Atk")]
         public float atk;
         
-        [DataField("Character_Atk")]
+        [DataField("Character_Cri")]
         public float critical;
         
         [DataField("Character_Cri_Damage")]

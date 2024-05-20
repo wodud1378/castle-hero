@@ -1,4 +1,5 @@
 using System;
+using RGLabs.Data.DB;
 using UnityEngine;
 
 namespace RGLabs.Data.Model
@@ -9,7 +10,6 @@ namespace RGLabs.Data.Model
         AtOnce,
     }
     
-    [Serializable]
     public struct SpawnInfo
     {
         public int id;
@@ -19,19 +19,35 @@ namespace RGLabs.Data.Model
         public float timeStep;
     }
     
-    [Serializable]
     public struct WaveEntity : IEntity
     {
         [field:SerializeField]public int Id { get; set; }
 
+        [DataField("Wave_Grp_ID")]
         public int groupId;
-        public int pattern;
-        public float startTime;
 
-        public int[] ids;
-        public int[] counts;
-        public int[] lvs;
+        [DataField("Wave_Grp_Index")]
+        public int indexInGroup;
+        
+        [DataField("Wave_Grp_Delay")]
+        public float startTime;
+        
+        [DataField("Wave_Grp_Pattern")]
+        public int pattern;
+
+        [DataField("Wave_Grp_Spawn")]
         public int[] areas;
+        
+        [DataField("Wave_Grp_Mob_ID")]
+        public int[] ids;
+        
+        [DataField("Wave_Grp_Mob_Lv")]
+        public int[] lvs;
+        
+        [DataField("Wave_Grp_Mob_Value")]
         public float[] timeSteps;
+        
+        [DataField("Wave_Grp_Mob_Delay")]
+        public int[] counts;
     }
 }

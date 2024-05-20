@@ -14,7 +14,7 @@ using UnityEngine;
 
 namespace RGLabs.Unit.Skill
 {
-    public class Skill10021 : ISkill
+    public class Skill10001 : ISkill
     {
         public ReactiveProperty<SkillState> State { get; } = new();
         
@@ -24,7 +24,7 @@ namespace RGLabs.Unit.Skill
         private float _currentTime;
         private bool _hasTargets;
 
-        public Skill10021(UnitBehaviour owner, SkillEntity data)
+        public Skill10001(UnitBehaviour owner, SkillEntity data)
         {
             _owner = owner;
             _data = data;

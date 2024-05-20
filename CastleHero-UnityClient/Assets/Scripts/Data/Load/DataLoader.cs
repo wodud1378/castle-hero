@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using Cysharp.Threading.Tasks;
 using RGLabs.Data.DB;
 using UnityEngine;
 
 namespace RGLabs.Data.Load
 {
-    public class LocalDataLoader
+    public class DataLoader
     {
         private interface IDataField
         {
@@ -60,19 +62,28 @@ namespace RGLabs.Data.Load
             FieldName = 0,
             FieldValue
         }
+
+        private readonly ICsvProvider _csvProvider;
+
+        public DataLoader(ICsvProvider csvProvider) => _csvProvider = csvProvider;
         
-        public T Load<T>() where T : class, IDataBase
+        public async UniTask<T> Load<T>() where T : class, IDataBase
         {
             var type = typeof(T);
             var attribute = GetDataBaseAttribute(type);
+            if (attribute == null)
+                return null;
+            
             var entityType = GetEntityType(type);
-
-            var file = Resources.Load<TextAsset>($"LocalDB/{attribute.LocalFile}");
-            if (file == null)
+            if (entityType == null)
+                return null;
+            
+            var text = await _csvProvider.LoadCsvText(attribute);
+            if (string.IsNullOrEmpty(text))
                 return null;
 
-            var rows = file.text.Split('\n');
-            int rowCount = rows.Length;
+            var dataMap = Map(text);
+            int rowCount = dataMap.Length;
             int fieldNameRow = (int)Row.FieldName;
             int fieldValueRow = (int)Row.FieldValue;
             if (rowCount <= fieldNameRow)
@@ -92,21 +103,6 @@ namespace RGLabs.Data.Load
 
             var entities = new List<object>();
             var arrayMap = new Dictionary<int, Dictionary<IDataField, IList>>();
-            var dataMap = new string[rowCount][];
-            dataMap[fieldNameRow] = rows[fieldNameRow].Split(',')
-                .Select(x =>
-                {
-                    if (!char.IsDigit(x[^1]))
-                        return x;
-
-                    return x.Remove(x.Length - 2, 2);
-                }).ToArray();
-
-            for (int i = fieldValueRow; i < rowCount; ++i)
-            {
-                dataMap[i] = rows[i].Split(',');
-            }
-
             for (int i = fieldValueRow; i < rowCount; ++i)
             {
                 var entity = Activator.CreateInstance(entityType);
@@ -118,7 +114,10 @@ namespace RGLabs.Data.Load
                     var fieldValue = dataMap[i][j];
                     var dataField = dataFields.FirstOrDefault(x => x.Attribute.Name == fieldName);
                     if (dataField == null)
+                    {
+                        Debug.LogError($"\"{fieldName}\" 데이터를 찾을 수 없습니다.");
                         continue;
+                    }
 
                     if (dataField.FieldType.IsArray)
                     {
@@ -246,29 +245,19 @@ namespace RGLabs.Data.Load
             return null;
         }
 
-        private void Map(string[] rows)
+        private string[][] Map(string text)
         {
-            var fieldNames = rows[(int)Row.FieldName].Split(',')
-                .Select(x =>
-                {
-                    if (!char.IsDigit(x[^1]))
-                        return x;
-                    else
-                        return x.Remove(x.Length - 2, 2);
-                });
-        }
+            Regex splitColumns = new(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+            var rows = Regex.Split(text, @"(?:\r\n|\n|\r)(?=(?:[^""]|""[^""]*"")*$)");
 
-        private void GetDataFieldNames(string[] rows, out List<string> singles, out List<string> arrays)
-        {
-            var origin = rows[(int)Row.FieldName].Split(',');
-            singles = origin
-                .Where(x => !char.IsDigit(x[^1]))
-                .ToList();
+            int rowCount = rows.Length;
+            var map = new string[rowCount][];
+            for (int i = 0; i < rowCount; ++i)
+            {
+                map[i] = splitColumns.Split(rows[i]);
+            }
 
-            arrays = origin
-                .Where(x => int.TryParse(x[^1].ToString(), out int val) && val == 1)
-                .Select(x => x.Remove(x.Length - 2, 2))
-                .ToList();
+            return map;
         }
 
         private Type GetEntityType(Type type)
@@ -292,13 +281,13 @@ namespace RGLabs.Data.Load
             return attributes.Cast<DataFieldAttribute>().First();
         }
 
-        private DataBaseAttribute GetDataBaseAttribute(Type type)
+        private DBAttribute GetDataBaseAttribute(Type type)
         {
-            var attributes = type.GetCustomAttributes(typeof(DataBaseAttribute)).ToArray();
+            var attributes = type.GetCustomAttributes(typeof(DBAttribute)).ToArray();
             if (attributes.Length == 0)
                 return null;
 
-            return attributes.Cast<DataBaseAttribute>().First();
+            return attributes.Cast<DBAttribute>().First();
         }
     }
 }
