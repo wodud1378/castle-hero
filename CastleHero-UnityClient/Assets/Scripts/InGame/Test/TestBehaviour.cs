@@ -1,5 +1,6 @@
 using System;
 using RGLabs.Data;
+using RGLabs.Data.Load;
 using RGLabs.InGame.System;
 using RGLabs.Utility;
 using UniRx;

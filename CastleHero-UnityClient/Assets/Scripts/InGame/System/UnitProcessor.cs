@@ -107,17 +107,25 @@ namespace RGLabs.InGame.System
             if (!to.IsValid())
                 return;
 
-            float critical = 0f;
-            float criticalMul = 0f;
-            float elementalMul = 1f;
-            if (from.IsValid())
+            float amount;
+            bool isCritical = false;
+            if (!to.Core.Invincible)
             {
-                critical = from.status.critical;
-                criticalMul = from.status.criticalAtk;
-                elementalMul = Elemental.AtkMultiplier(from.Core.elemental);
+                float critical = 0f;
+                float criticalMul = 0f;
+                float elementalMul = 1f;
+                if (from.IsValid())
+                {
+                    critical = from.status.critical;
+                    criticalMul = from.status.criticalAtk;
+                    elementalMul = Elemental.AtkMultiplier(from.Core.elemental);
+                }
+                amount = CalcAmount(ev.Amount, critical, criticalMul, elementalMul, out isCritical);
             }
-
-            float amount = CalcAmount(ev.Amount, critical, criticalMul, elementalMul, out bool isCritical);
+            else
+            {
+                amount = 0f;
+            }
 
             to.Core.status.hp.Decrease(amount);
 

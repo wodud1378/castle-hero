@@ -14,8 +14,13 @@ namespace RGLabs.Data.DB
     public class DataFieldAttribute : Attribute
     {
         public string Name { get; }
+        public int Index { get; }
 
-        public DataFieldAttribute(string name) => Name = name;
+        public DataFieldAttribute(string name, int index = -1)
+        {
+            Name = name;
+            Index = index;
+        }
     }
     
     public class DataBaseAttribute : Attribute

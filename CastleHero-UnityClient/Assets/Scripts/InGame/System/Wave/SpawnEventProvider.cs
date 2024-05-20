@@ -10,13 +10,13 @@ namespace RGLabs.InGame.System.Wave
         {
             public readonly SpawnInfo info;
             public readonly int spawnPerOnce;
-            
+
             public float currentTime;
             public int spawned;
 
             public int Left => info.count - spawned;
             public bool IsEnd => Left <= 0;
-            
+
             public Progress(SpawnInfo info, Pattern pattern)
             {
                 this.info = info;
@@ -25,12 +25,12 @@ namespace RGLabs.InGame.System.Wave
                 spawned = 0;
             }
         }
-        
+
         public bool IsDone { get; private set; }
-        
+
         private readonly Progress[] _progresses;
         private readonly SpawnEvent[][] _buffers;
-        private readonly int _infoLength;
+        private readonly int _length;
         private readonly float _startTime;
 
         private float _timeSinceActive;
@@ -38,20 +38,35 @@ namespace RGLabs.InGame.System.Wave
         public SpawnEventProvider(WaveEntity data)
         {
             _startTime = data.startTime;
-            _infoLength = data.info.Length;
-            _progresses = new Progress[_infoLength];
-            _buffers = new SpawnEvent[_infoLength][];
+            _length = Mathf.Min(
+                data.ids.Length,
+                data.counts.Length,
+                data.lvs.Length,
+                data.areas.Length,
+                data.timeSteps.Length);
 
-            for (int i = 0; i < _infoLength; ++i)
+            _progresses = new Progress[_length];
+            _buffers = new SpawnEvent[_length][];
+
+            for (int i = 0; i < _length; ++i)
             {
-                _progresses[i] = new Progress(data.info[i], data.pattern);
+                var info = new SpawnInfo
+                {
+                    id = data.ids[i],
+                    count = data.counts[i],
+                    lv = data.lvs[i],
+                    area = data.areas[i],
+                    timeStep = data.timeSteps[i]
+                };
+
+                _progresses[i] = new Progress(info, (Pattern)data.pattern);
             }
 
-            for (int i = 0; i < _infoLength; ++i)
+            for (int i = 0; i < _length; ++i)
             {
                 _buffers[i] = new SpawnEvent[_progresses[i].spawnPerOnce];
             }
-            
+
             _timeSinceActive = 0f;
 
             IsDone = false;
@@ -64,14 +79,14 @@ namespace RGLabs.InGame.System.Wave
                 return;
 
             bool updated = false;
-            for (int i = 0; i < _infoLength; ++i)
+            for (int i = 0; i < _length; ++i)
             {
                 var progress = _progresses[i];
                 if (progress.IsEnd)
                     continue;
-                
+
                 updated = true;
-                
+
                 progress.currentTime += deltaTime;
                 if (progress.currentTime < progress.info.timeStep)
                     continue;
@@ -82,10 +97,10 @@ namespace RGLabs.InGame.System.Wave
                 {
                     _buffers[i][bufferIndex++].Set(progress.info.id, progress.info.lv, progress.info.area);
                     --left;
-                    
+
                     ++progress.spawned;
                 }
-                
+
                 progress.currentTime = 0f;
                 _buffers[i].Publish();
             }

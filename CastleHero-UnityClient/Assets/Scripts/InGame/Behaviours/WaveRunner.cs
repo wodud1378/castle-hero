@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using RGLabs.Data.DB;
 using RGLabs.Data.Model;
 using RGLabs.InGame.System;
@@ -81,16 +82,7 @@ namespace RGLabs.InGame.Behaviours
             }
         }
 
-        private int TotalCount(ref WaveEntity entity)
-        {
-            int count = 0;
-            foreach (var info in entity.info)
-            {
-                count += info.count;
-            }
-
-            return count;
-        }
+        private int TotalCount(ref WaveEntity entity) => entity.counts.Sum();
 
         private void Update()
         {

@@ -8,6 +8,10 @@ namespace RGLabs.Data.Model
     {
         [field:SerializeField] public int Id { get; set; }
 
+        public string name;
+        public float range;
+        public float coolTime;
+        
         public int[] stats;
         public float[] values;
         public int[] groups;

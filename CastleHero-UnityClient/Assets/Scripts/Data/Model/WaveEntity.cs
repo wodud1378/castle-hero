@@ -25,8 +25,13 @@ namespace RGLabs.Data.Model
         [field:SerializeField]public int Id { get; set; }
 
         public int groupId;
+        public int pattern;
         public float startTime;
-        public Pattern pattern;
-        public SpawnInfo[] info;
+
+        public int[] ids;
+        public int[] counts;
+        public int[] lvs;
+        public int[] areas;
+        public float[] timeSteps;
     }
 }

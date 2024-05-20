@@ -4,12 +4,10 @@ using RGLabs.Common.Behaviours;
 using RGLabs.Data.Model;
 using RGLabs.Data.User;
 using RGLabs.Unit.Components;
-using RGLabs.Unit.Factory;
 using RGLabs.Utility;
 using UniRx;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace RGLabs.Unit.Behaviours
 {
@@ -63,8 +61,7 @@ namespace RGLabs.Unit.Behaviours
         public UnitEntity Data { get; private set; }
         
         private UnitLevelEntity _level;
-
-        public IUnitFactory factory;
+        private SkillEntity _skill;
 
         private void Awake()
         {
@@ -75,13 +72,14 @@ namespace RGLabs.Unit.Behaviours
                 .AddTo(this);
         }
         
-        public void Init(UnitInfo info, UnitEntity entity, UnitLevelEntity levelData)
+        public void Init(UnitInfo info, UnitEntity entity, UnitLevelEntity levelData, SkillEntity skill = default)
         {
             Info = info;
-            
             Data = entity;
+            
             _level = levelData;
-            Core.SetData(entity, info.lv, levelData);
+            _skill = skill;
+            Core.SetData(entity, info.lv, levelData, skill);
             if (Hit != null)
                 Hit.Init();
 
@@ -93,7 +91,7 @@ namespace RGLabs.Unit.Behaviours
         public void Recovery(Vector2 at)
         {
             ForceActivate();
-            Init(Info, Data, _level);
+            Init(Info, Data, _level, _skill);
 
             position = at;
             Core.defaultDestination = at;

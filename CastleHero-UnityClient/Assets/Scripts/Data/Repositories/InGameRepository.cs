@@ -1,6 +1,7 @@
 using System;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data.DB;
+using RGLabs.Data.Load;
 using RGLabs.InGame;
 using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
@@ -31,27 +32,28 @@ namespace RGLabs.Data.Repositories
         public WaveDB waves;
         public RewardDB rewards;
         public ItemDB items;
-        public UnitDB characters;
-        public UnitDB monsters;
-        public UnitLevelDB characterLevels;
-        public UnitLevelDB monsterLevels;
+        public UnitDB units;
+        public UnitLevelDB levels;
+        public SkillDB skills;
 
+        private readonly LocalDataLoader _localLoader;
+        
         private DBCollections()
         {
+            _localLoader = new();
         }
 
         private async UniTask Init()
         {
-            stages = await LoadDB<StageDB>("Stages");
-            waves = await LoadDB<WaveDB>("Waves");
-            rewards = await LoadDB<RewardDB>("Rewards");
-            items = await LoadDB<ItemDB>("Items");
-            characters = await LoadDB<UnitDB>("Characters");
-            monsters = await LoadDB<UnitDB>("Monsters");
-            characterLevels = await LoadDB<UnitLevelDB>("CharacterLevels");
-            monsterLevels = await LoadDB<UnitLevelDB>("MonsterLevels");
+            stages = _localLoader.Load<StageDB>();
+            waves = _localLoader.Load<WaveDB>();
+            rewards = _localLoader.Load<RewardDB>();
+            items = _localLoader.Load<ItemDB>();
+            units = _localLoader.Load<UnitDB>();
+            levels = _localLoader.Load<UnitLevelDB>();
+            skills = _localLoader.Load<SkillDB>();
             
-            monsters.CacheUnitSizes();
+            units.CacheUnitSizes();
         }
 
         private async UniTask<T> LoadDB<T>(string name) =>
