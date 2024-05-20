@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data.DB;
 using UnityEngine;
@@ -81,13 +82,8 @@ namespace RGLabs.Data.Load
             if (string.IsNullOrEmpty(text))
                 return null;
 
-            var rows = text
-                .Split(Environment.NewLine)
-                .Select(x => x.TrimStart('\n').TrimEnd('\n').Replace("^", Environment.NewLine))
-                .Where(x=> !string.IsNullOrEmpty(x))
-                .ToArray();
-            
-            int rowCount = rows.Length;
+            var dataMap = Map(text);
+            int rowCount = dataMap.Length;
             int fieldNameRow = (int)Row.FieldName;
             int fieldValueRow = (int)Row.FieldValue;
             if (rowCount <= fieldNameRow)
@@ -107,26 +103,6 @@ namespace RGLabs.Data.Load
 
             var entities = new List<object>();
             var arrayMap = new Dictionary<int, Dictionary<IDataField, IList>>();
-            var dataMap = new string[rowCount][];
-            dataMap[fieldNameRow] = rows[fieldNameRow]
-                .Split(',')
-                .Select(x =>
-                {
-                    if (x.EndsWith(')'))
-                        x = x.Remove(x.IndexOf('('));
-                    
-                    if (!char.IsDigit(x[^1]))
-                        return x;
-
-                    return x.Remove(x.Length - 2, 2);
-                })
-                .ToArray();
-
-            for (int i = fieldValueRow; i < rowCount; ++i)
-            {
-                dataMap[i] = rows[i].Split(',');
-            }
-
             for (int i = fieldValueRow; i < rowCount; ++i)
             {
                 var entity = Activator.CreateInstance(entityType);
@@ -269,29 +245,19 @@ namespace RGLabs.Data.Load
             return null;
         }
 
-        private void Map(string[] rows)
+        private string[][] Map(string text)
         {
-            var fieldNames = rows[(int)Row.FieldName].Split(',')
-                .Select(x =>
-                {
-                    if (!char.IsDigit(x[^1]))
-                        return x;
-                    else
-                        return x.Remove(x.Length - 2, 2);
-                });
-        }
+            Regex splitColumns = new(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+            var rows = Regex.Split(text, @"(?:\r\n|\n|\r)(?=(?:[^""]|""[^""]*"")*$)");
 
-        private void GetDataFieldNames(string[] rows, out List<string> singles, out List<string> arrays)
-        {
-            var origin = rows[(int)Row.FieldName].Split(',');
-            singles = origin
-                .Where(x => !char.IsDigit(x[^1]))
-                .ToList();
+            int rowCount = rows.Length;
+            var map = new string[rowCount][];
+            for (int i = 0; i < rowCount; ++i)
+            {
+                map[i] = splitColumns.Split(rows[i]);
+            }
 
-            arrays = origin
-                .Where(x => int.TryParse(x[^1].ToString(), out int val) && val == 1)
-                .Select(x => x.Remove(x.Length - 2, 2))
-                .ToList();
+            return map;
         }
 
         private Type GetEntityType(Type type)
