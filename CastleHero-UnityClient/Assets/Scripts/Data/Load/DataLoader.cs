@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Cysharp.Threading.Tasks;
 using RGLabs.Data.DB;
 using UnityEngine;
 
 namespace RGLabs.Data.Load
 {
-    public class LocalDataLoader
+    public class DataLoader
     {
         private interface IDataField
         {
@@ -60,18 +61,32 @@ namespace RGLabs.Data.Load
             FieldName = 0,
             FieldValue
         }
+
+        private readonly ICsvProvider _csvProvider;
+
+        public DataLoader(ICsvProvider csvProvider) => _csvProvider = csvProvider;
         
-        public T Load<T>() where T : class, IDataBase
+        public async UniTask<T> Load<T>() where T : class, IDataBase
         {
             var type = typeof(T);
             var attribute = GetDataBaseAttribute(type);
+            if (attribute == null)
+                return null;
+            
             var entityType = GetEntityType(type);
-
-            var file = Resources.Load<TextAsset>($"LocalDB/{attribute.LocalFile}");
-            if (file == null)
+            if (entityType == null)
+                return null;
+            
+            var text = await _csvProvider.LoadCsvText(attribute);
+            if (string.IsNullOrEmpty(text))
                 return null;
 
-            var rows = file.text.Split('\n');
+            var rows = text
+                .Split(Environment.NewLine)
+                .Select(x => x.TrimStart('\n').TrimEnd('\n').Replace("^", Environment.NewLine))
+                .Where(x=> !string.IsNullOrEmpty(x))
+                .ToArray();
+            
             int rowCount = rows.Length;
             int fieldNameRow = (int)Row.FieldName;
             int fieldValueRow = (int)Row.FieldValue;
@@ -93,14 +108,19 @@ namespace RGLabs.Data.Load
             var entities = new List<object>();
             var arrayMap = new Dictionary<int, Dictionary<IDataField, IList>>();
             var dataMap = new string[rowCount][];
-            dataMap[fieldNameRow] = rows[fieldNameRow].Split(',')
+            dataMap[fieldNameRow] = rows[fieldNameRow]
+                .Split(',')
                 .Select(x =>
                 {
+                    if (x.EndsWith(')'))
+                        x = x.Remove(x.IndexOf('('));
+                    
                     if (!char.IsDigit(x[^1]))
                         return x;
 
                     return x.Remove(x.Length - 2, 2);
-                }).ToArray();
+                })
+                .ToArray();
 
             for (int i = fieldValueRow; i < rowCount; ++i)
             {
@@ -118,7 +138,10 @@ namespace RGLabs.Data.Load
                     var fieldValue = dataMap[i][j];
                     var dataField = dataFields.FirstOrDefault(x => x.Attribute.Name == fieldName);
                     if (dataField == null)
+                    {
+                        Debug.LogError($"\"{fieldName}\" 데이터를 찾을 수 없습니다.");
                         continue;
+                    }
 
                     if (dataField.FieldType.IsArray)
                     {
@@ -292,13 +315,13 @@ namespace RGLabs.Data.Load
             return attributes.Cast<DataFieldAttribute>().First();
         }
 
-        private DataBaseAttribute GetDataBaseAttribute(Type type)
+        private DBAttribute GetDataBaseAttribute(Type type)
         {
-            var attributes = type.GetCustomAttributes(typeof(DataBaseAttribute)).ToArray();
+            var attributes = type.GetCustomAttributes(typeof(DBAttribute)).ToArray();
             if (attributes.Length == 0)
                 return null;
 
-            return attributes.Cast<DataBaseAttribute>().First();
+            return attributes.Cast<DBAttribute>().First();
         }
     }
 }

@@ -23,27 +23,27 @@ namespace RGLabs.Data.DB
         }
     }
     
-    public class DataBaseAttribute : Attribute
+    public class DBAttribute : Attribute
     {
         public string LocalFile { get; }
         public string Api { get; }
 
-        public DataBaseAttribute(string localFile, string api = "")
+        public string Path => $"LocalDB/{LocalFile}";
+
+        public DBAttribute(string localFile, string api = "")
         {
             LocalFile = localFile;
             Api = api;
         }
     }
     
-    public abstract class DB<T> : ScriptableObject where T : IEntity
+    public abstract class DB<T> : IDataBase where T : IEntity
     {
-        [field:SerializeField] public int Id { get; set; }
-        
-        [SerializeField] protected T[] _entities;
+        protected T[] entities;
 
         private readonly Dictionary<int, int> _resultCache = new();
 
-        public int Length => _entities.Length;
+        public int Length => entities.Length;
 
         public T this[int index]
         {
@@ -56,13 +56,13 @@ namespace RGLabs.Data.DB
         
         public bool TryIndexOf(int index, out T entity)
         {
-            if (!index.IsValidIndex(_entities))
+            if (!index.IsValidIndex(entities))
             {
                 entity = FallBackEntity();
                 return false;
             }
 
-            entity = _entities[index];
+            entity = entities[index];
             return true;
         }
         
@@ -70,7 +70,7 @@ namespace RGLabs.Data.DB
         {
             if (!_resultCache.TryGetValue(id, out int index))
             {
-                index = Array.FindIndex(_entities, (it) => id == it.Id);
+                index = Array.FindIndex(entities, (it) => id == it.Id);
                 _resultCache[id] = index;
             }
 
@@ -80,22 +80,20 @@ namespace RGLabs.Data.DB
                 return false;
             }
 
-            entity = _entities[index];
+            entity = entities[index];
             return true;
         }
 
 
         public bool TryFindIndex(int id, out int index)
         {
-            index = Array.FindIndex(_entities, (x) => x.Id == id);
+            index = Array.FindIndex(entities, (x) => x.Id == id);
 
             return IsValidIndex(index);
         }
         
-        public bool IsValidIndex(int index) => index.IsValidIndex(_entities);
+        public bool IsValidIndex(int index) => index.IsValidIndex(entities);
         
-        protected abstract T FallBackEntity();
-
         public void ClearCache()
         {
             _resultCache.Clear();
@@ -124,5 +122,9 @@ namespace RGLabs.Data.DB
 
             return array;
         }
+
+        public virtual void Load(object[] data) => entities = Array.ConvertAll(data, x => (T)x);
+
+        public virtual T FallBackEntity() => default;
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common;
 using RGLabs.Common.UI;
 using RGLabs.Data;
 using RGLabs.Data.Model;
@@ -67,20 +68,25 @@ namespace RGLabs.Stage.UI
             }
             _uiSlots.Clear();
             
-            var rewards = _db.rewards.Map(stageData.rewards);
-            foreach (var reward in rewards)
-            {
-                if (!_db.items.TryFind(reward.itemId, out var entity))
-                    continue;
-                
-                var obj = await Addressables.InstantiateAsync(_rewardPrefab, _rewardParent);
-                if (!obj.TryGetComponent(out UIItemSlot slot))
-                    continue;
+            if(stageData is { goldMin: > 0, goldMax: > 0 })
+                AddRewardUI(Constants.GoldIcon);
+            
+            if(stageData.exp > 0)
+                AddRewardUI(Constants.ExpIcon);
 
-                _uiSlots.Add(slot);
+            if (_db.itemDBAccessor.TryLoad(stageData.propItemId, out var entity))
+                AddRewardUI(entity.Icon);
+        }
 
-                await slot.InitAsync(entity.icon);
-            }
+        private async void AddRewardUI(string icon)
+        {
+            var obj = await Addressables.InstantiateAsync(_rewardPrefab, _rewardParent);
+            if (!obj.TryGetComponent(out UIItemSlot slot))
+                return;
+
+            _uiSlots.Add(slot);
+
+            await slot.InitAsync(icon);
         }
 
         private void OnStageSelected(int stage)
