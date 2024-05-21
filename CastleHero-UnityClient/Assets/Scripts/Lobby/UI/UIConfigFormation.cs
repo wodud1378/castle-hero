@@ -33,7 +33,7 @@ namespace RGLabs.Lobby.UI
         public void Init()
         {
             _camera = Camera.main;
-            _factory = _formation.Factory;
+            _factory = _formation.UnitFactory;
 
             _hold = null;
         }

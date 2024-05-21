@@ -99,17 +99,18 @@ namespace RGLabs.Data.Repositories
         }
 
         private static DBCollections _loaded;
+        private readonly DataLoader _loader;
 
         public StageDB stages;
         public WaveDB waves;
 
         public ItemDBAccessor itemDBAccessor;
 
+        public CastleDB castles;
         public UnitDB units;
         public UnitLevelDB levels;
         public SkillDB skills;
 
-        private readonly DataLoader _loader;
 
         private DBCollections()
         {
@@ -124,7 +125,8 @@ namespace RGLabs.Data.Repositories
                 _loader.Load<WaveDB>(x => waves = x),
                 _loader.Load<UnitDB>(x => units = x),
                 _loader.Load<UnitLevelDB>(x => levels = x),
-                _loader.Load<SkillDB>(x => skills = x)
+                _loader.Load<SkillDB>(x => skills = x),
+                _loader.Load<CastleDB>(x => castles = x)
             };
 
             EquipmentDB equipmentItems = null;

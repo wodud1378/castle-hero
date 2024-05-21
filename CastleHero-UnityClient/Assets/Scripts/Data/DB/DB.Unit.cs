@@ -3,9 +3,9 @@ using RGLabs.Data.Model;
 
 namespace RGLabs.Data.DB
 {
-    [DB("Skill_Table")]
-    public class SkillDB : DB<SkillEntity> { }
-
+    [DB("Castle_Table")]
+    public class CastleDB : DB<CastleEntity> { }
+    
     [DB("Character_Table")]
     public class UnitDB : DB<UnitEntity>
     {
@@ -22,4 +22,7 @@ namespace RGLabs.Data.DB
     
     [DB("Character_Upgrade_Table")]
     public class UnitLevelDB : DB<UnitLevelEntity> { }
+    
+    [DB("Skill_Table")]
+    public class SkillDB : DB<SkillEntity> { }
 }

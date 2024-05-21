@@ -1,0 +1,71 @@
+using Cysharp.Threading.Tasks;
+using RGLabs.Common.Pattern;
+using RGLabs.Data.DB;
+using RGLabs.Data.Model;
+using RGLabs.Data.User;
+using RGLabs.Unit.Behaviours;
+using RGLabs.Utility;
+using UnityEngine;
+
+namespace RGLabs.Unit.Factory
+{
+    public class CastleFactory : IUnitFactory
+    {
+        private const string CastlePrefab = "Castle_01/Castle_01.prefab";
+        
+        private readonly CastleDB _db;
+        private readonly PoolContainer _pools;
+
+        public CastleFactory(PoolContainer pools, CastleDB db)
+        {
+            _pools = pools;
+            _db = db;
+        }
+
+        public async UniTask<UnitBehaviour> Create(int id, int lv, int grade, Vector2 position)
+        {
+            var info = new UnitInfo
+            {
+                lv = lv,
+                grade = grade,
+                id = id
+            };
+
+            return await Create(info, position);
+        }
+
+        public async UniTask<UnitBehaviour> Create(UnitInfo info, Vector2 position)
+        {
+            if (!_db.TryFind(info.lv, out var entity))
+                return null;
+
+            var unitEntity = new UnitEntity
+            {
+                hp = entity.hp,
+                defLayer = 1,
+            };
+            var unit = await CreateInternal(position);
+            unit.Init(info, unitEntity, default);
+            unit.position = position;
+
+            return unit;
+        }
+        
+        private async UniTask<UnitBehaviour> CreateInternal(Vector2 position)
+        {
+            var pool = _pools.Get(CastlePrefab);
+            var unit = await pool.Get(position) as UnitBehaviour;
+            if (unit == null)
+            {
+#if UNITY_EDITOR
+                Debug.LogError($"[{CastlePrefab}] 리소스가 존재하지 않습니다.");
+#endif
+                return null;
+            }
+
+            unit.Container = _pools;
+            unit.Pool = pool;
+            return unit;
+        }
+    }
+}

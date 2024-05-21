@@ -30,18 +30,24 @@ namespace RGLabs.Lobby.Behaviours
 
         private readonly Collider2D[] _buffer = new Collider2D[Constants.BufferSize];
 
-        public IUnitFactory Factory { get; private set; }
-        
-        private UnitDB _db;
+        public IUnitFactory CastleFactory { get; private set; }
+        public IUnitFactory UnitFactory { get; private set; }
+
+        private CastleDB _castleDB;
+        private UnitDB _unitDB;
         private UserRepository _userRepo;
         private InGameRepository _gameRepo;
 
-        public async UniTask Init(UnitDB db, UserRepository userRepo, InGameRepository gameRepo, IUnitFactory factory)
+        public async UniTask Init(CastleDB castleDB, UnitDB unitDB, UserRepository userRepo, InGameRepository gameRepo,
+            IUnitFactory castleFactory, IUnitFactory unitFactory)
         {
-            _db = db;
+            _castleDB = castleDB;
+            _unitDB = unitDB;
             _userRepo = userRepo;
             _gameRepo = gameRepo;
-            Factory = factory;
+
+            CastleFactory = castleFactory;
+            UnitFactory = unitFactory;
 
             await LoadCastle();
             await LoadSavedUnits();
@@ -57,14 +63,14 @@ namespace RGLabs.Lobby.Behaviours
 
             if (_gameRepo.characters.Value == null)
                 return;
-            
+
             var characters = _gameRepo.characters.Value
                 .Where(x => x.Id != unit.Id)
                 .ToArray();
 
             _gameRepo.characters.Value = characters;
             _userRepo.SaveFieldCharacters(characters);
-            
+
             unit.DestroySelf();
         }
 
@@ -105,7 +111,7 @@ namespace RGLabs.Lobby.Behaviours
             int limit = unit.Type == UnitBehaviour.BehaviourType.Barricade ? 3 : 1;
             var characters = _gameRepo.characters.Value;
             characters ??= Array.Empty<UnitBehaviour>();
-            
+
             int current = Array.FindAll(characters, (character) => character.Id == unit.Id).Length;
             if (current >= limit)
             {
@@ -115,7 +121,7 @@ namespace RGLabs.Lobby.Behaviours
                     var behaviour = characters[index];
                     if (behaviour != unit)
                         behaviour.DestroySelf();
-                    
+
                     characters[index] = null;
                 }
             }
@@ -131,8 +137,8 @@ namespace RGLabs.Lobby.Behaviours
 
         private async UniTask LoadCastle()
         {
-            int id = _userRepo.castle.Value;
-            var unit = await Factory.Create(id, 1, 1, Vector2.zero);
+            int lv = _userRepo.castleLv.Value;
+            var unit = await CastleFactory.Create(1, lv, 0, Vector2.zero);
             _gameRepo.castle.Value = unit;
         }
 
@@ -162,13 +168,13 @@ namespace RGLabs.Lobby.Behaviours
 
         private async UniTask CreateCharacter(UnitInfo info, Vector2 position)
         {
-            var unit = await Factory.Create(info, position);
+            var unit = await UnitFactory.Create(info, position);
             if (unit == null)
                 return;
-            
+
             unit.Core.defaultDestination = position;
             unit.CanMove = true;
-            
+
             Register(unit);
         }
 

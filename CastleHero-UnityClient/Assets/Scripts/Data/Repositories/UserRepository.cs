@@ -23,7 +23,7 @@ namespace RGLabs.Data.Repositories
         private const string CastleKey = "saved-castle";
 
         public readonly ReactiveProperty<int> stage;
-        public readonly ReactiveProperty<int> castle;
+        public readonly ReactiveProperty<int> castleLv;
         public readonly ReactiveProperty<UnitInfo[]> characters;
         public readonly ReactiveProperty<FieldCharacter[]> fieldCharacters;
 
@@ -32,8 +32,8 @@ namespace RGLabs.Data.Repositories
             stage = new(Load(SavedStageKey, 1));
             stage.Subscribe(x => Save(SavedStageKey, x));
 
-            castle = new(Load(CastleKey, 1));
-            castle.Subscribe(x => Save(CastleKey, x));
+            castleLv = new(Load(CastleKey, 1));
+            castleLv.Subscribe(x => Save(CastleKey, x));
 
             characters = new(LoadArray<UnitInfo>(CharactersKey, TestData()));
             characters.Subscribe(x => SaveArray(CharactersKey, x));
