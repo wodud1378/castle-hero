@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common;
 using RGLabs.Data.Model;
 using RGLabs.InGame.Behaviours;
 using RGLabs.Unit.Behaviours;
@@ -50,7 +51,7 @@ namespace RGLabs.Utility
 
             string tag = EnemyTag(id);
             int groundUnit = 1 << DefTypeToLayer(tag, 1);
-            int flightUnit = 2 << DefTypeToLayer(tag, 2);
+            int flightUnit = 1 << DefTypeToLayer(tag, 2);
             switch (atkType)
             {
                 case 0:
@@ -65,6 +66,14 @@ namespace RGLabs.Utility
             }
 
             return layerMask;
+        }
+
+        public static LayerMask AlleyLayerMask(int id)
+        {
+            string tag = AlleyTag(id);
+
+            return (1 << DefTypeToLayer(tag, 1))
+                   | (1 << DefTypeToLayer(tag, 2));
         }
 
         public static void InitAlley(this UnitBehaviour unit, int defLayer)
@@ -143,6 +152,9 @@ namespace RGLabs.Utility
 
     public static class MathHelper
     {
+        public static Vector2 Forward(this Transform transform) =>
+            (-transform.eulerAngles.z + Constants.DefaultObjectAngle).ToVector();
+
         public static Vector2 ToVector(this float degree)
         {
             float rad = degree * Mathf.Deg2Rad;

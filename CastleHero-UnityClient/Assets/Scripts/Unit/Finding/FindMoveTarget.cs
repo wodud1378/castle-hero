@@ -1,14 +1,12 @@
 using System;
 using RGLabs.Unit.Behaviours;
-using UnityEngine;
 
 namespace RGLabs.Unit.Finding
 {
     [Serializable]
     public class FindMoveTarget : FindUnits
     {
-        public FindMoveTarget(Collider2D[] castBuffer, int maxTarget) 
-            : base(castBuffer, maxTarget)
+        public FindMoveTarget(IDetection detection) : base(detection)
         {
         }
         
@@ -25,7 +23,7 @@ namespace RGLabs.Unit.Finding
 
             for (int i = 0; i < found; ++i)
             {
-                if (!TryGetUnit(_castBuffer[i], out var unit))
+                if (!TryGetUnit(detection.Buffer[i], out var unit))
                     continue;
                 
                 if (firstFound == null)

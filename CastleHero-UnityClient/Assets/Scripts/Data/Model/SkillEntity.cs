@@ -30,6 +30,9 @@ namespace RGLabs.Data.Model
         
         [DataField("Type")]
         public float[] values;
+
+        [DataField("Target")] 
+        public int[] targetQty;
         
         [DataField("Grp")]
         public int[] groups;

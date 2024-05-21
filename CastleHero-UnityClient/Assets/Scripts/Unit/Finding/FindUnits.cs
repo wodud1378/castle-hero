@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using RGLabs.Common;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using UnityEngine;
@@ -8,20 +9,21 @@ namespace RGLabs.Unit.Finding
 {
     public class FindUnits
     {
-        private static readonly Dictionary<Collider2D, UnitBehaviour> CachedUnits = new();
-        
-        public List<UnitBehaviour> Found { get; }
-        public LayerMask layerMask;
-        public float range;
-        
-        protected readonly Collider2D[] _castBuffer;
-
-        private readonly int _maxTarget;
-
-        public FindUnits(Collider2D[] castBuffer, int maxTarget)
+        public enum Shape
         {
-            _castBuffer = castBuffer;
-            _maxTarget = maxTarget;
+            Circle,
+            Box
+        }
+        
+        private static readonly Dictionary<Collider2D, UnitBehaviour> CachedUnits = new();
+
+        public List<UnitBehaviour> Found { get; }
+
+        public readonly IDetection detection;
+
+        public FindUnits(IDetection detection)
+        {
+            this.detection = detection;
 
             Found = new();
         }
@@ -31,7 +33,7 @@ namespace RGLabs.Unit.Finding
             int added = 0;
             for (int i = 0; i < found; ++i)
             {
-                if (!TryGetUnit(_castBuffer[i], out var unit))
+                if (!TryGetUnit(detection.Buffer[i], out var unit))
                     continue;
 
                 Found.Add(unit);
@@ -44,24 +46,15 @@ namespace RGLabs.Unit.Finding
         public bool Update(Vector2 position)
         {
             Found.Clear();
-            
-            if (!TrySearch(position, out int found))
+
+            if (!detection.TrySearch(position, out int found))
                 return false;
-            
+
             return OnUpdate(found);
         }
-        
-        public void Clear() => Found.Clear();
-        
-        protected virtual bool TrySearch(Vector2 position, out int found)
-        {
-            found =  Physics2D.OverlapCircleNonAlloc(position, range, _castBuffer, layerMask);
-            if (_maxTarget > 0)
-                found = Mathf.Min(found, _maxTarget);
 
-            return found > 0;
-        }
-        
+        public void Clear() => Found.Clear();
+
         protected bool TryGetUnit(Collider2D collider, out UnitBehaviour unit)
         {
             if (!CachedUnits.TryGetValue(collider, out unit))
@@ -74,5 +67,31 @@ namespace RGLabs.Unit.Finding
 
             return unit.IsValid();
         }
+
+        public static FindUnits Create(Shape shape)
+        {
+            IDetection detection = null;
+            var buffer = CreateBuffer();
+            switch (shape)
+            {
+                case Shape.Circle:
+                    detection = new CircleDetection { Buffer = buffer };
+                    break;
+                case Shape.Box:
+                    detection = new BoxDetection { Buffer = buffer };
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(shape), shape, null);
+            }
+            
+            return Create(detection);
+        }
+
+        public static FindUnits Create(IDetection detection)
+        {
+            return new(detection);
+        }
+
+        public static Collider2D[] CreateBuffer() => new Collider2D[Constants.BufferSize];
     }
 }

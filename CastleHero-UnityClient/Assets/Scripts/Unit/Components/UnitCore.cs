@@ -54,6 +54,9 @@ namespace RGLabs.Unit.Components
         private readonly bool _enableAttack;
         private readonly bool _enableMove;
         private readonly bool _enableAnimation;
+
+        public LayerMask enemyLayerMask;
+        public LayerMask alleyLayerMask;
         
         public bool Invincible => _leftInvincible > 0f;
         
@@ -163,21 +166,16 @@ namespace RGLabs.Unit.Components
             elemental.atkType = (Elemental.Type)data.elementalAtk;
             elemental.defType = (Elemental.Type)data.elementalDef;
 
-            finding.Init(UnitHelper.EnemyLayerMask(data.Id, data.atkLayer));
+            enemyLayerMask = UnitHelper.EnemyLayerMask(data.Id, data.atkLayer);
+            alleyLayerMask = UnitHelper.AlleyLayerMask(data.Id);
+            
+            finding.Init(enemyLayerMask);
             renderController.ApplySkin(data.skinName);
             UpdateLookDirection(defaultDestination);
 
             if (!string.IsNullOrEmpty(data.projectile) && attack != null)
             {
                 attack.projectileLauncher ??= new ProjectileLauncher(owner, data.projectile);
-            }
-
-            if (skillData.Id != 0)
-            {
-                // TODO : ID + 스킬레벨
-                var type = Type.GetType($"RGLabs.Unit.Skill.Skill{skillData.Id}");
-                if (type != null)
-                    _skill = (ISkill)Activator.CreateInstance(type, this, skillData);
             }
 
             state.Value = States.Prepare;

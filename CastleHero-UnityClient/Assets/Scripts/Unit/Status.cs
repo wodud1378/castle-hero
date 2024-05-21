@@ -22,27 +22,27 @@ namespace RGLabs.Unit
         public static float operator /(CachedValue a, CachedValue b) => (float)a / (float)b;
     }
 
-    public struct TimedValue
+    public class TimedValue
     {
         public float leftTime;
         public float value;
     }
 
-    public class Multiplier : CachedValue
+    public class AdjustValue : CachedValue
     {
         public event Action<float, float> OnChanged;
 
-        private readonly List<TimedValue> _increase = new();
-        private readonly List<TimedValue> _decrease = new();
-
+        private readonly List<TimedValue> _increaseMul = new();
+        private readonly List<TimedValue> _decreaseMul = new();
+        
         private float _default;
 
         protected override float Value
         {
             get
             {
-                float increase = _increase.Sum(t => t.value);
-                float decrease = _decrease.Sum(t => t.value);
+                float increase = _increaseMul.Sum(t => t.value);
+                float decrease = _decreaseMul.Sum(t => t.value);
 
                 return _default + increase - decrease;
             }
@@ -52,22 +52,26 @@ namespace RGLabs.Unit
         {
             _default = val;
 
-            _increase.Clear();
-            _decrease.Clear();
+            _increaseMul.Clear();
+            _decreaseMul.Clear();
 
             Update();
         }
 
-        public void Increase(float val, float time) => Add(_increase, val, time);
+        public void Increase(float val, float time) => Add(_increaseMul, val, time);
 
-        public void Decrease(float val, float time) => Add(_decrease, val, time);
+        public void Decrease(float val, float time) => Add(_decreaseMul, val, time);
 
         public override void Update()
         {
             float legacy = Cached;
             var deltaTime = Time.deltaTime;
-            _increase.RemoveAll((item) => item.leftTime - deltaTime <= 0);
-            _decrease.RemoveAll((item) => item.leftTime - deltaTime <= 0);
+
+            _increaseMul.ForEach(x=> x.leftTime -= deltaTime);
+            _decreaseMul.ForEach(x => x.leftTime -= deltaTime);
+            
+            _increaseMul.RemoveAll((item) => item.leftTime - deltaTime <= 0);
+            _decreaseMul.RemoveAll((item) => item.leftTime - deltaTime <= 0);
 
             base.Update();
             OnChanged?.Invoke(legacy, Cached);
@@ -87,19 +91,21 @@ namespace RGLabs.Unit
 
     public class Ability : CachedValue
     {
-        public readonly Multiplier multiplier = new();
+        public readonly AdjustValue multiplyAdjust = new();
+        public readonly AdjustValue fixedAdjust = new();
         public float origin;
 
         public virtual void Init(IList<Ability> root = null, float origin = 0f, float initialMul = 1f)
         {
             this.origin = origin;
 
-            multiplier.Init(initialMul);
+            multiplyAdjust.Init(initialMul);
+            fixedAdjust.Init(0);
 
             root?.Add(this);
         }
 
-        protected override float Value => multiplier * origin;
+        protected override float Value => (multiplyAdjust * origin) + fixedAdjust;
 
         public static implicit operator float(Ability it) => it.Value;
     }
@@ -114,7 +120,11 @@ namespace RGLabs.Unit
 
         public void Decrease(float value) => Left = Mathf.Max(0, Left - value);
 
-        public Hp() => multiplier.OnChanged += OnMultiplierChanged;
+        public Hp()
+        {
+            multiplyAdjust.OnChanged += OnMultiplyAdjustChanged;
+            fixedAdjust.OnChanged += OnFixedAdjustChanged;
+        }
 
         public override void Init(IList<Ability> root = null, float origin = 0, float initialMul = 1)
         {
@@ -123,13 +133,22 @@ namespace RGLabs.Unit
             Left = Max;
         }
 
-        private void OnMultiplierChanged(float legacy, float current)
+        private void OnMultiplyAdjustChanged(float legacy, float current)
         {
             float diff = current - legacy;
             if (diff > 0f)
             {
                 float heal = Max * diff;
                 Left = Mathf.Min(Max, Left + heal);
+            }
+        }
+        
+        private void OnFixedAdjustChanged(float legacy, float current)
+        {
+            float diff = current - legacy;
+            if (diff > 0f)
+            {
+                Left = Mathf.Min(Max, Left + diff);
             }
         }
 
