@@ -1,8 +1,8 @@
 ﻿Character_ID,Character_Icon,Character_Prefab,Character_Skin,Character_Name,Character_Class,Character_Team,Character_Skill,Character_Position,Character_Atk_type,Character_Def_type,Character_Order_atk,Character_Recovery,Character_Hp,Character_Atk,Character_Cri,Character_Cri_Damage,Character_Speed_Atk,Character_Speed_Move,Character_Range_Atk,Character_Range_Move,Character_Property_Atk,Character_Property_Def
 10021,Common/Portrait/Character_10000.png,Character_10021/Character_10021.prefab,,암살자,0,6,10021,2,1,1,1,30,3000,100,0.3,1.5,1,3,1,3,0,0
 10034,Common/Portrait/Character_10034.png,Character_10034/Character_10034.prefab,,하피,0,9,10034,3,0,2,1,30,3000,100,0.5,1,1,3,5,8,0,0
-20001,Common/Portrait/Monster_20001.png,Monster_20001/Monster_20001.prefab,_01,소작농,3,1,20001,2,1,1,1,0,200,5,0,0,2,1,1,1,0,0
-20002,Common/Portrait/Monste_20002.png,Monster_20001/Monster_20001.prefab,_02,잡부,3,1,20002,2,1,1,1,0,200,5,0,0,2,1,1,1,0,0
-20003,Common/Portrait/Monste_20003.png,Monster_20001/Monster_20001.prefab,_03,농사꾼,3,1,20003,2,1,1,1,0,300,5,0,0,3,1,1,1,0,0
+20001,Common/Portrait/Monster_20001.png,Monster_20001/Monster_20001.prefab,1,소작농,3,1,20001,2,1,1,1,0,200,5,0,0,2,1,1,1,0,0
+20002,Common/Portrait/Monste_20002.png,Monster_20001/Monster_20001.prefab,2,잡부,3,1,20002,2,1,1,1,0,200,5,0,0,2,1,1,1,0,0
+20003,Common/Portrait/Monste_20003.png,Monster_20001/Monster_20001.prefab,3,농사꾼,3,1,20003,2,1,1,1,0,300,5,0,0,3,1,1,1,0,0
 30003,Common/Portrait/Monste_30003.png,Monster_30003/Monster_30003.prefab,,기사단장,0,3,30003,2,1,1,1,0,1000,100,0.1,1,1,1,2,3,0,0
 10023,Common/Portrait/Monste_10023.png,Character_10023/Character_10023.prefab,,슬라임킹,0,7,10023,2,1,1,1,30,3500,100,0.1,1,1,1,1,3,0,0
