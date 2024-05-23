@@ -5,21 +5,25 @@ using RGLabs.Utility;
 
 namespace RGLabs.Unit.Components
 {
+
     public class Attack
     {
+        public readonly FindUnits finder; 
         private readonly UnitBehaviour _unit;
-        private readonly FindUnits _finder;
+        private readonly RenderController _renderController;
         private readonly AnimationEvents _animationEvents;
         
-        public bool InProgress { get; private set; }
+        public bool IsRunning { get; private set; }
 
         public ProjectileLauncher projectileLauncher;
 
-        public Attack(UnitBehaviour unit, FindUnits finder, AnimationEvents animationEvents)
+        public Attack(UnitBehaviour unit, FindUnits finder)
         {
             _unit = unit;
-            _finder = finder;
-            _animationEvents = animationEvents;
+            this.finder = finder;
+
+            _renderController = unit.Core.renderController;
+            _animationEvents = unit.Core.animationEvent;
 
             _animationEvents.OnHitEvent -= ProcessHit;
             _animationEvents.OnHitEvent += ProcessHit;
@@ -28,11 +32,21 @@ namespace RGLabs.Unit.Components
             _animationEvents.OnReleaseAttackEvent += OnReleaseAttack;
         }
 
-        public void Execute() => InProgress = true;
+        public bool IsAbleToAttack()
+        {
+            finder.detection.SetRange(_unit.status.atkRange);
+            
+            if (!finder.Update(_unit.position))
+                return false;
+
+            return true;
+        }
+        
+        public void Run() => IsRunning = true;
 
         private void ProcessHit()
         {
-            var targets = _finder.Found;
+            var targets = finder.Found;
             foreach (var target in targets)
             {
                 if (!target.IsValid())
@@ -52,6 +66,6 @@ namespace RGLabs.Unit.Components
             projectileLauncher?.Launch(targets);
         }
 
-        private void OnReleaseAttack() => InProgress = false;
+        private void OnReleaseAttack() => IsRunning = false;
     }
 }

@@ -8,56 +8,51 @@ namespace RGLabs.Unit.Skill.Components
     public interface IBound
     {
         public IDetection Detection { get; }
-        public List<UnitBehaviour> FindTargets(Vector2 forward);
+        public List<UnitBehaviour> FindTargets(Vector2 from, float range, Vector2 forward);
+        public List<UnitBehaviour> FindTargets(Vector2 from, float x, float y, Vector2 forward);
     }
 
     public class CircleBound : IBound
     {
-        protected readonly UnitBehaviour owner;
-        protected readonly FindUnits finder;
+        private readonly FindUnits _finder = FindUnits.Create(FindUnits.Shape.Circle);
 
-        public Vector2 Forward { get; set; }
-        public IDetection Detection => finder.detection;
+        public IDetection Detection => _finder.detection;
 
-        public CircleBound(UnitBehaviour owner)
+        public List<UnitBehaviour> FindTargets(Vector2 from, float range, Vector2 forward)
         {
-            this.owner = owner;
-            
-            finder = FindUnits.Create(FindUnits.Shape.Circle);
+            return FindTargets(from, range, range, forward);
         }
 
-
-        public virtual List<UnitBehaviour> FindTargets(Vector2 forward)
+        public virtual List<UnitBehaviour> FindTargets(Vector2 from, float x, float y, Vector2 forward)
         {
-            finder.Update(owner.position);
+            Detection.SetRange(x, y);
 
-            return finder.Found;
+            return Find(from);
+        }
+
+        private List<UnitBehaviour> Find(Vector2 from)
+        {
+            _finder.Update(from);
+
+            return _finder.Found;
         }
     }
 
     public class ArcBound : CircleBound
     {
-        public float angle;
-        
-        private readonly Vector2[] _arcCheckBuffer;
-        private readonly List<UnitBehaviour> _targets;
+        private const float Angle = 90f;
 
-        public ArcBound(UnitBehaviour owner)
-            : base(owner)
+        private readonly Vector2[] _arcCheckBuffer = new Vector2[4];
+        private readonly List<UnitBehaviour> _targets = new();
+
+        public override List<UnitBehaviour> FindTargets(Vector2 from, float x, float y, Vector2 forward)
         {
-            _arcCheckBuffer = new Vector2[4];
-            _targets = new();
-        }
-
-        public override List<UnitBehaviour> FindTargets(Vector2 forward)
-        {
-            finder.Update(owner.position);
-
             _targets.Clear();
-            var point = owner.position;
-            foreach (var unit in finder.Found)
+            
+            var targets = base.FindTargets(from, x, y, forward);
+            foreach (var unit in targets)
             {
-                if (!InBound(point, forward, unit.Collider))
+                if (!InBound(from, forward, unit.Collider))
                     continue;
 
                 _targets.Add(unit);
@@ -83,7 +78,7 @@ namespace RGLabs.Unit.Skill.Components
             // Right Bottom
             _arcCheckBuffer[3].Set(targetPos.x + halfSize.x, targetPos.y - halfSize.y);
 
-            float halfAngle = angle * 0.5f;
+            float halfAngle = Angle * 0.5f;
             foreach (var buffer in _arcCheckBuffer)
             {
                 float angle = Vector2.Angle(buffer, forward);
@@ -97,21 +92,23 @@ namespace RGLabs.Unit.Skill.Components
 
     public class BoxBound : IBound
     {
-        private readonly UnitBehaviour _owner;
-        private readonly FindUnits _finder;
+        private readonly FindUnits _finder = FindUnits.Create(FindUnits.Shape.Box);
 
         public IDetection Detection => _finder.detection;
-   
-        public BoxBound(UnitBehaviour owner)
+
+        public List<UnitBehaviour> FindTargets(Vector2 from, float range, Vector2 forward)
         {
-            _owner = owner;
-            _finder = FindUnits.Create(FindUnits.Shape.Box);
+            Detection.SetRange(range);
+
+            _finder.Update(from);
+            return _finder.Found;
         }
 
-        public List<UnitBehaviour> FindTargets(Vector2 forward)
+        public List<UnitBehaviour> FindTargets(Vector2 from, float x, float y, Vector2 forward)
         {
-            _finder.Update(_owner.position);
+            Detection.SetRange(x, y);
 
+            _finder.Update(from);
             return _finder.Found;
         }
     }

@@ -281,7 +281,7 @@ namespace RGLabs.Data.Load
                 map[i] = splitColumns.Split(rows[i]);
             }
 
-            return map;
+            return map.Where(x => !x.All(string.IsNullOrEmpty)).ToArray();
         }
 
         private Type GetEntityType(Type type)

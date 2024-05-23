@@ -3,7 +3,6 @@ using RGLabs.Unit.Behaviours;
 
 namespace RGLabs.Unit.Finding
 {
-    [Serializable]
     public class FindMoveTarget : FindUnits
     {
         public FindMoveTarget(IDetection detection) : base(detection)

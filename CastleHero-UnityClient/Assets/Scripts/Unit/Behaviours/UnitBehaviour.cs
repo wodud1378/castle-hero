@@ -61,7 +61,6 @@ namespace RGLabs.Unit.Behaviours
         public UnitEntity Data { get; private set; }
         
         private UnitLevelEntity _level;
-        private SkillEntity _skill;
 
         private void Awake()
         {
@@ -72,14 +71,13 @@ namespace RGLabs.Unit.Behaviours
                 .AddTo(this);
         }
         
-        public void Init(UnitInfo info, UnitEntity entity, UnitLevelEntity levelData, SkillEntity skill = default)
+        public void Init(UnitInfo info, UnitEntity entity, UnitLevelEntity levelData)
         {
             Info = info;
             Data = entity;
             
             _level = levelData;
-            _skill = skill;
-            Core.SetData(entity, info.lv, levelData, skill);
+            Core.SetData(info, entity, levelData);
             if (Hit != null)
                 Hit.Init();
 
@@ -91,10 +89,10 @@ namespace RGLabs.Unit.Behaviours
         public void Recovery(Vector2 at)
         {
             ForceActivate();
-            Init(Info, Data, _level, _skill);
+            Init(Info, Data, _level);
 
             position = at;
-            Core.defaultDestination = at;
+            Core.movement.Default = at;
         }
         
         private void ProcessDead()

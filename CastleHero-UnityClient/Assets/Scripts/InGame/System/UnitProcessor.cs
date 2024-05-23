@@ -1,6 +1,5 @@
 using System;
 using RGLabs.Common.Behaviours;
-using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Components;
 using RGLabs.Utility;
 using UniRx;
@@ -10,75 +9,6 @@ using Random = UnityEngine.Random;
 
 namespace RGLabs.InGame.System
 {
-    public class WaitRecover : IDisposable
-    {
-        public UnitBehaviour behaviour;
-        public Vector2 position;
-        public float leftTime;
-
-        private IDisposable _subscription;
-        private ReactiveCollection<WaitRecover> _root;
-
-        public void Bind(ReactiveCollection<WaitRecover> root, IDisposable subscription)
-        {
-            _root = root;
-            _subscription = subscription;
-        }
-
-        public void Dispose()
-        {
-            _root?.Remove(this);
-            _subscription?.Dispose();
-        }
-    }
-
-    public enum DamageType
-    {
-        Normal,
-        Debuff
-    }
-
-    public enum HealType
-    {
-        Heal,
-        Shield
-    }
-
-    public interface IModifier
-    {
-        public UnitBehaviour From { get; }
-        public UnitBehaviour To { get; }
-        public float Amount { get; }
-    }
-
-    public struct AtkEvent : IModifier
-    {
-        public DamageType Type { get; set; }
-        public UnitBehaviour From { get; set; }
-        public UnitBehaviour To { get; set; }
-        public float Amount { get; set; }
-    }
-
-    public struct HealEvent : IModifier
-    {
-        public HealType Type { get; set; }
-        public UnitBehaviour From { get; set; }
-        public UnitBehaviour To { get; set; }
-        public float Amount { get; set; }
-    }
-
-    public struct AtkResult
-    {
-        public AtkEvent Event { get; set; }
-
-        public bool IsCritical { get; set; }
-    }
-
-    public struct HealResult
-    {
-        public HealEvent Event { get; set; }
-    }
-
     public class UnitProcessor
     {
         private readonly SceneBehaviour _root;
@@ -89,6 +19,7 @@ namespace RGLabs.InGame.System
 
             SubscribeMessage<AtkEvent>(OnReceiveAtkEvent);
             SubscribeMessage<HealEvent>(OnReceiveHealEvent);
+            SubscribeMessage<ShieldEvent>(OnReceiveShieldEvent);
             SubscribeMessage<WaitRecover>(OnCreatedRecover);
         }
 
@@ -107,7 +38,7 @@ namespace RGLabs.InGame.System
             if (!to.IsValid())
                 return;
 
-            float amount;
+            float damage;
             bool isCritical = false;
             if (!to.Core.Invincible)
             {
@@ -120,19 +51,22 @@ namespace RGLabs.InGame.System
                     criticalMul = from.status.criticalAtk;
                     elementalMul = Elemental.AtkMultiplier(from.Core.elemental);
                 }
-                amount = CalcAmount(ev.Amount, critical, criticalMul, elementalMul, out isCritical);
+                damage = CalcAmount(ev.Amount, critical, criticalMul, elementalMul, out isCritical);
             }
             else
             {
-                amount = 0f;
+                damage = 0f;
             }
 
-            to.Core.status.hp.Decrease(amount);
+            var status = to.Core.status;
+            status.shield.Decrease(damage, out float @protected, out float left);
+            status.hp.Decrease(left);
+            ev.Amount = left;
 
             if (to.Hit != null)
                 to.Hit.Play();
 
-            new AtkResult { Event = ev, IsCritical = isCritical }.Publish();
+            new AtkResult { Event = ev, IsCritical = isCritical, Protected = @protected}.Publish();
         }
 
         private void OnReceiveHealEvent(HealEvent ev)
@@ -142,6 +76,21 @@ namespace RGLabs.InGame.System
                 return;
 
             to.status.hp.Increase(ev.Amount);
+
+            new HealResult { Event = ev }.Publish();
+        }
+
+        private void OnReceiveShieldEvent(ShieldEvent ev)
+        {
+            var to = ev.To;
+            if (!to.IsValid())
+                return;
+
+            var shield = to.status.shield;
+            if (ev.Duration == 0f)
+                shield.Increase(ev.Amount);
+            else
+                shield.Increase(ev.Amount, ev.Duration);
 
             new HealResult { Event = ev }.Publish();
         }

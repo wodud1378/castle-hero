@@ -55,6 +55,8 @@ namespace RGLabs.Data.Model
         [DataField("Item_Equip_ID")]
         public int Id { get; set; }
         
+        public bool IsValid { get; set; }
+        
         [DataField("Item_Equip_Icon")]
         public string Icon { get; set; }
 
@@ -90,6 +92,8 @@ namespace RGLabs.Data.Model
         [DataField("Item_Use_ID")]
         public int Id { get; set; }
         
+        public bool IsValid { get; set; }
+        
         [DataField("Item_Use_Icon")]
         public string Icon { get; set; }
 
@@ -112,6 +116,8 @@ namespace RGLabs.Data.Model
         
         [DataField("Item_Parts_ID")]
         public int Id { get; set; }
+        
+        public bool IsValid { get; set; }
         
         [DataField("Item_Parts_Icon")]
         public string Icon { get; set; }
@@ -138,6 +144,8 @@ namespace RGLabs.Data.Model
         
         [DataField("Item_Chest_ID")]
         public int Id { get; set; }
+        
+        public bool IsValid { get; set; }
         
         [DataField("Item_Chest_Icon")]
         public string Icon { get; set; }

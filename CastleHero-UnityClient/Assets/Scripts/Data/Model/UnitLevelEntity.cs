@@ -6,6 +6,8 @@ namespace RGLabs.Data.Model
     {
         [DataField("Character_ID")]
         public int Id { get; set; }
+        
+        public bool IsValid { get; set; }
 
         [DataField("Character_Hp_Up")]
         public float hp;
@@ -60,5 +62,8 @@ namespace RGLabs.Data.Model
 
         [DataField("Rate_5_option_Value")]
         public float[] rate5OptionValues;
+
+        public int[][] rateOptions;
+        public float[][] rateValues;
     }
 }

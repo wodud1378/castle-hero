@@ -14,19 +14,19 @@ namespace RGLabs.Unit.Skill.Components
             Box
         }
 
-        public IBound GetBound(UnitBehaviour owner, Option option)
+        public IBound GetBound(Option option)
         {
             IBound bound;
             switch (option)
             {
                 case Option.Circle:
-                    bound = new CircleBound(owner);
+                    bound = new CircleBound();
                     break;
                 case Option.Arc:
-                    bound = new ArcBound(owner);
+                    bound = new ArcBound();
                     break;
                 case Option.Box:
-                    bound = new BoxBound(owner);
+                    bound = new BoxBound();
                     break;
                 default:
                     bound = null;
@@ -72,7 +72,7 @@ namespace RGLabs.Unit.Skill.Components
                         finder = FindUnits.Create(detectAlley);
                         break;
                     case Option.Enemy:
-                        finder = owner.Core.finding.attack;
+                        finder = owner.Core.attack.finder;
                         break;
                     case Option.Both:
                         var detectBoth = new CircleDetection

@@ -172,7 +172,7 @@ namespace RGLabs.Lobby.Behaviours
             if (unit == null)
                 return;
 
-            unit.Core.defaultDestination = position;
+            unit.Core.movement.Default = position;
             unit.CanMove = true;
 
             Register(unit);

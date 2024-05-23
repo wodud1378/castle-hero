@@ -4,11 +4,12 @@ using UnityEngine;
 
 namespace RGLabs.Data.Model
 {
-    [Serializable]
     public struct SkillEntity : IEntity
     {
         [DataField("Id")]
-        [field:SerializeField] public int Id { get; set; }
+        public int Id { get; set; }
+        
+        public bool IsValid { get; set; }
 
         [DataField("Name")]
         public string name;

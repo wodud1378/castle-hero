@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common;
 using RGLabs.Data.Model;
@@ -207,6 +208,8 @@ namespace RGLabs.Utility
 
             return array;
         }
+
+        public static bool IsValidIndex(this int index, params IList[] listCollection) => listCollection.All(list => index.IsValidIndex(list));
 
         public static bool IsValidIndex(this int index, IList target) => index >= 0 && target.Count > index;
     }

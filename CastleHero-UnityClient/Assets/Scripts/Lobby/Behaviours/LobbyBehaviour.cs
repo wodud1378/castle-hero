@@ -27,16 +27,17 @@ namespace RGLabs.Lobby.Behaviours
         protected override async void OnLoaded()
         {
             base.OnLoaded();
+            
+            Context.currentBehaviour = this;
 
             poolContainer = new PoolContainer();
-            monsterFactory = new UnitFactory(poolContainer, db.units, db.levels, db.skills);
-            characterFactory = new UnitFactory(poolContainer, db.units, db.levels, db.skills);
+            monsterFactory = new UnitFactory(poolContainer, db.units, db.levels);
+            characterFactory = new UnitFactory(poolContainer, db.units, db.levels);
 
             await _formation.Init(db.castles, db.units, userRepo, gameRepo, 
                 new CastleFactory(poolContainer, db.castles), characterFactory);
 
             _uiStage.Init();
-            Context.currentBehaviour = this;
             Context.Transition.StateObserver
                 .DistinctUntilChanged()
                 .Subscribe(OnNextState)

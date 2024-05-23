@@ -39,7 +39,8 @@ namespace RGLabs.InGame.UI
         [SerializeField] private RectTransform _damageRoot;
         [SerializeField] private DamagePrefabs _damagePrefabs;
         [SerializeField] private HealPrefabs _healPrefabs;
-        [SerializeField] private string _damagePrefab;
+        [SerializeField] private string _healPrefab;
+        [SerializeField] private string _shieldPrefab;
         
         private PoolContainer _poolContainer;
         private InGameRepository _repository;
@@ -51,34 +52,44 @@ namespace RGLabs.InGame.UI
             this.SubscribeMessage<Result>(OnResult);
             this.SubscribeMessage<AtkResult>(OnAtkResult);
             this.SubscribeMessage<HealResult>(OnHealResult);
+            this.SubscribeMessage<ShieldResult>(OnShieldResult);
         }
         
         private async void OnAtkResult(AtkResult result)
         {
-            var ev = result.Event;
+            var ev = (AtkEvent)result.Event;
             var uiDamage = await GetUIDamage(ev.Type, result.IsCritical);
             if (uiDamage == null)
                 return;
 
-            var tr = uiDamage.transform;
-            tr.SetParent(_damageRoot);
-            tr.localScale = Vector3.one;
-            uiDamage.Container = _poolContainer;
-            uiDamage.Show(result.Event);
+            Show(uiDamage, result.Event);
         }
         
         private async void OnHealResult(HealResult result)
         {
-            var ev = result.Event;
-            var uiDamage = await GetUIDamage(ev.Type);
+            var uiDamage = await GetUIDamage(_healPrefab);
             if (uiDamage == null)
                 return;
 
+            Show(uiDamage, result.Event);
+        }
+        
+        private async void OnShieldResult(ShieldResult result)
+        {
+            var uiDamage = await GetUIDamage(_shieldPrefab);
+            if (uiDamage == null)
+                return;
+
+            Show(uiDamage, result.Event);
+        }
+
+        private void Show(UIDamage uiDamage, IModifier result)
+        {
             var tr = uiDamage.transform;
             tr.SetParent(_damageRoot);
             tr.localScale = Vector3.one;
             uiDamage.Container = _poolContainer;
-            uiDamage.Show(result.Event);
+            uiDamage.Show(result);
         }
 
         private async UniTask<UIDamage> GetUIDamage(DamageType type, bool isCritical)
@@ -99,26 +110,11 @@ namespace RGLabs.InGame.UI
                 }
             }
 
-            if (string.IsNullOrEmpty(prefab))
-                return null;
-            
-            var pool = _poolContainer.Get(prefab);
-            return await pool.Get() as UIDamage;
+            return await GetUIDamage(prefab);
         }
 
-        private async UniTask<UIDamage> GetUIDamage(HealType type)
+        private async UniTask<UIDamage> GetUIDamage(string prefab)
         {
-            string prefab = string.Empty;
-            switch (type)
-            {
-                case HealType.Heal:
-                    prefab = _healPrefabs.heal;
-                    break;
-                case HealType.Shield:
-                    prefab = _healPrefabs.shield;
-                    break;
-            }
-            
             if (string.IsNullOrEmpty(prefab))
                 return null;
             

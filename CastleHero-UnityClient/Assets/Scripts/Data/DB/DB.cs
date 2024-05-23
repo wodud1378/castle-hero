@@ -37,7 +37,7 @@ namespace RGLabs.Data.DB
         }
     }
     
-    public abstract class DB<T> : IDataBase where T : IEntity
+    public abstract class DB<T> : IDataBase where T : IEntity, new()
     {
         protected T[] entities;
 
@@ -83,8 +83,7 @@ namespace RGLabs.Data.DB
             entity = entities[index];
             return true;
         }
-
-
+        
         public bool TryFindIndex(int id, out int index)
         {
             index = Array.FindIndex(entities, (x) => x.Id == id);
@@ -123,8 +122,26 @@ namespace RGLabs.Data.DB
             return array;
         }
 
-        public virtual void Load(object[] data) => entities = Array.ConvertAll(data, x => (T)x);
+        public void Load(object[] data)
+        {
+            int length = data.Length;
+            entities = new T[length];
+            
+            for (int i = 0; i < length; ++i)
+            {
+                Convert(data[i], ref entities[i]);
+            }
+        }
 
-        public virtual T FallBackEntity() => default;
+        public T FallBackEntity()
+        {
+            return new() { IsValid = true };
+        }
+
+        protected virtual void Convert(object from, ref T to)
+        {
+            to = (T)from;
+            to.IsValid = true;
+        }
     }
 }

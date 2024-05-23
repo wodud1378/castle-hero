@@ -1,14 +1,13 @@
-using System;
 using RGLabs.Data.DB;
-using UnityEngine;
 
 namespace RGLabs.Data.Model
 {
-    [Serializable]
     public struct StageEntity : IEntity
     {
         [DataField("Stage_index")]
-        [field:SerializeField] public int Id { get; set; }
+        public int Id { get; set; }
+        
+        public bool IsValid { get; set; }
 
         [DataField("Stage_Rwd_Gold_Min")]
         public int goldMin;

@@ -6,7 +6,12 @@ using UnityEngine;
 
 namespace RGLabs.Unit
 {
-    public abstract class CachedValue
+    public interface IUpdate
+    {
+        public void Update();
+    }
+
+    public abstract class CachedValue : IUpdate
     {
         protected abstract float Value { get; }
 
@@ -32,17 +37,20 @@ namespace RGLabs.Unit
     {
         public event Action<float, float> OnChanged;
 
-        private readonly List<TimedValue> _increaseMul = new();
-        private readonly List<TimedValue> _decreaseMul = new();
-        
+        private readonly List<TimedValue> _timedIncrease = new();
+        private readonly List<TimedValue> _timedDecrease = new();
+
+        private float _increase;
+        private float _decrease;
+
         private float _default;
 
         protected override float Value
         {
             get
             {
-                float increase = _increaseMul.Sum(t => t.value);
-                float decrease = _decreaseMul.Sum(t => t.value);
+                float increase = _timedIncrease.Sum(t => t.value) + _increase;
+                float decrease = _timedDecrease.Sum(t => t.value) + _decrease;
 
                 return _default + increase - decrease;
             }
@@ -52,32 +60,36 @@ namespace RGLabs.Unit
         {
             _default = val;
 
-            _increaseMul.Clear();
-            _decreaseMul.Clear();
+            _timedIncrease.Clear();
+            _timedDecrease.Clear();
 
             Update();
         }
 
-        public void Increase(float val, float time) => Add(_increaseMul, val, time);
+        public void Increase(float val) => _increase += val;
 
-        public void Decrease(float val, float time) => Add(_decreaseMul, val, time);
+        public void Decrease(float val) => _decrease += val;
+
+        public void Increase(float val, float time) => Add(_timedIncrease, val, time);
+
+        public void Decrease(float val, float time) => Add(_timedDecrease, val, time);
 
         public override void Update()
         {
             float legacy = Cached;
             var deltaTime = Time.deltaTime;
 
-            _increaseMul.ForEach(x=> x.leftTime -= deltaTime);
-            _decreaseMul.ForEach(x => x.leftTime -= deltaTime);
-            
-            _increaseMul.RemoveAll((item) => item.leftTime - deltaTime <= 0);
-            _decreaseMul.RemoveAll((item) => item.leftTime - deltaTime <= 0);
+            _timedIncrease.ForEach(x => x.leftTime -= deltaTime);
+            _timedDecrease.ForEach(x => x.leftTime -= deltaTime);
+
+            _timedIncrease.RemoveAll((item) => item.leftTime <= 0);
+            _timedDecrease.RemoveAll((item) => item.leftTime <= 0);
 
             base.Update();
             OnChanged?.Invoke(legacy, Cached);
         }
 
-        private void Add(List<TimedValue> target, float val, float time = float.MaxValue)
+        private void Add(List<TimedValue> target, float val, float time)
         {
             var timedVal = new TimedValue
             {
@@ -95,7 +107,7 @@ namespace RGLabs.Unit
         public readonly AdjustValue fixedAdjust = new();
         public float origin;
 
-        public virtual void Init(IList<Ability> root = null, float origin = 0f, float initialMul = 1f)
+        public virtual void Init(IList<IUpdate> root = null, float origin = 0f, float initialMul = 1f)
         {
             this.origin = origin;
 
@@ -110,13 +122,65 @@ namespace RGLabs.Unit
         public static implicit operator float(Ability it) => it.Value;
     }
 
+    public class Shield : CachedValue
+    {
+        private readonly List<TimedValue> _timedValues = new();
+
+        private float _value;
+
+        public void Init(IList<IUpdate> root) => root.Add(this);
+
+        protected override float Value => _value + _timedValues.Sum(x => x.value);
+
+        public void Increase(float val) => _value += val;
+
+        public void Increase(float val, float time) => _timedValues.Add(new TimedValue
+        {
+            leftTime = time,
+            value = val,
+        });
+        
+        public void Decrease(float val, out float @protected, out float left)
+        {
+            left = val;
+            @protected = 0f;
+            foreach (var timedValue in _timedValues)
+            {
+                float diff = timedValue.value - left;
+                float damage;
+                if (diff < 0)
+                {
+                    damage = timedValue.value;
+                    left = Mathf.Abs(diff);
+                }
+                else
+                {
+                    damage = diff;
+                }
+                
+                timedValue.value -= damage;
+                @protected += damage;
+                left = Mathf.Abs(diff);
+            }
+        }
+
+        public override void Update()
+        {
+            float deltaTime = Time.deltaTime;
+            _timedValues.ForEach(x => x.leftTime -= deltaTime);
+            _timedValues.RemoveAll((item) => item.leftTime <= 0 || item.value <= 0);
+
+            base.Update();
+        }
+    }
+
     public class Hp : Ability
     {
         public float Max => Value;
 
         public float Left { get; private set; }
 
-        public void Increase(float value) => Left = Mathf.Min(Max, Left + value);
+        public void Increase(float value) => Left = Mathf.Min(Mathf.Max(Max, Left), Left + value);
 
         public void Decrease(float value) => Left = Mathf.Max(0, Left - value);
 
@@ -126,7 +190,7 @@ namespace RGLabs.Unit
             fixedAdjust.OnChanged += OnFixedAdjustChanged;
         }
 
-        public override void Init(IList<Ability> root = null, float origin = 0, float initialMul = 1)
+        public override void Init(IList<IUpdate> root = null, float origin = 0, float initialMul = 1)
         {
             base.Init(root, origin, initialMul);
 
@@ -142,7 +206,7 @@ namespace RGLabs.Unit
                 Left = Mathf.Min(Max, Left + heal);
             }
         }
-        
+
         private void OnFixedAdjustChanged(float legacy, float current)
         {
             float diff = current - legacy;
@@ -168,6 +232,7 @@ namespace RGLabs.Unit
             AtkRange,
             MoveRange,
             Recovery,
+            Shield,
         }
 
         public readonly Dictionary<Type, Ability> abilities;
@@ -175,6 +240,7 @@ namespace RGLabs.Unit
         public Ability this[Type type] => abilities.GetValueOrDefault(type);
 
         public readonly Hp hp = new();
+        public readonly Shield shield = new();
         public readonly Ability atk = new();
         public readonly Ability critical = new();
         public readonly Ability criticalAtk = new();
@@ -184,7 +250,7 @@ namespace RGLabs.Unit
         public readonly Ability moveRange = new();
         public readonly Ability recovery = new();
 
-        private List<Ability> _abilities;
+        private List<IUpdate> _updates;
 
         public Status()
         {
@@ -204,22 +270,37 @@ namespace RGLabs.Unit
 
         public void Init(UnitEntity data, int lv, UnitLevelEntity levelData)
         {
-            _abilities = new List<Ability>();
+            _updates = new List<IUpdate>();
 
-            hp.Init(_abilities, data.hp + (lv * levelData.hp));
-            atk.Init(_abilities, data.atk + (lv * levelData.atk));
-            critical.Init(_abilities, data.critical + (lv * levelData.critical));
-            criticalAtk.Init(_abilities, data.criticalAtk + (lv * levelData.criticalAtk));
-            atkSpeed.Init(_abilities, data.atkSpeed + (lv * levelData.atkSpeed));
-            speed.Init(_abilities, data.speed + (lv * levelData.speed));
-            atkRange.Init(_abilities, data.atkRange + (lv * levelData.atkRange));
-            moveRange.Init(_abilities, data.moveRange + (lv * levelData.moveRange));
-            recovery.Init(_abilities, data.recovery);
+            hp.Init(_updates, data.hp);
+            atk.Init(_updates, data.atk);
+            critical.Init(_updates, data.critical);
+            criticalAtk.Init(_updates, data.criticalAtk);
+            atkSpeed.Init(_updates, data.atkSpeed);
+            speed.Init(_updates, data.speed);
+            atkRange.Init(_updates, data.atkRange);
+            moveRange.Init(_updates, data.moveRange);
+            recovery.Init(_updates, data.recovery);
+            shield.Init(_updates);
+
+            ApplyLevelBonus(lv, levelData);
+        }
+
+        private void ApplyLevelBonus(int lv, UnitLevelEntity levelData)
+        {
+            hp.fixedAdjust.Increase(lv * levelData.hp);
+            atk.fixedAdjust.Increase(lv * levelData.hp);
+            critical.fixedAdjust.Increase(lv * levelData.hp);
+            criticalAtk.fixedAdjust.Increase(lv * levelData.hp);
+            atkSpeed.fixedAdjust.Increase(lv * levelData.hp);
+            speed.fixedAdjust.Increase(lv * levelData.hp);
+            atkRange.fixedAdjust.Increase(lv * levelData.hp);
+            moveRange.fixedAdjust.Increase(lv * levelData.hp);
         }
 
         public void Update()
         {
-            foreach (var ability in _abilities)
+            foreach (var ability in _updates)
             {
                 ability.Update();
             }

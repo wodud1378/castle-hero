@@ -78,7 +78,7 @@ namespace RGLabs.Lobby.UI
             }
             else
             {
-                _hold.Core.defaultDestination = _hold.position;
+                _hold.Core.movement.Default = _hold.position;
                 _hold.CanMove = true;
                 _hold.Collider.isTrigger = false;
                 _hold.gameObject.layer = _originLayer;

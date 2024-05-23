@@ -21,7 +21,9 @@ namespace RGLabs.Data.Model
     
     public struct WaveEntity : IEntity
     {
-        [field:SerializeField]public int Id { get; set; }
+        public int Id { get; set; }
+        
+        public bool IsValid { get; set; }
 
         [DataField("Wave_Grp_ID")]
         public int groupId;
@@ -45,9 +47,9 @@ namespace RGLabs.Data.Model
         public int[] lvs;
         
         [DataField("Wave_Grp_Mob_Value")]
-        public float[] timeSteps;
+        public int[] counts;
         
         [DataField("Wave_Grp_Mob_Delay")]
-        public int[] counts;
+        public float[] timeSteps;
     }
 }

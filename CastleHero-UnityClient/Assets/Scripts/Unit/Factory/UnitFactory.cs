@@ -12,14 +12,12 @@ namespace RGLabs.Unit.Factory
         private readonly PoolContainer _pools;
         private readonly UnitDB _unitDB;
         private readonly UnitLevelDB _levelDB;
-        private readonly SkillDB _skillDB;
 
-        public UnitFactory(PoolContainer pools, UnitDB unitDB, UnitLevelDB levelDB, SkillDB skillDB)
+        public UnitFactory(PoolContainer pools, UnitDB unitDB, UnitLevelDB levelDB)
         {
             _pools = pools;
             _unitDB = unitDB;
             _levelDB = levelDB;
-            _skillDB = skillDB;
         }
         
         public async UniTask<UnitBehaviour> Create(int id, int lv, int grade, Vector2 position)
@@ -45,11 +43,8 @@ namespace RGLabs.Unit.Factory
 
             if (!_levelDB.TryFind(info.id, out var levelEntity))
                 levelEntity = default;
-
-            if (!_skillDB.TryFind(unitEntity.skill, out var skillEntity))
-                skillEntity = default;
             
-            unit.Init(info, unitEntity, levelEntity, skillEntity);
+            unit.Init(info, unitEntity, levelEntity);
             unit.position = position;
             return unit;
         }

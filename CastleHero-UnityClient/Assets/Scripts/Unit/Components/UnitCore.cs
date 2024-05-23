@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using PolyNav;
 using RGLabs.Common;
 using RGLabs.Data.Model;
+using RGLabs.Data.User;
 using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
+using RGLabs.Unit.Components.Move;
 using RGLabs.Unit.Finding;
 using RGLabs.Unit.Skill;
 using RGLabs.Utility;
@@ -47,35 +49,33 @@ namespace RGLabs.Unit.Components
         public readonly UnitBehaviour owner;
         public readonly Look look;
         public readonly Attack attack;
+        public readonly IMovement movement;
         public readonly RenderController renderController;
-        public readonly FindingComponents finding;
         public readonly AnimationEvents animationEvent;
 
         private readonly bool _enableAttack;
         private readonly bool _enableMove;
-        private readonly bool _enableAnimation;
 
         public LayerMask enemyLayerMask;
         public LayerMask alleyLayerMask;
+        
+        public ISkill skill;
         
         public bool Invincible => _leftInvincible > 0f;
         
         public bool canMove
         {
-            get => navAgent.enabled;
-            set => navAgent.enabled = value;
+            get => movement.Enabled;
+            set => movement.Enabled = value;
         }
 
         public bool canAttack;
-
-        public Vector2 defaultDestination;
 
         private readonly ReactiveProperty<Vector2> _lookDirection;
 
         private bool AllowMove => _enableMove && canMove;
         private bool AllowAttack => _enableAttack && canAttack;
-
-        private ISkill _skill;
+        
         private IDisposable _update;
         private float _leftInvincible;
 
@@ -86,19 +86,38 @@ namespace RGLabs.Unit.Components
             this.owner = owner;
             _enableAttack = enableAttack;
             _enableMove = enableMove;
-            _enableAnimation = enableAnimation;
 
             elemental = new();
             navAgent = this.owner.GetComponent<PolyNavAgent>();
-            finding = new FindingComponents(new Collider2D[Constants.BufferSize], status);
 
             animationEvent = this.owner.GetComponentInChildren<AnimationEvents>();
+
+            Collider2D[] buffer = null;
             if (_enableAttack)
-                attack = new Attack(this.owner, finding.attack, animationEvent);
+            {
+                buffer = new Collider2D[Constants.BufferSize];
+                attack = new Attack(this.owner, FindUnits.Create(new CircleDetection
+                {
+                    Buffer = buffer,
+                    MaxTarget = 1,
+                }));
+            }
+
+            if (_enableMove)
+            {
+                buffer ??= new Collider2D[Constants.BufferSize];
+                movement = new DefaultMovement(this.owner, new FindMoveTarget(new CircleDetection
+                {
+                    Buffer = buffer,
+                    MaxTarget = 1,
+                }));
+            }
+            else
+                movement = new FixedMovement();
 
             var skeleton = this.owner.GetComponentInChildren<SkeletonMecanim>();
             var animator = this.owner.GetComponentInChildren<Animator>();
-            renderController = new RenderController(skeleton, animator, _enableAnimation);
+            renderController = new RenderController(skeleton, animator, enableAnimation);
             look = new Look(animator.transform);
 
             state = new(States.Prepare);
@@ -120,6 +139,81 @@ namespace RGLabs.Unit.Components
             // TODO : 이펙트?
         }
 
+        public void SetData(UnitInfo info, UnitEntity data, UnitLevelEntity levelData)
+        {
+            status.Init(data, info.lv, levelData);
+            elemental.atkType = (Elemental.Type)data.elementalAtk;
+            elemental.defType = (Elemental.Type)data.elementalDef;
+
+            enemyLayerMask = UnitHelper.EnemyLayerMask(data.Id, data.atkLayer);
+            alleyLayerMask = UnitHelper.AlleyLayerMask(data.Id);
+
+            attack.finder.detection.Mask = enemyLayerMask;
+            movement.Finder.detection.MaxTarget = enemyLayerMask;
+            
+            renderController.ApplySkin(data.skinName);
+            UpdateLookDirection(movement.Default);
+
+            if (!string.IsNullOrEmpty(data.projectile) && attack != null)
+            {
+                attack.projectileLauncher ??= new ProjectileLauncher(owner, data.projectile);
+            }
+            
+            ApplyRateBonus(info.grade, levelData, out int skillLv);
+
+            if (data.skill != 0)
+            {
+                skill = this.Attach(data.skill, skillLv);
+            }
+
+            state.Value = States.Prepare;
+
+            _update = owner
+                .UpdateAsObservable()
+                .Subscribe(_ => OnUpdateOwner())
+                .AddTo(owner);
+        }
+        
+        private void ApplyRateBonus(int grade, UnitLevelEntity levelData, out int skillLv)
+        {
+            skillLv = 1;
+            if (levelData.rateOptions == null || levelData.rateValues == null)
+                return;
+            
+            int rateBonusLength = levelData.rateOptions.Length;
+            int rateIndex = Mathf.Clamp(grade, 0, rateBonusLength) - 1;
+            if (rateIndex == -1)
+                return;
+
+            for (int i = 0; i < rateIndex; ++i)
+            {
+                var options = levelData.rateOptions[i];
+                var values = levelData.rateValues[i];
+                int length = options.Length;
+                for (int j = 0; j < length; ++j)
+                {
+                    Status.Type type;
+                    switch (options[j])
+                    {
+                        case 0:
+                            skillLv = skillLv > values[j] ? skillLv : (int)values[j];
+                            continue;
+                        case 1: type = Status.Type.Atk; break;
+                        case 2: type = Status.Type.Hp; break;
+                        case 3: type = Status.Type.AtkSpeed; break;
+                        case 4: type = Status.Type.MoveSpeed; break;
+                        case 5: type = Status.Type.Critical; break;
+                        case 6: type = Status.Type.CriticalAtk; break;
+                        default:
+                            continue;
+                    }
+
+                    var ability = status[type];
+                    ability.fixedAdjust.Increase(values[j]);
+                }
+            }
+        }
+        
         private void OnUpdateOwner()
         {
             if (state.Value == States.Dead || owner.Released)
@@ -147,43 +241,17 @@ namespace RGLabs.Unit.Components
                 new WaitRecover
                 {
                     behaviour = owner,
-                    position = defaultDestination,
+                    position = movement.Default,
                     leftTime = status.recovery
                 }.Publish();
             }
 
             return true;
         }
-
+        
         private void UpdateInvincible()
         {
             _leftInvincible = Mathf.Clamp(_leftInvincible - Time.deltaTime, 0f, float.MaxValue);
-        }
-
-        public void SetData(UnitEntity data, int lv, UnitLevelEntity levelData, SkillEntity skillData)
-        {
-            status.Init(data, lv, levelData);
-            elemental.atkType = (Elemental.Type)data.elementalAtk;
-            elemental.defType = (Elemental.Type)data.elementalDef;
-
-            enemyLayerMask = UnitHelper.EnemyLayerMask(data.Id, data.atkLayer);
-            alleyLayerMask = UnitHelper.AlleyLayerMask(data.Id);
-            
-            finding.Init(enemyLayerMask);
-            renderController.ApplySkin(data.skinName);
-            UpdateLookDirection(defaultDestination);
-
-            if (!string.IsNullOrEmpty(data.projectile) && attack != null)
-            {
-                attack.projectileLauncher ??= new ProjectileLauncher(owner, data.projectile);
-            }
-
-            state.Value = States.Prepare;
-
-            _update = owner
-                .UpdateAsObservable()
-                .Subscribe(_ => OnUpdateOwner())
-                .AddTo(owner);
         }
 
         private void UpdateStatus()
@@ -199,9 +267,12 @@ namespace RGLabs.Unit.Components
 
         private void UpdateState()
         {
-            if (attack is { InProgress: true })
+            if (attack is { IsRunning: true })
                 return;
 
+            if (TrySetToSkill())
+                return;
+            
             if (TrySetToAttack())
                 return;
 
@@ -221,9 +292,6 @@ namespace RGLabs.Unit.Components
                 case States.Prepare:
                     OnPrepare();
                     break;
-                case States.Idle:
-                    OnIdle();
-                    break;
                 case States.Move:
                     OnMove();
                     break;
@@ -235,9 +303,9 @@ namespace RGLabs.Unit.Components
 
         private void UpdateAnimation(States value)
         {
-            if (!_enableAnimation)
+            if (value is not (States.Idle or States.Move or States.Return)) 
                 return;
-
+            
             if (!AnimationsHash.TryGetValue(value, out var hash))
                 return;
 
@@ -248,47 +316,44 @@ namespace RGLabs.Unit.Components
 
         private void OnPrepare()
         {
-            finding.Clear();
+            attack.finder.Clear();
+            movement.Finder.Clear();
+            movement.Stop();
 
             state.Value = States.Idle;
         }
 
-        private void OnIdle()
-        {
-            if (TrySetToSkill()) return;
-            if (TrySetToAttack()) return;
-            if (TrySetToMove()) return;
-            if (TrySetToReturn()) return;
-        }
-
         private bool TrySetToSkill()
         {
-            if (_skill == null)
+            if (skill == null)
                 return false;
 
-            if (_skill.State.Value != SkillState.Ready)
-                return false;
-            
-            _skill.Run();
-            return true;
+            if (skill.Runner.IsRunning)
+                return true;
+
+            if (skill.Cycle.IsReady)
+            {
+                skill.Runner.Run();
+                state.Value = States.Skill;
+                return true;
+            }
+
+            return false;
         }
 
         private bool TrySetToAttack()
         {
-            if (!AllowAttack)
+            if (!AllowAttack || !attack.IsAbleToAttack())
                 return false;
 
-            if (!finding.IsAbleToAttack(navAgent.position))
-                return false;
-
-            if (state.Value == States.Attack)
+            if (attack.IsRunning)
                 return true;
 
-            state.Value = States.Attack;
-            _lookDirection.Value = finding.attack.Found[0].position;
+            _lookDirection.Value = attack.finder.Found[0].position;
 
-            attack.Execute();
-            navAgent.Stop();
+            attack.Run();
+            movement.Stop();
+            state.Value = States.Attack;
             return true;
         }
 
@@ -297,13 +362,13 @@ namespace RGLabs.Unit.Components
             if (!AllowMove)
                 return false;
 
-            var position = navAgent.position;
-            if (!finding.TryFindMoveTarget(position, out var target))
-                return false;
+            if (movement.TryMoveToTarget())
+            {
+                state.Value = States.Move;
+                return true;
+            }
 
-            state.Value = States.Move;
-            navAgent.SetDestination(target.position);
-            return true;
+            return false;
         }
 
         private bool TrySetToReturn()
@@ -311,27 +376,25 @@ namespace RGLabs.Unit.Components
             if (!AllowMove)
                 return false;
 
-            if ((defaultDestination - navAgent.position).magnitude < navAgent.stoppingDistance)
-                return false;
-
-            if (state.Value == States.Return)
+            if (movement.TryMoveToDefault())
+            {
+                state.Value = States.Return;
                 return true;
+            }
 
-            state.Value = States.Return;
-            navAgent.SetDestination(defaultDestination);
-            return true;
+            return false;
         }
 
         private void OnMove()
         {
-            _lookDirection.Value = finding.move.Found[0].position;
+            _lookDirection.Value = movement.CurrentTarget.position;
 
             TrySetToAttack();
         }
 
         private void OnReturn()
         {
-            _lookDirection.Value = defaultDestination;
+            _lookDirection.Value = movement.Default;
 
             if (TrySetToAttack())
                 return;

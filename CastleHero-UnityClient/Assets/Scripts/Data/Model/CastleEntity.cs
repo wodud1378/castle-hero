@@ -6,6 +6,8 @@ namespace RGLabs.Data.Model
     {
         [DataField("Castle_Level")]
         public int Id { get; set; }
+        
+        public bool IsValid { get; set; }
 
         [DataField("Castle_Gold")]
         public int lvUpPrice;

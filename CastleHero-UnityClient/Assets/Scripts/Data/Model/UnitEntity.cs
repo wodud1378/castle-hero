@@ -1,15 +1,13 @@
-using System;
 using RGLabs.Data.DB;
-using UnityEngine;
 
 namespace RGLabs.Data.Model
 {
-    [Serializable]
     public struct UnitEntity : IEntity
     {
-        [field: SerializeField]
         [DataField("Character_ID")]
         public int Id { get; set; }
+        
+        public bool IsValid { get; set; }
         
         [DataField("Character_Name")]
         public string name;
