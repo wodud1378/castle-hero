@@ -22,7 +22,7 @@ namespace RGLabs.Unit.Skill
             if (TryGetStatusParameter(Parameter.BoundAtk, out type, out value))
             {
                 float amount = WithOwner(type, value);
-                Bound.FindTargets(target.position, Data.range, default)
+                Bound.UnitsInBound(target.position,default)
                     .ForEach(x=> PublishAtk(x, DamageType.Normal, amount));
             }
         }

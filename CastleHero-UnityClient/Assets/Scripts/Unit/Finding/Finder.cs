@@ -7,25 +7,21 @@ using UnityEngine;
 
 namespace RGLabs.Unit.Finding
 {
-    public class FindUnits
+    public class Finder
     {
-        public enum Shape
-        {
-            Circle,
-            Box
-        }
+        private static readonly DetectionFactory DetectionFactory = new();
         
         private static readonly Dictionary<Collider2D, UnitBehaviour> CachedUnits = new();
 
-        public List<UnitBehaviour> Found { get; }
+        public List<UnitBehaviour> Found { get; } = new();
 
-        public readonly IDetection detection;
+        public IDetection detection;
 
-        public FindUnits(IDetection detection)
+        public Finder() { }
+        
+        public Finder(IDetection detection)
         {
             this.detection = detection;
-
-            Found = new();
         }
 
         protected virtual bool OnUpdate(int found)
@@ -68,30 +64,18 @@ namespace RGLabs.Unit.Finding
             return unit.IsValid();
         }
 
-        public static FindUnits Create(Shape shape)
+        public static Finder Create(IDetection.Option option, int maxTarget, Collider2D[] buffer = null) => Create<Finder>(option, maxTarget, buffer);
+
+        public static T Create<T>(IDetection.Option option, int maxTarget, Collider2D[] buffer = null) where T : Finder, new()
         {
-            IDetection detection = null;
-            var buffer = CreateBuffer();
-            switch (shape)
-            {
-                case Shape.Circle:
-                    detection = new CircleDetection { Buffer = buffer };
-                    break;
-                case Shape.Box:
-                    detection = new BoxDetection { Buffer = buffer };
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(shape), shape, null);
-            }
+            IDetection detection = DetectionFactory.GetDetection(option);
             
-            return Create(detection);
-        }
+            buffer ??= new Collider2D[Constants.BufferSize];
+            detection.Buffer = buffer;
+            detection.MaxTarget = maxTarget == 0 ? Constants.BufferSize : maxTarget;
 
-        public static FindUnits Create(IDetection detection)
-        {
-            return new(detection);
+            var t = new T { detection = detection };
+            return t;
         }
-
-        public static Collider2D[] CreateBuffer() => new Collider2D[Constants.BufferSize];
     }
 }

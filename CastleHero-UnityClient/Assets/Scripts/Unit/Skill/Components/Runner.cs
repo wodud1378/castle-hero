@@ -5,6 +5,11 @@ namespace RGLabs.Unit.Skill.Components
 {
     public interface IRunner
     {
+        public enum Option
+        {
+            Animation
+        }
+        
         public event Action OnExecuteEvent;
         public event Action OnReleaseEvent;
         

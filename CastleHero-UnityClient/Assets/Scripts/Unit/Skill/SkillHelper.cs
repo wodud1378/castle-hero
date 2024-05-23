@@ -2,26 +2,41 @@ using System;
 using RGLabs.Common.Behaviours;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Components;
-using RGLabs.Unit.Skill.Components;
+using RGLabs.Unit.Skill.Components.Factory;
 
 namespace RGLabs.Unit.Skill
 {
     public static class SkillHelper
     {
-        private static readonly TargetFinderFactory FinderFactory = new();
-        private static readonly BoundFactory BoundFactory = new();
+        private static readonly SkillBuilder Builder = new();
 
         public static ISkill Attach(this UnitCore unit, int id, int lv)
         {
             var skill = Create(unit.owner, id, lv);
+            if (skill == null)
+                return null;
+
+            Func<SkillBuilder, ISkill> buildMethod;
+            Builder.StartBuild(unit.owner, id, lv);
             switch (id)
             {
-                case 10021:
-                    Build10021(skill);
-                    break;
+                case 10001: buildMethod = Build10001; break;
+                case 10002: buildMethod = Build10002; break;
+                case 10003: buildMethod = Build10003; break;
+                case 10004: buildMethod = Build10004; break;
+                case 10006: buildMethod = Build10006; break;
+                case 10007: buildMethod = Build10007; break;
+                case 10013: buildMethod = Build10013; break;
+                case 10016: buildMethod = Build10016; break;
+                case 10021: buildMethod = Build10021; break;
+                case 10023: buildMethod = Build10023; break;
+                case 10025: buildMethod = Build10025; break;
+                case 10034: buildMethod = Build10034; break;
+                default:
+                    return null;
             }
 
-            return skill;
+            return buildMethod.Invoke(Builder);
         }
 
         private static ISkill Create(UnitBehaviour owner, int id, int lv)
@@ -41,37 +56,98 @@ namespace RGLabs.Unit.Skill
             return skill;
         }
 
-        private static void Build10001(ISkill skill)
+        private static ISkill Build10001(SkillBuilder builder)
         {
-            var data = skill.Data;
-            var owner = skill.Owner;
-            skill.Targeting = FinderFactory.GetTargeting(owner, TargetFinderFactory.Option.Self, 1);
-            skill.Bound = BoundFactory.GetBound(BoundFactory.Option.Circle);
-            skill.Cycle = new CoolTime(owner, data.coolTime);
-            skill.Runner = new AnimationRunner(owner.Core.animationEvent);
-            skill.Init();
+            return builder
+                .SetTargeting(Targeting.Self, 1)
+                .SetCircleBound(Targeting.Both, 0)
+                .BuildActiveSkill();
         }
 
-        private static void Build10021(ISkill skill)
+        private static ISkill Build10002(SkillBuilder builder)
         {
-            var data = skill.Data;
-            var owner = skill.Owner;
-            skill.Targeting = FinderFactory.GetTargeting(owner, TargetFinderFactory.Option.Enemy, 1);
-            skill.Bound = BoundFactory.GetBound(BoundFactory.Option.Circle);
-            skill.Cycle = new CoolTime(owner, data.coolTime);
-            skill.Runner = new AnimationRunner(owner.Core.animationEvent);
-            skill.Init();
+            return builder
+                .SetTargeting(Targeting.Enemy, 1)
+                .SetCircleBound(Targeting.Enemy, 0)
+                .BuildActiveSkill();
         }
 
-        private static void Build(ISkill skill, TargetFinderFactory.Option targetingOption, BoundFactory.Option boundOption)
+        private static ISkill Build10003(SkillBuilder builder)
         {
-            var data = skill.Data;
-            var owner = skill.Owner;
-            skill.Targeting = FinderFactory.GetTargeting(owner, targetingOption, 1);
-            skill.Bound = BoundFactory.GetBound(BoundFactory.Option.Circle);
-            skill.Cycle = new CoolTime(owner, data.coolTime);
-            skill.Runner = new AnimationRunner(owner.Core.animationEvent);
-            skill.Init();
+            return builder
+                .SetTargeting(Targeting.Enemy, 1)
+                .BuildActiveSkill();
+        }
+
+        private static ISkill Build10004(SkillBuilder builder)
+        {
+            return builder
+                .SetTargeting(Targeting.Enemy, 1)
+                .SetBoxBound(Targeting.Enemy, 0, 2f, 90f)
+                .BuildActiveSkill();
+        }
+
+        private static ISkill Build10006(SkillBuilder builder)
+        {
+            return builder
+                .SetTargeting(Targeting.Self, 1)
+                .SetCircleBound(Targeting.Alley, 0)
+                .BuildActiveSkill();
+        }
+
+        private static ISkill Build10007(SkillBuilder builder)
+        {
+            return builder
+                .SetTargeting(Targeting.Self, 1)
+                .SetCircleBound(Targeting.Enemy, 0)
+                .BuildActiveSkill();
+        }
+
+        private static ISkill Build10013(SkillBuilder builder)
+        {
+            return builder
+                .SetTargeting(Targeting.Enemy, 1)
+                .SetCircleBound(Targeting.Enemy, 0)
+                .BuildActiveSkill();
+        }
+
+        private static ISkill Build10016(SkillBuilder builder)
+        {
+            return builder
+                .SetTargeting(Targeting.Self, 1)
+                .SetCircleBound(Targeting.Enemy, 0)
+                .BuildActiveSkill();
+        }
+
+        private static ISkill Build10021(SkillBuilder builder)
+        {
+            return builder
+                .SetTargeting(Targeting.Enemy, 1)
+                .BuildActiveSkill();
+        }
+
+        private static ISkill Build10023(SkillBuilder builder)
+        {
+            return builder
+                .SetTargeting(Targeting.Self, 1)
+                .SetCircleBound(Targeting.Alley, 0)
+                .BuildActiveSkill();
+        }
+
+        private static ISkill Build10025(SkillBuilder builder)
+        {
+            return builder
+                .SetTargeting(Targeting.Self, 1)
+                .SetCircleBound(Targeting.Alley, 0)
+                .BuildActiveSkill();
+        }
+
+        private static ISkill Build10034(SkillBuilder builder)
+        {
+            return builder
+                .SetTargeting(Targeting.Self, 1)
+                .SetCircleBound(Targeting.Alley, 0)
+                .BuildActiveSkill();
         }
     }
 }

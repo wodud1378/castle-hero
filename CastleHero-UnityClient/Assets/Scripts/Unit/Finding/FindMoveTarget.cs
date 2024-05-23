@@ -3,8 +3,10 @@ using RGLabs.Unit.Behaviours;
 
 namespace RGLabs.Unit.Finding
 {
-    public class FindMoveTarget : FindUnits
+    public class FindMoveTarget : Finder
     {
+        public FindMoveTarget() : base() {}
+        
         public FindMoveTarget(IDetection detection) : base(detection)
         {
         }

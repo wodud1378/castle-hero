@@ -17,18 +17,18 @@ namespace RGLabs.Unit.Skill
             Heal = 0,
             Shield
         }
-        
+
         private List<UnitBehaviour> _targets;
         private IDisposable _heal;
         private int _count;
         private int _currentCount;
         private float _currentTime;
-        
+
         protected override void OnExecute()
         {
             var center = Targeting.Targets[0];
-            _targets = Bound.FindTargets(center.position, Data.range, default);
-            
+            _targets = Bound.UnitsInBound(center.position, default);
+
             AttachHeal();
             ShieldOnGroup();
         }
@@ -40,15 +40,15 @@ namespace RGLabs.Unit.Skill
 
             if (!TryGetGroupParameter(0, out int group))
                 return;
-            
+
             var targets = _targets.Where(x => x.Data.team == group);
-            float amount = WithOwner(type, value); 
+            float amount = WithOwner(type, value);
             foreach (var target in targets)
             {
                 PublishShield(target, amount);
             }
         }
-        
+
         private void AttachHeal()
         {
             _count = Mathf.CeilToInt(Data.duration) / 1;
@@ -69,11 +69,11 @@ namespace RGLabs.Unit.Skill
 
             _targets.RemoveAll(x => x.IsValid());
             _currentTime = 1f;
-            
+
             if (!TryGetStatusParameter(Parameter.Heal, out var type, out var value))
                 return;
 
-            float amount = WithOwner(type, value); 
+            float amount = WithOwner(type, value);
             foreach (var target in _targets)
             {
                 PublishHeal(target, amount);
@@ -83,7 +83,7 @@ namespace RGLabs.Unit.Skill
 
             if (_currentCount < _count)
                 return;
-            
+
             _heal.Dispose();
         }
     }

@@ -25,8 +25,8 @@ namespace RGLabs.Unit.Skill
             var onEnemy = BuildExecutionOnEnemy();
             if (onEnemy == null)
                 return;
-            
-            Bound.FindTargets(target.position, Data.range, default)
+
+            Bound.UnitsInBound(target.position, default)
                 .ForEach(onEnemy);
         }
 

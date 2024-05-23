@@ -8,7 +8,7 @@ namespace RGLabs.Unit.Components
 
     public class Attack
     {
-        public readonly FindUnits finder; 
+        public readonly Finder finder; 
         private readonly UnitBehaviour _unit;
         private readonly RenderController _renderController;
         private readonly AnimationEvents _animationEvents;
@@ -17,7 +17,7 @@ namespace RGLabs.Unit.Components
 
         public ProjectileLauncher projectileLauncher;
 
-        public Attack(UnitBehaviour unit, FindUnits finder)
+        public Attack(UnitBehaviour unit, Finder finder)
         {
             _unit = unit;
             this.finder = finder;

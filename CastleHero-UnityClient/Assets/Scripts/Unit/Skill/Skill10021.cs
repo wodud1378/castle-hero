@@ -10,7 +10,7 @@ namespace RGLabs.Unit.Skill
             SpeedBuff,
             Atk
         }
-        
+
         protected override void OnExecute()
         {
             BuffsOnGroup();
@@ -21,13 +21,13 @@ namespace RGLabs.Unit.Skill
         {
             if (!TryGetGroupParameter(0, out int group))
                 return;
-            
-            if(!TryGetStatusParameter(Parameter.SpeedBuff, out var type, out var value))
+
+            if (!TryGetStatusParameter(Parameter.SpeedBuff, out var type, out var value))
                 return;
-            
+
             var characters = Characters(x => x.Data.team == group);
             float increaseTime = Data.duration;
-            float increaseValue = WithOwner(type, value);  
+            float increaseValue = WithOwner(type, value);
             foreach (var character in characters)
             {
                 character.status.speed.fixedAdjust.Increase(increaseValue, increaseTime);
@@ -39,11 +39,11 @@ namespace RGLabs.Unit.Skill
             if (!Targeting.HasTargets())
                 return;
 
-            if(!TryGetStatusParameter(Parameter.Atk, out var type, out var value))
+            if (!TryGetStatusParameter(Parameter.Atk, out var type, out var value))
                 return;
 
-            float atkAmount = WithOwner(type, value); 
-            Targeting.Targets.ForEach(x=>PublishAtk(x, DamageType.Normal, atkAmount));
+            float atkAmount = WithOwner(type, value);
+            Targeting.Targets.ForEach(x => PublishAtk(x, DamageType.Normal, atkAmount));
         }
     }
 }

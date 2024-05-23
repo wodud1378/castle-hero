@@ -8,6 +8,11 @@ namespace RGLabs.Unit.Skill.Components
 {
     public interface ICycle
     {
+        public enum Option
+        {
+            CoolTime
+        }
+        
         public UnitBehaviour Owner { get; set; }
         public bool IsReady { get; }
 
@@ -86,10 +91,5 @@ namespace RGLabs.Unit.Skill.Components
                 onEnd?.Invoke();
             });
         }
-    }
-
-    public class WaitAfterRelease
-    {
-        
     }
 }

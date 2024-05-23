@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
@@ -13,14 +12,14 @@ namespace RGLabs.Unit.Skill
             Heal = 0,
             Atk,
         }
-        
+
         protected override void OnExecute()
         {
             if (TryBuildExecution(out var onAlley, out var onEnemy))
                 return;
-            
+
             var center = Targeting.Targets[0];
-            Bound.FindTargets(center.position, Data.range, default)
+            Bound.UnitsInBound(center.position, default)
                 .ForEach(x =>
                 {
                     if (x.IsAlley(Owner))
@@ -49,7 +48,7 @@ namespace RGLabs.Unit.Skill
             if (TryGetStatusParameter(Parameter.Heal, out var type2, out var value2))
             {
                 float atkAmount = WithOwner(type2, value2);
-                onEnemy += x=> PublishAtk(x, DamageType.Normal, atkAmount);
+                onEnemy += x => PublishAtk(x, DamageType.Normal, atkAmount);
             }
 
             return onAlley != null || onEnemy != null;

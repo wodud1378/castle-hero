@@ -96,21 +96,13 @@ namespace RGLabs.Unit.Components
             if (_enableAttack)
             {
                 buffer = new Collider2D[Constants.BufferSize];
-                attack = new Attack(this.owner, FindUnits.Create(new CircleDetection
-                {
-                    Buffer = buffer,
-                    MaxTarget = 1,
-                }));
+                attack = new Attack(this.owner, Finder.Create(IDetection.Option.Circle, 1, buffer));
             }
 
             if (_enableMove)
             {
                 buffer ??= new Collider2D[Constants.BufferSize];
-                movement = new DefaultMovement(this.owner, new FindMoveTarget(new CircleDetection
-                {
-                    Buffer = buffer,
-                    MaxTarget = 1,
-                }));
+                movement = new DefaultMovement(this.owner, Finder.Create<FindMoveTarget>(IDetection.Option.Circle, 1, buffer));
             }
             else
                 movement = new FixedMovement();
@@ -148,7 +140,7 @@ namespace RGLabs.Unit.Components
             enemyLayerMask = UnitHelper.EnemyLayerMask(data.Id, data.atkLayer);
             alleyLayerMask = UnitHelper.AlleyLayerMask(data.Id);
 
-            attack.finder.detection.Mask = enemyLayerMask;
+            attack.finder.detection.Filter = enemyLayerMask;
             movement.Finder.detection.MaxTarget = enemyLayerMask;
             
             renderController.ApplySkin(data.skinName);

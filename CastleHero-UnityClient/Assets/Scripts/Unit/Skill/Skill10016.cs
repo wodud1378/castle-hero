@@ -15,14 +15,14 @@ namespace RGLabs.Unit.Skill
             {
                 var center = Targeting.Targets[0];
                 var amount = WithOwner(type, value);
-                Bound.FindTargets(center.position, Data.range, default)
+                Bound.UnitsInBound(center.position, default)
                     .ForEach(x =>
                     {
                         totalDamage += amount;
                         PublishAtk(x, DamageType.Normal, amount);
-                    });     
+                    });
             }
-            
+
             PublishHeal(Owner, totalDamage);
         }
     }

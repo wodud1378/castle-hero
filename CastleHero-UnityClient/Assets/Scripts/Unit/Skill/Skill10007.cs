@@ -11,9 +11,9 @@ namespace RGLabs.Unit.Skill
 
             if (!TryGetStatusParameter(0, out var type, out var value))
                 return;
-            
+
             var center = Targeting.Targets[0];
-            Bound.FindTargets(center.position, Data.range, default)
+            Bound.UnitsInBound(center.position, default)
                 .ForEach(x => PublishAtk(x, DamageType.Normal, WithOwner(type, value)));
         }
     }

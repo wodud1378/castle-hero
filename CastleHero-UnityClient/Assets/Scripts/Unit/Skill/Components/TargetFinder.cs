@@ -14,11 +14,11 @@ namespace RGLabs.Unit.Skill.Components
     public class FindTargets : ITargeting
     {
         private readonly UnitBehaviour _owner;
-        private readonly FindUnits _finder;
+        private readonly Finder _finder;
 
         public List<UnitBehaviour> Targets => _finder.Found;
 
-        public FindTargets(UnitBehaviour owner, FindUnits finder)
+        public FindTargets(UnitBehaviour owner, Finder finder)
         {
             _owner = owner;
             _finder = finder;

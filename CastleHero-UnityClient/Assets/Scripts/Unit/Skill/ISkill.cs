@@ -5,6 +5,7 @@ using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
+using RGLabs.Unit.Finding;
 using RGLabs.Unit.Skill.Components;
 using RGLabs.Utility;
 using UnityEngine;

@@ -8,6 +8,8 @@ using RGLabs.InGame.Behaviours;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Components;
 using RGLabs.Unit.Factory;
+using RGLabs.Unit.Finding;
+using RGLabs.Unit.Skill.Components.Factory;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -46,6 +48,22 @@ namespace RGLabs.Utility
 
     public static class UnitHelper
     {
+        public static void SetFilter(this IDetection detection, UnitBehaviour owner, Targeting targeting)
+        {
+            switch (targeting)
+            {
+                case Targeting.Alley:
+                    detection.Filter = owner.Core.alleyLayerMask;
+                    break;
+                case Targeting.Enemy:
+                    detection.Filter = owner.Core.enemyLayerMask;
+                    break;
+                case Targeting.Both:
+                    detection.Filter = owner.Core.alleyLayerMask | owner.Core.enemyLayerMask;
+                    break;
+            }
+        }
+        
         public static LayerMask EnemyLayerMask(int id, int atkType)
         {
             LayerMask layerMask = default;
