@@ -1,4 +1,5 @@
 using System;
+using RGLabs.Unit;
 using RGLabs.Unit.Behaviours;
 using UniRx;
 using UnityEngine;
@@ -32,59 +33,74 @@ namespace RGLabs.InGame.System
         Normal,
         Debuff
     }
-    
 
-    public interface IModifier
+    public interface IUnitEvent
     {
         public UnitBehaviour From { get; }
         public UnitBehaviour To { get; }
         public float Amount { get; }
+        public string Effect { get; }
     }
 
-    public interface IModifyResult
+    public interface IUnitEventResult
     {
-        public IModifier Event { get; }
+        public IUnitEvent Event { get; }
     }
 
-    public struct AtkEvent : IModifier
+    public struct AtkEvent : IUnitEvent
     {
         public DamageType Type { get; set; }
         public UnitBehaviour From { get; set; }
         public UnitBehaviour To { get; set; }
         public float Amount { get; set; }
+        public string Effect { get; set; }
     }
 
-    public struct HealEvent : IModifier
+    public struct HealEvent : IUnitEvent
     {
         public UnitBehaviour From { get; set; }
         public UnitBehaviour To { get; set; }
         public float Amount { get; set; }
+        public string Effect { get; set; }
     }
 
-    public struct ShieldEvent : IModifier
+    public struct ShieldEvent : IUnitEvent
     {
         public UnitBehaviour From { get; set; }
         public UnitBehaviour To { get; set; }
         public float Amount { get; set; }
+        public string Effect { get; set; }
         public float Duration { get; set; }
     }
 
-    public struct AtkResult : IModifyResult
+    public struct StatusEffectEvent : IUnitEvent
     {
-        public IModifier Event { get; set; }
+        public UnitBehaviour From { get; set; }
+        public UnitBehaviour To { get; set; }
+        public Status.Type Type { get; set; }
+        public bool IsMultiplier { get; set; }
+        public bool IsIncrease { get; set; }
+        public float Duration { get; set; }
+        public float Amount { get; set; }
+        public string Effect { get; set; }
+    }
+
+    public struct AtkResult : IUnitEventResult
+    {
+        public IUnitEvent Event { get; set; }
 
         public bool IsCritical { get; set; }
         
         public float Protected { get; set; }
     }
 
-    public struct HealResult  : IModifyResult
+    public struct HealResult  : IUnitEventResult
     {
-        public IModifier Event { get; set; }
+        public IUnitEvent Event { get; set; }
     }
 
-    public struct ShieldResult : IModifyResult
+    public struct ShieldResult : IUnitEventResult
     {
-        public IModifier Event { get; set; }
+        public IUnitEvent Event { get; set; }
     }
 }

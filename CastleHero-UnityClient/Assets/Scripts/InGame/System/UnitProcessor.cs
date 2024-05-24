@@ -1,5 +1,6 @@
 using System;
 using RGLabs.Common.Behaviours;
+using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.Unit.Components;
 using RGLabs.Utility;
 using UniRx;
@@ -20,6 +21,7 @@ namespace RGLabs.InGame.System
             SubscribeMessage<AtkEvent>(OnReceiveAtkEvent);
             SubscribeMessage<HealEvent>(OnReceiveHealEvent);
             SubscribeMessage<ShieldEvent>(OnReceiveShieldEvent);
+            SubscribeMessage<StatusEffectEvent>(OnReceiveStatusEffectEvent);
             SubscribeMessage<WaitRecover>(OnCreatedRecover);
         }
 
@@ -51,6 +53,7 @@ namespace RGLabs.InGame.System
                     criticalMul = from.status.criticalAtk;
                     elementalMul = Elemental.AtkMultiplier(from.Core.elemental);
                 }
+
                 damage = CalcAmount(ev.Amount, critical, criticalMul, elementalMul, out isCritical);
             }
             else
@@ -66,7 +69,9 @@ namespace RGLabs.InGame.System
             if (to.Hit != null)
                 to.Hit.Play();
 
-            new AtkResult { Event = ev, IsCritical = isCritical, Protected = @protected}.Publish();
+            PlayEffect(ev);
+
+            new AtkResult { Event = ev, IsCritical = isCritical, Protected = @protected }.Publish();
         }
 
         private void OnReceiveHealEvent(HealEvent ev)
@@ -76,6 +81,8 @@ namespace RGLabs.InGame.System
                 return;
 
             to.status.hp.Increase(ev.Amount);
+
+            PlayEffect(ev);
 
             new HealResult { Event = ev }.Publish();
         }
@@ -92,7 +99,26 @@ namespace RGLabs.InGame.System
             else
                 shield.Increase(ev.Amount, ev.Duration);
 
+            PlayEffect(ev);
+
             new HealResult { Event = ev }.Publish();
+        }
+
+        private void OnReceiveStatusEffectEvent(StatusEffectEvent ev)
+        {
+            var to = ev.To;
+            if (!to.IsValid())
+                return;
+
+            
+            var ability = to.status[ev.Type];
+            var adjust = ev.IsMultiplier ? ability.multiplyAdjust : ability.fixedAdjust;
+            if (ev.IsIncrease)
+                adjust.Increase(ev.Amount);
+            else
+                adjust.Decrease(ev.Amount);
+
+            PlayEffect(ev);
         }
 
         private void OnCreatedRecover(WaitRecover recover)
@@ -102,6 +128,14 @@ namespace RGLabs.InGame.System
             collection.Add(recover);
 
             recover.Bind(collection, subscription);
+        }
+
+        private void PlayEffect(IUnitEvent ev)
+        {
+            if (string.IsNullOrEmpty(ev.Effect))
+                return;
+
+            Effect.Play(ev.Effect, ev.To);
         }
 
         private IDisposable ReserveRecover(WaitRecover recover)

@@ -1,3 +1,4 @@
+using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Finding;
@@ -8,21 +9,21 @@ namespace RGLabs.Unit.Components
 
     public class Attack
     {
-        public readonly Finder finder; 
+        public readonly Finder finder;
+
         private readonly UnitBehaviour _unit;
-        private readonly RenderController _renderController;
         private readonly AnimationEvents _animationEvents;
         
         public bool IsRunning { get; private set; }
 
-        public ProjectileLauncher projectileLauncher;
+        public string projectile;
 
         public Attack(UnitBehaviour unit, Finder finder)
         {
             _unit = unit;
+            
             this.finder = finder;
 
-            _renderController = unit.Core.renderController;
             _animationEvents = unit.Core.animationEvent;
 
             _animationEvents.OnHitEvent -= ProcessHit;
@@ -34,7 +35,8 @@ namespace RGLabs.Unit.Components
 
         public bool IsAbleToAttack()
         {
-            finder.detection.SetRange(_unit.status.atkRange);
+            float range = _unit.status.atkRange;
+            finder.detection.SetRange(range, range);
             
             if (!finder.Update(_unit.position))
                 return false;
@@ -61,9 +63,10 @@ namespace RGLabs.Unit.Components
                 };
 
                 data.Publish();
+                
+                if(!string.IsNullOrEmpty(projectile))
+                    Effect.Play(projectile, target);
             }
-
-            projectileLauncher?.Launch(targets);
         }
 
         private void OnReleaseAttack() => IsRunning = false;

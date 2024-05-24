@@ -25,13 +25,16 @@ namespace RGLabs.Unit.Skill.Components.Factory
                 targeting = new SelfTarget(owner);
             else
             {
+                float range;
                 Finder finder;
                 switch (option)
                 {
                     case Targeting.Alley:
                         finder = Finder.Create(IDetection.Option.Circle, maxTarget);
                         finder.detection.SetFilter(owner, Targeting.Alley);
-                        finder.detection.SetRange(owner.status.atkRange);
+
+                        range = owner.status.atkRange;
+                        finder.detection.SetRange(range, range);
                         break;
                     case Targeting.Enemy:
                         finder = owner.Core.attack.finder;
@@ -39,7 +42,9 @@ namespace RGLabs.Unit.Skill.Components.Factory
                     case Targeting.Both:
                         finder = Finder.Create(IDetection.Option.Circle, maxTarget);
                         finder.detection.SetFilter(owner, Targeting.Both);
-                        finder.detection.SetRange(owner.status.atkRange);
+
+                        range = owner.status.atkRange;
+                        finder.detection.SetRange(range, range);
                         break;
                     default:
                         return null;

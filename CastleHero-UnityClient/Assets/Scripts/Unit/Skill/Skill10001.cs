@@ -18,8 +18,8 @@ namespace RGLabs.Unit.Skill
             if (TryBuildExecution(out var onAlley, out var onEnemy))
                 return;
 
-            var center = Targeting.Targets[0];
-            Bound.UnitsInBound(center.position, default)
+            var center = Targeting.Targets[0].position;
+            Bound.UnitsInBound(center, default)
                 .ForEach(x =>
                 {
                     if (x.IsAlley(Owner))
@@ -27,6 +27,8 @@ namespace RGLabs.Unit.Skill
                     else
                         onEnemy.Invoke(x);
                 });
+            
+            PlayEffect(0, center);
         }
 
         private bool TryBuildExecution(out Action<UnitBehaviour> onAlley, out Action<UnitBehaviour> onEnemy)
@@ -45,7 +47,7 @@ namespace RGLabs.Unit.Skill
                 };
             }
 
-            if (TryGetStatusParameter(Parameter.Heal, out var type2, out var value2))
+            if (TryGetStatusParameter(Parameter.Atk, out var type2, out var value2))
             {
                 float atkAmount = WithOwner(type2, value2);
                 onEnemy += x => PublishAtk(x, DamageType.Normal, atkAmount);

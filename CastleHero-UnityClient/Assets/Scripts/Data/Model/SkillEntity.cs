@@ -18,8 +18,11 @@ namespace RGLabs.Data.Model
         public float coolTime;
         
         [DataField("Range")]
-        public float range;
+        public float x;
 
+        [DataField("Range")] 
+        public float y;
+        
         [DataField("Duration", 3)]
         public float duration;
 
@@ -37,6 +40,9 @@ namespace RGLabs.Data.Model
         
         [DataField("Grp")]
         public int[] groups;
+
+        [DataField("Effect")] 
+        public string[] effects;
         
         [DataField("Description")]
         public string desc;

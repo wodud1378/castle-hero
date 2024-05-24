@@ -21,7 +21,7 @@ namespace RGLabs.InGame.UI
         [SerializeField] private Position _position;
 
         private RectTransform _rectTransform;
-        private Func<IModifier, Vector2> _calcPosition;
+        private Func<IUnitEvent, Vector2> _calcPosition;
 
         private void Awake()
         {
@@ -38,23 +38,23 @@ namespace RGLabs.InGame.UI
             }
         }
 
-        public void Show(IModifier modify)
+        public void Show(IUnitEvent modify)
         {
             _label.text = ((int)modify.Amount).ToString();
             _rectTransform.position = _calcPosition.Invoke(modify);
         }
 
-        private Vector2 CalculatePositionOnDirection(IModifier modifier)
+        private Vector2 CalculatePositionOnDirection(IUnitEvent unitEvent)
         {
-            var from = modifier.From;
+            var from = unitEvent.From;
             if (!from.IsValid())
-                return CalculatePositionOnTop(modifier);
+                return CalculatePositionOnTop(unitEvent);
             
-            var closest = from.Collider.ClosestPoint(modifier.To.position);
+            var closest = from.Collider.ClosestPoint(unitEvent.To.position);
             return closest * Random.Range(0.9f, 1.1f);
         }
 
-        private Vector2 CalculatePositionOnTop(IModifier modify)
+        private Vector2 CalculatePositionOnTop(IUnitEvent modify)
         {
             var bounds = modify.To.Collider.bounds;
             return new Vector2(bounds.center.x, bounds.max.y);

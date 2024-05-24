@@ -42,39 +42,12 @@ namespace RGLabs.Unit.Skill
             return this;
         }
 
-        public SkillBuilder SetCircleBound(Targeting targeting, int maxTarget)
+        public SkillBuilder SetBound(IDetection.Option shape, Targeting targeting, int maxTarget)
         {
             if (_skill == null)
                 throw new Exception($"skill is null");
 
-            return SetBound(IDetection.Option.Circle, targeting, maxTarget, _skill.Data.range);
-        }
-        
-        public SkillBuilder SetArcBound(Targeting targeting, int maxTarget)
-        {
-            if (_skill == null)
-                throw new Exception($"skill is null");
-            
-            return SetBound(IDetection.Option.Arc, targeting, maxTarget, _skill.Data.range);
-        }
-
-        public SkillBuilder SetBoxBound(Targeting targeting, int maxTarget, float x, float angle)
-        {
-            if (_skill == null)
-                throw new Exception($"skill is null");
-
-            var bound = _boundFactory.GetBound(IDetection.Option.Box, targeting, _skill.Owner, maxTarget, x, _skill.Data.range);
-            bound.Finder.detection.Angle = angle;
-            return this;
-        }
-
-        private SkillBuilder SetBound(IDetection.Option shape, Targeting targeting, int maxTarget,
-            float x, float y = -1)
-        {
-            if (_skill == null)
-                throw new Exception($"skill is null");
-
-            _skill.Bound = _boundFactory.GetBound(shape, targeting, _skill.Owner, maxTarget, x, y);
+            _skill.Bound = _boundFactory.GetBound(shape, targeting, _skill.Owner, maxTarget, _skill.Data.x, _skill.Data.y);
             return this;
         }
 

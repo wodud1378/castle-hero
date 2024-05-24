@@ -45,7 +45,7 @@ namespace RGLabs.Unit.Skill
             float amount = WithOwner(type, value);
             foreach (var target in targets)
             {
-                PublishShield(target, amount);
+                PublishShield(target, amount, 0f);
             }
         }
 

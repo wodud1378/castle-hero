@@ -15,12 +15,11 @@ namespace RGLabs.Unit.Skill.Components
     {
         public Finder Finder { get; }
 
-        public CircleBound(float range, int maxTarget = 0)
+        public CircleBound(float x, float y, int maxTarget = 0)
         {
             Finder = Finder.Create(IDetection.Option.Circle, maxTarget);
-            Finder.detection.SetRange(range);
+            Finder.detection.SetRange(x, y);
         }
-
 
         public List<UnitBehaviour> UnitsInBound(Vector2 from, Vector2 forward)
         {
@@ -32,16 +31,14 @@ namespace RGLabs.Unit.Skill.Components
 
     public class ArcBound : IBound
     {
-        private const float Angle = 90f;
         public Finder Finder { get; }
 
-        public ArcBound(float range, int maxTarget = 0)
+        public ArcBound(float x, float y, int maxTarget = 0)
         {
             Finder = Finder.Create(IDetection.Option.Arc, maxTarget);
-            Finder.detection.SetRange(range);
-            Finder.detection.Angle = Angle;
+            Finder.detection.SetRange(x, x);
+            Finder.detection.SetAngle(y);
         }
-
 
         public List<UnitBehaviour> UnitsInBound(Vector2 from, Vector2 forward)
         {

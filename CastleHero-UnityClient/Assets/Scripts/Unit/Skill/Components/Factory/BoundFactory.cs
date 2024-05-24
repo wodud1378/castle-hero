@@ -8,16 +8,16 @@ namespace RGLabs.Unit.Skill.Components.Factory
     public class BoundFactory
     {
         public IBound GetBound(IDetection.Option shape, Targeting targeting, UnitBehaviour owner, int maxTarget,
-            float x, float y = -1)
+            float x, float y)
         {
             IBound bound;
             switch (shape)
             {
                 case IDetection.Option.Circle:
-                    bound = new CircleBound(x, maxTarget);
+                    bound = new CircleBound(x, y, maxTarget);
                     break;
                 case IDetection.Option.Arc:
-                    bound = new ArcBound(x, maxTarget);
+                    bound = new ArcBound(x, y, maxTarget);
                     break;
                 case IDetection.Option.Box:
                     bound = new BoxBound(x, y, maxTarget);

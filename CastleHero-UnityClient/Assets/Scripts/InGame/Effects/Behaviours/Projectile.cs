@@ -1,27 +1,34 @@
 using RGLabs.Common.Behaviours;
+using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using UnityEngine;
 
-namespace RGLabs.Unit.Behaviours
+namespace RGLabs.InGame.Effects.Behaviours
 {
-    public class Projectile : PoolItemBase
+    public class Projectile : PoolItemBase, IEffect
     {
         [SerializeField] private float _speed;
         
         private UnitBehaviour _target;
         private Vector2 _destination;
 
+        private bool _isRunning = false;
         private float _arrivalTime;
         
-        public void Fire(UnitBehaviour target)
+        public void Run() => _isRunning = true;
+        
+        public void SetTarget(UnitBehaviour unit)
         {
-            if (!target.IsValid())
-                return;
+            _target = unit;
+            _target.OnDead += OnTargetDead;
             
-            _target = target;
-            _arrivalTime = Vector2.Distance(transform.position, _target.position) / _speed;
-            
-            target.OnDead += OnTargetDead;
+            SetTarget(_target.position);
+        }
+
+        public void SetTarget(Vector2 position)
+        {
+            _destination = position;
+            _arrivalTime = Vector2.Distance(transform.position, position) / _speed;
         }
 
         private void OnTargetDead(UnitBehaviour unit)
@@ -33,6 +40,9 @@ namespace RGLabs.Unit.Behaviours
 
         private void Update()
         {
+            if (!_isRunning)
+                return;
+            
             _arrivalTime -= Time.deltaTime;
             if (_arrivalTime < 0f)
             {

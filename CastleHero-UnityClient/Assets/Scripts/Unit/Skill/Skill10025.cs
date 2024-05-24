@@ -9,7 +9,7 @@ namespace RGLabs.Unit.Skill
 
             float amount = WithOwner(type, value);
             Bound.UnitsInBound(Owner.position, default)
-                .ForEach(x => PublishShield(x, amount));
+                .ForEach(x => PublishShield(x, amount, 0f));
         }
     }
 }

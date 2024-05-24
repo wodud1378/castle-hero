@@ -83,7 +83,7 @@ namespace RGLabs.InGame.UI
             Show(uiDamage, result.Event);
         }
 
-        private void Show(UIDamage uiDamage, IModifier result)
+        private void Show(UIDamage uiDamage, IUnitEvent result)
         {
             var tr = uiDamage.transform;
             tr.SetParent(_damageRoot);

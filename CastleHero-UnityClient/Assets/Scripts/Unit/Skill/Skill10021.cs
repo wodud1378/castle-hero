@@ -25,12 +25,12 @@ namespace RGLabs.Unit.Skill
             if (!TryGetStatusParameter(Parameter.SpeedBuff, out var type, out var value))
                 return;
 
+            TryGetEffectPrefab(0, out string effect);
+            
             var characters = Characters(x => x.Data.team == group);
-            float increaseTime = Data.duration;
-            float increaseValue = WithOwner(type, value);
             foreach (var character in characters)
             {
-                character.status.speed.fixedAdjust.Increase(increaseValue, increaseTime);
+                PublishBuff(character, type, value, Data.duration, true, effect);
             }
         }
 

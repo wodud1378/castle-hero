@@ -2,6 +2,7 @@ using System;
 using RGLabs.Common.Behaviours;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Components;
+using RGLabs.Unit.Finding;
 using RGLabs.Unit.Skill.Components.Factory;
 
 namespace RGLabs.Unit.Skill
@@ -60,7 +61,7 @@ namespace RGLabs.Unit.Skill
         {
             return builder
                 .SetTargeting(Targeting.Self, 1)
-                .SetCircleBound(Targeting.Both, 0)
+                .SetBound(IDetection.Option.Circle, Targeting.Both, 0)
                 .BuildActiveSkill();
         }
 
@@ -68,7 +69,7 @@ namespace RGLabs.Unit.Skill
         {
             return builder
                 .SetTargeting(Targeting.Enemy, 1)
-                .SetCircleBound(Targeting.Enemy, 0)
+                .SetBound(IDetection.Option.Circle, Targeting.Enemy, 0)
                 .BuildActiveSkill();
         }
 
@@ -83,7 +84,7 @@ namespace RGLabs.Unit.Skill
         {
             return builder
                 .SetTargeting(Targeting.Enemy, 1)
-                .SetBoxBound(Targeting.Enemy, 0, 2f, 90f)
+                .SetBound(IDetection.Option.Box, Targeting.Enemy, 0)
                 .BuildActiveSkill();
         }
 
@@ -91,7 +92,7 @@ namespace RGLabs.Unit.Skill
         {
             return builder
                 .SetTargeting(Targeting.Self, 1)
-                .SetCircleBound(Targeting.Alley, 0)
+                .SetBound(IDetection.Option.Circle, Targeting.Alley, 0)
                 .BuildActiveSkill();
         }
 
@@ -99,7 +100,7 @@ namespace RGLabs.Unit.Skill
         {
             return builder
                 .SetTargeting(Targeting.Self, 1)
-                .SetCircleBound(Targeting.Enemy, 0)
+                .SetBound(IDetection.Option.Circle, Targeting.Enemy, 0)
                 .BuildActiveSkill();
         }
 
@@ -107,7 +108,7 @@ namespace RGLabs.Unit.Skill
         {
             return builder
                 .SetTargeting(Targeting.Enemy, 1)
-                .SetCircleBound(Targeting.Enemy, 0)
+                .SetBound(IDetection.Option.Circle, Targeting.Enemy, 0)
                 .BuildActiveSkill();
         }
 
@@ -115,7 +116,7 @@ namespace RGLabs.Unit.Skill
         {
             return builder
                 .SetTargeting(Targeting.Self, 1)
-                .SetCircleBound(Targeting.Enemy, 0)
+                .SetBound(IDetection.Option.Circle, Targeting.Enemy, 0)
                 .BuildActiveSkill();
         }
 
@@ -130,7 +131,7 @@ namespace RGLabs.Unit.Skill
         {
             return builder
                 .SetTargeting(Targeting.Self, 1)
-                .SetCircleBound(Targeting.Alley, 0)
+                .SetBound(IDetection.Option.Circle, Targeting.Alley, 0)
                 .BuildActiveSkill();
         }
 
@@ -138,7 +139,7 @@ namespace RGLabs.Unit.Skill
         {
             return builder
                 .SetTargeting(Targeting.Self, 1)
-                .SetCircleBound(Targeting.Alley, 0)
+                .SetBound(IDetection.Option.Circle, Targeting.Alley, 0)
                 .BuildActiveSkill();
         }
 
@@ -146,7 +147,7 @@ namespace RGLabs.Unit.Skill
         {
             return builder
                 .SetTargeting(Targeting.Self, 1)
-                .SetCircleBound(Targeting.Alley, 0)
+                .SetBound(IDetection.Option.Circle, Targeting.Alley, 0)
                 .BuildActiveSkill();
         }
     }

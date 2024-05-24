@@ -24,11 +24,11 @@ namespace RGLabs.Unit.Behaviours
         [field: SerializeField] public BehaviourType Type { get; private set; }
         [field: SerializeField] public Collider2D Collider { get; private set; }
         [field: SerializeField] public HitEffect Hit { get; private set; }
+        [field: SerializeField] public EffectBody EffectBody { get; private set; }
 
         [SerializeField] private bool _enableAttack;
         [SerializeField] private bool _enableMove;
         [SerializeField] private bool _enableAnimation;
-
         [NonSerialized] public bool autoRelease = true;
 
         public int Id => Data.Id;

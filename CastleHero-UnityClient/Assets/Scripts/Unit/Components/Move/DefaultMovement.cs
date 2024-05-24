@@ -45,7 +45,8 @@ namespace RGLabs.Unit.Components.Move
 
         public bool TryMoveToTarget()
         {
-            Finder.detection.SetRange(_owner.status.moveRange);
+            float range = _owner.status.moveRange;
+            Finder.detection.SetRange(range, range);
             
             CurrentTarget = null;
             if (!_finder.Update(_agent.position))

@@ -7,11 +7,11 @@ namespace RGLabs.Unit.Skill
             if (!TryGetStatusParameter(0, out var type, out var value))
                 return;
 
-            float increaseTime = Data.duration;
-            float increaseValue = WithOwner(type, value);
+            TryGetEffectPrefab(0, out string effect);
+
             var center = Targeting.Targets[0];
             Bound.UnitsInBound(center.position, default)
-                .ForEach(x => { x.status.speed.fixedAdjust.Increase(increaseValue, increaseTime); });
+                .ForEach(x => PublishBuff(x, type, value, Data.duration, true, effect));
         }
     }
 }

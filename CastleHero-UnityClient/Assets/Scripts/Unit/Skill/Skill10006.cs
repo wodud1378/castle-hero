@@ -19,11 +19,13 @@ namespace RGLabs.Unit.Skill
             if (!TryGetStatusParameter(Parameter.AtkSpeed, out var type2, out var value2))
                 return;
 
+            TryGetEffectPrefab(0, out string effect);
+            
             var characters = Characters(x => x.Data.team == group);
             foreach (var character in characters)
             {
-                character.status[type1].fixedAdjust.Increase(value1);
-                character.status[type2].fixedAdjust.Increase(value2);
+                PublishBuff(character, type1, value1, Data.duration, true, effect);
+                PublishBuff(character, type2, value2, Data.duration, true);
             }
         }
     }

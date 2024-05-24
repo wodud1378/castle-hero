@@ -146,10 +146,7 @@ namespace RGLabs.Unit.Components
             renderController.ApplySkin(data.skinName);
             UpdateLookDirection(movement.Default);
 
-            if (!string.IsNullOrEmpty(data.projectile) && attack != null)
-            {
-                attack.projectileLauncher ??= new ProjectileLauncher(owner, data.projectile);
-            }
+            attack.projectile = data.projectile;
             
             ApplyRateBonus(info.grade, levelData, out int skillLv);
 
