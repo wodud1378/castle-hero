@@ -13,6 +13,8 @@ namespace RGLabs.Unit.Skill
                 return;
 
             var center = Targeting.Targets[0];
+            
+            PlayEffect(0, center);
             Bound.UnitsInBound(center.position, default)
                 .ForEach(x => PublishAtk(x, DamageType.Normal, WithOwner(type, value)));
         }

@@ -20,12 +20,14 @@ namespace RGLabs.Unit.Skill
 
             var target = Targeting.Targets[0];
             if (TryGetStatusParameter(Parameter.SingleAtk, out var type, out var value))
+            {
                 PublishAtk(target, DamageType.Normal, WithOwner(type, value));
+                PlayEffect(0, target);
+            }
 
             var onEnemy = BuildExecutionOnEnemy();
             if (onEnemy == null)
                 return;
-
             Bound.UnitsInBound(target.position, default)
                 .ForEach(onEnemy);
         }

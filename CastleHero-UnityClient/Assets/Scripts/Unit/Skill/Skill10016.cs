@@ -11,9 +11,12 @@ namespace RGLabs.Unit.Skill
                 return;
 
             float totalDamage = 0f;
+            
             if (TryGetStatusParameter(0, out var type, out var value))
             {
                 var center = Targeting.Targets[0];
+                PlayEffect(0, center);
+
                 var amount = WithOwner(type, value);
                 Bound.UnitsInBound(center.position, default)
                     .ForEach(x =>

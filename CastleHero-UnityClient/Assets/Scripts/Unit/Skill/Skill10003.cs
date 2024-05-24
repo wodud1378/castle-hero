@@ -12,7 +12,9 @@ namespace RGLabs.Unit.Skill
             if (!TryGetStatusParameter(0, out var type, out var value))
                 return;
 
-            PublishAtk(Targeting.Targets[0], DamageType.Normal, WithOwner(type, value));
+            var target = Targeting.Targets[0]; 
+            PublishAtk(target, DamageType.Normal, WithOwner(type, value));
+            PlayEffect(0, target);
         }
     }
 }

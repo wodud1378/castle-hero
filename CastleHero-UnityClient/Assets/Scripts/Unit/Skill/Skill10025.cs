@@ -7,9 +7,11 @@ namespace RGLabs.Unit.Skill
             if (!TryGetStatusParameter(0, out var type, out var value))
                 return;
 
+            TryGetEffectPrefab(0, out string eff);
+            
             float amount = WithOwner(type, value);
             Bound.UnitsInBound(Owner.position, default)
-                .ForEach(x => PublishShield(x, amount, 0f));
+                .ForEach(x => PublishShield(x, amount, 0f, eff));
         }
     }
 }

@@ -27,6 +27,8 @@ namespace RGLabs.Unit.Skill
         protected override void OnExecute()
         {
             var center = Targeting.Targets[0];
+            PlayEffect(0, center);
+            
             _targets = Bound.UnitsInBound(center.position, default);
 
             AttachHeal();
@@ -73,10 +75,12 @@ namespace RGLabs.Unit.Skill
             if (!TryGetStatusParameter(Parameter.Heal, out var type, out var value))
                 return;
 
+            TryGetEffectPrefab(1, out string eff);
+            
             float amount = WithOwner(type, value);
             foreach (var target in _targets)
             {
-                PublishHeal(target, amount);
+                PublishHeal(target, amount, eff);
             }
 
             ++_currentCount;

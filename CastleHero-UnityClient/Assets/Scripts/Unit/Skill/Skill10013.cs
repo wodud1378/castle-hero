@@ -16,6 +16,8 @@ namespace RGLabs.Unit.Skill
                 return;
 
             var target = Targeting.Targets[0];
+            
+            PlayEffect(0, target);
             if (TryGetStatusParameter(Parameter.SingleAtk, out var type, out var value))
                 PublishAtk(target, DamageType.Normal, WithOwner(type, value));
 

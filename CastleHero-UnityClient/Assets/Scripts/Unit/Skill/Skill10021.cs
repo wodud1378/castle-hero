@@ -25,12 +25,12 @@ namespace RGLabs.Unit.Skill
             if (!TryGetStatusParameter(Parameter.SpeedBuff, out var type, out var value))
                 return;
 
-            TryGetEffectPrefab(0, out string effect);
+            TryGetEffectPrefab(0, out string buffEff);
             
             var characters = Characters(x => x.Data.team == group);
             foreach (var character in characters)
             {
-                PublishBuff(character, type, value, Data.duration, true, effect);
+                PublishBuff(character, type, value, Data.duration, true, buffEff);
             }
         }
 
@@ -42,8 +42,11 @@ namespace RGLabs.Unit.Skill
             if (!TryGetStatusParameter(Parameter.Atk, out var type, out var value))
                 return;
 
+            TryGetEffectPrefab(1, out string atkEff);
+
+            
             float atkAmount = WithOwner(type, value);
-            Targeting.Targets.ForEach(x => PublishAtk(x, DamageType.Normal, atkAmount));
+            Targeting.Targets.ForEach(x => PublishAtk(x, DamageType.Normal, atkAmount, atkEff));
         }
     }
 }
