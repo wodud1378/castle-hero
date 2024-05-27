@@ -50,8 +50,7 @@ namespace RGLabs.Lobby.UI
         private async UniTask<UnitBehaviour> CreateUnitFromSlot(UICharacterSlot slot)
         {
             var unit = await _factory.Create(slot.Info, slot.transform.position);
-            unit.CanMove = false;
-            unit.CanAttack = false;
+            unit.Core.inBattle = false;
             unit.Collider.isTrigger = true;
 
             _originLayer = unit.gameObject.layer;
@@ -79,7 +78,6 @@ namespace RGLabs.Lobby.UI
             else
             {
                 _hold.Core.movement.Default = _hold.position;
-                _hold.CanMove = true;
                 _hold.Collider.isTrigger = false;
                 _hold.gameObject.layer = _originLayer;
             }
@@ -145,8 +143,12 @@ namespace RGLabs.Lobby.UI
 
             if (!_ctk.Token.IsCancellationRequested) 
                 return await GetUnitFromPosition(position);
-            
-            _formation.Remove(FindFromRay(position));
+
+            var fromRay = FindFromRay(position);
+            if (fromRay != null)
+            {
+                _formation.Remove(fromRay);
+            }
             return null;
         }
 

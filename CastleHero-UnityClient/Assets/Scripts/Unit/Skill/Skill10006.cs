@@ -2,7 +2,7 @@ namespace RGLabs.Unit.Skill
 {
     public class Skill10006 : ActiveSkill
     {
-        public enum Parameter
+        private enum Buff
         {
             Critical,
             AtkSpeed,
@@ -13,15 +13,18 @@ namespace RGLabs.Unit.Skill
             if (!TryGetGroupParameter(0, out int group))
                 return;
 
-            if (!TryGetStatusParameter(Parameter.Critical, out var type1, out var value1))
+            if (!TryGetStatusParameter(Buff.Critical, out var type1, out var value1))
                 return;
             
-            if (!TryGetStatusParameter(Parameter.AtkSpeed, out var type2, out var value2))
+            if (!TryGetStatusParameter(Buff.AtkSpeed, out var type2, out var value2))
                 return;
 
+            if (!TryGetQuantityParameter(0, out int quantity))
+                return;
+            
             PlayEffect(0, Targeting.Targets[0]);
             
-            var characters = Characters(x => x.Data.team == group);
+            var characters = Characters(x => x.Data.team == group, quantity);
             foreach (var character in characters)
             {
                 PublishBuff(character, type1, value1, Data.duration, true);

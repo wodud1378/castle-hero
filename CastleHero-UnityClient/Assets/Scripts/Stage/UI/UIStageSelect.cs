@@ -60,7 +60,7 @@ namespace RGLabs.Stage.UI
             _next.gameObject.SetActive(enabled);
         }
 
-        private async void SetRewards(StageEntity stageData)
+        private void SetRewards(StageEntity stageData)
         {
             foreach (var slot in _uiSlots)
             {

@@ -1,5 +1,6 @@
 using System;
 using RGLabs.Unit.Behaviours;
+using RGLabs.Unit.Components;
 
 namespace RGLabs.Unit.Skill.Components
 {
@@ -25,8 +26,14 @@ namespace RGLabs.Unit.Skill.Components
         
         public bool IsRunning { get; private set; }
 
-        public AnimationRunner(AnimationEvents animationEvents)
+        private readonly RenderController _renderController;
+        
+        public AnimationRunner(UnitBehaviour owner)
         {
+            _renderController = owner.Core.renderController;
+            
+            var animationEvents = owner.Core.animationEvent;
+            
             animationEvents.OnExecuteSkillEvent -= OnExecute;
             animationEvents.OnExecuteSkillEvent += OnExecute;
             
@@ -34,7 +41,10 @@ namespace RGLabs.Unit.Skill.Components
             animationEvents.OnReleaseSkillEvent += OnRelease;
         }
 
-        private void OnExecute() => OnExecuteEvent?.Invoke();
+        private void OnExecute()
+        {
+            OnExecuteEvent?.Invoke();
+        }
 
         private void OnRelease()
         {
@@ -43,6 +53,10 @@ namespace RGLabs.Unit.Skill.Components
             OnReleaseEvent?.Invoke();
         }
         
-        public void Run() => IsRunning = true;
+        public void Run()
+        {
+            _renderController.SetAnimation(UnitCore.AnimationsHash[UnitCore.States.Skill]);
+            IsRunning = true;
+        }
     }
 }

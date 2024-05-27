@@ -13,7 +13,7 @@ namespace RGLabs.Unit.Skill
                 return;
 
             var target = Targeting.Targets[0]; 
-            PublishAtk(target, DamageType.Normal, WithOwner(type, value));
+            PublishAtk(target, DamageType.Normal, GetAmount(type, value));
             PlayEffect(0, target);
         }
     }

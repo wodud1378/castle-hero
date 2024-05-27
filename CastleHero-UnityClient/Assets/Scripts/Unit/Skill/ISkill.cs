@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RGLabs.Common;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.InGame.Effects.Behaviours;
@@ -26,6 +27,13 @@ namespace RGLabs.Unit.Skill
 
     public abstract class SkillBase : ISkill
     {
+        protected struct AroundCenter
+        {
+            public UnitBehaviour center;
+            public IEnumerable<UnitBehaviour> around;
+            public Vector2 forward;
+        }
+
         public UnitBehaviour Owner { get; set; }
         public SkillEntity Data { get; set; }
         public IBound Bound { get; set; }
@@ -33,6 +41,32 @@ namespace RGLabs.Unit.Skill
         public ICycle Cycle { get; set; }
         public IRunner Runner { get; set; }
         public abstract void Init();
+
+        protected AroundCenter aroundCenter = new();
+
+        protected bool TryUpdateAroundCenter(int maxCount = 0, bool includeCenter = false)
+        {
+            if (!Targeting.HasTargets())
+                return false;
+
+            var centerUnit = Targeting.Targets[0];
+            var center = centerUnit.position;
+            var forward = (center - Owner.position).normalized;
+            var units = Bound.UnitsInBound(center, forward);
+            int count = units.Count;
+            int validCount = maxCount == 0 || maxCount > count ? count : maxCount;
+
+            IEnumerable<UnitBehaviour> around;
+            if (includeCenter)
+                around = units.Take(validCount);
+            else
+                around = units.Where(x => x != centerUnit).Take(validCount);
+
+            aroundCenter.center = centerUnit;
+            aroundCenter.forward = forward;
+            aroundCenter.around = around;
+            return true;
+        }
 
         protected void PublishAtk(UnitBehaviour unit, DamageType type, float amount, string effect = "")
         {
@@ -97,70 +131,98 @@ namespace RGLabs.Unit.Skill
             };
         }
 
-        protected IEnumerable<UnitBehaviour> Characters(Func<UnitBehaviour, bool> otherCondition = null)
+        protected IEnumerable<UnitBehaviour> Characters(Func<UnitBehaviour, bool> otherCondition = null,
+            int maxCount = 0)
         {
             Func<UnitBehaviour, bool> condition;
-
+            var array = Storage.inGameRepository.characters.Value;
+            int length = array.Length;
             if (otherCondition == null)
                 condition = (x) => x.IsValid();
             else
                 condition = (x) => x.IsValid() && otherCondition.Invoke(x);
 
-            return Storage.inGameRepository.characters.Value
-                .Where(condition);
+            return array
+                .Where(condition)
+                .Take(maxCount == 0 || maxCount > length ? length : maxCount);
         }
 
-        protected float WithOwner(Status.Type type, float multiplier) => Owner.status[type] * multiplier;
+        protected float GetAmount(Status.Type type, float multiplier) => Owner.status[type] * multiplier;
 
-        protected bool TryGetGroupParameter<T>(T index, out int group) where T : Enum
-            => TryGetGroupParameter(Convert.ToInt32(index), out group);
+        private bool TryLoad<T>(T[] array, int index, out T result)
+        {
+            if (!index.IsValidIndex(array))
+            {
+                result = default;
+                return false;
+            }
+
+            result = array[index];
+            return true;
+        }
+
+        protected bool TryGetQuantityParameter<T>(T index, out int quantity) where T : unmanaged, Enum
+        {
+            if (TryGetQuantityParameter(index.CastToInt(), out quantity))
+            {
+                quantity = quantity == 0 ? Constants.BufferSize : quantity;
+                return true;
+            }
+
+            return false;
+        }
+
+        protected bool TryGetGroupParameter<T>(T index, out int group) where T : unmanaged, Enum
+            => TryGetGroupParameter(index.CastToInt(), out group);
+
+        protected bool TryGetStatusParameter<T>(T index, out Status.Type type, out float value) where T : unmanaged, Enum
+            => TryGetStatusParameter(index.CastToInt(), out type, out value);
+
+        protected bool TryGetEffectPrefab<T>(T index, out string prefab) where T : unmanaged, Enum
+            => TryGetEffectPrefab(index.CastToInt(), out prefab);
+
+        protected bool TryGetQuantityParameter(int index, out int quantity)
+        {
+            if (TryLoad(Data.targetQty, index, out quantity) && quantity != -1)
+                return true;
+
+            return false;
+        }
 
         protected bool TryGetGroupParameter(int index, out int group)
         {
-            if (!index.IsValidIndex(Data.groups))
-            {
-                group = 0;
-                return false;
-            }
+            if (TryLoad(Data.groups, index, out group) && group != -1)
+                return true;
 
-            group = Data.groups[index];
-            return true;
+            return false;
         }
-
-        protected bool TryGetStatusParameter<T>(T index, out Status.Type type, out float value) where T : Enum
-            => TryGetStatusParameter(Convert.ToInt32(index), out type, out value);
 
         protected bool TryGetStatusParameter(int index, out Status.Type type, out float value)
         {
-            if (!index.IsValidIndex(Data.stats, Data.values))
-            {
-                type = default;
-                value = 0f;
+            type = default;
+            value = default;
+
+            if (TryLoad(Data.stats, index, out var stat) && stat != -1)
+                type = (Status.Type)stat;
+            else
                 return false;
-            }
 
-            type = (Status.Type)Data.stats[index];
-            value = Data.stats[index];
-            return true;
+            return TryLoad(Data.values, index, out value);
         }
-
-        protected bool TryGetEffectPrefab<T>(T index, out string prefab) where T : Enum
-            => TryGetEffectPrefab(Convert.ToInt32(index), out prefab);
 
         protected bool TryGetEffectPrefab(int index, out string prefab)
         {
-            if (!index.IsValidIndex(Data.effects))
-            {
-                prefab = string.Empty;
-                return false;
-            }
+            if (TryLoad(Data.effects, index, out prefab) && !string.IsNullOrEmpty(prefab))
+                return true;
 
-            prefab = Data.effects[index];
-            return true;
+            return false;
         }
 
         protected void PlayEffect<T>(T index, Vector2 position) where T : Enum
             => PlayEffect(Convert.ToInt32(index), position);
+
+        protected void PlayEffect<T>(T index, UnitBehaviour target) where T : Enum
+            => PlayEffect(Convert.ToInt32(index), target);
 
         protected void PlayEffect(int index, Vector2 position)
         {
@@ -169,9 +231,6 @@ namespace RGLabs.Unit.Skill
 
             Effect.Play(Data.effects[index], position);
         }
-
-        protected void PlayEffect<T>(T index, UnitBehaviour target) where T : Enum
-            => PlayEffect(Convert.ToInt32(index), target);
 
         protected void PlayEffect(int index, UnitBehaviour target)
         {

@@ -215,8 +215,6 @@ namespace RGLabs.Unit
                 Left = Mathf.Min(Max, Left + diff);
             }
         }
-
-        public static implicit operator float(Hp it) => it.Left;
     }
 
     public class Status
@@ -232,7 +230,6 @@ namespace RGLabs.Unit
             AtkRange,
             MoveRange,
             Recovery,
-            Shield,
         }
 
         public readonly Dictionary<Type, Ability> abilities;
@@ -289,13 +286,13 @@ namespace RGLabs.Unit
         private void ApplyLevelBonus(int lv, UnitLevelEntity levelData)
         {
             hp.fixedAdjust.Increase(lv * levelData.hp);
-            atk.fixedAdjust.Increase(lv * levelData.hp);
-            critical.fixedAdjust.Increase(lv * levelData.hp);
-            criticalAtk.fixedAdjust.Increase(lv * levelData.hp);
-            atkSpeed.fixedAdjust.Increase(lv * levelData.hp);
-            speed.fixedAdjust.Increase(lv * levelData.hp);
-            atkRange.fixedAdjust.Increase(lv * levelData.hp);
-            moveRange.fixedAdjust.Increase(lv * levelData.hp);
+            atk.fixedAdjust.Increase(lv * levelData.atk);
+            critical.fixedAdjust.Increase(lv * levelData.critical);
+            criticalAtk.fixedAdjust.Increase(lv * levelData.criticalAtk);
+            atkSpeed.fixedAdjust.Increase(lv * levelData.atkSpeed);
+            speed.fixedAdjust.Increase(lv * levelData.speed);
+            atkRange.fixedAdjust.Increase(lv * levelData.atkRange);
+            moveRange.fixedAdjust.Increase(lv * levelData.moveRange);
         }
 
         public void Update()

@@ -1,31 +1,35 @@
 using RGLabs.InGame.System;
-using RGLabs.Utility;
 
 namespace RGLabs.Unit.Skill
 {
     public class Skill10016 : ActiveSkill
     {
+        private enum Step
+        {
+            Atk = 0,
+            Heal,
+        }
+        
         protected override void OnExecute()
         {
-            if (!Targeting.HasTargets())
+            if (!TryGetQuantityParameter(0, out int quantity) ||
+                !TryUpdateAroundCenter(quantity) ||
+                !TryGetStatusParameter(Step.Atk, out var type, out var value))
                 return;
-
-            float totalDamage = 0f;
             
-            if (TryGetStatusParameter(0, out var type, out var value))
+            float totalDamage = 0f;
+            float amount = GetAmount(type, value);
+            PlayEffect(Step.Atk, aroundCenter.center);
+            foreach (var unit in aroundCenter.around)
             {
-                var center = Targeting.Targets[0];
-                PlayEffect(0, center);
-
-                var amount = WithOwner(type, value);
-                Bound.UnitsInBound(center.position, default)
-                    .ForEach(x =>
-                    {
-                        totalDamage += amount;
-                        PublishAtk(x, DamageType.Normal, amount);
-                    });
+                totalDamage += amount;
+                PublishAtk(unit, DamageType.Normal, amount);
             }
 
+            if (!TryGetStatusParameter(Step.Heal, out type, out value))
+                return;
+            
+            PlayEffect(Step.Heal, Owner);
             PublishHeal(Owner, totalDamage);
         }
     }

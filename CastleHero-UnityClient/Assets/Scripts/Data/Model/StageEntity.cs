@@ -9,6 +9,9 @@ namespace RGLabs.Data.Model
         
         public bool IsValid { get; set; }
 
+        [DataField("Stage_Map")] 
+        public string map;
+
         [DataField("Stage_Rwd_Gold_Min")]
         public int goldMin;
         

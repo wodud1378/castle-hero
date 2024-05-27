@@ -17,10 +17,10 @@ namespace RGLabs.Data.Model
         [DataField("CoolTime")]
         public float coolTime;
         
-        [DataField("Range")]
+        [DataField("Scale_x")]
         public float x;
 
-        [DataField("Range")] 
+        [DataField("Scale_y")] 
         public float y;
         
         [DataField("Duration", 3)]

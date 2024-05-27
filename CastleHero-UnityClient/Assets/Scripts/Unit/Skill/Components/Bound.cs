@@ -42,6 +42,7 @@ namespace RGLabs.Unit.Skill.Components
 
         public List<UnitBehaviour> UnitsInBound(Vector2 from, Vector2 forward)
         {
+            Finder.detection.SetForward(forward);
             Finder.Update(from);
 
             return Finder.Found;
@@ -52,16 +53,15 @@ namespace RGLabs.Unit.Skill.Components
     {
         public Finder Finder { get; }
 
-        public IDetection Detection => Finder.detection;
-
         public BoxBound(float x, float y, int maxTarget = 0)
         {
             Finder = Finder.Create(IDetection.Option.Circle, maxTarget);
+            Finder.detection.SetRange(x, y);
         }
-
 
         public List<UnitBehaviour> UnitsInBound(Vector2 from, Vector2 forward)
         {
+            Finder.detection.SetForward(forward);
             Finder.Update(from);
 
             return Finder.Found;

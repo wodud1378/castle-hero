@@ -4,14 +4,19 @@ namespace RGLabs.Unit.Skill
     {
         protected override void OnExecute()
         {
-            if (!TryGetStatusParameter(0, out var type, out var value))
+            if (!TryGetQuantityParameter(0, out int quantity) ||
+                !TryUpdateAroundCenter(quantity) ||
+                !TryGetStatusParameter(0, out var type, out var value))
                 return;
 
-            TryGetEffectPrefab(0, out string eff);
+            TryGetEffectPrefab(1, out string eff);
             
-            float amount = WithOwner(type, value);
-            Bound.UnitsInBound(Owner.position, default)
-                .ForEach(x => PublishShield(x, amount, 0f, eff));
+            float amount = GetAmount(type, value);
+            foreach (var unit in aroundCenter.around)
+            {
+                PlayEffect(0, unit);
+                PublishShield(unit, amount, 0f, eff);
+            }
         }
     }
 }

@@ -3180,7 +3180,8 @@ MonoBehaviour:
   _healPrefabs:
     heal: UI/Prefabs/UIDamage_Heal.prefab
     shield: UI/Prefabs/UIDamage_Shield.prefab
-  _damagePrefab: Common/Prefabs/UIDamage.prefab
+  _healPrefab: UI/Prefabs/UIDamage_Heal.prefab
+  _shieldPrefab: UI/Prefabs/UIDamage_Shield.prefab
 --- !u!114 &5270345621307383480
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -10,7 +10,7 @@ namespace RGLabs.Unit.Skill.Components.Factory
             switch (option)
             {
                 case IRunner.Option.Animation:
-                    return new AnimationRunner(owner.Core.animationEvent);
+                    return new AnimationRunner(owner);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(option), option, null);
             }

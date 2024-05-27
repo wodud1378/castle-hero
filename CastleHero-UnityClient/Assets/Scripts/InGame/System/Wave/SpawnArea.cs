@@ -48,8 +48,9 @@ namespace RGLabs.InGame.System.Wave
         {
             var position = request.position;
             var unit = await _factory.Create(request.id, request.lv, 0, position);
-            unit.CanMove = true;
-            unit.CanAttack = true;
+            unit.Core.canAttack = true;
+            unit.Core.canMove = true;
+            unit.Core.inBattle = true;
             unit.Core.movement.Default = _castle.position;
             unit.autoRelease = false;
             unit.OnDead += OnUnitDead;

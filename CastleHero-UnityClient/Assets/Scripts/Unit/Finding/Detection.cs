@@ -34,11 +34,6 @@ namespace RGLabs.Unit.Finding
 
         private float _angle;
         
-        public void SetRange(float range)
-        {
-            _range = new Vector2(range, range);
-        }
-
         public void SetRange(float x, float y)
         {
             _range = new Vector2(x, y);
@@ -66,17 +61,9 @@ namespace RGLabs.Unit.Finding
         public LayerMask Filter { get; set; }
         public int MaxTarget { get; set; }
         
-        public float Angle { get; set; }
-        public Vector2 Forward { get; set; }
-        
         protected float angle;
         protected Vector2 forward;
-
-        public void SetRange(float range)
-        {
-            _radius = range;
-        }
-
+        
         public void SetRange(float x, float y)
         {
             _radius = (x + y) * 0.5f;

@@ -42,7 +42,11 @@ namespace RGLabs.InGame.System
 
             float damage;
             bool isCritical = false;
-            if (!to.Core.Invincible)
+            if (to.Core.Invincible)
+            {
+                damage = 0f;
+            }
+            else
             {
                 float critical = 0f;
                 float criticalMul = 0f;
@@ -55,10 +59,6 @@ namespace RGLabs.InGame.System
                 }
 
                 damage = CalcAmount(ev.Amount, critical, criticalMul, elementalMul, out isCritical);
-            }
-            else
-            {
-                damage = 0f;
             }
 
             var status = to.Core.status;
