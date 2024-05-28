@@ -241,6 +241,7 @@ namespace RGLabs.Unit.Components
                 return false;
 
             _update?.Dispose();
+            attack?.Clear();
             navAgent.Stop();
             state.Value = States.Dead;
 

@@ -52,6 +52,8 @@ namespace RGLabs.Unit.Components
             IsRunning = true;
         }
 
+        public void Clear() => IsRunning = false;
+
         private void ProcessHit()
         {
             var targets = finder.Found;

@@ -101,6 +101,9 @@ namespace RGLabs.Unit.Behaviours
             if (autoRelease)
                 DestroySelf();
 
+            if(EffectBody != null)
+                EffectBody.Clear();
+            
             OnDead?.Invoke(this);
             OnDead = null;
 
