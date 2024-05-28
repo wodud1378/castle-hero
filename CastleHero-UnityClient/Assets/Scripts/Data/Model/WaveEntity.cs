@@ -1,6 +1,4 @@
-using System;
 using RGLabs.Data.DB;
-using UnityEngine;
 
 namespace RGLabs.Data.Model
 {
@@ -28,9 +26,6 @@ namespace RGLabs.Data.Model
         [DataField("Wave_Grp_ID")]
         public int groupId;
 
-        [DataField("Wave_Grp_Index")]
-        public int indexInGroup;
-        
         [DataField("Wave_Grp_Delay")]
         public float startTime;
         
