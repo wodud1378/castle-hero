@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using UnityEngine;
 
@@ -21,6 +22,38 @@ namespace RGLabs.Common.Pattern
             }
             
             return pool;
+        }
+
+        public async UniTask<T> GetItem<T>(string resourcePath, bool autoCreatePool = true) where T : PoolItemBase
+        {
+            return await GetItem<T>(resourcePath, default, autoCreatePool);
+        }
+        
+        public async UniTask<T> GetItem<T>(string resourcePath, Vector2 position, bool autoCreatePool = true) where T : PoolItemBase
+        {
+            var item = await GetItem(resourcePath, position, autoCreatePool);
+            if (item == null)
+                return null;
+            
+            return item as T;
+        }
+        
+        public async UniTask<PoolItemBase> GetItem(string resourcePath, bool autoCreatePool = true)
+        {
+            return await GetItem(resourcePath, default, autoCreatePool);
+        }
+        
+        public async UniTask<PoolItemBase> GetItem(string resourcePath, Vector2 position, bool autoCreatePool = true)
+        {
+            var pool = Get(resourcePath, autoCreatePool);
+            var item = await pool.Get(position);
+            if (item == null)
+                return null;
+            
+            item.Container = this;
+            item.Pool = pool;
+            
+            return item;
         }
 
         public void Release(PoolItemBase poolItemBase)

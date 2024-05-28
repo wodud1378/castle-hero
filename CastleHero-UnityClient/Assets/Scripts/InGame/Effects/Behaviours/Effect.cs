@@ -26,7 +26,7 @@ namespace RGLabs.InGame.Effects.Behaviours
         private bool _isRunning;
         private float _currentTime;
 
-        public void Run()
+        public void Run(Vector2 _ = default)
         {
             _isRunning = true;
             _currentTime = duration;
@@ -100,31 +100,37 @@ namespace RGLabs.InGame.Effects.Behaviours
             }
         }
 
-        public static async void Play(string prefab, Vector2 position)
+        public static async void Play(string prefab, Vector2 position, Vector2 startAt = default)
         {
             var effect = await GetEffect(prefab);
             if (effect == null)
                 return;
 
             effect.SetTarget(position);
-            effect.Run();
+            effect.Run(startAt);
         }
 
-        public static async void Play(string prefab, UnitBehaviour unit)
+        public static async void Play(string prefab, UnitBehaviour unit, Vector2 startAt = default)
         {
             var effect = await GetEffect(prefab);
             if (effect == null)
                 return;
 
             effect.SetTarget(unit);
-            effect.Run();
+            effect.Run(startAt);
         }
 
         private static async UniTask<IEffect> GetEffect(string prefab)
         {
             var container = Context.currentBehaviour.poolContainer;
-            var pool = container.Get(prefab);
-            return await pool.Get() as IEffect;
+            var item = await container.GetItem(prefab);
+            if (item == null)
+                return null;
+
+            if (item is IEffect effect)
+                return effect;
+            
+            return null;
         }
 
         private void OnValidate()

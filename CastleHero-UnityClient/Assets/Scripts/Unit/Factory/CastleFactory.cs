@@ -14,11 +14,11 @@ namespace RGLabs.Unit.Factory
         private const string CastlePrefab = "Castle_01/Castle_01.prefab";
         
         private readonly CastleDB _db;
-        private readonly PoolContainer _pools;
+        private readonly PoolContainer _container;
 
-        public CastleFactory(PoolContainer pools, CastleDB db)
+        public CastleFactory(PoolContainer container, CastleDB db)
         {
-            _pools = pools;
+            _container = container;
             _db = db;
         }
 
@@ -56,8 +56,7 @@ namespace RGLabs.Unit.Factory
         
         private async UniTask<UnitBehaviour> CreateInternal(Vector2 position)
         {
-            var pool = _pools.Get(CastlePrefab);
-            var unit = await pool.Get(position) as UnitBehaviour;
+            var unit = await _container.GetItem<UnitBehaviour>(CastlePrefab, position);
             if (unit == null)
             {
 #if UNITY_EDITOR
@@ -66,8 +65,6 @@ namespace RGLabs.Unit.Factory
                 return null;
             }
 
-            unit.Container = _pools;
-            unit.Pool = pool;
             return unit;
         }
     }

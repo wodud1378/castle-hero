@@ -47,10 +47,11 @@ namespace RGLabs.InGame.UI
         private Vector2 CalculatePositionOnDirection(IUnitEvent unitEvent)
         {
             var from = unitEvent.From;
-            if (!from.IsValid())
+            var to = unitEvent.To;
+            if (!to.IsValid() || !from.IsValid())
                 return CalculatePositionOnTop(unitEvent);
             
-            var closest = from.Collider.ClosestPoint(unitEvent.To.position);
+            var closest = to.Collider.ClosestPoint(from.position);
             return closest * Random.Range(0.9f, 1.1f);
         }
 

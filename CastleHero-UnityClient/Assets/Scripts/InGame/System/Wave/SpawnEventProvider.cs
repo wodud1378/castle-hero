@@ -21,7 +21,7 @@ namespace RGLabs.InGame.System.Wave
             {
                 this.info = info;
                 spawnPerOnce = pattern == Pattern.AtOnce ? info.count : 1;
-                currentTime = info.timeStep;
+                currentTime = 0f;
                 spawned = 0;
             }
         }

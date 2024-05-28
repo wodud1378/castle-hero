@@ -82,7 +82,7 @@ namespace RGLabs.Data.Load
             if (string.IsNullOrEmpty(text))
                 return;
 
-            //await UniTask.SwitchToThreadPool();
+            await UniTask.SwitchToThreadPool();
 
             var dataMap = Map(text);
             int rowCount = dataMap.Length;
@@ -173,11 +173,11 @@ namespace RGLabs.Data.Load
             if (instance is IDataBase db)
                 db.Load(entities.ToArray());
 
-            //await UniTask.SwitchToMainThread();
+            await UniTask.SwitchToMainThread();
 
             foreach (var fail in fails)
             {
-                Debug.LogError($"\"{fail}\" 데이터를 찾을 수 없습니다.");
+                Debug.LogWarning($"\"{fail}\" 데이터를 찾을 수 없습니다.");
             }
 
             onLoadComplete.Invoke((T)instance);

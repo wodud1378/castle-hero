@@ -109,9 +109,8 @@ namespace RGLabs.InGame.UI
         {
             if (string.IsNullOrEmpty(prefab))
                 return null;
-            
-            var pool = _poolContainer.Get(prefab);
-            return await pool.Get() as UIDamage;
+
+            return await _poolContainer.GetItem<UIDamage>(prefab);
         }
 
         public void Init(PoolContainer poolContainer, InGameRepository repository, UnitDB db)

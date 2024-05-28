@@ -71,7 +71,7 @@ namespace RGLabs.Unit.Components
                 data.Publish();
                 
                 if(!string.IsNullOrEmpty(projectile))
-                    Effect.Play(projectile, target);
+                    Effect.Play(projectile, target, _unit.position);
             }
         }
 
