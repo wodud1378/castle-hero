@@ -66,24 +66,24 @@ namespace RGLabs.Data.Load
         private readonly ICsvProvider _csvProvider;
 
         public DataLoader(ICsvProvider csvProvider) => _csvProvider = csvProvider;
-        
-        public async UniTask Load<T>(Action<T> onLoadComplete) where T : class, IDataBase
+
+        public async UniTask Load<T>(Action<T> onLoadComplete, bool valueFallback = false) where T : class, IDataBase
         {
             var type = typeof(T);
             var attribute = GetDataBaseAttribute(type);
             if (attribute == null)
                 return;
-            
+
             var entityType = GetEntityType(type);
             if (entityType == null)
                 return;
-            
+
             var text = await _csvProvider.LoadCsvText(attribute);
             if (string.IsNullOrEmpty(text))
                 return;
 
-            await UniTask.SwitchToThreadPool();
-            
+            //await UniTask.SwitchToThreadPool();
+
             var dataMap = Map(text);
             int rowCount = dataMap.Length;
             int fieldNameRow = (int)Row.FieldName;
@@ -124,7 +124,6 @@ namespace RGLabs.Data.Load
 
                     if (dataField.FieldType.IsArray)
                     {
-                        var value = Parse(fieldValue, dataField.FieldType.GetElementType());
                         if (!arrayMap.TryGetValue(entityIndex, out var map))
                         {
                             map = new Dictionary<IDataField, IList>();
@@ -139,14 +138,21 @@ namespace RGLabs.Data.Load
                             map[dataField] = list;
                         }
 
+                        var elementType = dataField.FieldType.GetElementType();
+                        if (!TryParse(fieldValue, elementType, out var value) && !valueFallback)
+                            continue;
+
                         list.Add(value);
                     }
                     else
                     {
-                        dataField.SetValue(entity, Parse(fieldValue, dataField.FieldType));
+                        if (!TryParse(fieldValue, dataField.FieldType, out var value) && !valueFallback)
+                            continue;
+
+                        dataField.SetValue(entity, value);
                     }
                 }
-                
+
                 entities.Add(entity);
             }
 
@@ -167,13 +173,13 @@ namespace RGLabs.Data.Load
             if (instance is IDataBase db)
                 db.Load(entities.ToArray());
 
-            await UniTask.SwitchToMainThread();
+            //await UniTask.SwitchToMainThread();
 
             foreach (var fail in fails)
             {
                 Debug.LogError($"\"{fail}\" 데이터를 찾을 수 없습니다.");
             }
-            
+
             onLoadComplete.Invoke((T)instance);
         }
 
@@ -191,6 +197,43 @@ namespace RGLabs.Data.Load
             };
 
             return result;
+        }
+
+        private bool TryParse(string value, Type type, out object result)
+        {
+            bool success = false;
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.Boolean:
+                    success = bool.TryParse(value, out var boolean);
+                    result = success && boolean;
+                    break;
+                case TypeCode.Int32:
+                    success = int.TryParse(value, out var int32);
+                    result = success ? int32 : -1;
+                    break;
+                case TypeCode.Int64:
+                    success = long.TryParse(value, out var int64);
+                    result = success ? int64 : -1;
+                    break;
+                case TypeCode.Single:
+                    success = float.TryParse(value, out var single);
+                    result = success ? single : -1f;
+                    break;
+                case TypeCode.Double:
+                    success = double.TryParse(value, out var @double);
+                    result = success ? @double : -1;
+                    break;
+                case TypeCode.String:
+                    success = true;
+                    result = value;
+                    break;
+                default:
+                    result = null;
+                    break;
+            }
+
+            return success;
         }
 
         private IDataField ToInterface(MemberInfo info)
@@ -230,7 +273,7 @@ namespace RGLabs.Data.Load
                     return x.Remove(x.Length - 2, 2);
                 })
                 .ToArray();
-            
+
             for (int i = 1; i < rowCount; ++i)
             {
                 map[i] = splitColumns.Split(rows[i]);

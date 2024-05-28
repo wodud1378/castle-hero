@@ -38,10 +38,10 @@ namespace RGLabs.Stage.UI
         {
             _repository = Storage.userRepository;
             _db = Storage.DB;
-            
+
             this.SubscribeButton(_prev, OnPrevStage);
             this.SubscribeButton(_next, OnNextStage);
-            
+
             _subscriptions.Add(_repository.stage.Subscribe(OnStageSelected));
             _subscriptions.Add(_stageData
                 .Subscribe(x =>
@@ -62,16 +62,12 @@ namespace RGLabs.Stage.UI
 
         private void SetRewards(StageEntity stageData)
         {
-            foreach (var slot in _uiSlots)
-            {
-                Addressables.ReleaseInstance(slot.gameObject);
-            }
-            _uiSlots.Clear();
+            Clear();
             
-            if(stageData is { goldMin: > 0, goldMax: > 0 })
+            if (stageData is { goldMin: > 0, goldMax: > 0 })
                 AddRewardUI(Constants.GoldIcon);
-            
-            if(stageData.exp > 0)
+
+            if (stageData.exp > 0)
                 AddRewardUI(Constants.ExpIcon);
 
             if (_db.itemDBAccessor.TryLoad(stageData.propItemId, out var entity))
@@ -87,6 +83,17 @@ namespace RGLabs.Stage.UI
             _uiSlots.Add(slot);
 
             await slot.InitAsync(icon);
+        }
+
+        private void Clear()
+        {
+            foreach (var slot in _uiSlots)
+            {
+                slot.Dispose();
+                Addressables.ReleaseInstance(slot.gameObject);
+            }
+
+            _uiSlots.Clear();
         }
 
         private void OnStageSelected(int stage)
@@ -133,11 +140,7 @@ namespace RGLabs.Stage.UI
 
         public void Dispose()
         {
-            foreach (var slot in _uiSlots)
-            {
-                slot.Dispose();
-                Addressables.ReleaseInstance(slot.gameObject);
-            }
+            Clear();
 
             foreach (var subscription in _subscriptions)
             {

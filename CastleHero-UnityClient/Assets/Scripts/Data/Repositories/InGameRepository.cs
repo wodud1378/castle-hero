@@ -125,7 +125,7 @@ namespace RGLabs.Data.Repositories
                 _loader.Load<WaveDB>(x => waves = x),
                 _loader.Load<UnitDB>(x => units = x),
                 _loader.Load<UnitLevelDB>(x => levels = x),
-                _loader.Load<SkillDB>(x => skills = x),
+                _loader.Load<SkillDB>(x => skills = x, true),
                 _loader.Load<CastleDB>(x => castles = x)
             };
 

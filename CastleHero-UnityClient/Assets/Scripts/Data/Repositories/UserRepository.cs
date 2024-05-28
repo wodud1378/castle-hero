@@ -21,6 +21,7 @@ namespace RGLabs.Data.Repositories
         private const string CharactersKey = "characters";
         private const string FieldCharactersKey = "characters-field";
         private const string CastleKey = "saved-castle";
+        private const string InventoryKey = "inventory";
 
         public readonly ReactiveProperty<int> stage;
         public readonly ReactiveProperty<int> castleLv;

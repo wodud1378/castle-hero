@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using RGLabs.Common.UI;
 using RGLabs.Stage.UI;
@@ -64,6 +65,11 @@ namespace RGLabs.Common.Behaviours
             _button.enabled = false;
 
             _animator.SetTrigger(ActiveHash[false]);
+        }
+
+        private void OnDestroy()
+        {
+            StageSelect.Dispose();
         }
 
         #region Animation Events
