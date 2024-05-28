@@ -1,5 +1,4 @@
-using RGLabs.InGame.Behaviours.Effects;
-using RGLabs.InGame.Effects;
+using System.Collections.Generic;
 using RGLabs.InGame.Effects.Behaviours;
 using UnityEngine;
 
@@ -11,11 +10,13 @@ namespace RGLabs.Unit.Behaviours
         public Transform middle;
         public Transform bottom;
 
+        private readonly List<Effect> _attachments = new();
+        
         private Transform _fallBack;
 
         private void Awake()
         {
-            _fallBack = middle != null ? middle : transform;
+            _fallBack = bottom != null ? middle : transform;
         }
 
         public void Attach(Effect effect)
@@ -34,6 +35,11 @@ namespace RGLabs.Unit.Behaviours
             tr.SetParent(pos);
             tr.localScale = Vector3.one;
             tr.localPosition = Vector3.zero;
+        }
+
+        public void Clear()
+        {
+            _attachments.ForEach(x=> x.Stop());
         }
     }
 }

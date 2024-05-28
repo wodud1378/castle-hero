@@ -8,7 +8,6 @@ namespace RGLabs.Unit.Components.Move
     public class DefaultMovement : IMovement
     {
         private readonly UnitBehaviour _owner;
-        private readonly FindMoveTarget _finder;
         private readonly PolyNavAgent _agent;
 
         public bool Enabled
@@ -35,10 +34,10 @@ namespace RGLabs.Unit.Components.Move
 
         private UnitBehaviour _currentTarget;
 
-        public DefaultMovement(UnitBehaviour owner, FindMoveTarget finder)
+        public DefaultMovement(UnitBehaviour owner, FindMoveTarget finder, PolyNavAgent navAgent)
         {
             _owner = owner;
-            _agent = owner.Core.navAgent;
+            _agent = navAgent;
             
             Finder = finder;
         }
@@ -49,10 +48,10 @@ namespace RGLabs.Unit.Components.Move
             Finder.detection.SetRange(range, range);
             
             CurrentTarget = null;
-            if (!_finder.Update(_agent.position))
+            if (!Finder.Update(_agent.position))
                 return false;
 
-            CurrentTarget = _finder.Found[0];
+            CurrentTarget = Finder.Found[0];
             StartMove(CurrentTarget.position);
             return true;
         }

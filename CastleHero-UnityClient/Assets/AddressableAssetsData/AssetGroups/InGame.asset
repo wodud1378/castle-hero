@@ -17,21 +17,6 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 7253d22a9b6585140ac329eb07b71414
   m_SerializeEntries:
-  - m_GUID: 2a6e87714d86b014696fd5c1083ddb82
-    m_Address: Monster_Common_Ghost
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c1397519550edc845a573e52f230b42e
-    m_Address: Monster_30003
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1013f56a49b57ab43a3799f0bf73ba1b
-    m_Address: Monster_20001
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 34d2cbdb8a3cb9148a0510af51f47acb
     m_Address: UI
     m_ReadOnly: 0

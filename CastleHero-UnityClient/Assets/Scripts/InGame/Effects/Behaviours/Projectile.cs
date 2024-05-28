@@ -31,6 +31,11 @@ namespace RGLabs.InGame.Effects.Behaviours
             _arrivalTime = Vector2.Distance(transform.position, position) / _speed;
         }
 
+        public void Stop()
+        {
+            
+        }
+
         private void OnTargetDead(UnitBehaviour unit)
         {
             _target = null;

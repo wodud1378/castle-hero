@@ -18,10 +18,19 @@ namespace RGLabs.Common.UI
         public async UniTask InitAsync(string spritePath, string text = "")
         {
             icon.enabled = false;
+
+            Sprite sprite;
+            try
+            {
+                _spriteHandle = await spritePath.Handle<Sprite>();
             
-            _spriteHandle = await spritePath.Handle<Sprite>();
-            
-            var sprite = _spriteHandle.Result;
+                sprite = _spriteHandle.Result;
+            }
+            catch
+            {
+                Debug.LogError($"Sprite Not Found. path=\"{spritePath}\"");
+                sprite = null;
+            }
             
             Init(sprite, text);
         }

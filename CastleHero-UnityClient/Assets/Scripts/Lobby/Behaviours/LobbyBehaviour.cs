@@ -34,7 +34,7 @@ namespace RGLabs.Lobby.Behaviours
             monsterFactory = new UnitFactory(poolContainer, db.units, db.levels);
             characterFactory = new UnitFactory(poolContainer, db.units, db.levels);
 
-            await _formation.Init(db.castles, db.units, userRepo, gameRepo, 
+            await _formation.Init(userRepo, gameRepo, 
                 new CastleFactory(poolContainer, db.castles), characterFactory);
 
             _uiStage.Init();

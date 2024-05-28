@@ -32,17 +32,13 @@ namespace RGLabs.Lobby.Behaviours
 
         public IUnitFactory CastleFactory { get; private set; }
         public IUnitFactory UnitFactory { get; private set; }
-
-        private CastleDB _castleDB;
-        private UnitDB _unitDB;
+        
         private UserRepository _userRepo;
         private InGameRepository _gameRepo;
 
-        public async UniTask Init(CastleDB castleDB, UnitDB unitDB, UserRepository userRepo, InGameRepository gameRepo,
+        public async UniTask Init(UserRepository userRepo, InGameRepository gameRepo,
             IUnitFactory castleFactory, IUnitFactory unitFactory)
         {
-            _castleDB = castleDB;
-            _unitDB = unitDB;
             _userRepo = userRepo;
             _gameRepo = gameRepo;
 
@@ -173,7 +169,7 @@ namespace RGLabs.Lobby.Behaviours
                 return;
 
             unit.Core.movement.Default = position;
-            unit.CanMove = true;
+            unit.Core.inBattle = false;
 
             Register(unit);
         }

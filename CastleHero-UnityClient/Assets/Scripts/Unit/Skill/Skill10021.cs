@@ -5,9 +5,9 @@ namespace RGLabs.Unit.Skill
 {
     public class Skill10021 : ActiveSkill
     {
-        public enum Parameter
+        private enum Step
         {
-            SpeedBuff,
+            Buff,
             Atk
         }
 
@@ -22,12 +22,15 @@ namespace RGLabs.Unit.Skill
             if (!TryGetGroupParameter(0, out int group))
                 return;
 
-            if (!TryGetStatusParameter(Parameter.SpeedBuff, out var type, out var value))
+            if (!TryGetStatusParameter(Step.Buff, out var type, out var value))
                 return;
 
+            if (!TryGetQuantityParameter(0, out int quantity))
+                return;
+            
             TryGetEffectPrefab(0, out string buffEff);
             
-            var characters = Characters(x => x.Data.team == group);
+            var characters = Characters(x => x.Data.team == group, quantity);
             foreach (var character in characters)
             {
                 PublishBuff(character, type, value, Data.duration, true, buffEff);
@@ -39,13 +42,12 @@ namespace RGLabs.Unit.Skill
             if (!Targeting.HasTargets())
                 return;
 
-            if (!TryGetStatusParameter(Parameter.Atk, out var type, out var value))
+            if (!TryGetStatusParameter(Step.Atk, out var type, out var value))
                 return;
 
             TryGetEffectPrefab(1, out string atkEff);
-
             
-            float atkAmount = WithOwner(type, value);
+            float atkAmount = GetAmount(type, value);
             Targeting.Targets.ForEach(x => PublishAtk(x, DamageType.Normal, atkAmount, atkEff));
         }
     }

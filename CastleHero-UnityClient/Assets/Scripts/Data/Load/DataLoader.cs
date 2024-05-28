@@ -124,9 +124,7 @@ namespace RGLabs.Data.Load
 
                     if (dataField.FieldType.IsArray)
                     {
-                        if (!TryParse(fieldValue, dataField.FieldType.GetElementType(), out object result))
-                            continue;
-
+                        var value = Parse(fieldValue, dataField.FieldType.GetElementType());
                         if (!arrayMap.TryGetValue(entityIndex, out var map))
                         {
                             map = new Dictionary<IDataField, IList>();
@@ -141,14 +139,11 @@ namespace RGLabs.Data.Load
                             map[dataField] = list;
                         }
 
-                        list.Add(result);
+                        list.Add(value);
                     }
                     else
                     {
-                        if (!TryParse(fieldValue, dataField.FieldType, out object result))
-                            continue;
-                        
-                        dataField.SetValue(entity, result);
+                        dataField.SetValue(entity, Parse(fieldValue, dataField.FieldType));
                     }
                 }
                 
@@ -182,60 +177,20 @@ namespace RGLabs.Data.Load
             onLoadComplete.Invoke((T)instance);
         }
 
-        private bool TryParse(string value, Type type, out object result)
+        private object Parse(string value, Type type)
         {
-            result = null;
-            if (string.IsNullOrEmpty(value))
-                return false;
-
-            switch (Type.GetTypeCode(type))
+            object result = Type.GetTypeCode(type) switch
             {
-                case TypeCode.Boolean:
-                    if (bool.TryParse(value, out var boolean))
-                    {
-                        result = boolean;
-                        return true;
-                    }
+                TypeCode.Boolean => bool.TryParse(value, out var boolean) && boolean,
+                TypeCode.Int32 => int.TryParse(value, out var int32) ? int32 : -1,
+                TypeCode.Int64 => long.TryParse(value, out var int64) ? int64 : -1,
+                TypeCode.Single => float.TryParse(value, out var single) ? single : -1f,
+                TypeCode.Double => double.TryParse(value, out var @double) ? @double : -1,
+                TypeCode.String => value,
+                _ => null
+            };
 
-                    return false;
-                case TypeCode.Int32:
-                    if (int.TryParse(value, out var int32))
-                    {
-                        result = int32;
-                        return true;
-                    }
-
-                    return false;
-                case TypeCode.Int64:
-                    if (long.TryParse(value, out var int64))
-                    {
-                        result = int64;
-                        return true;
-                    }
-
-                    return false;
-                case TypeCode.Single:
-                    if (float.TryParse(value, out var single))
-                    {
-                        result = single;
-                        return true;
-                    }
-
-                    return false;
-                case TypeCode.Double:
-                    if (double.TryParse(value, out var @double))
-                    {
-                        result = @double;
-                        return true;
-                    }
-
-                    return false;
-                case TypeCode.String:
-                    result = value;
-                    return true;
-                default:
-                    return false;
-            }
+            return result;
         }
 
         private IDataField ToInterface(MemberInfo info)

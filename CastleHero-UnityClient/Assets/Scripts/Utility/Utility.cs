@@ -2,12 +2,8 @@ using System;
 using System.Collections;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using RGLabs.Common;
-using RGLabs.Data.Model;
-using RGLabs.InGame.Behaviours;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Components;
-using RGLabs.Unit.Factory;
 using RGLabs.Unit.Finding;
 using RGLabs.Unit.Skill.Components.Factory;
 using UniRx;
@@ -20,6 +16,19 @@ using Random = UnityEngine.Random;
 
 namespace RGLabs.Utility
 {
+    public static class EnumHelper
+    {
+        public static unsafe int CastToInt<T>(this T val) where T : unmanaged, Enum => *(int*)&val;
+
+        public static bool HasFlagUnSafe<T>(this T it, T value) where T : unmanaged, Enum
+        {
+            int castedIt = CastToInt(it);
+            int castedVal = CastToInt(value);
+
+            return (castedIt & castedVal) == castedVal;
+        }
+    }
+    
     public static class AddressableHelper
     {
         public static async UniTask<AsyncOperationHandle<T>> Handle<T>(this string key)
@@ -171,9 +180,6 @@ namespace RGLabs.Utility
 
     public static class MathHelper
     {
-        public static Vector2 Forward(this Transform transform) =>
-            (-transform.eulerAngles.z + Constants.DefaultObjectAngle).ToVector();
-
         public static Vector2 ToVector(this float degree)
         {
             float rad = degree * Mathf.Deg2Rad;
@@ -229,6 +235,12 @@ namespace RGLabs.Utility
 
         public static bool IsValidIndex(this int index, params IList[] listCollection) => listCollection.All(list => index.IsValidIndex(list));
 
-        public static bool IsValidIndex(this int index, IList target) => index >= 0 && target.Count > index;
+        public static bool IsValidIndex(this int index, IList target)
+        {
+            if (target == null)
+                return false;
+            
+            return index >= 0 && target.Count > index;
+        }
     }
 }

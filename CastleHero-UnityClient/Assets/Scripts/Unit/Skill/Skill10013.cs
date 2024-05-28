@@ -4,7 +4,7 @@ namespace RGLabs.Unit.Skill
 {
     public class Skill10013 : ActiveSkill
     {
-        public enum Parameter
+        private enum Step
         {
             SingleAtk = 0,
             BoundAtk,
@@ -12,20 +12,26 @@ namespace RGLabs.Unit.Skill
         
         protected override void OnExecute()
         {
-            if (!Targeting.HasTargets())
+            if (!TryGetQuantityParameter(0, out int quantity))
                 return;
 
-            var target = Targeting.Targets[0];
-            
-            PlayEffect(0, target);
-            if (TryGetStatusParameter(Parameter.SingleAtk, out var type, out var value))
-                PublishAtk(target, DamageType.Normal, WithOwner(type, value));
+            if (!TryUpdateAroundCenter(quantity))
+                return;
 
-            if (TryGetStatusParameter(Parameter.BoundAtk, out type, out value))
+            if (!TryGetStatusParameter(Step.SingleAtk, out var type, out var value))
             {
-                float amount = WithOwner(type, value);
-                Bound.UnitsInBound(target.position,default)
-                    .ForEach(x=> PublishAtk(x, DamageType.Normal, amount));
+                var center = aroundCenter.center;
+                PlayEffect(0, center.position);
+                PublishAtk(center, DamageType.Normal, GetAmount(type, value));    
+            }
+
+            if (TryGetStatusParameter(Step.BoundAtk, out type, out value))
+            {
+                float amount = GetAmount(type, value);
+                foreach (var unit in aroundCenter.around)
+                {
+                    PublishAtk(unit, DamageType.Normal, amount);
+                }
             }
         }
     }

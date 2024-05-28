@@ -104,6 +104,7 @@ namespace RGLabs.InGame.Behaviours
         {
             foreach (var character in gameRepo.characters.Value)
             {
+                character.Core.inBattle = true;
                 character.CanAttack = true;
                 character.CanMove = true;
             }

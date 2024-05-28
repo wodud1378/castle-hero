@@ -22,13 +22,6 @@ namespace RGLabs.InGame.UI
         public string debuff;
     }
 
-    [Serializable]
-    public struct HealPrefabs
-    {
-        public string heal;
-        public string shield;
-    }
-    
     public class UIInGame : UIMain
     {
         [field:SerializeField] public UICharacterList DeadCharacters { get; private set; }
@@ -38,7 +31,6 @@ namespace RGLabs.InGame.UI
         [SerializeField] private Button _pause;
         [SerializeField] private RectTransform _damageRoot;
         [SerializeField] private DamagePrefabs _damagePrefabs;
-        [SerializeField] private HealPrefabs _healPrefabs;
         [SerializeField] private string _healPrefab;
         [SerializeField] private string _shieldPrefab;
         

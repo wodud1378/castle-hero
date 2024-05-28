@@ -6,49 +6,52 @@ namespace RGLabs.Unit.Skill
 {
     public class Skill10002 : ActiveSkill
     {
-        public enum Parameter
+        private enum Stat
         {
-            SingleAtk = 0,
-            BoundAtk,
-            DeBuff,
+            CenterAtk = 0,
+            AroundAtk,
+            Debuff,
         }
 
         protected override void OnExecute()
         {
-            if (!Targeting.HasTargets())
-                return;
-
-            var target = Targeting.Targets[0];
-            if (TryGetStatusParameter(Parameter.SingleAtk, out var type, out var value))
-            {
-                PublishAtk(target, DamageType.Normal, WithOwner(type, value));
-                PlayEffect(0, target);
-            }
-
             var onEnemy = BuildExecutionOnEnemy();
             if (onEnemy == null)
                 return;
-            Bound.UnitsInBound(target.position, default)
-                .ForEach(onEnemy);
+
+            if (!TryGetQuantityParameter(0, out int quantity))
+                return;
+
+            if (!TryUpdateAroundCenter(quantity))
+                return;
+            
+            if (TryGetStatusParameter(Stat.CenterAtk, out var type, out var value))
+            {
+                var center = aroundCenter.center;
+                PublishAtk(aroundCenter.center, DamageType.Normal, GetAmount(type, value));
+                PlayEffect(0, center.position);
+            }
+            
+            foreach (var unit in aroundCenter.around)
+            {
+                onEnemy.Invoke(unit);
+            }
         }
 
         private Action<UnitBehaviour> BuildExecutionOnEnemy()
         {
             Action<UnitBehaviour> action = null;
-            if (TryGetStatusParameter(Parameter.BoundAtk, out var type, out var value))
+            if (TryGetStatusParameter(Stat.AroundAtk, out var type, out var value))
             {
-                float atkAmount = WithOwner(type, value);
+                float atkAmount = GetAmount(type, value);
                 action += (x) => PublishAtk(x, DamageType.Normal, atkAmount);
             }
 
-            if (TryGetStatusParameter(Parameter.DeBuff, out type, out value))
+            if (TryGetStatusParameter(Stat.Debuff, out type, out value))
             {
-                float debuffAmount = WithOwner(type, value);
-                action += (x) =>
-                {
-                    x.status.speed.fixedAdjust.Decrease(debuffAmount);
-                    x.status.atkSpeed.fixedAdjust.Decrease(debuffAmount);
-                };
+                float debuffAmount = GetAmount(type, value);
+                float duration = Data.duration;
+                action += x => { PublishDebuff(x, Status.Type.AtkSpeed, debuffAmount, duration, true); };
             }
 
             return action;

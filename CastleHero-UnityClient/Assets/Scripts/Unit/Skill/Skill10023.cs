@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using RGLabs.InGame.System;
-using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using UniRx;
 using UniRx.Triggers;
@@ -12,13 +9,19 @@ namespace RGLabs.Unit.Skill
 {
     public class Skill10023 : ActiveSkill
     {
-        public enum Parameter
+        private enum Step
         {
             Heal = 0,
             Shield
         }
 
-        private List<UnitBehaviour> _targets;
+        private enum Effect
+        {
+            Self,
+            HealTarget,
+            ShieldTarget,
+        }
+
         private IDisposable _heal;
         private int _count;
         private int _currentCount;
@@ -26,10 +29,12 @@ namespace RGLabs.Unit.Skill
 
         protected override void OnExecute()
         {
-            var center = Targeting.Targets[0];
-            PlayEffect(0, center);
+            if (!TryGetQuantityParameter(0, out int quantity) ||
+                !TryUpdateAroundCenter(quantity))
+                return;
             
-            _targets = Bound.UnitsInBound(center.position, default);
+            var center = aroundCenter.center;
+            PlayEffect(Effect.Self, center);
 
             AttachHeal();
             ShieldOnGroup();
@@ -37,17 +42,19 @@ namespace RGLabs.Unit.Skill
 
         private void ShieldOnGroup()
         {
-            if (!TryGetStatusParameter(Parameter.Shield, out var type, out var value))
+            if (!TryGetStatusParameter(Step.Shield, out var type, out var value))
                 return;
 
             if (!TryGetGroupParameter(0, out int group))
                 return;
 
-            var targets = _targets.Where(x => x.Data.team == group);
-            float amount = WithOwner(type, value);
+            TryGetEffectPrefab(Effect.ShieldTarget, out string eff);
+            
+            var targets = aroundCenter.around.Where(x => x.Data.team == group);
+            float amount = GetAmount(type, value);
             foreach (var target in targets)
             {
-                PublishShield(target, amount, 0f);
+                PublishShield(target, amount, 0f, eff);
             }
         }
 
@@ -69,23 +76,22 @@ namespace RGLabs.Unit.Skill
             if (_currentTime > 0f)
                 return;
 
-            _targets.RemoveAll(x => x.IsValid());
             _currentTime = 1f;
-
-            if (!TryGetStatusParameter(Parameter.Heal, out var type, out var value))
+            if (!TryGetStatusParameter(Step.Heal, out var type, out var value))
                 return;
 
-            TryGetEffectPrefab(1, out string eff);
+            TryGetEffectPrefab(Effect.HealTarget, out string eff);
             
-            float amount = WithOwner(type, value);
-            foreach (var target in _targets)
+            float amount = GetAmount(type, value);
+            foreach (var target in aroundCenter.around)
             {
+                if (!target.IsValid())
+                    continue;
+                
                 PublishHeal(target, amount, eff);
             }
-
-            ++_currentCount;
-
-            if (_currentCount < _count)
+            
+            if (++_currentCount < _count)
                 return;
 
             _heal.Dispose();

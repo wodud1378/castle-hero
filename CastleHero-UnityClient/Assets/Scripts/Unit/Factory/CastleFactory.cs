@@ -41,9 +41,12 @@ namespace RGLabs.Unit.Factory
 
             var unitEntity = new UnitEntity
             {
+                Id = 1,
                 hp = entity.hp,
+                atkLayer = 1,
                 defLayer = 1,
             };
+            
             var unit = await CreateInternal(position);
             unit.Init(info, unitEntity, default);
             unit.position = position;

@@ -61,15 +61,6 @@ namespace RGLabs.Unit.Behaviours
         public UnitEntity Data { get; private set; }
         
         private UnitLevelEntity _level;
-
-        private void Awake()
-        {
-            Core = new UnitCore(this, _enableAttack, _enableMove, _enableAnimation);
-            Core.state
-                .Where(x => x == UnitCore.States.Dead)
-                .Subscribe(_=> ProcessDead())
-                .AddTo(this);
-        }
         
         public void Init(UnitInfo info, UnitEntity entity, UnitLevelEntity levelData)
         {
@@ -77,6 +68,16 @@ namespace RGLabs.Unit.Behaviours
             Data = entity;
             
             _level = levelData;
+
+            if (Core == null)
+            {
+                Core = new UnitCore(this, _enableAttack, _enableMove, _enableAnimation);
+                Core.state
+                    .Where(x => x == UnitCore.States.Dead)
+                    .Subscribe(_=> ProcessDead())
+                    .AddTo(this);
+            }
+            
             Core.SetData(info, entity, levelData);
             if (Hit != null)
                 Hit.Init();

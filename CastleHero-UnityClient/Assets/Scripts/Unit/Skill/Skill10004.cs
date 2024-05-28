@@ -6,19 +6,23 @@ namespace RGLabs.Unit.Skill
     {
         protected override void OnExecute()
         {
-            if (!Targeting.HasTargets())
-                return;
-
             if (!TryGetStatusParameter(0, out var type, out var value))
                 return;
 
-            var center = Targeting.Targets[0].position;
-            float amount = WithOwner(type, value);
-            Bound.Finder.detection.SetForward((center - Owner.position).normalized);
-            Bound.UnitsInBound(center, default)
-                .ForEach(x => { PublishAtk(x, DamageType.Normal, amount ); });
+            if (!TryGetQuantityParameter(0, out int quantity))
+                return;
 
-            PublishAtk(Targeting.Targets[0], DamageType.Normal, WithOwner(type, value));
+            if (!TryUpdateAroundCenter(quantity))
+                return;
+            
+            float amount = GetAmount(type, value);
+            PublishAtk(aroundCenter.center, DamageType.Normal, amount);
+            foreach (var unit in aroundCenter.around)
+            {
+                PublishAtk(unit, DamageType.Normal, amount);
+            }
+            
+            PlayEffect(0, aroundCenter.forward * Data.y);
         }
     }
 }

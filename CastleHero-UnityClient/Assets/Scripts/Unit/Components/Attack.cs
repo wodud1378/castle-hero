@@ -12,19 +12,21 @@ namespace RGLabs.Unit.Components
         public readonly Finder finder;
 
         private readonly UnitBehaviour _unit;
+        private readonly RenderController _renderController;
         private readonly AnimationEvents _animationEvents;
         
         public bool IsRunning { get; private set; }
 
         public string projectile;
 
-        public Attack(UnitBehaviour unit, Finder finder)
+        public Attack(UnitBehaviour unit, Finder finder, RenderController renderController, AnimationEvents animationEvents)
         {
             _unit = unit;
             
             this.finder = finder;
 
-            _animationEvents = unit.Core.animationEvent;
+            _renderController = renderController;
+            _animationEvents = animationEvents;
 
             _animationEvents.OnHitEvent -= ProcessHit;
             _animationEvents.OnHitEvent += ProcessHit;
@@ -44,7 +46,11 @@ namespace RGLabs.Unit.Components
             return true;
         }
         
-        public void Run() => IsRunning = true;
+        public void Run()
+        {
+            _renderController.SetAnimation(UnitCore.AnimationsHash[UnitCore.States.Attack]);
+            IsRunning = true;
+        }
 
         private void ProcessHit()
         {
