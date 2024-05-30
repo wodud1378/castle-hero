@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using RGLabs.Data;
 using RGLabs.Data.DB;
 using RGLabs.Data.Model;
 using RGLabs.InGame.System;
@@ -52,12 +53,14 @@ namespace RGLabs.InGame.Behaviours
             data.unit.DestroySelf();
         }
 
-        public void Init(WaveEntity[] waves, UnitDB unitDB, UnitBehaviour castle, IUnitFactory factory)
+        public void Init(int groupId)
         {
             _disposed = false;
             isRunning = false;
             completed.Value = false;
             
+            var db = Storage.db;
+            var waves = db.waves.Map(groupId);
             int length = _areaSetUpData.Length;
             
             _main = new WaveUpdate(waves);
@@ -66,10 +69,12 @@ namespace RGLabs.InGame.Behaviours
 
             _updates[0] = _main;
 
+            var factory = Storage.unitFactory;
+            var castle = Storage.inGameRepository.castle.Value;
             for (int i = 0; i < length; ++i)
             {
                 var data = _areaSetUpData[i];
-                var area = new SpawnArea(data.id, data.position, data.size, data.angle, unitDB, factory, castle);
+                var area = new SpawnArea(data.id, data.position, data.size, data.angle, db.units, factory, castle);
                 _areas[i] = area;
                 _updates[i + 1] = area;
             }

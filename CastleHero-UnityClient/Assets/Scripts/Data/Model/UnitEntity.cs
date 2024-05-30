@@ -25,7 +25,7 @@ namespace RGLabs.Data.Model
         public string projectile;
 
         [DataField("Character_Class")]
-        public int grade;
+        public int rate;
         
         [DataField("Character_Team")]
         public int team;

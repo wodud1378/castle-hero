@@ -1,8 +1,7 @@
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI;
 using RGLabs.Data.DB;
-using RGLabs.Data.Model;
-using RGLabs.Data.User;
+using RGLabs.Network.Model;
 
 namespace RGLabs.InGame.UI
 {

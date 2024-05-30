@@ -30,12 +30,7 @@ namespace RGLabs.Lobby.Behaviours
             
             Context.currentBehaviour = this;
 
-            poolContainer = new PoolContainer();
-            monsterFactory = new UnitFactory(poolContainer, db.units, db.levels);
-            characterFactory = new UnitFactory(poolContainer, db.units, db.levels);
-
-            await _formation.Init(userRepo, gameRepo, 
-                new CastleFactory(poolContainer, db.castles), characterFactory);
+            await _formation.Init();
 
             _uiStage.Init();
             Context.Transition.StateObserver
@@ -105,10 +100,7 @@ namespace RGLabs.Lobby.Behaviours
             Destroy(_uiLobby.gameObject);
             Destroy(_uiStage.gameObject);
 
-            new StartGame
-            {
-                from = this
-            }.Publish();
+            new StartGame().Publish();
 
             Context.Back.Clear();
         }

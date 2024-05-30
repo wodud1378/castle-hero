@@ -21,9 +21,9 @@ namespace RGLabs.Data.DB
     }
 
     [DB("Character_Upgrade_Table")]
-    public class UnitLevelDB : DB<UnitLevelEntity>
+    public class UnitBalanceDB : DB<UnitBalanceEntity>
     {
-        protected override void Convert(object from, ref UnitLevelEntity to)
+        protected override void Convert(object from, ref UnitBalanceEntity to)
         {
             base.Convert(from, ref to);
 
@@ -45,6 +45,13 @@ namespace RGLabs.Data.DB
             to.rateValues = values.ToArray();
         }
     }
+    
+    [DB("Rate_Table")]
+    public class UnitRateDB : DB<UnitRateEntity> { }
+    
+    [DB("Level_Table")]
+    public class UnitLevelDB : DB<UnitLevelEntity> { }
+
     
     [DB("Skill_Table")]
     public class SkillDB : DB<SkillEntity> { }

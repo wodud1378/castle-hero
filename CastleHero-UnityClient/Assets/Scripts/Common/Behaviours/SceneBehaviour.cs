@@ -13,16 +13,6 @@ namespace RGLabs.Common.Behaviours
     {
         protected static List<SceneBehaviour> activated = new();
 
-        public DBCollections db;
-
-        public InGameRepository gameRepo;
-        public UserRepository userRepo;
-
-        public PoolContainer poolContainer;
-        
-        public IUnitFactory monsterFactory;
-        public IUnitFactory characterFactory;
-
         private void Awake()
         {
             Context.OnLoadCompleteQueue.Enqueue(OnLoaded);
@@ -32,9 +22,6 @@ namespace RGLabs.Common.Behaviours
 
         protected virtual void OnLoaded()
         {
-            gameRepo = Storage.inGameRepository;
-            userRepo = Storage.userRepository;
-            db = Storage.DB;
         }
 
         protected virtual void OnAwake()
@@ -44,8 +31,6 @@ namespace RGLabs.Common.Behaviours
         
         public virtual void Dispose()
         {
-            gameRepo.Dispose();
-            poolContainer.Dispose();
         }
 
         protected void LoadSceneAfterDispose(string sceneName)

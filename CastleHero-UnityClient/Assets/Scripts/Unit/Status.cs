@@ -265,7 +265,7 @@ namespace RGLabs.Unit
             };
         }
 
-        public void Init(UnitEntity data, int lv, UnitLevelEntity levelData)
+        public void Init(UnitEntity data, int lv, UnitBalanceEntity balanceData)
         {
             _updates = new List<IUpdate>();
 
@@ -280,19 +280,19 @@ namespace RGLabs.Unit
             recovery.Init(_updates, data.recovery);
             shield.Init(_updates);
 
-            ApplyLevelBonus(lv, levelData);
+            ApplyLevelBonus(lv, balanceData);
         }
 
-        private void ApplyLevelBonus(int lv, UnitLevelEntity levelData)
+        private void ApplyLevelBonus(int lv, UnitBalanceEntity balanceData)
         {
-            hp.fixedAdjust.Increase(lv * levelData.hp);
-            atk.fixedAdjust.Increase(lv * levelData.atk);
-            critical.fixedAdjust.Increase(lv * levelData.critical);
-            criticalAtk.fixedAdjust.Increase(lv * levelData.criticalAtk);
-            atkSpeed.fixedAdjust.Increase(lv * levelData.atkSpeed);
-            speed.fixedAdjust.Increase(lv * levelData.speed);
-            atkRange.fixedAdjust.Increase(lv * levelData.atkRange);
-            moveRange.fixedAdjust.Increase(lv * levelData.moveRange);
+            hp.fixedAdjust.Increase(lv * balanceData.hp);
+            atk.fixedAdjust.Increase(lv * balanceData.atk);
+            critical.fixedAdjust.Increase(lv * balanceData.critical);
+            criticalAtk.fixedAdjust.Increase(lv * balanceData.criticalAtk);
+            atkSpeed.fixedAdjust.Increase(lv * balanceData.atkSpeed);
+            speed.fixedAdjust.Increase(lv * balanceData.speed);
+            atkRange.fixedAdjust.Increase(lv * balanceData.atkRange);
+            moveRange.fixedAdjust.Increase(lv * balanceData.moveRange);
         }
 
         public void Update()

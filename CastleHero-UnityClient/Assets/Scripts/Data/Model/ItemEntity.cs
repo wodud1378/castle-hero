@@ -46,6 +46,7 @@ namespace RGLabs.Data.Model
         public string Icon { get; }
         public string Name { get; }
         public string Desc { get; }
+        public int SellPrice { get; }
     }
 
     public struct EquipmentEntity : IItemEntity
@@ -65,6 +66,9 @@ namespace RGLabs.Data.Model
 
         [DataField("Item_Equip_Subject")]
         public string Desc { get; set; }
+        
+        [DataField("Item_Equip_Sell")]
+        public int SellPrice { get; set; }
 
         [DataField("Item_Equip_Class")] 
         public int grade;
@@ -80,9 +84,6 @@ namespace RGLabs.Data.Model
 
         [DataField("Item_Equip_Set_Value")] 
         public float[] setOptionValues;
-
-        [DataField("Item_Equip_Sell")]
-        public int sellPrice;
     }
     
     public struct ConsumableEntity : IItemEntity
@@ -102,6 +103,8 @@ namespace RGLabs.Data.Model
 
         [DataField("Item_Use_Subject")]
         public string Desc { get; set; }
+        
+        public int SellPrice { get; set; }
         
         [DataField("Item_Use_Option")] 
         public int option;
@@ -127,15 +130,15 @@ namespace RGLabs.Data.Model
 
         [DataField("Item_Parts_Subject")]
         public string Desc { get; set; }
+        
+        [DataField("Item_Parts_Sell")]
+        public int SellPrice { get; set; }
 
         [DataField("Item_Parts_Combine")]
         public int forCombine;
         
         [DataField("Item_Parts_Gain")]
         public int resultItemId;
-        
-        [DataField("Item_Parts_Sell")]
-        public int sellPrice;
     }
     
     public struct ChestEntity : IItemEntity
@@ -155,6 +158,8 @@ namespace RGLabs.Data.Model
 
         [DataField("Item_Chest_Subject")]
         public string Desc { get; set; }
+        
+        public int SellPrice { get; set; }
 
         [DataField("Item_Chest_Type")]
         public int type;

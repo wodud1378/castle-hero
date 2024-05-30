@@ -29,7 +29,7 @@ namespace RGLabs.Stage.UI
 
         private async void StartConfig()
         {
-            await _characterList.Init(Storage.userRepository.characters.Value, Storage.DB.units);
+            await _characterList.Init(Storage.userRepository.characters);
             
             _characterList.Open();
             _configFormation.enabled = true;

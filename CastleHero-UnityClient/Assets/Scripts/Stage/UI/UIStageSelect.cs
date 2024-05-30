@@ -37,7 +37,7 @@ namespace RGLabs.Stage.UI
         public void Init()
         {
             _repository = Storage.userRepository;
-            _db = Storage.DB;
+            _db = Storage.db;
 
             this.SubscribeButton(_prev, OnPrevStage);
             this.SubscribeButton(_next, OnNextStage);

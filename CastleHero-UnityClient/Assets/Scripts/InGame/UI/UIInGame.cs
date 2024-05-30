@@ -3,6 +3,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Pattern;
+using RGLabs.Data;
 using RGLabs.Data.DB;
 using RGLabs.Data.Repositories;
 using RGLabs.InGame.Behaviours;
@@ -33,10 +34,6 @@ namespace RGLabs.InGame.UI
         [SerializeField] private DamagePrefabs _damagePrefabs;
         [SerializeField] private string _healPrefab;
         [SerializeField] private string _shieldPrefab;
-        
-        private PoolContainer _poolContainer;
-        private InGameRepository _repository;
-        private UnitDB _db;
         
         private void Awake()
         {
@@ -80,7 +77,7 @@ namespace RGLabs.InGame.UI
             var tr = uiDamage.transform;
             tr.SetParent(_damageRoot);
             tr.localScale = Vector3.one;
-            uiDamage.Container = _poolContainer;
+            uiDamage.Container = Storage.poolContainer;
             uiDamage.Show(result);
         }
 
@@ -110,21 +107,17 @@ namespace RGLabs.InGame.UI
             if (string.IsNullOrEmpty(prefab))
                 return null;
 
-            return await _poolContainer.GetItem<UIDamage>(prefab);
+            return await Storage.poolContainer.GetItem<UIDamage>(prefab);
         }
 
-        public void Init(PoolContainer poolContainer, InGameRepository repository, UnitDB db)
+        public void Init()
         {
-            _poolContainer = poolContainer;
-            _repository = repository;
-            _db = db;
-
-            _repository.recovers
+            Storage.inGameRepository.recovers
                 .ObserveAdd()
                 .Subscribe(_=> OnRecoveryCollectionChanged())
                 .AddTo(this);
 
-            _repository.recovers
+            Storage.inGameRepository.recovers
                 .ObserveRemove()
                 .Subscribe(_=> OnRecoveryCollectionChanged())
                 .AddTo(this);
@@ -132,12 +125,12 @@ namespace RGLabs.InGame.UI
 
         private async void OnRecoveryCollectionChanged()
         {
-            var recovers = _repository.recovers;
+            var recovers = Storage.inGameRepository.recovers;
             var info = recovers
                 .Select(x => x.behaviour.Info)
                 .ToArray();
 
-            await DeadCharacters.Init(info, _db);
+            await DeadCharacters.Init(info);
         }
 
         private void SetPause(bool isPause)

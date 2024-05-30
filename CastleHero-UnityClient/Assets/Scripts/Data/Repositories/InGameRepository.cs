@@ -108,7 +108,10 @@ namespace RGLabs.Data.Repositories
 
         public CastleDB castles;
         public UnitDB units;
+
         public UnitLevelDB levels;
+        public UnitRateDB rates;
+        public UnitBalanceDB balances;
         public SkillDB skills;
 
 
@@ -125,6 +128,8 @@ namespace RGLabs.Data.Repositories
                 _loader.Load<WaveDB>(x => waves = x),
                 _loader.Load<UnitDB>(x => units = x),
                 _loader.Load<UnitLevelDB>(x => levels = x),
+                _loader.Load<UnitRateDB>(x => rates = x),
+                _loader.Load<UnitBalanceDB>(x => balances = x),
                 _loader.Load<SkillDB>(x => skills = x, true),
                 _loader.Load<CastleDB>(x => castles = x)
             };
@@ -152,14 +157,13 @@ namespace RGLabs.Data.Repositories
     public class InGameRepository : IDisposable
     {
         public readonly ReactiveProperty<UnitBehaviour> castle = new(null);
-        public readonly ReactiveProperty<UnitBehaviour[]> characters = new(null);
-
+        public readonly ReactiveCollection<UnitBehaviour> characters = new();
         public readonly ReactiveCollection<WaitRecover> recovers = new();
 
         public void Dispose()
         {
             castle.Value = null;
-            characters.Value = null;
+            characters.Clear();;
             recovers.Clear();
 
             castle.Dispose();

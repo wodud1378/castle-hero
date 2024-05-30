@@ -1,8 +1,11 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Flow;
+using RGLabs.Common.Pattern;
 using RGLabs.Data.Repositories;
 using RGLabs.Lobby.UI;
+using RGLabs.Network.Service;
+using RGLabs.Unit.Factory;
 using UnityEngine.AddressableAssets;
 
 namespace RGLabs.Data
@@ -17,16 +20,27 @@ namespace RGLabs.Data
     {
         public static readonly UserRepository userRepository = new();
         public static readonly InGameRepository inGameRepository = new();
-
+        public static readonly PoolContainer poolContainer = new();
+        public static DBCollections db;
+        public static UnitFactory unitFactory;
+        public static CastleFactory castleFactory;
+        
         public static Entrance entranceData = new() { state = State.Lobby, };
-
-        public static DBCollections DB { get; private set; }
         
         public static async UniTask InitAsync()
         {
             await InitAddressable();
             
-            DB = await DBCollections.Load();
+            db = await DBCollections.Load();
+            
+            unitFactory = new UnitFactory();
+            castleFactory = new CastleFactory();
+        }
+
+        private static async void Asdf()
+        {
+            var service = new LocalNetworkService();
+            await service.Login();
         }
         
         private static async UniTask InitAddressable()

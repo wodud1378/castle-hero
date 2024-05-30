@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
+using RGLabs.Data;
 using RGLabs.InGame.UI;
 using RGLabs.Lobby.Behaviours;
 using RGLabs.Unit.Behaviours;
@@ -33,7 +34,7 @@ namespace RGLabs.Lobby.UI
         public void Init()
         {
             _camera = Camera.main;
-            _factory = _formation.UnitFactory;
+            _factory = Storage.unitFactory;
 
             _hold = null;
         }
@@ -157,7 +158,7 @@ namespace RGLabs.Lobby.UI
             if (_formation.InArea(position))
                 return FindFromRay(position);
             
-            var slot = _characterList.GetSlot(position);
+            var slot = _characterList.GetItem(position);
             if (slot == null)
                 return null;
             

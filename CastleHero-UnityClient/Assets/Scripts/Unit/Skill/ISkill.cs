@@ -44,7 +44,7 @@ namespace RGLabs.Unit.Skill
 
         protected AroundCenter aroundCenter = new();
 
-        protected bool TryUpdateAroundCenter(int maxCount = 0, bool includeCenter = false)
+        protected bool TryUpdateAroundCenter(int maxCount = 0, bool includeCenter = false, bool includeCastle = false)
         {
             if (!Targeting.HasTargets())
                 return false;
@@ -56,17 +56,25 @@ namespace RGLabs.Unit.Skill
             int count = units.Count;
             int validCount = maxCount == 0 || maxCount > count ? count : maxCount;
 
-            IEnumerable<UnitBehaviour> around;
-            if (includeCenter)
-                around = units.Take(validCount);
-            else
-                around = units.Where(x => x != centerUnit).Take(validCount);
+            var castle = Storage.inGameRepository.castle.Value;
+            var around = units.Where(x =>
+                {
+                    bool filterA = !includeCenter || x != centerUnit;
+                    bool filterB = !includeCastle || x != castle;
+
+                    return filterA && filterB;
+                })
+                .Take(validCount);
 
             aroundCenter.center = centerUnit;
             aroundCenter.forward = forward;
             aroundCenter.around = around;
             return true;
         }
+
+        private bool IsNotCenterOrCastle(UnitBehaviour x, UnitBehaviour center, UnitBehaviour castle) => IsSameUnit(x, center) && IsSameUnit(x, castle);
+
+        private bool IsSameUnit(UnitBehaviour x, UnitBehaviour unit) => x == unit;
 
         protected void PublishAtk(UnitBehaviour unit, DamageType type, float amount, string effect = "")
         {
@@ -135,14 +143,14 @@ namespace RGLabs.Unit.Skill
             int maxCount = 0)
         {
             Func<UnitBehaviour, bool> condition;
-            var array = Storage.inGameRepository.characters.Value;
-            int length = array.Length;
+            var list = Storage.inGameRepository.characters;
+            int length = list.Count;
             if (otherCondition == null)
                 condition = (x) => x.IsValid();
             else
                 condition = (x) => x.IsValid() && otherCondition.Invoke(x);
 
-            return array
+            return list
                 .Where(condition)
                 .Take(maxCount == 0 || maxCount > length ? length : maxCount);
         }

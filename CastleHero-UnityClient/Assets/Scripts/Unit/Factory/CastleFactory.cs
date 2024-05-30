@@ -1,11 +1,12 @@
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Pattern;
+using RGLabs.Data;
 using RGLabs.Data.DB;
 using RGLabs.Data.Model;
-using RGLabs.Data.User;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using UnityEngine;
+using UnitInfo = RGLabs.Network.Model.UnitInfo;
 
 namespace RGLabs.Unit.Factory
 {
@@ -13,21 +14,15 @@ namespace RGLabs.Unit.Factory
     {
         private const string CastlePrefab = "Castle_01/Castle_01.prefab";
         
-        private readonly CastleDB _db;
-        private readonly PoolContainer _container;
-
-        public CastleFactory(PoolContainer container, CastleDB db)
-        {
-            _container = container;
-            _db = db;
-        }
+        private readonly CastleDB _db = Storage.db.castles;
+        private readonly PoolContainer _container = Storage.poolContainer;
 
         public async UniTask<UnitBehaviour> Create(int id, int lv, int grade, Vector2 position)
         {
             var info = new UnitInfo
             {
                 lv = lv,
-                grade = grade,
+                rate = grade,
                 id = id
             };
 

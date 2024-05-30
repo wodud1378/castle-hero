@@ -1,6 +1,4 @@
 using System;
-using RGLabs.Common.Behaviours;
-using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Components;
 using RGLabs.Unit.Finding;
 using RGLabs.Unit.Skill.Components.Factory;
@@ -13,12 +11,10 @@ namespace RGLabs.Unit.Skill
 
         public static ISkill Attach(this UnitCore unit, int id, int lv)
         {
-            var skill = Create(unit.owner, id, lv);
-            if (skill == null)
-                return null;
-
             Func<SkillBuilder, ISkill> buildMethod;
-            Builder.StartBuild(unit.owner, id, lv);
+            if (!Builder.StartBuild(unit.owner, id, lv))
+                return null;
+            
             switch (id)
             {
                 case 10001: buildMethod = Build10001; break;
@@ -39,24 +35,7 @@ namespace RGLabs.Unit.Skill
 
             return buildMethod.Invoke(Builder);
         }
-
-        private static ISkill Create(UnitBehaviour owner, int id, int lv)
-        {
-            var db = Context.currentBehaviour.db.skills;
-            int skillId = (id * 10) + lv;
-            if (!db.TryFind(skillId, out var entity))
-                return null;
-
-            var type = Type.GetType($"RGLabs.Unit.Skill.Skill{id}");
-            if (type == null)
-                return null;
-
-            var skill = (ISkill)Activator.CreateInstance(type);
-            skill.Owner = owner;
-            skill.Data = entity;
-            return skill;
-        }
-
+        
         private static ISkill Build10001(SkillBuilder builder)
         {
             return builder

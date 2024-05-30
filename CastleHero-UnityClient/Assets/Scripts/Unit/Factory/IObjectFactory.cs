@@ -1,5 +1,5 @@
 using Cysharp.Threading.Tasks;
-using RGLabs.Data.User;
+using RGLabs.Network.Model;
 using RGLabs.Unit.Behaviours;
 using UnityEngine;
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
+using RGLabs.Data;
 using RGLabs.Unit.Behaviours;
 using UnityEngine;
 
@@ -122,7 +123,7 @@ namespace RGLabs.InGame.Effects.Behaviours
 
         private static async UniTask<IEffect> GetEffect(string prefab)
         {
-            var container = Context.currentBehaviour.poolContainer;
+            var container = Storage.poolContainer;
             var item = await container.GetItem(prefab);
             if (item == null)
                 return null;

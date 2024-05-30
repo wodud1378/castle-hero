@@ -2,12 +2,12 @@ using System;
 using PolyNav;
 using RGLabs.Common.Behaviours;
 using RGLabs.Data.Model;
-using RGLabs.Data.User;
 using RGLabs.Unit.Components;
 using RGLabs.Utility;
 using UniRx;
 using UnityEditor;
 using UnityEngine;
+using UnitInfo = RGLabs.Network.Model.UnitInfo;
 
 namespace RGLabs.Unit.Behaviours
 {
@@ -60,14 +60,14 @@ namespace RGLabs.Unit.Behaviours
 
         public UnitEntity Data { get; private set; }
         
-        private UnitLevelEntity _level;
+        private UnitBalanceEntity _balance;
         
-        public void Init(UnitInfo info, UnitEntity entity, UnitLevelEntity levelData)
+        public void Init(UnitInfo info, UnitEntity entity, UnitBalanceEntity balance)
         {
             Info = info;
             Data = entity;
             
-            _level = levelData;
+            _balance = balance;
 
             if (Core == null)
             {
@@ -78,7 +78,7 @@ namespace RGLabs.Unit.Behaviours
                     .AddTo(this);
             }
             
-            Core.SetData(info, entity, levelData);
+            Core.SetData(info, entity, balance);
             if (Hit != null)
                 Hit.Init();
 
@@ -90,7 +90,7 @@ namespace RGLabs.Unit.Behaviours
         public void Recovery(Vector2 at)
         {
             ForceActivate();
-            Init(Info, Data, _level);
+            Init(Info, Data, _balance);
 
             position = at;
             Core.movement.Default = at;

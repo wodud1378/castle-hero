@@ -1,4 +1,3 @@
-using RGLabs.Data.Model;
 using RGLabs.Unit.Behaviours;
 using UnityEngine;
 

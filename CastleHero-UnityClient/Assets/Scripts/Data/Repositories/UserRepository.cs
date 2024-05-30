@@ -1,7 +1,9 @@
 using System;
-using RGLabs.Data.User;
+using System.Collections.Generic;
+using System.Linq;
 using RGLabs.InGame;
 using RGLabs.Lobby.Behaviours;
+using RGLabs.Network.Model;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using UniRx;
@@ -25,9 +27,11 @@ namespace RGLabs.Data.Repositories
 
         public readonly ReactiveProperty<int> stage;
         public readonly ReactiveProperty<int> castleLv;
-        public readonly ReactiveProperty<UnitInfo[]> characters;
-        public readonly ReactiveProperty<FieldCharacter[]> fieldCharacters;
 
+        public readonly ReactiveCollection<FieldCharacter> fieldCharacters;
+        public readonly ReactiveCollection<UnitInfo> characters;
+        public readonly ReactiveCollection<IItem> items;
+        
         public UserRepository()
         {
             stage = new(Load(SavedStageKey, 1));
@@ -37,35 +41,28 @@ namespace RGLabs.Data.Repositories
             castleLv.Subscribe(x => Save(CastleKey, x));
 
             characters = new(LoadArray<UnitInfo>(CharactersKey, TestData()));
-            characters.Subscribe(x => SaveArray(CharactersKey, x));
-
+            items = new(LoadArray<IItem>(InventoryKey));
+            
             fieldCharacters = new(LoadArray<FieldCharacter>(FieldCharactersKey));
-            fieldCharacters.Subscribe(x => SaveArray(FieldCharactersKey, x));
         }
 
-        public void SaveFieldCharacters(UnitBehaviour[] units)
+        public void ApplyFieldCharacters(IEnumerable<UnitBehaviour> units)
         {
-            int length = units.Length;
-            var array = new FieldCharacter[length];
-            for (int i = 0; i < length; ++i)
+            fieldCharacters.Clear();
+            foreach (var unit in units)
             {
-                int index = Array.FindIndex(characters.Value, x => x.id == units[i].Info.id);
-                if (!index.IsValidIndex(characters.Value))
+                int index = characters.IndexOf(unit.Info);
+                if (!index.IsValidIndex())
                     continue;
-
-                array[i] = new FieldCharacter
+                
+                fieldCharacters.Add(new FieldCharacter
                 {
                     index = index,
-                    position = units[i].position,
-                };
+                    position = unit.position
+                });
             }
-
-            fieldCharacters.Value = array;
-        }
-
-        public UnitInfo FindCharacter(int id)
-        {
-            return Array.Find(characters.Value, (x) => x.id == id);
+            
+            SaveArray(FieldCharactersKey, fieldCharacters.ToArray());
         }
 
         private static int Load(string key, int defaultVal = -1) => PlayerPrefs.GetInt(key, defaultVal);
@@ -75,25 +72,17 @@ namespace RGLabs.Data.Repositories
         private static T[] LoadArray<T>(string key, string defaultVal = "")
         {
             var wrap = JsonUtility.FromJson<ArrayWrap<T>>(PlayerPrefs.GetString(key, defaultVal));
-            if (wrap == null)
-                return null;
-
-            return wrap.array;
+            return wrap == null ? Array.Empty<T>() : wrap.array;
         }
 
-        private static void SaveArray<T>(string key, T[] value)
+        private static void SaveArray<T>(string key, IEnumerable<T> value)
         {
-            var wrap = new ArrayWrap<T> { array = value };
+            var wrap = new ArrayWrap<T> { array = value.ToArray() };
             var data = JsonUtility.ToJson(wrap);
 
             Debug.Log(data);
             PlayerPrefs.SetString(key, data);
         }
-
-        private static T Load<T>(string key, string defaultVal = "") =>
-            JsonUtility.FromJson<T>(PlayerPrefs.GetString(key, defaultVal));
-
-        private static void Save<T>(string key, T value) => PlayerPrefs.SetString(key, JsonUtility.ToJson(value));
 
         private static string TestData()
         {
@@ -102,25 +91,25 @@ namespace RGLabs.Data.Repositories
                 new UnitInfo
                 {
                     lv = 1,
-                    grade = 1,
+                    rate = 1,
                     id = 10021
                 },
                 new UnitInfo
                 {
                     lv = 1,
-                    grade = 1,
+                    rate = 1,
                     id = 10023
                 },
                 new UnitInfo
                 {
                     lv = 1,
-                    grade = 1,
+                    rate = 1,
                     id = 10034
                 },
                 new UnitInfo
                 {
                     lv = 1,
-                    grade = 1,
+                    rate = 1,
                     id = 10000
                 },
             };

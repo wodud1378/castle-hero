@@ -1,83 +1,21 @@
-using System;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.UI;
 using RGLabs.Data.DB;
-using RGLabs.Data.User;
+using RGLabs.Network.Model;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace RGLabs.InGame.UI
 {
-    public class UICharacterList : MonoBehaviour, IDisposable
+    public class UICharacterList : UIListAdapter<UICharacterSlot, UnitInfo>
     {
         private static readonly int UnFold = Animator.StringToHash("UnFold");
         private static readonly int Fold = Animator.StringToHash("Fold");
 
-        [field: SerializeField] public RectTransform SlotParent { get; private set; }
-
-        [SerializeField] private AssetReference _slotPrefab;
         [SerializeField] private Animator _animator;
+
+        private UnitDB _db;
         
-        public bool IsOpen { get; private set; }
-        
-        private readonly List<UICharacterSlot> _slots = new();
-
-        public async UniTask Init(UnitInfo[] characters, UnitDB db)
-        {
-            Clear();
-            
-            var tasks = new List<UniTask>();
-            foreach (var character in characters)
-            {
-                tasks.Add(AddSlot(character, db));
-            }
-
-            await UniTask.WhenAll(tasks);
-        }
-
-        private async UniTask<UICharacterSlot> AddSlot(UnitInfo unitInfo, UnitDB db)
-        {
-            var obj = await Addressables.InstantiateAsync(_slotPrefab, SlotParent);
-            var slot = obj.GetComponent<UICharacterSlot>();
-            await slot.InitAsync(unitInfo, db);
-
-            _slots.Add(slot);
-            return slot;
-        }
-
-        public void Dispose()
-        {
-            Clear();
-        }
-
-        public UICharacterSlot GetSlot(Vector2 position)
-        {
-            var corners = new Vector3[4];
-            SlotParent.GetWorldCorners(corners);
-
-            var rootPos = SlotParent.position;
-            var width = (corners[2] - corners[1]).x;
-            var height = (corners[1] - corners[0]).y;
-            rootPos.y -= height;
-            var rect = new Rect(rootPos.x, rootPos.y, width, height);
-
-            if (!rect.Contains(position))
-                return null;
-
-            UICharacterSlot selectedSlot = null;
-            float lastDistance = float.MaxValue;
-            foreach (var slot in _slots)
-            {
-                float distance = Vector2.Distance(slot.transform.position, position);
-                if (lastDistance > distance)
-                {
-                    selectedSlot = slot;
-                    lastDistance = distance;
-                }
-            }
-
-            return selectedSlot;
-        }
+        protected override async UniTask SetItem(UICharacterSlot item, UnitInfo data) => await item.InitAsync(data, _db);
 
         public void Open()
         {
@@ -92,17 +30,7 @@ namespace RGLabs.InGame.UI
 
             _animator.SetTrigger(Fold);
         }
-
-        public void Clear()
-        {
-            foreach (var slot in _slots)
-            {
-                slot.Dispose();
-                Addressables.ReleaseInstance(slot.gameObject);
-            }
-
-            _slots.Clear();
-        }
+        
 
         #region Animation Events.
 
@@ -116,9 +44,9 @@ namespace RGLabs.InGame.UI
         private void OnDrawGizmosSelected()
         {
             var corners = new Vector3[4];
-            SlotParent.GetWorldCorners(corners);
+            itemRoot.GetWorldCorners(corners);
 
-            var rootPos = SlotParent.position;
+            var rootPos = itemRoot.position;
             var width = (corners[2] - corners[1]).x;
             var height = (corners[1] - corners[0]).y;
             rootPos.y -= height;

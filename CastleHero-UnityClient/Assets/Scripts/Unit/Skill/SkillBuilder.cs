@@ -1,9 +1,10 @@
 using System;
-using RGLabs.Common.Behaviours;
+using RGLabs.Data;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Finding;
 using RGLabs.Unit.Skill.Components;
 using RGLabs.Unit.Skill.Components.Factory;
+using UnityEngine;
 
 namespace RGLabs.Unit.Skill
 {
@@ -16,21 +17,27 @@ namespace RGLabs.Unit.Skill
 
         private ISkill _skill;
         
-        public SkillBuilder StartBuild(UnitBehaviour owner, int id, int lv)
+        public bool StartBuild(UnitBehaviour owner, int id, int lv)
         {
-            var db = Context.currentBehaviour.db.skills;
+            var db = Storage.db.skills;
             int skillId = (id * 10) + lv;
             if (!db.TryFind(skillId, out var entity))
-                throw new Exception($"Skill DB not contains {skillId}.");
+            {
+                Debug.LogWarning($"Skill DB not contains {skillId}.");
+                return false;
+            }
 
             var type = Type.GetType($"RGLabs.Unit.Skill.Skill{id}");
             if (type == null)
-                throw new Exception($"Skill{id} class not found.");
+            {
+                Debug.LogWarning($"Skill{id} class not found.");
+                return false;
+            }
 
             _skill = (ISkill)Activator.CreateInstance(type);
             _skill.Owner = owner;
             _skill.Data = entity;
-            return this;
+            return true;
         }
 
         public SkillBuilder SetTargeting(Targeting option, int maxTarget)

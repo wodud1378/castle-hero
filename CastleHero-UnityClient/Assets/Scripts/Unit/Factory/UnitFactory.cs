@@ -1,31 +1,25 @@
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Pattern;
+using RGLabs.Data;
 using RGLabs.Data.DB;
-using RGLabs.Data.User;
 using RGLabs.Unit.Behaviours;
 using UnityEngine;
+using UnitInfo = RGLabs.Network.Model.UnitInfo;
 
 namespace RGLabs.Unit.Factory
 {
     public class UnitFactory : IUnitFactory
     {
-        private readonly PoolContainer _container;
-        private readonly UnitDB _unitDB;
-        private readonly UnitLevelDB _levelDB;
+        private readonly PoolContainer _container = Storage.poolContainer;
+        private readonly UnitDB _unitDB = Storage.db.units;
+        private readonly UnitBalanceDB _balanceDB = Storage.db.balances;
 
-        public UnitFactory(PoolContainer container, UnitDB unitDB, UnitLevelDB levelDB)
-        {
-            _container = container;
-            _unitDB = unitDB;
-            _levelDB = levelDB;
-        }
-        
         public async UniTask<UnitBehaviour> Create(int id, int lv, int grade, Vector2 position)
         {
             var info = new UnitInfo
             {
                 lv = lv,
-                grade = grade,
+                rate = grade,
                 id = id
             };
 
@@ -41,10 +35,10 @@ namespace RGLabs.Unit.Factory
             if (unit == null)
                 return null;
 
-            if (!_levelDB.TryFind(info.id, out var levelEntity))
-                levelEntity = default;
+            if (!_balanceDB.TryFind(info.id, out var balanceEntity))
+                balanceEntity = default;
             
-            unit.Init(info, unitEntity, levelEntity);
+            unit.Init(info, unitEntity, balanceEntity);
             unit.position = position;
             return unit;
         }

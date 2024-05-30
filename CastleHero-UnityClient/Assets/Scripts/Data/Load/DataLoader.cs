@@ -202,6 +202,18 @@ namespace RGLabs.Data.Load
         private bool TryParse(string value, Type type, out object result)
         {
             bool success = false;
+            if (type.IsEnum)
+            {
+                if (int.TryParse(value, out int enumVal))
+                {
+                    result = Enum.ToObject(type, enumVal);
+                    return true;
+                }
+
+                result = null;
+                return false;
+            }
+
             switch (Type.GetTypeCode(type))
             {
                 case TypeCode.Boolean:

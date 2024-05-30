@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using PolyNav;
 using RGLabs.Common;
 using RGLabs.Data.Model;
-using RGLabs.Data.User;
 using RGLabs.InGame.System;
+using RGLabs.Network.Model;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Components.Move;
 using RGLabs.Unit.Finding;
@@ -14,6 +14,7 @@ using Spine.Unity;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
+using UnitInfo = RGLabs.Network.Model.UnitInfo;
 
 namespace RGLabs.Unit.Components
 {
@@ -133,9 +134,9 @@ namespace RGLabs.Unit.Components
             // TODO : 이펙트?
         }
 
-        public void SetData(UnitInfo info, UnitEntity data, UnitLevelEntity levelData)
+        public void SetData(UnitInfo info, UnitEntity data, UnitBalanceEntity balance)
         {
-            status.Init(data, info.lv, levelData);
+            status.Init(data, info.lv, balance);
             elemental.atkType = (Elemental.Type)data.elementalAtk;
             elemental.defType = (Elemental.Type)data.elementalDef;
 
@@ -154,7 +155,10 @@ namespace RGLabs.Unit.Components
             renderController.ApplySkin(data.skinName);
             UpdateLookDirection(movement.Default);
 
-            ApplyRateBonus(info.grade, levelData, out int skillLv);
+            ApplyRateBonus(info.rate, balance, out int skillLv);
+            
+            if(info.equipments != null)
+                ApplyEquipmentBonus(info.equipments);
 
             if (data.skill != 0)
             {
@@ -169,21 +173,43 @@ namespace RGLabs.Unit.Components
                 .AddTo(owner);
         }
 
-        private void ApplyRateBonus(int grade, UnitLevelEntity levelData, out int skillLv)
+        private void ApplyEquipmentBonus(IEnumerable<EquipItem> equipments)
+        {
+            foreach (var equipment in equipments)
+            {
+                int index = 0;
+                while (index.IsValidIndex(equipment.stats, equipment.values))
+                {
+                    var stat = (Status.Type)equipment.stats[index];
+                    var value = equipment.values[index];
+
+                    var adjustValue = status[stat].multiplyAdjust;
+                    if(value < 0f)
+                        adjustValue.Decrease(Mathf.Abs(value));
+                    else
+                        adjustValue.Increase(value);
+                    
+                    status[stat].multiplyAdjust.Increase(value);
+                    ++index;
+                }
+            }
+        }
+
+        private void ApplyRateBonus(int grade, UnitBalanceEntity balanceData, out int skillLv)
         {
             skillLv = 1;
-            if (levelData.rateOptions == null || levelData.rateValues == null)
+            if (balanceData.rateOptions == null || balanceData.rateValues == null)
                 return;
 
-            int rateBonusLength = levelData.rateOptions.Length;
+            int rateBonusLength = balanceData.rateOptions.Length;
             int rateIndex = Mathf.Clamp(grade, 0, rateBonusLength) - 1;
             if (rateIndex == -1)
                 return;
 
             for (int i = 0; i < rateIndex; ++i)
             {
-                var options = levelData.rateOptions[i];
-                var values = levelData.rateValues[i];
+                var options = balanceData.rateOptions[i];
+                var values = balanceData.rateValues[i];
                 int length = options.Length;
                 for (int j = 0; j < length; ++j)
                 {

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using RGLabs.Data.Model;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Components;
 using RGLabs.Unit.Finding;
@@ -16,6 +17,11 @@ using Random = UnityEngine.Random;
 
 namespace RGLabs.Utility
 {
+    public static class ItemHelder
+    {
+        public static ItemTypeCode ItemType(this int id) => (ItemTypeCode)(id / 10000);
+    }
+    
     public static class EnumHelper
     {
         public static unsafe int CastToInt<T>(this T val) where T : unmanaged, Enum => *(int*)&val;
@@ -157,6 +163,24 @@ namespace RGLabs.Utility
 
     public static class RxHelper
     {
+        public static IObservable<ReactiveCollection<T>> ChangeAsObservable<T>(this ReactiveCollection<T> collection)
+        {
+            return Observable.Create<ReactiveCollection<T>>(observer =>
+            {
+                var disposableAdd = collection.ObserveAdd()
+                    .Subscribe(ev => observer.OnNext(collection));
+
+                var disposableRemove = collection.ObserveRemove()
+                    .Subscribe(ev => observer.OnNext(collection));
+
+                return Disposable.Create(() =>
+                {
+                    disposableAdd.Dispose();
+                    disposableRemove.Dispose();
+                });
+            });
+        }
+        
         public static void SubscribeMessage<T>(this MonoBehaviour behaviour, Action<T> onReceive)
         {
             MessageBroker.Default

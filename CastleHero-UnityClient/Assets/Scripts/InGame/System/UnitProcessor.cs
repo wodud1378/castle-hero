@@ -1,5 +1,6 @@
 using System;
 using RGLabs.Common.Behaviours;
+using RGLabs.Data;
 using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.Unit.Components;
 using RGLabs.Utility;
@@ -124,7 +125,7 @@ namespace RGLabs.InGame.System
         private void OnCreatedRecover(WaitRecover recover)
         {
             var subscription = ReserveRecover(recover);
-            var collection = _root.gameRepo.recovers;
+            var collection = Storage.inGameRepository.recovers;
             collection.Add(recover);
 
             recover.Bind(collection, subscription);

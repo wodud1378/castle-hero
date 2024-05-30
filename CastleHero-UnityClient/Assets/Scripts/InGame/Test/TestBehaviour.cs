@@ -45,7 +45,7 @@ namespace RGLabs.InGame.Test
 
         private void KillCharacter(int index)
         {
-            var characters = Storage.inGameRepository.characters.Value;
+            var characters = Storage.inGameRepository.characters;
             if (!index.IsValidIndex(characters))
                 return;
 
