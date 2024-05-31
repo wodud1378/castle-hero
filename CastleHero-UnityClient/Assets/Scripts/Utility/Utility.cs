@@ -1,8 +1,12 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Behaviours;
 using RGLabs.Data.Model;
+using RGLabs.Network.Model;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Components;
 using RGLabs.Unit.Finding;
@@ -17,11 +21,34 @@ using Random = UnityEngine.Random;
 
 namespace RGLabs.Utility
 {
+    public class PrefabPathAttribute : Attribute
+    {
+        public string Path { get; }
+
+        public PrefabPathAttribute(string path) => Path = path;
+    }
+    
+    public static class PrefabPathCache
+    {
+        private static Dictionary<Type, string> _cache;
+
+        [RuntimeInitializeOnLoadMethod]
+        public static void Init()
+        {
+            var assembly = Assembly.Load("Assembly-CSharp");
+            _cache = assembly.GetTypes()
+                .Where(x => x.IsClass && x.GetCustomAttribute<PrefabPathAttribute>() != null)
+                .ToDictionary(x => x, y => y.GetCustomAttribute<PrefabPathAttribute>().Path);
+        }
+
+        public static string Load(Type type) => _cache.GetValueOrDefault(type);
+    }
+
     public static class ItemHelder
     {
         public static ItemTypeCode ItemType(this int id) => (ItemTypeCode)(id / 10000);
     }
-    
+
     public static class EnumHelper
     {
         public static unsafe int CastToInt<T>(this T val) where T : unmanaged, Enum => *(int*)&val;
@@ -34,7 +61,7 @@ namespace RGLabs.Utility
             return (castedIt & castedVal) == castedVal;
         }
     }
-    
+
     public static class AddressableHelper
     {
         public static async UniTask<AsyncOperationHandle<T>> Handle<T>(this string key)
@@ -78,7 +105,7 @@ namespace RGLabs.Utility
                     break;
             }
         }
-        
+
         public static LayerMask EnemyLayerMask(int id, int atkType)
         {
             LayerMask layerMask = default;
@@ -147,6 +174,90 @@ namespace RGLabs.Utility
         }
     }
 
+    public class IdDescendingComparer : IComparer<UnitInfo>
+    {
+        public int Compare(UnitInfo x, UnitInfo y)
+        {
+            if (x == null && y == null) return 0;
+            if (x == null) return 1;
+            if (y == null) return -1;
+
+            return x.id.CompareTo(y.id);
+        }
+    }
+
+    public class LvDescendingComparer : IComparer<UnitInfo>
+    {
+        public int Compare(UnitInfo x, UnitInfo y)
+        {
+            if (x == null && y == null) return 0;
+            if (x == null) return 1;
+            if (y == null) return -1;
+
+            int lvComparison = y.lv.CompareTo(x.lv);
+            if (lvComparison == 0)
+            {
+                return x.id.CompareTo(y.id);
+            }
+
+            return lvComparison;
+        }
+    }
+
+    public class LvAscendingComparer : IComparer<UnitInfo>
+    {
+        public int Compare(UnitInfo x, UnitInfo y)
+        {
+            if (x == null && y == null) return 0;
+            if (x == null) return 1;
+            if (y == null) return -1;
+
+            int lvComparison = x.lv.CompareTo(y.lv);
+            if (lvComparison == 0)
+            {
+                return x.id.CompareTo(y.id);
+            }
+
+            return lvComparison;
+        }
+    }
+
+    public class RateDescendingComparer : IComparer<UnitInfo>
+    {
+        public int Compare(UnitInfo x, UnitInfo y)
+        {
+            if (x == null && y == null) return 0;
+            if (x == null) return 1;
+            if (y == null) return -1;
+
+            int rateComparison = y.rate.CompareTo(x.rate);
+            if (rateComparison == 0)
+            {
+                return x.id.CompareTo(y.id);
+            }
+
+            return rateComparison;
+        }
+    }
+
+    public class RateAscendingComparer : IComparer<UnitInfo>
+    {
+        public int Compare(UnitInfo x, UnitInfo y)
+        {
+            if (x == null && y == null) return 0;
+            if (x == null) return 1;
+            if (y == null) return -1;
+
+            int rateComparison = x.rate.CompareTo(y.rate);
+            if (rateComparison == 0)
+            {
+                return x.id.CompareTo(y.id);
+            }
+
+            return rateComparison;
+        }
+    }
+
     public static class ObjectHelper
     {
         public static void ToUILayer(this GameObject obj) => obj.ToLayer("UI");
@@ -180,7 +291,7 @@ namespace RGLabs.Utility
                 });
             });
         }
-        
+
         public static void SubscribeMessage<T>(this MonoBehaviour behaviour, Action<T> onReceive)
         {
             MessageBroker.Default
@@ -257,13 +368,14 @@ namespace RGLabs.Utility
             return array;
         }
 
-        public static bool IsValidIndex(this int index, params IList[] listCollection) => listCollection.All(list => index.IsValidIndex(list));
+        public static bool IsValidIndex(this int index, params IList[] listCollection) =>
+            listCollection.All(list => index.IsValidIndex(list));
 
         public static bool IsValidIndex(this int index, IList target)
         {
             if (target == null)
                 return false;
-            
+
             return index >= 0 && target.Count > index;
         }
     }

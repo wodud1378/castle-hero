@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RGLabs.Data.Model;
 using RGLabs.Utility;
 using UnityEngine;
@@ -53,6 +54,8 @@ namespace RGLabs.Data.DB
                 return entity;
             }
         }
+
+        public IEnumerable<T> Where(Predicate<T> condition) => entities.Where(condition.Invoke);
         
         public bool TryIndexOf(int index, out T entity)
         {

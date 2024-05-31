@@ -1590,9 +1590,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb0fd99593374775be27c8df8886da9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <SlotParent>k__BackingField: {fileID: 7195815581097651173}
-  _slotPrefab:
-    m_AssetGUID: 962e75f93f7d5d749ae9737ff965e8e1
+  itemRoot: {fileID: 7195815581097651173}
+  _itemPrefab:
+    m_AssetGUID: 
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0

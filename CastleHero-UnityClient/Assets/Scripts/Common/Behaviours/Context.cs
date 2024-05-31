@@ -16,13 +16,14 @@ namespace RGLabs.Common.Behaviours
         public static readonly BackButton Back = new();
         public static readonly Transition Transition = new();
 
-        public static SceneBehaviour currentBehaviour;
         public static StartButton startButton;
+        public static PopupManager popupManager;
         public static UILock uiLock;
-
+        
         [SerializeField] private int _frameRate;
         [SerializeField] private UILock _uiLock;
         [SerializeField] private StartButton _startButton;
+        [SerializeField] private PopupManager _popupManager;
 
         private async void Load()
         {
@@ -31,6 +32,8 @@ namespace RGLabs.Common.Behaviours
             uiLock = _uiLock;
             startButton = _startButton;
             startButton.StageSelect.Init();
+            
+            popupManager = _popupManager;
             
             InitSubscriptions();
 

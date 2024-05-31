@@ -28,8 +28,6 @@ namespace RGLabs.Lobby.Behaviours
         {
             base.OnLoaded();
             
-            Context.currentBehaviour = this;
-
             await _formation.Init();
 
             _uiStage.Init();

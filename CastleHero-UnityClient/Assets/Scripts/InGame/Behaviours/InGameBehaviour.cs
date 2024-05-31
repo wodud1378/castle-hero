@@ -40,8 +40,6 @@ namespace RGLabs.InGame.Behaviours
 
         private void Run(StartGame startGame)
         {
-            Context.currentBehaviour = this;
-
             var castle = Storage.inGameRepository.castle.Value;
             castle.state
                 .Where(x => x == UnitCore.States.Dead)

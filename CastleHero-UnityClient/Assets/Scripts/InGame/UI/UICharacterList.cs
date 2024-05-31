@@ -40,19 +40,5 @@ namespace RGLabs.InGame.UI
         }
 
         #endregion
-
-        private void OnDrawGizmosSelected()
-        {
-            var corners = new Vector3[4];
-            itemRoot.GetWorldCorners(corners);
-
-            var rootPos = itemRoot.position;
-            var width = (corners[2] - corners[1]).x;
-            var height = (corners[1] - corners[0]).y;
-            rootPos.y -= height;
-            var rect = new Rect(rootPos.x, rootPos.y, width, height);
-            
-            Gizmos.DrawWireCube(rect.center, rect.size);
-        }
     }
 }

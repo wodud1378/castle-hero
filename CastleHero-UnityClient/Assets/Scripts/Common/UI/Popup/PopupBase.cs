@@ -1,3 +1,5 @@
+using System;
+using Cysharp.Threading.Tasks;
 using RGLabs.Common.Flow;
 using UniRx;
 using UnityEngine;
@@ -8,6 +10,11 @@ namespace RGLabs.Common.UI.Popup
 {
     public abstract class PopupBase : MonoBehaviour, IBackButtonListener
     {
+        public event Action<PopupBase> OnClose;
+
+        private static readonly int CloseTrigger = Animator.StringToHash("Close");
+        
+        [SerializeField] private Animator _animator;
         [SerializeField] private Button _close;
 
         private void Awake()
@@ -18,28 +25,48 @@ namespace RGLabs.Common.UI.Popup
                 .AddTo(this);
         }
 
-        public void Close()
+        public virtual UniTask Open()
         {
-            // TODO : 애니메이션 연결
+            gameObject.SetActive(true);
+
+            return UniTask.DelayFrame(1);
+        }
+
+        public UniTask Close() => _animator == null ? DirectCloseTask() : CloseAnimationTask();
+
+        private UniTask CloseAnimationTask()
+        {
+            _animator.SetTrigger(CloseTrigger);
             
+            var task = Observable.EveryUpdate()
+                .Where(_ =>
+                {
+                    var state = _animator.GetCurrentAnimatorStateInfo(0);
+                    return state.shortNameHash == CloseTrigger && state.normalizedTime >= 1f;
+                })
+                .ToUniTask()
+                .ContinueWith(_=> Closed());
+            
+            return task;
+        }
+
+        private UniTask DirectCloseTask()
+        {
             Closed();
+            return UniTask.CompletedTask;
         }
         
-        public virtual bool OnProcessBack()
+        public bool OnProcessBack()
         {
             Close();
             
             return true;
         }
         
-        // TODO : 애니메이션 연결
-        #region Animation Events.
-
-        public void Closed()
+        private void Closed()
         {
+            OnClose?.Invoke(this);
             Addressables.ReleaseInstance(gameObject);
         }
-
-        #endregion
     }
 }
