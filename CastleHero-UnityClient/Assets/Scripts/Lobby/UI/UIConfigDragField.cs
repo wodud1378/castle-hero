@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 
 namespace RGLabs.Lobby.UI
 {
-    public class UIConfigDragField : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+    public class UIConfigDragField : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         [SerializeField] private Formation _formation;
         [SerializeField] private PolygonDrawer _validationCircle;
@@ -46,12 +46,12 @@ namespace RGLabs.Lobby.UI
                 return;
 
             _originLayer = target.gameObject.layer;
-            target.gameObject.ToUILayer();
+            target.gameObject.ToPreviewLayer();
             target.Core.inBattle = false;
             target.Collider.isTrigger = true;
         }
 
-        public void OnPointerDown(PointerEventData eventData)
+        public void OnBeginDrag(PointerEventData eventData)
         {
             if (unit.Value != null)
                 return;
@@ -69,7 +69,7 @@ namespace RGLabs.Lobby.UI
                 _formation.IsValid(unit.Value.Collider, _originLayer) ? _validColor : _invalidColor;
         }
 
-        public void OnPointerUp(PointerEventData eventData)
+        public void OnEndDrag(PointerEventData eventData)
         {
             _ctSource?.Cancel();
             

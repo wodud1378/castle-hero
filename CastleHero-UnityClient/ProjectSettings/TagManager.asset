@@ -64,3 +64,6 @@ TagManager:
   - name: UI
     uniqueID: 4102908623
     locked: 0
+  - name: UnitPreview
+    uniqueID: 1634889553
+    locked: 0

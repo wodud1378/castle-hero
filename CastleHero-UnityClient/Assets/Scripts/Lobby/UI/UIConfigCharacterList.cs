@@ -10,6 +10,7 @@ using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Factory;
 using RGLabs.Utility;
 using TMPro;
+using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -45,6 +46,12 @@ namespace RGLabs.Lobby.UI
 
         private void Awake()
         {
+            _formation.capacity
+                .CombineLatest(_formation.placed, (current, max) => (current, max))
+                .ThrottleFrame(1)
+                .Subscribe(x=> _placedUnit.text = $"{x.current}/{x.max}")
+                .AddTo(this);
+            
             this.SubscribeButton(_close, Close);
             this.SubscribeButton(_reset, _formation.Clear);
             this.SubscribeButton(_auto, _formation.AutoPlacement);

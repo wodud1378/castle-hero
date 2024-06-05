@@ -290,7 +290,7 @@ namespace RGLabs.Utility
 
     public static class ObjectHelper
     {
-        public static void ToUILayer(this GameObject obj) => obj.ToLayer("UI");
+        public static void ToPreviewLayer(this GameObject obj) => obj.ToLayer("UnitPreview");
 
         public static void ToLayer(this GameObject obj, string layer)
         {
