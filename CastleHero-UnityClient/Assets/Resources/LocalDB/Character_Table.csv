@@ -7,3 +7,4 @@
 30003,Common/Portrait/Monste_30003.png,Monster_30003/Monster_30003.prefab,,,기사단장,0,3,30003,2,0,1,1,0,5000,100,0.1,1.5,1,1,2,3,0,0
 10023,Common/Portrait/Character_10023.png,Character_10023/Character_10023.prefab,,,슬라임킹,0,7,10023,2,1,1,1,30,1100,60,0.1,1.2,1,1,1,3,0,0
 10001,Common/Portrait/Character_10001.png,Character_10001/Character_10001.prefab,,,데스나이트,0,6,10001,2,1,1,1,30,1000,100,0.3,1.2,1,3,1,4,0,0
+10000,Common/Portrait/Character_10000.png,Character_10001/Character_10000.prefab,,,바리게이트,0,6,,2,1,1,1,,,100,0.3,1.2,1,3,1,4,0,0
