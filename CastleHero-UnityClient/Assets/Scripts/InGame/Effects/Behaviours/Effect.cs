@@ -34,6 +34,11 @@ namespace RGLabs.InGame.Effects.Behaviours
             
             SetParticleActive(false);
 
+            foreach (var particle in _particles)
+            {
+                particle.Play();
+            }
+
             foreach (var child in _children)
             {
                 child.duration = duration;

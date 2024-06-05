@@ -25,7 +25,7 @@ namespace RGLabs.Data.Model
         public int barricadeHp;
 
         [DataField("Castle_Skill")] 
-        public int[] skills;
+        public string[] skills;
 
         [DataField("Castle_Skill_Value")] 
         public float[] skillValues;

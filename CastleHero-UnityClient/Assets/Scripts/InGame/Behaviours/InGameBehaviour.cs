@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using RGLabs.Common;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Data;
@@ -5,6 +9,7 @@ using RGLabs.InGame.System;
 using RGLabs.InGame.UI;
 using RGLabs.Lobby.Behaviours;
 using RGLabs.Unit.Components;
+using RGLabs.Unit.Skill.Global;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
@@ -40,12 +45,16 @@ namespace RGLabs.InGame.Behaviours
 
         private void Run(StartGame startGame)
         {
+            _uiInGame.gameObject.SetActive(true);
+            
             var castle = Storage.inGameRepository.castle.Value;
             castle.state
                 .Where(x => x == UnitCore.States.Dead)
                 .Subscribe(_ => OnCastleDestroy())
                 .AddTo(this);
 
+            InitGlobalSkills();
+            
             Context.startButton.enabled = false;
             
             _uiInGame.Init();
@@ -55,6 +64,34 @@ namespace RGLabs.InGame.Behaviours
 
             RunWave();
             RunUnits();
+        }
+
+        private void InitGlobalSkills()
+        {
+            int lv = Storage.userRepository.castleLv.Value;
+            if (!Storage.db.castles.TryFind(lv, out var entity))
+                return;
+
+            int index = 0;
+            var list = new List<GlobalSkill.Parameter>();
+            while (index.IsValidIndex(entity.skills, entity.skillValues))
+            {
+                var type = Enum.Parse<GlobalSkill.Type>(entity.skills[index]);
+                if (type == GlobalSkill.Type.Damage)
+                {
+                    list.Add(new GlobalSkill.Parameter
+                    {
+                        type = type,
+                        radius = 5f,
+                        value = entity.skillValues[index],
+                        coolTime = 7.5f,
+                        centerEffect = Constants.GlobalSkillEffect[type]
+                    });
+                }
+                ++index;
+            }
+
+            _uiInGame.GlobalSkill.Init(list).Forget();
         }
 
         private void RunWave()

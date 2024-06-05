@@ -110,7 +110,6 @@ namespace RGLabs.InGame.System
             var to = ev.To;
             if (!to.IsValid())
                 return;
-
             
             var ability = to.status[ev.Type];
             var adjust = ev.IsMultiplier ? ability.multiplyAdjust : ability.fixedAdjust;

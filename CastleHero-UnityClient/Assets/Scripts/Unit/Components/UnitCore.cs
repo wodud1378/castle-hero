@@ -20,6 +20,12 @@ namespace RGLabs.Unit.Components
 {
     public class UnitCore
     {
+        public enum Teams
+        {
+            Monster,
+            Character,
+        }
+        
         public enum States
         {
             Prepare,
@@ -29,6 +35,14 @@ namespace RGLabs.Unit.Components
             Attack,
             Skill,
             Dead,
+        }
+
+        public enum Restrictions
+        {
+            Move = 0,
+            Attack,
+            Skill,
+            Count,
         }
 
         public static readonly Dictionary<States, int> AnimationsHash = new()
@@ -60,9 +74,11 @@ namespace RGLabs.Unit.Components
 
         public LayerMask enemyLayerMask;
         public LayerMask alleyLayerMask;
-
-        public ISkill skill;
-
+        
+        public readonly float[] restrictions;
+        
+        public Teams Team { get; private set; }
+        
         public bool Invincible => _leftInvincible > 0f;
 
         public bool inBattle;
@@ -75,14 +91,18 @@ namespace RGLabs.Unit.Components
 
         public bool canAttack;
 
-        private bool AllowMove => _enableMove && canMove;
-        private bool AllowAttack => _enableAttack && canAttack;
+        private bool AllowSkill => restrictions[(int)Restrictions.Skill] <= 0f;
+        private bool AllowMove => _enableMove && canMove && restrictions[(int)Restrictions.Move] <= 0f;
+        private bool AllowAttack => _enableAttack && canAttack && restrictions[(int)Restrictions.Attack] <= 0f;
 
+        private ISkill _skill;
         private IDisposable _update;
         private float _leftInvincible;
 
         public UnitCore(UnitBehaviour owner, bool enableAttack, bool enableMove, bool enableAnimation)
         {
+            restrictions = new float[(int)Restrictions.Count];
+            
             status = new();
 
             this.owner = owner;
@@ -140,6 +160,7 @@ namespace RGLabs.Unit.Components
             elemental.atkType = (Elemental.Type)data.elementalAtk;
             elemental.defType = (Elemental.Type)data.elementalDef;
 
+            Team = data.Id / 10000 == 1 ? Teams.Character : Teams.Monster;
             enemyLayerMask = UnitHelper.EnemyLayerMask(data.Id, data.atkLayer);
             alleyLayerMask = UnitHelper.AlleyLayerMask(data.Id);
 
@@ -162,7 +183,7 @@ namespace RGLabs.Unit.Components
 
             if (data.skill != 0)
             {
-                skill = this.Attach(data.skill, skillLv);
+                _skill = this.Attach(data.skill, skillLv);
             }
 
             state.Value = States.Prepare;
@@ -254,8 +275,9 @@ namespace RGLabs.Unit.Components
 
             if (TrySetToDead())
                 return;
-
+            
             UpdateInvincible();
+            UpdateRestriction();
             UpdateStatus();
             UpdateState();
             ProcessState();
@@ -282,6 +304,16 @@ namespace RGLabs.Unit.Components
             }
 
             return true;
+        }
+
+        private void UpdateRestriction()
+        {
+            int count = (int)Restrictions.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                float val = restrictions[i] - Time.deltaTime;
+                restrictions[i] -= Mathf.Clamp(val, 0f, float.MaxValue);
+            }
         }
 
         private void UpdateInvincible()
@@ -366,15 +398,18 @@ namespace RGLabs.Unit.Components
 
         private bool TrySetToSkill()
         {
-            if (skill == null)
+            if (_skill == null)
                 return false;
 
-            if (skill.Runner.IsRunning)
+            if (!AllowSkill)
+                return false;
+            
+            if (_skill.Runner.IsRunning)
                 return true;
 
-            if (skill.Cycle.IsReady)
+            if (_skill.Cycle.IsReady)
             {
-                skill.Runner.Run();
+                _skill.Runner.Run();
                 state.Value = States.Skill;
                 return true;
             }

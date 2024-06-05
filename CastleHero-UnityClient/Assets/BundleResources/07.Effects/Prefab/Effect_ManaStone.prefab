@@ -24453,6 +24453,7 @@ GameObject:
   - component: {fileID: 7265284210338467155}
   - component: {fileID: 1313747687659353919}
   - component: {fileID: 5191164020048766059}
+  - component: {fileID: 2942269697401839633}
   m_Layer: 0
   m_Name: Effect_ManaStone
   m_TagString: Untagged
@@ -29288,3 +29289,25 @@ SortingGroup:
   m_SortingLayer: 5
   m_SortingOrder: 0
   m_SortAtRoot: 0
+--- !u!114 &2942269697401839633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6963911060789661718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1d8502039904d84b6790c68146f8a83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _children: []
+  _particles:
+  - {fileID: 7265284210338467155}
+  - {fileID: 7292572793256149018}
+  - {fileID: 2839827053679535590}
+  - {fileID: 2590523498376213746}
+  - {fileID: 3453161182583756464}
+  - {fileID: 3129413236437665998}
+  slot: 2
+  duration: 1
