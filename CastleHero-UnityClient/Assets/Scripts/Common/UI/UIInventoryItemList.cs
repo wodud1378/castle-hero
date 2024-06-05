@@ -1,15 +1,15 @@
 using System;
 using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
-using RGLabs.Common.UI;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Network.Model;
 using RGLabs.Utility;
 
-namespace RGLabs.Lobby.UI.Inventory
+namespace RGLabs.Common.UI
 {
-    public class UIInventory : UIListAdapter<UIItemSlot, IItem>
+    public class UIInventoryItemList : UIListAdapter<UIInventorySlot, IItem>
     {
         public enum Tab
         {
@@ -23,7 +23,7 @@ namespace RGLabs.Lobby.UI.Inventory
             var compareMethod = CompareMethod(tab);
             if (compareMethod == null)
                 return;
-            
+
             var items = Storage.userRepository.items;
             var filtered = items
                 .Where(x => compareMethod.Invoke(x));
@@ -42,13 +42,13 @@ namespace RGLabs.Lobby.UI.Inventory
             };
         }
 
-        protected override async UniTask SetItem(UIItemSlot item, IItem data)
+        protected override async UniTask SetItem(UIInventorySlot item, IItem data, CancellationToken ct)
         {
             var accessor = Storage.db.itemDBAccessor;
             if (!accessor.TryLoad(data.Id, out var entity))
                 return;
-            
-            await item.InitAsync(entity.Icon);
+
+            await item.InitAsync(entity, ct);
         }
     }
 }

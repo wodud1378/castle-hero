@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Data.Model;
@@ -64,13 +65,42 @@ namespace RGLabs.Utility
 
     public static class AddressableHelper
     {
-        public static async UniTask<AsyncOperationHandle<T>> Handle<T>(this string key)
+        public static UniTask WhenAll(this IEnumerable<UniTask> tasks, CancellationToken ct) =>
+            UniTask.WhenAll(tasks)
+                .AttachExternalCancellation(ct)
+                .SuppressCancellationThrow();
+
+        public static async UniTask<T> Instantiate<T>(this AssetReference reference, Transform transform,
+            CancellationToken ct = default)
         {
-            var handle = Addressables.LoadAssetAsync<T>(key);
-            await handle.ToUniTask();
-            return handle;
+            var task = reference.InstantiateAsync(transform)
+                .ToUniTask(cancellationToken:ct)
+                .SuppressCancellationThrow();
+
+            var obj = await task;
+            return obj.Result == null ? default : obj.Result.GetComponent<T>();
+        }
+        
+        public static async UniTask<T> Instantiate<T>(this string path, Transform transform, CancellationToken ct = default)
+        {
+            var task = Addressables.InstantiateAsync(path, transform)
+                .ToUniTask(cancellationToken: ct)
+                .SuppressCancellationThrow();
+            
+            var obj = await task;
+            return obj.Result == null ? default : obj.Result.GetComponent<T>();
         }
 
+        public static async UniTask<T> Load<T>(this string path, CancellationToken cancellationToken = default)
+        {
+            var handle = Addressables.LoadAssetAsync<T>(path);
+            await handle
+                .ToUniTask(cancellationToken: cancellationToken)
+                .SuppressCancellationThrow();
+
+            return handle.Result;
+        }
+        
         public static void Release<T>(this AsyncOperationHandle<T> handle)
         {
             if (!handle.IsValid())
@@ -270,6 +300,35 @@ namespace RGLabs.Utility
             int id = SortingLayer.NameToID(layer);
             sortingGroup.sortingLayerID = id;
         }
+
+        public static Vector3 ScreenToWorld(this Vector2 screenPoint)
+        {
+            var camera = Camera.main;
+            if (camera == null)
+                return default;
+
+            var position = camera.ScreenToWorldPoint(screenPoint);
+            position.z = 0f;
+            return position;
+        }
+    }
+
+    public static class TaskHelper
+    {
+        public static UniTask OnAnimationEnd(Animator animator, int hash, Action onEnd)
+        {
+            animator.SetTrigger(hash);
+            
+            return Observable
+                .EveryUpdate()
+                .Where(_ =>
+                {
+                    var state = animator.GetCurrentAnimatorStateInfo(0);
+                    return state.shortNameHash == hash && state.normalizedTime >= 1f;
+                })
+                .ToUniTask()
+                .ContinueWith(_=> onEnd?.Invoke());
+        }
     }
 
     public static class RxHelper
@@ -278,16 +337,20 @@ namespace RGLabs.Utility
         {
             return Observable.Create<ReactiveCollection<T>>(observer =>
             {
-                var disposableAdd = collection.ObserveAdd()
-                    .Subscribe(ev => observer.OnNext(collection));
+                var clear = collection.ObserveReset()
+                    .Subscribe(_ => observer.OnNext(collection));
+                
+                var add = collection.ObserveAdd()
+                    .Subscribe(_ => observer.OnNext(collection));
 
-                var disposableRemove = collection.ObserveRemove()
-                    .Subscribe(ev => observer.OnNext(collection));
+                var remove = collection.ObserveRemove()
+                    .Subscribe(_ => observer.OnNext(collection));
 
                 return Disposable.Create(() =>
                 {
-                    disposableAdd.Dispose();
-                    disposableRemove.Dispose();
+                    clear.Dispose();
+                    add.Dispose();
+                    remove.Dispose();
                 });
             });
         }

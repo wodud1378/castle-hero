@@ -350,7 +350,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 9,999,999
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b2e30944874a15545876a27cbb65a879, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 026de58f61cae5a469ddc11ef0bdb2ce, type: 2}
@@ -377,7 +377,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 33.8
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2020,6 +2020,7 @@ GameObject:
   - component: {fileID: 2022358755809777266}
   - component: {fileID: 1396522946448308554}
   - component: {fileID: 7301758190286079613}
+  - component: {fileID: 5475374127242407973}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -2092,6 +2093,24 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5475374127242407973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3962786867518994273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7897e74ae60425e8d4a9367a52ca198, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemRoot: {fileID: 9175853057697710409}
+  _itemPrefab:
+    m_AssetGUID: d59b4b6f26c962547b606d6a59a4aef7
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!1 &4269585707644347752
 GameObject:
   m_ObjectHideFlags: 0
@@ -2245,6 +2264,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7291280788632044758}
+  - component: {fileID: 6327873953197435209}
   m_Layer: 5
   m_Name: Popup_Inventory
   m_TagString: Untagged
@@ -2272,6 +2292,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &6327873953197435209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4319836645406940673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf094505e6ec4f2490a14c36063db6df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 0}
+  _close: {fileID: 805691974223758956}
+  _itemList: {fileID: 5475374127242407973}
+  _tabToggle: {fileID: 0}
 --- !u!1 &4950418651353449211
 GameObject:
   m_ObjectHideFlags: 0

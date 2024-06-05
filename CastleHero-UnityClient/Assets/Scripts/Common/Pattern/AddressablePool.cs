@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Behaviours;
 using RGLabs.InGame.System;
+using RGLabs.Utility;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -59,7 +61,7 @@ namespace RGLabs.Common.Pattern
             }
             else
             {
-                var go = await Addressables.InstantiateAsync(_path, _parent);
+                var go = await _path.Instantiate<T>(_parent);
                 obj = go.GetComponent<T>();
                 obj.ResourcePath = _path;
             }

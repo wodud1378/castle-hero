@@ -18,14 +18,21 @@ namespace RGLabs.Lobby.Behaviours
         [field: SerializeField] public float Radius { get; private set; }
 
         [SerializeField] private int _defaultCastleId;
+        [SerializeField] private float _autoPlacementRadius;
 
+        
         private readonly Collider2D[] _buffer = new Collider2D[Constants.BufferSize];
 
         private IUnitFactory _castleFactory;
         private IUnitFactory _unitFactory;
-        
+
         private UserRepository _userRepo;
         private InGameRepository _gameRepo;
+
+        public readonly ReactiveProperty<int> capacity = new();
+        public readonly ReactiveProperty<int> placed = new();
+        
+        private int _barricadeCountMax;
 
         public async UniTask Init()
         {
@@ -38,9 +45,44 @@ namespace RGLabs.Lobby.Behaviours
                 .ChangeAsObservable()
                 .Subscribe(_userRepo.ApplyFieldCharacters)
                 .AddTo(this);
-            
+
+            if (Storage.db.castles.TryFind(_userRepo.castleLv.Value, out var entity))
+            {
+                capacity.Value = entity.maxCharacter;
+                _barricadeCountMax = entity.barricadeCount;
+            }
+
             await LoadCastle();
             await LoadSavedUnits();
+        }
+
+        public async void AutoPlacement()
+        {
+            Clear();
+
+            var characters = _userRepo.characters;
+            int max = Mathf.Min(capacity.Value, characters.Count);
+            int current = 0;
+            float anglePerOnce = 360f / max;
+            using var itr = characters.GetEnumerator();
+            var tasks = new List<UniTask>();
+            while (itr.MoveNext() && current < max)
+            {
+                var pos = (anglePerOnce * current++ + 90f).ToVector() * _autoPlacementRadius;
+                tasks.Add(CreateCharacter(itr.Current, pos));
+            }
+
+            await UniTask.WhenAll(tasks);
+        }
+
+        public void Clear()
+        {
+            foreach (var unit in _gameRepo.characters)
+            {
+                unit.DestroySelf();
+            }
+
+            _gameRepo.characters.Clear();
         }
 
         public void Remove(UnitBehaviour unit)
@@ -51,7 +93,7 @@ namespace RGLabs.Lobby.Behaviours
             if (unit == _gameRepo.castle.Value)
                 return;
 
-            var characters =_gameRepo.characters; 
+            var characters = _gameRepo.characters;
             characters.Remove(unit);
             unit.DestroySelf();
         }
@@ -87,32 +129,32 @@ namespace RGLabs.Lobby.Behaviours
         }
 
         public bool InArea(Vector2 position) => Vector2.Distance(transform.position, position) <= Radius;
-        
+
         private void Register(UnitBehaviour unit)
         {
-            RemoveWhereLimit(unit);
+            RemoveIfLimited(unit);
 
             _gameRepo.characters.Add(unit);
         }
 
-        private void RemoveWhereLimit(UnitBehaviour unit)
+        private void RemoveIfLimited(UnitBehaviour unit)
         {
-            int limit = unit.Type == UnitBehaviour.BehaviourType.Barricade ? 3 : 1;
+            int limit = unit.Type == UnitBehaviour.BehaviourType.Barricade ? _barricadeCountMax : 1;
             var queue = new Queue<UnitBehaviour>();
             var characters = _gameRepo.characters;
             foreach (var character in characters)
             {
-                if(character.Id == unit.Id)
+                if (character.Id == unit.Id && character != unit)
                     queue.Enqueue(character);
             }
 
             int count = limit <= queue.Count ? limit : queue.Count;
             while (count > 0)
             {
-                var character = queue.Dequeue(); 
+                var character = queue.Dequeue();
                 characters.Remove(character);
                 character.DestroySelf();
-                
+
                 --count;
             }
         }
@@ -126,7 +168,6 @@ namespace RGLabs.Lobby.Behaviours
 
         private async UniTask LoadSavedUnits()
         {
-            
             var tasks = new List<UniTask>();
             foreach (var data in _userRepo.fieldCharacters)
             {

@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Flow;
+using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -10,14 +12,16 @@ namespace RGLabs.Common.UI.Popup
 {
     public abstract class PopupBase : MonoBehaviour, IBackButtonListener
     {
-        public event Action<PopupBase> OnClose;
+        public event Action<PopupBase> OnCloseEvent;
 
         private static readonly int CloseTrigger = Animator.StringToHash("Close");
         
         [SerializeField] private Animator _animator;
         [SerializeField] private Button _close;
 
-        private void Awake()
+        private void Awake() => OnAwake();
+
+        protected virtual void OnAwake()
         {
             _close
                 .OnClickAsObservable()
@@ -25,30 +29,26 @@ namespace RGLabs.Common.UI.Popup
                 .AddTo(this);
         }
 
+        public virtual UniTask Open(params object[] parameters)
+        {
+            return Open();
+        }
+
         public virtual UniTask Open()
         {
-            gameObject.SetActive(true);
-
-            return UniTask.DelayFrame(1);
+            return UniTask.CompletedTask;
         }
 
-        public UniTask Close() => _animator == null ? DirectCloseTask() : CloseAnimationTask();
-
-        private UniTask CloseAnimationTask()
+        public UniTask Close()
         {
-            _animator.SetTrigger(CloseTrigger);
+            OnClose();
             
-            var task = Observable.EveryUpdate()
-                .Where(_ =>
-                {
-                    var state = _animator.GetCurrentAnimatorStateInfo(0);
-                    return state.shortNameHash == CloseTrigger && state.normalizedTime >= 1f;
-                })
-                .ToUniTask()
-                .ContinueWith(_=> Closed());
-            
-            return task;
+            return _animator == null ? DirectCloseTask() : CloseAnimationTask();
         }
+        
+        protected virtual void OnClose() { }
+
+        private UniTask CloseAnimationTask() => TaskHelper.OnAnimationEnd(_animator, CloseTrigger, Closed);
 
         private UniTask DirectCloseTask()
         {
@@ -65,7 +65,7 @@ namespace RGLabs.Common.UI.Popup
         
         private void Closed()
         {
-            OnClose?.Invoke(this);
+            OnCloseEvent?.Invoke(this);
             Addressables.ReleaseInstance(gameObject);
         }
     }

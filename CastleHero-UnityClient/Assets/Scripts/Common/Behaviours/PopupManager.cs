@@ -19,29 +19,52 @@ namespace RGLabs.Common.Behaviours
 
         private void Awake()
         {
+            _dim.gameObject.SetActive(false);
             _popups
                 .ChangeAsObservable()
                 .Subscribe(OnPopupCollectionChanged)
                 .AddTo(this);
         }
 
+        public async UniTask<T> Open<T>(params object[] parameters) where T : PopupBase
+        {
+            var popup = await LoadPopup<T>();
+            if (popup == null)
+                return null;
+            
+            await popup.Open(parameters);
+            
+            popup.gameObject.SetActive(true);
+            return popup;
+        }
+        
         public async UniTask<T> Open<T>() where T : PopupBase
+        {
+            var popup = await LoadPopup<T>();
+            if (popup == null)
+                return null;
+            
+            await popup.Open();
+            
+            popup.gameObject.SetActive(true);
+            return popup;
+        }
+
+        private async UniTask<T> LoadPopup<T>() where T : PopupBase
         {
             var path = PrefabPathCache.Load(typeof(T));
             if (string.IsNullOrEmpty(path))
                 return null;
 
-            var obj = await Addressables.InstantiateAsync(path);
+            var obj = await Addressables.InstantiateAsync(path, transform);
             if (!obj.TryGetComponent(out T popup))
             {
                 Addressables.ReleaseInstance(obj);
                 return null;    
             }
-
+            
             _popups.Add(popup);
-
-            popup.OnClose += OnClosePopup;
-            await popup.Open();
+            popup.OnCloseEvent += OnCloseEventPopup;
             return popup;
         }
 
@@ -59,10 +82,10 @@ namespace RGLabs.Common.Behaviours
             await UniTask.WhenAll();
         }
 
-        private void OnClosePopup(PopupBase popup)
+        private void OnCloseEventPopup(PopupBase popup)
         {
             _popups.Remove(popup);
-            popup.OnClose -= OnClosePopup;
+            popup.OnCloseEvent -= OnCloseEventPopup;
         }
 
         private void OnPopupCollectionChanged(ReactiveCollection<PopupBase> collection)

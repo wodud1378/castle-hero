@@ -336,6 +336,7 @@ MonoBehaviour:
   _spriteCollection: {fileID: 8109079146137074710}
   _animator: {fileID: 7883919529514807641}
   _characters: {fileID: 4247259264058424911}
+  _inventory: {fileID: 7253160913362542540}
 --- !u!95 &7883919529514807641
 Animator:
   serializedVersion: 5

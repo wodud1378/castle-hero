@@ -1,8 +1,12 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
+using RGLabs.Utility;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.EventSystems;
 
 namespace RGLabs.Common.UI
 {
@@ -10,30 +14,35 @@ namespace RGLabs.Common.UI
         where TItem : UIItemSlot
     {
         [SerializeField] protected RectTransform itemRoot;
-        
+
         [SerializeField] private AssetReference _itemPrefab;
-        
-        public bool IsOpen { get; protected set; }
         
         private readonly List<TItem> _items = new();
 
-        public async UniTask Init(IEnumerable<TData> array)
+        private CancellationTokenSource _ctSource;
+        private CancellationToken Ct => _ctSource?.Token ?? default;
+        
+        public async UniTask Init(IEnumerable<TData> array, Action<UIItemSlot> onClick = null)
         {
+            _ctSource?.Cancel();
+            _ctSource = new CancellationTokenSource();
+
             Clear();
-            
+
             var tasks = new List<UniTask>();
             int order = 0;
             foreach (var data in array)
             {
-                tasks.Add(Add(data, order++));
+                tasks.Add(Add(data, order++, onClick));
             }
 
-            await UniTask.WhenAll(tasks);
+            await tasks.WhenAll(Ct);
         }
-        
+
         public TItem GetItem(Vector2 position)
         {
             var corners = new Vector3[4];
+            
             itemRoot.GetWorldCorners(corners);
 
             var rootPos = itemRoot.position;
@@ -60,29 +69,65 @@ namespace RGLabs.Common.UI
             return selected;
         }
 
+        public TItem GetItem(PointerEventData eventData)
+        {
+            if (!RectTransformUtility
+                    .RectangleContainsScreenPoint(itemRoot, eventData.position, eventData.pressEventCamera))
+                return null;
+
+            RectTransformUtility
+                .ScreenPointToWorldPointInRectangle(itemRoot, eventData.position, eventData.pressEventCamera, out var worldPos);
+
+            TItem selected = null;
+            float closest = float.MaxValue;
+            foreach (TItem item in _items)
+            {
+                RectTransform childRectTransform = item.GetComponent<RectTransform>();
+                if (childRectTransform != null)
+                {
+                    Vector2 position = childRectTransform.position;
+
+                    float distance = Vector2.Distance(worldPos, position);
+                    if (distance < closest)
+                    {
+                        closest = distance;
+                        selected = item;
+                    }
+                }
+            }
+
+            return selected;
+        }
+
         public void Dispose() => Clear();
 
-        protected void Clear()
+        public void Clear()
         {
-            _items.ForEach(x=>
+            _items.ForEach(x =>
             {
                 x.Dispose();
                 Addressables.ReleaseInstance(x.gameObject);
             });
-            
+
             _items.Clear();
         }
-        
-        protected abstract UniTask SetItem(TItem item, TData data);
 
-        private async UniTask<TItem> Add(TData data, int order)
+        protected abstract UniTask SetItem(TItem item, TData data, CancellationToken ct);
+
+        private async UniTask<TItem> Add(TData data, int order, Action<UIItemSlot> onClick = null)
         {
-            var obj = await Addressables.InstantiateAsync(_itemPrefab, itemRoot);
-            var item = obj.GetComponent<TItem>();
+            var item = await _itemPrefab.Instantiate<TItem>(itemRoot, Ct);
             if (item == null)
                 return null;
 
-            await SetItem(item, data);
+            if (onClick != null)
+            {
+                item.OnClick -= onClick;
+                item.OnClick += onClick;
+            }
+
+            _items.Add(item);
+            await SetItem(item, data, Ct);
             return item;
         }
     }

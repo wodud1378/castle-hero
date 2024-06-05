@@ -35,15 +35,32 @@ namespace RGLabs.Data.Repositories
         public UserRepository()
         {
             stage = new(Load(SavedStageKey, 1));
-            stage.Subscribe(x => Save(SavedStageKey, x));
+            stage
+                .ThrottleFrame(1)
+                .Subscribe(x => Save(SavedStageKey, x));
 
             castleLv = new(Load(CastleKey, 1));
-            castleLv.Subscribe(x => Save(CastleKey, x));
+            castleLv
+                .ThrottleFrame(1)
+                .Subscribe(x => Save(CastleKey, x));
 
             characters = new(LoadArray<UnitInfo>(CharactersKey, TestData()));
+            characters
+                .ChangeAsObservable()
+                .ThrottleFrame(1)
+                .Subscribe(x=> SaveArray(CharactersKey, x));
+            
             items = new(LoadArray<IItem>(InventoryKey));
+            items
+                .ChangeAsObservable()
+                .ThrottleFrame(1)
+                .Subscribe(x => SaveArray(InventoryKey, x));
             
             fieldCharacters = new(LoadArray<FieldCharacter>(FieldCharactersKey));
+            fieldCharacters
+                .ChangeAsObservable()
+                .ThrottleFrame(1)
+                .Subscribe(x => SaveArray(FieldCharactersKey, x));
         }
 
         public void ApplyFieldCharacters(IEnumerable<UnitBehaviour> units)
@@ -105,12 +122,6 @@ namespace RGLabs.Data.Repositories
                     lv = 1,
                     rate = 1,
                     id = 10034
-                },
-                new UnitInfo
-                {
-                    lv = 1,
-                    rate = 1,
-                    id = 10000
                 },
             };
 

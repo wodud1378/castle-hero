@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common;
 using RGLabs.Common.UI;
@@ -33,6 +34,7 @@ namespace RGLabs.Stage.UI
         private DBCollections _db;
 
         private readonly List<IDisposable> _subscriptions = new();
+        private CancellationTokenSource _ctSource;
 
         public void Init()
         {
@@ -64,17 +66,20 @@ namespace RGLabs.Stage.UI
         {
             Clear();
             
+            _ctSource?.Cancel();
+            _ctSource = new();
+            
             if (stageData is { goldMin: > 0, goldMax: > 0 })
-                AddRewardUI(Constants.GoldIcon);
+                AddRewardUI(Constants.GoldIcon, _ctSource.Token);
 
             if (stageData.exp > 0)
-                AddRewardUI(Constants.ExpIcon);
+                AddRewardUI(Constants.ExpIcon, _ctSource.Token);
 
             if (_db.itemDBAccessor.TryLoad(stageData.propItemId, out var entity))
-                AddRewardUI(entity.Icon);
+                AddRewardUI(entity.Icon, _ctSource.Token);
         }
 
-        private async void AddRewardUI(string icon)
+        private async void AddRewardUI(string icon, CancellationToken ct)
         {
             var obj = await Addressables.InstantiateAsync(_rewardPrefab, _rewardParent);
             if (!obj.TryGetComponent(out UIItemSlot slot))
@@ -82,7 +87,7 @@ namespace RGLabs.Stage.UI
 
             _uiSlots.Add(slot);
 
-            await slot.InitAsync(icon);
+            await slot.InitAsync(icon, string.Empty, ct);
         }
 
         private void Clear()
@@ -92,8 +97,9 @@ namespace RGLabs.Stage.UI
                 slot.Dispose();
                 Addressables.ReleaseInstance(slot.gameObject);
             }
-
+            
             _uiSlots.Clear();
+            _ctSource?.Dispose();
         }
 
         private void OnStageSelected(int stage)
