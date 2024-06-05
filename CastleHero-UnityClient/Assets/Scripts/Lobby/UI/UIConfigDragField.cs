@@ -45,7 +45,7 @@ namespace RGLabs.Lobby.UI
             if (unit.Value == null)
                 return;
 
-            _originLayer = target.gameObject.layer;
+            _originLayer = target.gameObject.GetLayer();
             target.gameObject.ToPreviewLayer();
             target.Core.inBattle = false;
             target.Collider.isTrigger = true;
@@ -72,9 +72,15 @@ namespace RGLabs.Lobby.UI
         public void OnEndDrag(PointerEventData eventData)
         {
             _ctSource?.Cancel();
-            
+
             if (unit.Value == null)
+            {
+                var selected = FindFromRay(eventData.position.ScreenToWorld());
+                if(selected != null)
+                    selected.DestroySelf();
+
                 return;
+            }
 
             if (!_formation.TryRegister(unit.Value, _originLayer))
             {
@@ -84,7 +90,7 @@ namespace RGLabs.Lobby.UI
 
             unit.Value.Core.movement.Default = unit.Value.position;
             unit.Value.Collider.isTrigger = false;
-            unit.Value.gameObject.layer = _originLayer;
+            unit.Value.gameObject.ToLayer(_originLayer);
 
             unit.Value = null;
             

@@ -22,10 +22,6 @@ namespace RGLabs.Common.UI
         
         public void Dispose()
         {
-            foreach (var sprite in sprites)
-            {
-                sprite.Dispose();
-            }    
         }
     }
 }

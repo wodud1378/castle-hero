@@ -163,7 +163,9 @@ namespace RGLabs.Data.Repositories
         public void Dispose()
         {
             castle.Value = null;
+            characters.Dispose();
             characters.Clear();;
+            recovers.Dispose();
             recovers.Clear();
 
             castle.Dispose();

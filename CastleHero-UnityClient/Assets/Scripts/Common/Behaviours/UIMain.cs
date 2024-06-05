@@ -1,7 +1,5 @@
 using System;
-using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI;
-using RGLabs.Utility;
 using UnityEngine;
 using UnityEngine.U2D;
 
@@ -22,24 +20,26 @@ namespace RGLabs.Common.Behaviours
 
         public void Open()
         {
-            gameObject.SetActive(true);
-            
             IsOpen = true;
             
-            TaskHelper.OnAnimationEnd(_animator, _openHashId, OnOpened).Forget();
+            gameObject.SetActive(true);
+            
+            _animator.SetTrigger(_openHashId);
         }
 
         public void Close()
         {
             IsOpen = false;
             
-            TaskHelper.OnAnimationEnd(_animator, _closeHashId, OnClosed).Forget();
+            _animator.SetTrigger(_closeHashId);
         }
 
         public virtual void Dispose()
         {
             _spriteCollection.Dispose();
         }
+
+        #region Animation Events.
 
         public void OnOpened()
         {
@@ -51,9 +51,11 @@ namespace RGLabs.Common.Behaviours
         {
             _spriteCollection.Dispose();
             
-            OnCloseAnimationEnd?.Invoke();
-            
             gameObject.SetActive(false);
+            
+            OnCloseAnimationEnd?.Invoke();
         }
+
+        #endregion
     }
 }

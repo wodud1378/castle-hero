@@ -32,9 +32,9 @@ namespace RGLabs.Unit.Skill
             foreach (var unit in aroundCenter.around)
             {
                 if (unit.IsAlley(Owner))
-                    onAlley.Invoke(unit);
+                    onAlley?.Invoke(unit);
                 else
-                    onEnemy.Invoke(unit);
+                    onEnemy?.Invoke(unit);
             }
         }
 

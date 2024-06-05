@@ -2,6 +2,7 @@ using System.Collections;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Time = UnityEngine.Time;
 
 namespace RGLabs.Common.Behaviours
 {
@@ -23,27 +24,26 @@ namespace RGLabs.Common.Behaviours
         {
             StartCoroutine(LoadSceneCoroutine(_prevScene, _nextScene));
         }
-
+        
         private IEnumerator LoadSceneCoroutine(Scene unload, string load)
         {
             Context.Back.enabled = false;
-            
-            var loadHandle = SceneManager.LoadSceneAsync(load, LoadSceneMode.Additive);
-            yield return UniTask.WaitUntil(() => loadHandle.isDone);
-            yield return UniTask.Yield();
-            
-            var unloadHandle = SceneManager.UnloadSceneAsync(unload);
-            yield return UniTask.WaitUntil(() => unloadHandle.isDone);
-            yield return UniTask.Yield();
 
+            var loadHandle = SceneManager.LoadSceneAsync(load);
+            while (!loadHandle.isDone)
+                yield return null;
+            
+            // var unloadHandle = SceneManager.UnloadSceneAsync(unload);
+            // while (!unloadHandle.isDone)
+            //     yield return null;
+            //
+            var finishHandle = SceneManager.UnloadSceneAsync("Loading");
+            while (!finishHandle.isDone)
+                 yield return null;
+            
             var scene = SceneManager.GetSceneByName(load);
             SceneManager.SetActiveScene(scene);
-            
             Context.Back.enabled = true;
-            
-            var finishHandle = SceneManager.UnloadSceneAsync("Loading");
-            yield return UniTask.WaitUntil(() => finishHandle.isDone);
-            yield return UniTask.Yield();
         }
     }
 }

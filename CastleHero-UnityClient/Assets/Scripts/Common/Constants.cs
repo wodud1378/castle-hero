@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using RGLabs.Unit.Skill.Global;
-using UnityEngine;
 
 namespace RGLabs.Common
 {
@@ -8,6 +7,10 @@ namespace RGLabs.Common
     {
         public static readonly int BufferSize = 50;
         public static readonly float HitEffectDuration = 0.15f;
+
+        public static readonly int BarricadeId = 10000;
+        public static readonly string BarricadeIcon = "Common/Portrait/Character_10000.png";
+        public static readonly string BarricadePrefab = "Character_10000/Character_10000.prefab";
 
         public static string GoldIcon = "Common/Icon/Icon_Gold.png";
         public static string DiaIcon = "Common/Icon/Icon_Diamond.png";

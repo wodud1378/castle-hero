@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common;
 using RGLabs.Data;
@@ -20,18 +21,17 @@ namespace RGLabs.Lobby.Behaviours
         [SerializeField] private int _defaultCastleId;
         [SerializeField] private float _autoPlacementRadius;
 
-        
         private readonly Collider2D[] _buffer = new Collider2D[Constants.BufferSize];
 
         private IUnitFactory _castleFactory;
-        private IUnitFactory _unitFactory;
+        private UnitFactory _unitFactory;
 
         private UserRepository _userRepo;
         private InGameRepository _gameRepo;
 
         public readonly ReactiveProperty<int> capacity = new();
         public readonly ReactiveProperty<int> placed = new();
-        
+
         private int _barricadeCountMax;
 
         public async UniTask Init()
@@ -43,7 +43,7 @@ namespace RGLabs.Lobby.Behaviours
 
             _gameRepo.characters
                 .ChangeAsObservable()
-                .Subscribe(_userRepo.ApplyFieldCharacters)
+                .Subscribe(OnFieldCharacterCollectionChanged)
                 .AddTo(this);
 
             if (Storage.db.castles.TryFind(_userRepo.castleLv.Value, out var entity))
@@ -60,7 +60,10 @@ namespace RGLabs.Lobby.Behaviours
         {
             Clear();
 
-            var characters = _userRepo.characters;
+            var characters = _userRepo.characters
+                .Where(x => x.id != Constants.BarricadeId)
+                .ToList();
+
             int max = Mathf.Min(capacity.Value, characters.Count);
             int current = 0;
             float anglePerOnce = 360f / max;
@@ -83,6 +86,7 @@ namespace RGLabs.Lobby.Behaviours
             }
 
             _gameRepo.characters.Clear();
+            _userRepo.ApplyFieldCharacters(_gameRepo.characters);
         }
 
         public void Remove(UnitBehaviour unit)
@@ -96,6 +100,8 @@ namespace RGLabs.Lobby.Behaviours
             var characters = _gameRepo.characters;
             characters.Remove(unit);
             unit.DestroySelf();
+            
+            _userRepo.ApplyFieldCharacters(_gameRepo.characters);
         }
 
         public bool TryRegister(UnitBehaviour unit, int layer)
@@ -103,10 +109,16 @@ namespace RGLabs.Lobby.Behaviours
             if (!unit.IsValid())
                 return false;
 
-            if (!IsValid(unit.Collider, layer))
+            if (unit.Id != Constants.BarricadeId &&
+                placed.Value >= capacity.Value)
                 return false;
 
-            Register(unit);
+            if (!IsValid(unit.Collider, layer))
+                return false;
+            
+            RemoveIfLimited(unit);
+            _gameRepo.characters.Add(unit);
+            _userRepo.ApplyFieldCharacters(_gameRepo.characters);
             return true;
         }
 
@@ -130,11 +142,9 @@ namespace RGLabs.Lobby.Behaviours
 
         public bool InArea(Vector2 position) => Vector2.Distance(transform.position, position) <= Radius;
 
-        private void Register(UnitBehaviour unit)
+        private void OnFieldCharacterCollectionChanged(ReactiveCollection<UnitBehaviour> collection)
         {
-            RemoveIfLimited(unit);
-
-            _gameRepo.characters.Add(unit);
+            placed.Value = collection.Count(x => x.Id != Constants.BarricadeId);
         }
 
         private void RemoveIfLimited(UnitBehaviour unit)
@@ -148,7 +158,8 @@ namespace RGLabs.Lobby.Behaviours
                     queue.Enqueue(character);
             }
 
-            int count = limit <= queue.Count ? limit : queue.Count;
+            int current = queue.Count + 1;
+            int count = current > limit ? current - limit : 0;
             while (count > 0)
             {
                 var character = queue.Dequeue();
@@ -184,16 +195,21 @@ namespace RGLabs.Lobby.Behaviours
 
         private async UniTask CreateCharacter(UnitInfo info, Vector2 position)
         {
-            var unit = await _unitFactory.Create(info, position);
+            UnitBehaviour unit;
+            if (info.id != Constants.BarricadeId)
+                unit = await _unitFactory.Create(info, position);
+            else
+                unit = await _unitFactory.CreateBarricade(info, position);
+
             if (unit == null)
                 return;
 
             unit.Core.movement.Default = position;
             unit.Core.inBattle = false;
-
-            Register(unit);
+            
+            _gameRepo.characters.Add(unit);
         }
-
+        
         private void OnDrawGizmosSelected()
         {
             Gizmos.DrawWireSphere(transform.position, Radius);
