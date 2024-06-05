@@ -26,6 +26,7 @@ namespace RGLabs.InGame.UI
         [field:SerializeField] public UICharacterList DeadCharacters { get; private set; }
         [field:SerializeField] public UIGameResult Result { get; private set; }
         [field:SerializeField] public UIPause Pause { get; private set; }
+        [field:SerializeField] public UIGlobalSkill GlobalSkill { get; private set; }
 
         [SerializeField] private Button _pause;
         [SerializeField] private RectTransform _damageRoot;

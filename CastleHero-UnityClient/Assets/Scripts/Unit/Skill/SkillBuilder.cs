@@ -1,5 +1,6 @@
 using System;
 using RGLabs.Data;
+using RGLabs.Data.Model;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Finding;
 using RGLabs.Unit.Skill.Components;

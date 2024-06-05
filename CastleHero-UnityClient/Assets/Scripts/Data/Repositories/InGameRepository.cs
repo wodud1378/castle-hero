@@ -114,7 +114,6 @@ namespace RGLabs.Data.Repositories
         public UnitBalanceDB balances;
         public SkillDB skills;
 
-
         private DBCollections()
         {
             _loader = new DataLoader(new LocalCsvProvider());
@@ -156,6 +155,7 @@ namespace RGLabs.Data.Repositories
 
     public class InGameRepository : IDisposable
     {
+        public readonly ReactiveProperty<int> mana = new(0);
         public readonly ReactiveProperty<UnitBehaviour> castle = new(null);
         public readonly ReactiveCollection<UnitBehaviour> characters = new();
         public readonly ReactiveCollection<WaitRecover> recovers = new();

@@ -17,12 +17,12 @@ namespace RGLabs.Common.UI
 
         [SerializeField] private AssetReference _itemPrefab;
         
-        private readonly List<TItem> _items = new();
+        protected readonly List<TItem> _items = new();
 
         private CancellationTokenSource _ctSource;
         private CancellationToken Ct => _ctSource?.Token ?? default;
         
-        public async UniTask Init(IEnumerable<TData> array, Action<UIItemSlot> onClick = null)
+        public virtual async UniTask Init(IEnumerable<TData> collection, Action<UIItemSlot> onClick = null)
         {
             _ctSource?.Cancel();
             _ctSource = new CancellationTokenSource();
@@ -31,7 +31,7 @@ namespace RGLabs.Common.UI
 
             var tasks = new List<UniTask>();
             int order = 0;
-            foreach (var data in array)
+            foreach (var data in collection)
             {
                 tasks.Add(Add(data, order++, onClick));
             }

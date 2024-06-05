@@ -1,12 +1,16 @@
 using System;
 using PolyNav;
+using RGLabs.Common;
 using RGLabs.Common.Behaviours;
+using RGLabs.Data;
 using RGLabs.Data.Model;
+using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.Unit.Components;
 using RGLabs.Utility;
 using UniRx;
 using UnityEditor;
 using UnityEngine;
+using Random = System.Random;
 using UnitInfo = RGLabs.Network.Model.UnitInfo;
 
 namespace RGLabs.Unit.Behaviours
@@ -106,6 +110,15 @@ namespace RGLabs.Unit.Behaviours
             
             OnDead?.Invoke(this);
             OnDead = null;
+            
+            if (Core.Team == UnitCore.Teams.Monster)
+            {
+                Effect.Play(Constants.DeadEffect, position);
+                Effect.Play(Constants.ManaDropEffect, position);
+                
+                // int 랜덤은 맥스값 - 1, 가독성을 위해 +1.
+                Storage.inGameRepository.mana.Value += UnityEngine.Random.Range(3, 10 + 1);
+            }
 
             Released = true;
         }
