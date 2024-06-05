@@ -1,0 +1,90 @@
+Character_10001.png
+	size: 512, 512
+	filter: Linear, Linear
+	scale: 0.5
+Arm_L
+	bounds: 389, 223, 45, 64
+	offsets: 5, 5, 55, 74
+Arm_R
+	bounds: 428, 349, 40, 65
+	offsets: 5, 5, 50, 75
+Belt
+	bounds: 329, 390, 93, 47
+	offsets: 3, 3, 98, 53
+	rotate: 90
+Belt_Back
+	bounds: 161, 102, 77, 25
+	offsets: 5, 5, 87, 35
+Cloak
+	bounds: 2, 260, 166, 223
+	offsets: 0, 1, 168, 224
+Effect_Slash
+	bounds: 423, 162, 50, 50
+Elipse
+	bounds: 301, 156, 65, 65
+Foot_L
+	bounds: 120, 234, 41, 27
+	offsets: 5, 5, 51, 37
+Foot_R
+	bounds: 2, 95, 67, 34
+Gauntlet_L
+	bounds: 221, 129, 78, 92
+	offsets: 5, 6, 88, 103
+Gauntlet_R
+	bounds: 265, 223, 72, 80
+	offsets: 5, 5, 82, 90
+Gauntlet_R_Back
+	bounds: 438, 109, 51, 45
+	offsets: 5, 5, 61, 55
+	rotate: 90
+Glow
+	bounds: 134, 135, 85, 86
+Greave_L
+	bounds: 377, 416, 49, 59
+	offsets: 5, 7, 59, 71
+Greave_R
+	bounds: 368, 162, 53, 59
+	offsets: 5, 7, 63, 71
+Head
+	bounds: 2, 130, 130, 131
+	offsets: 2, 3, 135, 137
+	rotate: 90
+Head_Fire
+	bounds: 339, 223, 69, 48
+	offsets: 5, 5, 79, 58
+	rotate: 90
+Hip
+	bounds: 395, 289, 58, 47
+	offsets: 5, 5, 68, 57
+	rotate: 90
+Leg_L
+	bounds: 340, 294, 53, 59
+	offsets: 5, 5, 63, 69
+Leg_R
+	bounds: 368, 355, 49, 59
+	offsets: 5, 5, 59, 69
+Shoulder_L
+	bounds: 265, 394, 63, 75
+	offsets: 5, 5, 73, 85
+Shoulder_R
+	bounds: 368, 118, 42, 68
+	offsets: 5, 5, 52, 79
+	rotate: 90
+Shoulder_R_Back
+	bounds: 97, 96, 37, 62
+	offsets: 5, 5, 47, 72
+	rotate: 90
+Skirt_L
+	bounds: 240, 85, 44, 42
+Skirt_M
+	bounds: 301, 111, 43, 56
+	rotate: 90
+Skirt_R
+	bounds: 2, 333, 18, 38
+	offsets: 1, 0, 21, 40
+Torso
+	bounds: 265, 305, 75, 87
+	offsets: 3, 2, 80, 89
+Weapon
+	bounds: 169, 223, 94, 260
+	offsets: 5, 5, 104, 270
