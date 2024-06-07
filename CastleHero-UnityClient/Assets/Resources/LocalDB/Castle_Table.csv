@@ -1,9 +1,9 @@
 ﻿Castle_Level,Castle_Gold,Castle_Slot,Castle_HP,Castle_Object_Value,Castle_Object_HP,Castle_Skill_1,Castle_Skill_Value_1,Castle_Skill_2,Castle_Skill_Value_2,Castle_Skill_3,Castle_Skill_Value_3,Castle_Skill_4,Castle_Skill_Value_4
-1,1000,3,10000,3,1000,Shield,500,Damage,500,Sturn,1,Heal,500
-2,1150,3,3000,3,3000,Shield,520,Damage,520,Sturn,1.05,Heal,520
-3,1323,3,5000,3,5000,Shield,540,Damage,540,Sturn,1.1,Heal,540
-4,1521,3,7000,3,7000,Shield,560,Damage,560,Sturn,1.15,Heal,560
-5,1749,3,9000,3,9000,Shield,580,Damage,580,Sturn,1.2,Heal,580
+1,1000,4,10000,10,1000,Shield,500,Damage,500,Sturn,1,Heal,500
+2,1150,4,3000,3,3000,Shield,520,Damage,520,Sturn,1.05,Heal,520
+3,1323,4,5000,3,5000,Shield,540,Damage,540,Sturn,1.1,Heal,540
+4,1521,4,7000,3,7000,Shield,560,Damage,560,Sturn,1.15,Heal,560
+5,1749,4,9000,3,9000,Shield,580,Damage,580,Sturn,1.2,Heal,580
 6,2011,4,11000,3,11000,Shield,600,Damage,600,Sturn,1.25,Heal,600
 7,2313,4,13000,3,13000,Shield,620,Damage,620,Sturn,1.3,Heal,620
 8,2660,4,15000,3,15000,Shield,640,Damage,640,Sturn,1.35,Heal,640
