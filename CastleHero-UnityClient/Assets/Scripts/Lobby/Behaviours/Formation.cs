@@ -110,11 +110,7 @@ namespace RGLabs.Lobby.Behaviours
         {
             if (!unit.IsValid())
                 return false;
-
-            if (unit.Id != Constants.BarricadeId &&
-                placed.Value >= capacity.Value)
-                return false;
-
+            
             if (!IsValid(unit.Collider, layer))
                 return false;
 
@@ -126,6 +122,10 @@ namespace RGLabs.Lobby.Behaviours
             }
             else
             {
+                if (unit.Id != Constants.BarricadeId &&
+                    placed.Value >= capacity.Value)
+                    return false;
+                
                 RemoveIfLimited(unit);
                 characters.Add(unit);   
             }
