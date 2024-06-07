@@ -1,5 +1,6 @@
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
+using RGLabs.Data;
 using RGLabs.InGame.Behaviours;
 using RGLabs.Utility;
 using UnityEngine;
@@ -44,6 +45,14 @@ namespace RGLabs.InGame.UI
             
             foreach (var obj in _failedObjects)
                 obj.SetActive(!isCleared);
+            
+            var db = Storage.db.stages;
+            int currentStage = Storage.userRepository.stage.Value;
+            int lastStageIndex = db.Length;
+            if (db.TryFindIndex(currentStage, out int index))
+                _nextButton.gameObject.SetActive(index < lastStageIndex);
+            else
+                _nextButton.gameObject.SetActive(false);
         }
 
         private void Exit() => ExitCode.Exit.Publish();

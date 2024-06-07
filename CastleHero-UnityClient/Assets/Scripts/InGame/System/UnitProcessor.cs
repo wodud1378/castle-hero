@@ -163,12 +163,19 @@ namespace RGLabs.InGame.System
 
         private async void Recovery(WaitRecover recover)
         {
-            var position = recover.position;
-            Effect.Play(Constants.SpawnEffect, position);
+            Debug.Log("Recover");
+            
+            var behaviour = recover.behaviour;
+            behaviour.position = recover.position;
+            
+            Effect.Play(Constants.SpawnEffect, behaviour.transform.position);
 
-            await UniTask.DelayFrame(6);
-           
-            recover.behaviour.Recovery(position);
+            for (int i = 0; i < 6; ++i)
+            {
+                await UniTask.Yield(PlayerLoopTiming.Update);
+            }
+            
+            recover.behaviour.Recovery();
             recover.Dispose();
         }
 

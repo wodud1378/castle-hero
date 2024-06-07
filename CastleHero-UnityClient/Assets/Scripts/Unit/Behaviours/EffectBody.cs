@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using RGLabs.InGame.Effects.Behaviours;
+using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 
 namespace RGLabs.Unit.Behaviours
@@ -21,7 +23,7 @@ namespace RGLabs.Unit.Behaviours
 
         public void Attach(Effect effect)
         {
-            Transform pos = effect.slot switch
+            Transform parent = effect.slot switch
             {
                 Effect.Slot.Top => top,
                 Effect.Slot.Middle => middle,
@@ -29,12 +31,17 @@ namespace RGLabs.Unit.Behaviours
                 _ => null
             };
 
-            pos ??= _fallBack;
+            parent ??= _fallBack;
+            effect.transform.position = parent.position;
+            var subscription = effect
+                .UpdateAsObservable()
+                .Subscribe(_ => effect.transform.position = parent.position)
+                .AddTo(this);
 
-            var tr = effect.transform;
-            tr.SetParent(pos);
-            tr.localScale = Vector3.one;
-            tr.localPosition = Vector3.zero;
+            effect
+                .OnDisableAsObservable()
+                .Subscribe(_=> subscription.Dispose())
+                .AddTo(this);
         }
 
         public void Clear()

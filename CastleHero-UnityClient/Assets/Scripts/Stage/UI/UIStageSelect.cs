@@ -58,15 +58,21 @@ namespace RGLabs.Stage.UI
 
         public void SetMoveStageEnable(bool enabled)
         {
-            _prev.gameObject.SetActive(enabled);
-            _next.gameObject.SetActive(enabled);
+            if (enabled)
+            {
+                UpdateButtonsActive(_stageData.Value);
+            }
+            else
+            {
+                _prev.gameObject.SetActive(false);
+                _next.gameObject.SetActive(false);
+            }
         }
 
         private void SetRewards(StageEntity stageData)
         {
             Clear();
             
-            _ctSource?.Cancel();
             _ctSource = new();
             
             if (stageData is { goldMin: > 0, goldMax: > 0 })
@@ -99,6 +105,7 @@ namespace RGLabs.Stage.UI
             }
             
             _uiSlots.Clear();
+            _ctSource?.Cancel();
             _ctSource?.Dispose();
         }
 
