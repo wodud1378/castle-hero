@@ -68,8 +68,9 @@ namespace RGLabs.Unit.Skill
                 {
                     bool filterA = includeCenter || x != centerUnit;
                     bool filterB = includeCastle || x != castle;
+                    bool filterC = x.Type == UnitBehaviour.BehaviourType.Unit;
 
-                    return filterA && filterB;
+                    return filterA && filterB && filterC;
                 })
                 .Take(validCount);
 
