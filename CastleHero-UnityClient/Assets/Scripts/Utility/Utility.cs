@@ -290,15 +290,24 @@ namespace RGLabs.Utility
 
     public static class ObjectHelper
     {
-        public static void ToUILayer(this GameObject obj) => obj.ToLayer("UI");
+        public static void ToPreviewLayer(this GameObject obj) => obj.ToLayer("UnitPreview");
 
-        public static void ToLayer(this GameObject obj, string layer)
+        public static void ToLayer(this GameObject obj, string layer) => obj.ToLayer(SortingLayer.NameToID(layer));
+        
+        public static void ToLayer(this GameObject obj, int layer)
         {
             if (!obj.TryGetComponent(out SortingGroup sortingGroup))
                 return;
 
-            int id = SortingLayer.NameToID(layer);
-            sortingGroup.sortingLayerID = id;
+            sortingGroup.sortingLayerID = layer;
+        }
+        
+        public static int GetLayer(this GameObject obj)
+        {
+            if (!obj.TryGetComponent(out SortingGroup sortingGroup))
+                return 0;
+
+            return sortingGroup.sortingLayerID;
         }
 
         public static Vector3 ScreenToWorld(this Vector2 screenPoint)

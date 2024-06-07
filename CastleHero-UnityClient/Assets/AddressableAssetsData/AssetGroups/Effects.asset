@@ -52,6 +52,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a74e93b59b5cf3e45802e2bd17333d00
+    m_Address: Effect_ManaStone
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a6e87714d86b014696fd5c1083ddb82
+    m_Address: DeadEffect
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 5929c0cb8d0d07d4aa9632acaa1413c5, type: 2}
   m_SchemaSet:

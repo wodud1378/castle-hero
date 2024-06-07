@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Common.Pattern;
 using RGLabs.Data;
 using RGLabs.Data.DB;
+using RGLabs.Data.Model;
 using RGLabs.Unit.Behaviours;
 using UnityEngine;
 using UnitInfo = RGLabs.Network.Model.UnitInfo;
@@ -24,6 +25,26 @@ namespace RGLabs.Unit.Factory
             };
 
             return await Create(info, position);
+        }
+
+        public async UniTask<UnitBehaviour> CreateBarricade(UnitInfo info, Vector2 position)
+        {
+            int lv = Storage.userRepository.castleLv.Value;
+            if (!Storage.db.castles.TryFind(lv, out var castleEntity))
+                return null;
+            
+            if (!_unitDB.TryFind(info.id, out var unitEntity))
+                return null;
+
+            unitEntity.hp = castleEntity.barricadeHp;
+            
+            var unit = await CreateInternal(unitEntity.prefab, position);
+            if (unit == null)
+                return null;
+            
+            unit.Init(info, unitEntity, default);
+            unit.position = position;
+            return unit;
         }
 
         public async UniTask<UnitBehaviour> Create(UnitInfo info, Vector2 position)

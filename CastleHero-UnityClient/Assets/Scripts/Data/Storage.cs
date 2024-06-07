@@ -20,8 +20,8 @@ namespace RGLabs.Data
     {
         public static readonly UserRepository userRepository = new();
         public static readonly InGameRepository inGameRepository = new();
-        public static readonly PoolContainer poolContainer = new();
         public static DBCollections db;
+        public static PoolContainer poolContainer;
         public static UnitFactory unitFactory;
         public static CastleFactory castleFactory;
         
@@ -32,7 +32,8 @@ namespace RGLabs.Data
             await InitAddressable();
             
             db = await DBCollections.Load();
-            
+
+            poolContainer = new();
             unitFactory = new UnitFactory();
             castleFactory = new CastleFactory();
         }

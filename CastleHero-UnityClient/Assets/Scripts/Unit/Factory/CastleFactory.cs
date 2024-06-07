@@ -4,7 +4,6 @@ using RGLabs.Data;
 using RGLabs.Data.DB;
 using RGLabs.Data.Model;
 using RGLabs.Unit.Behaviours;
-using RGLabs.Utility;
 using UnityEngine;
 using UnitInfo = RGLabs.Network.Model.UnitInfo;
 

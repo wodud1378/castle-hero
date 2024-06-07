@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using RGLabs.Common;
 using RGLabs.Common.UI;
 using RGLabs.Data;
 using RGLabs.Lobby.Behaviours;
@@ -10,6 +11,7 @@ using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Factory;
 using RGLabs.Utility;
 using TMPro;
+using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -36,15 +38,19 @@ namespace RGLabs.Lobby.UI
         private float _holdTime;
         private bool _onHold;
 
-        private IUnitFactory _factory;
-        
-        public bool IsOpen { get; private set; }
+        private UnitFactory _factory;
 
         private CancellationTokenSource _ctSource;
         private int _originLayer;
 
         private void Awake()
         {
+            _formation.placed
+                .CombineLatest(_formation.capacity, (current, max) => (current, max))
+                .ThrottleFrame(1)
+                .Subscribe(x=> _placedUnit.text = $"{x.current}/{x.max}")
+                .AddTo(this);
+            
             this.SubscribeButton(_close, Close);
             this.SubscribeButton(_reset, _formation.Clear);
             this.SubscribeButton(_auto, _formation.AutoPlacement);
@@ -52,8 +58,6 @@ namespace RGLabs.Lobby.UI
 
         public void Open()
         {
-            IsOpen = true;
-
             _dragField.gameObject.SetActive(true);
             
             _factory = Storage.unitFactory;
@@ -73,10 +77,8 @@ namespace RGLabs.Lobby.UI
             _animator.SetTrigger(UnFold);
         }
 
-        public void Close()
+        private void Close()
         {
-            IsOpen = false;
-
             _dragField.gameObject.SetActive(false);
 
             Exit();
@@ -150,8 +152,17 @@ namespace RGLabs.Lobby.UI
             var slot = GetItem(eventData);
             if (slot == null)
                 return null;
-            
-            return await _factory.Create(slot.Info, slot.transform.position);
+
+            var info = slot.Info;
+            if(info.id == Constants.BarricadeId)
+                return await _factory.CreateBarricade(slot.Info, slot.transform.position);
+            else
+                return await _factory.Create(slot.Info, slot.transform.position);
+        }
+
+        private void OnDestroy()
+        {
+            Destroy(_formation.gameObject);
         }
     }
 }

@@ -20,9 +20,9 @@ namespace RGLabs.Common.Behaviours
 
         public void Open()
         {
-            //await _spriteCollection.LoadAll();
-            
             IsOpen = true;
+            
+            gameObject.SetActive(true);
             
             _animator.SetTrigger(_openHashId);
         }
@@ -51,8 +51,9 @@ namespace RGLabs.Common.Behaviours
         {
             _spriteCollection.Dispose();
             
+            gameObject.SetActive(false);
+            
             OnCloseAnimationEnd?.Invoke();
-            //OnCloseAnimationEnd = null;
         }
 
         #endregion

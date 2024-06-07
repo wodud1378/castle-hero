@@ -27,7 +27,7 @@ namespace RGLabs.Stage.UI
             
             _characterList.Open();
         }
-
+        
         private void BackToLobby() => Context.Transition.CurrentState = State.Lobby;
     }
 }

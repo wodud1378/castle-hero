@@ -10,13 +10,21 @@ namespace RGLabs.InGame.System
     {
         public UnitBehaviour behaviour;
         public Vector2 position;
-        public float leftTime;
+        public float time;
+        
+        public readonly ReactiveProperty<float> leftTime = new();
+        public readonly ReactiveProperty<(float left, float total)> summary = new();
 
         private IDisposable _subscription;
         private ReactiveCollection<WaitRecover> _root;
-
+        
         public void Bind(ReactiveCollection<WaitRecover> root, IDisposable subscription)
         {
+            leftTime
+                .Select(x => (x, time))
+                .DistinctUntilChanged()
+                .Subscribe(x => summary.Value = x);
+
             _root = root;
             _subscription = subscription;
         }
@@ -25,6 +33,9 @@ namespace RGLabs.InGame.System
         {
             _root?.Remove(this);
             _subscription?.Dispose();
+
+            summary.Dispose();
+            leftTime.Dispose();
         }
     }
 
@@ -90,11 +101,11 @@ namespace RGLabs.InGame.System
         public IUnitEvent Event { get; set; }
 
         public bool IsCritical { get; set; }
-        
+
         public float Protected { get; set; }
     }
 
-    public struct HealResult  : IUnitEventResult
+    public struct HealResult : IUnitEventResult
     {
         public IUnitEvent Event { get; set; }
     }

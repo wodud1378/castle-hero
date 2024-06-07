@@ -34,6 +34,11 @@ namespace RGLabs.InGame.Effects.Behaviours
             
             SetParticleActive(false);
 
+            foreach (var particle in _particles)
+            {
+                particle.Play();
+            }
+
             foreach (var child in _children)
             {
                 child.duration = duration;
@@ -123,6 +128,9 @@ namespace RGLabs.InGame.Effects.Behaviours
 
         private static async UniTask<IEffect> GetEffect(string prefab)
         {
+            if (string.IsNullOrEmpty(prefab))
+                return null;
+            
             var container = Storage.poolContainer;
             var item = await container.GetItem(prefab);
             if (item == null)

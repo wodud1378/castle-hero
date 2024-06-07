@@ -109,6 +109,18 @@ namespace RGLabs.Data.Repositories
                 {
                     lv = 1,
                     rate = 1,
+                    id = 10000
+                },
+                new UnitInfo
+                {
+                    lv = 1,
+                    rate = 1,
+                    id = 10001
+                },
+                new UnitInfo
+                {
+                    lv = 1,
+                    rate = 1,
                     id = 10021
                 },
                 new UnitInfo

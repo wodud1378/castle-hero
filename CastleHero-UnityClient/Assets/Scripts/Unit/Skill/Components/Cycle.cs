@@ -21,23 +21,24 @@ namespace RGLabs.Unit.Skill.Components
 
     public class Timer
     {
+        public readonly float time;
+        
         private readonly UnitBehaviour _owner;
-        private readonly float _coolTime;
 
         public float leftTime;
 
         private IDisposable _disposable;
         private Action _onEnd;
         
-        public Timer(UnitBehaviour owner, float coolTime)
+        public Timer(UnitBehaviour owner, float time)
         {
             _owner = owner;
-            _coolTime = coolTime;
+            this.time = time;
         }
 
         public void Run(Action onEnd = null)
         {
-            leftTime = _coolTime;
+            leftTime = time;
 
             _onEnd = onEnd;
             _disposable = _owner
@@ -73,11 +74,11 @@ namespace RGLabs.Unit.Skill.Components
         public UnitBehaviour Owner { get; set; }
         public bool IsReady { get; private set; }
         
-        private readonly Timer _timer;
+        public readonly Timer timer;
 
         public CoolTime(UnitBehaviour owner, float coolTime)
         {
-            _timer = new(owner, coolTime);
+            timer = new(owner, coolTime);
 
             Owner = owner;
         }
@@ -85,7 +86,7 @@ namespace RGLabs.Unit.Skill.Components
         public void StartWaiting(Action onEnd = null)
         {
             IsReady = false;
-            _timer.Run(() =>
+            timer.Run(() =>
             {
                 IsReady = true;
                 onEnd?.Invoke();
