@@ -27,6 +27,12 @@ namespace RGLabs.InGame.Effects.Behaviours
         private bool _isRunning;
         private float _currentTime;
 
+        public float Duration
+        {
+            get => duration;
+            set => duration = value;
+        }
+
         public void Run(Vector2 _ = default)
         {
             _isRunning = true;
@@ -124,6 +130,17 @@ namespace RGLabs.InGame.Effects.Behaviours
 
             effect.SetTarget(unit);
             effect.Run(startAt);
+        }
+
+        public static async void Play(string prefab, Vector2 position, float duration)
+        {
+            var effect = await GetEffect(prefab);
+            if (effect == null)
+                return;
+
+            effect.Duration = duration;
+            effect.SetTarget(position);
+            effect.Run();
         }
 
         private static async UniTask<IEffect> GetEffect(string prefab)

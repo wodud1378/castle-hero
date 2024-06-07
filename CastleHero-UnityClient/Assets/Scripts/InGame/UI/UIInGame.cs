@@ -127,8 +127,10 @@ namespace RGLabs.InGame.UI
         //     SetPause(!hasFocus);
         // }
 
-        private void OnResult(Result result)
+        private async void OnResult(Result result)
         {
+            await UniTask.Delay(TimeSpan.FromSeconds(1f));
+            
             Result.Open(result.isCleared);
         }
 

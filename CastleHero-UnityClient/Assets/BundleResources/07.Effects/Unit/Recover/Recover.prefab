@@ -24764,7 +24764,7 @@ GameObject:
   - component: {fileID: 3742459271807292420}
   - component: {fileID: 1801051445372864501}
   m_Layer: 0
-  m_Name: Effect_Character_Die
+  m_Name: Recover
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

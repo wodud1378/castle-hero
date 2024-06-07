@@ -15,6 +15,8 @@ namespace RGLabs.InGame.Effects.Behaviours
         private bool _isRunning = false;
         private float _arrivalTime;
 
+        public float Duration { get; set; }
+
         public void Run(Vector2 startAt = default)
         {
             transform.position = startAt;

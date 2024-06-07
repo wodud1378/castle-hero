@@ -45,17 +45,7 @@ namespace RGLabs.Unit.Behaviours
 
         public Status status => Core.status;
         public ReactiveProperty<UnitCore.States> state => Core.state;
-
-        public bool CanMove
-        {
-            set => Core.canMove = value;
-        }
         
-        public bool CanAttack
-        {
-            set => Core.canAttack = value;
-        }
-
         public UnitCore Core { get; private set; }
         
         public bool Released { get; private set; }

@@ -1,32 +1,46 @@
-using System;
 using System.Threading;
-using Cysharp.Threading.Tasks;
 using RGLabs.Lobby.Behaviours;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace RGLabs.Lobby.UI
 {
-    public class UIConfigDragField : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class UIConfigDragField : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler,
+        IPointerClickHandler
     {
+        public enum UnitFrom
+        {
+            Slot,
+            Field
+        }
+        
         [SerializeField] private Formation _formation;
         [SerializeField] private PolygonDrawer _validationCircle;
         [SerializeField] private Color _validColor;
         [SerializeField] private Color _invalidColor;
 
-        public ReactiveProperty<UnitBehaviour> unit = new();
-
+        private UnitFrom _unitFrom;
+        private readonly ReactiveProperty<UnitBehaviour> _unit = new();
         private CancellationTokenSource _ctSource;
         private int _originLayer;
 
+        private bool _onDrag;
+
+        public void SetUnit(UnitFrom unitFrom, UnitBehaviour unit)
+        {
+            _unitFrom = unitFrom;
+            _unit.Value = unit;
+        }
+        
         private void Awake()
         {
             _validationCircle.Init();
-            
-            unit
+
+            _unit
                 .Subscribe(OnTargetChanged)
                 .AddTo(this);
         }
@@ -41,88 +55,64 @@ namespace RGLabs.Lobby.UI
 
         private void OnTargetChanged(UnitBehaviour target)
         {
-            unit.Value = target;
-            if (unit.Value == null)
+            _unit.Value = target;
+            if (_unit.Value == null)
                 return;
 
             _originLayer = target.gameObject.GetLayer();
             target.gameObject.ToPreviewLayer();
-            target.Core.inBattle = false;
             target.Collider.isTrigger = true;
+            target.Core.onRest.Value = true;
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (unit.Value != null)
+            if (_unit.Value != null)
                 return;
-            
-            PressTask(eventData);
+
+            _onDrag = true;
+
+            var position = eventData.position.ScreenToWorld();
+            if (!_formation.InArea(position))
+                return;
+
+            SetUnit(UnitFrom.Field, FindFromRay(position));
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (unit.Value == null)
+            if (_unit.Value == null)
                 return;
 
-            unit.Value.transform.position = eventData.position.ScreenToWorld();
+            _unit.Value.transform.position = eventData.position.ScreenToWorld();
             _validationCircle.Color =
-                _formation.IsValid(unit.Value.Collider, _originLayer) ? _validColor : _invalidColor;
+                _formation.IsValid(_unit.Value.Collider, _originLayer) ? _validColor : _invalidColor;
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
             _ctSource?.Cancel();
 
-            if (unit.Value == null)
-            {
-                var selected = FindFromRay(eventData.position.ScreenToWorld());
-                if(selected != null)
-                    selected.DestroySelf();
+            var hold = _unit.Value;
+            if (hold == null)
+                return;
 
+            if (!_formation.TryRegister(hold, _originLayer, _unitFrom == UnitFrom.Field))
+            {
+                hold.DestroySelf();
+                _unit.Value = null;
                 return;
             }
 
-            if (!_formation.TryRegister(unit.Value, _originLayer))
-            {
-                unit.Value.DestroySelf();
-                return;
-            }
+            hold.Core.movement.Default = _unit.Value.position;
+            hold.Collider.isTrigger = false;
+            hold.gameObject.ToLayer(_originLayer);
 
-            unit.Value.Core.movement.Default = unit.Value.position;
-            unit.Value.Collider.isTrigger = false;
-            unit.Value.gameObject.ToLayer(_originLayer);
+            _unit.Value = null;
 
-            unit.Value = null;
-            
             _validationCircle.Color = _validColor;
         }
 
-        private async void PressTask(PointerEventData eventData)
-        {
-            _ctSource = new();
-
-            await UniTask
-                .Delay(TimeSpan.FromSeconds(0.2f), cancellationToken: _ctSource.Token)
-                .SuppressCancellationThrow();
-
-            var position = eventData.position.ScreenToWorld();
-            bool isCancel = _ctSource.IsCancellationRequested;
-            _ctSource = null;
-            
-            if (isCancel)
-            {
-                var found = FindFromRay(position);
-                if(found != null)
-                    _formation.Remove(found);
-                
-                return;
-            }
-
-            if (!_formation.InArea(position))
-                return;
-
-            unit.Value = FindFromRay(position);
-        }
 
         private UnitBehaviour FindFromRay(Vector2 position)
         {
@@ -131,6 +121,18 @@ namespace RGLabs.Lobby.UI
                 return null;
 
             return hit.collider.GetComponent<UnitBehaviour>();
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (!_onDrag)
+            {
+                var selected = FindFromRay(eventData.position.ScreenToWorld());
+                if (selected != null)
+                    _formation.Remove(selected);
+            }
+
+            _onDrag = false;
         }
     }
 }

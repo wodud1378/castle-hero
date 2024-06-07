@@ -23,6 +23,8 @@ namespace RGLabs.Unit.Skill
         public IRunner Runner { get; set; }
 
         public void Init();
+
+        public void SetToEnable();
     }
 
     public abstract class SkillBase : ISkill
@@ -42,7 +44,12 @@ namespace RGLabs.Unit.Skill
         public IRunner Runner { get; set; }
         public abstract void Init();
 
-        protected AroundCenter aroundCenter = new();
+        protected AroundCenter aroundCenter;
+
+        public void SetToEnable()
+        {
+            Cycle.StartWaiting();
+        }
 
         protected bool TryUpdateAroundCenter(int maxCount = 0, bool includeCenter = false, bool includeCastle = false)
         {
@@ -71,10 +78,6 @@ namespace RGLabs.Unit.Skill
             aroundCenter.around = around;
             return true;
         }
-
-        private bool IsNotCenterOrCastle(UnitBehaviour x, UnitBehaviour center, UnitBehaviour castle) => IsSameUnit(x, center) && IsSameUnit(x, castle);
-
-        private bool IsSameUnit(UnitBehaviour x, UnitBehaviour unit) => x == unit;
 
         protected void PublishAtk(UnitBehaviour unit, DamageType type, float amount, string effect = "")
         {

@@ -8,6 +8,8 @@ namespace RGLabs.Common
         public static readonly int BufferSize = 50;
         public static readonly float HitEffectDuration = 0.15f;
 
+        public static readonly float DragDistanceThreshold = 0.3f;
+
         public static readonly int BarricadeId = 10000;
         public static readonly string BarricadeIcon = "Common/Portrait/Character_10000.png";
         public static readonly string BarricadePrefab = "Character_10000/Character_10000.prefab";
@@ -24,7 +26,7 @@ namespace RGLabs.Common
             { GlobalSkill.Type.Sturn, "Common/Icon/Icon_Skill_Global_03.png" },
             { GlobalSkill.Type.Heal, "Common/Icon/Icon_Skill_Global_03.png" },
         };
-        
+
         public static readonly Dictionary<GlobalSkill.Type, string> GlobalSkillEffect = new()
         {
             { GlobalSkill.Type.Shield, "Effect_Global_03" },
@@ -34,6 +36,8 @@ namespace RGLabs.Common
         };
 
         public static string ManaDropEffect = "Effect_ManaStone";
-        public static string DeadEffect = "DeadEffect/DeadEffect.prefab";
+        public static string DeadEffect = "UnitEffect/Dead/Dead.prefab";
+        public static string RecoverEffect = "UnitEffect/Recover/Recover.prefab";
+        public static string SpawnEffect = "UnitEffect/Spawn/Spawn.prefab";
     }
 }

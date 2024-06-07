@@ -30,11 +30,8 @@ namespace RGLabs.Unit.Skill
         protected override void OnExecute()
         {
             if (!TryGetQuantityParameter(0, out int quantity) ||
-                !TryUpdateAroundCenter(quantity))
+                !TryUpdateAroundCenter(quantity, true))
                 return;
-            
-            var center = aroundCenter.center;
-            PlayEffect(Effect.Self, center);
 
             AttachHeal();
             ShieldOnGroup();

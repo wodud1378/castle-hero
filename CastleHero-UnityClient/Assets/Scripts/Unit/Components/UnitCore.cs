@@ -25,7 +25,7 @@ namespace RGLabs.Unit.Components
             Monster,
             Character,
         }
-        
+
         public enum States
         {
             Prepare,
@@ -56,6 +56,7 @@ namespace RGLabs.Unit.Components
 
         private static readonly int AtkSpeedHash = Animator.StringToHash("AttackSpeed");
 
+        public readonly ReactiveProperty<bool> onRest; 
         public readonly ReactiveProperty<States> state;
         public readonly Status status;
         public readonly PolyNavAgent navAgent;
@@ -74,28 +75,19 @@ namespace RGLabs.Unit.Components
 
         public LayerMask enemyLayerMask;
         public LayerMask alleyLayerMask;
-        
+
         public readonly float[] restrictions;
-        
+
         public Teams Team { get; private set; }
-        
+
         public bool Invincible => _leftInvincible > 0f;
 
-        public bool inBattle;
-        
-        public bool canMove
-        {
-            get => movement.Enabled;
-            set => movement.Enabled = value;
-        }
-
-        public bool canAttack;
-
         private bool AllowSkill => restrictions[(int)Restrictions.Skill] <= 0f;
-        private bool AllowMove => _enableMove && canMove && restrictions[(int)Restrictions.Move] <= 0f;
-        private bool AllowAttack => _enableAttack && canAttack && restrictions[(int)Restrictions.Attack] <= 0f;
+        private bool AllowMove => _enableMove && restrictions[(int)Restrictions.Move] <= 0f;
+        private bool AllowAttack => _enableAttack && restrictions[(int)Restrictions.Attack] <= 0f;
 
         private ISkill _skill;
+        private Action _updateMethod;
         private IDisposable _update;
         private float _leftInvincible;
 
@@ -135,6 +127,12 @@ namespace RGLabs.Unit.Components
             else
                 movement = new FixedMovement();
 
+            onRest = new();
+            onRest
+                .DistinctUntilChanged()
+                .Subscribe(OnRestStateChanged)
+                .AddTo(this.owner);
+            
             state = new(States.Prepare);
             state
                 .DistinctUntilChanged()
@@ -177,8 +175,8 @@ namespace RGLabs.Unit.Components
             UpdateLookDirection(movement.Default);
 
             ApplyRateBonus(info.rate, balance, out int skillLv);
-            
-            if(info.equipments != null)
+
+            if (info.equipments != null)
                 ApplyEquipmentBonus(info.equipments);
 
             if (data.skill != 0)
@@ -205,11 +203,11 @@ namespace RGLabs.Unit.Components
                     var value = equipment.values[index];
 
                     var adjustValue = status[stat].multiplyAdjust;
-                    if(value < 0f)
+                    if (value < 0f)
                         adjustValue.Decrease(Mathf.Abs(value));
                     else
                         adjustValue.Increase(value);
-                    
+
                     status[stat].multiplyAdjust.Increase(value);
                     ++index;
                 }
@@ -268,20 +266,39 @@ namespace RGLabs.Unit.Components
             }
         }
 
-        private void OnUpdateOwner()
+        private void OnRestStateChanged(bool isRest)
+        {
+            _updateMethod = isRest ? OnRest : OnBattle;
+
+            if (isRest)
+                return;
+            
+            _skill?.SetToEnable();
+        }
+        
+        private void OnRest()
+        {
+            state.Value = States.Idle;
+            
+            OnIdle();
+        }
+
+        private void OnBattle()
         {
             if (state.Value == States.Dead || owner.Released)
                 return;
 
             if (TrySetToDead())
                 return;
-            
+
             UpdateInvincible();
             UpdateRestriction();
             UpdateStatus();
             UpdateState();
             ProcessState();
         }
+
+        private void OnUpdateOwner() => _updateMethod.Invoke();
 
         private bool TrySetToDead()
         {
@@ -334,28 +351,22 @@ namespace RGLabs.Unit.Components
 
         private void UpdateState()
         {
-            if (inBattle)
-            {
-                if (attack is { IsRunning: true })
-                    return;
+            if (attack is { IsRunning: true })
+                return;
 
-                if (TrySetToSkill())
-                    return;
+            if (TrySetToSkill())
+                return;
 
-                if (TrySetToAttack())
-                    return;
+            if (TrySetToAttack())
+                return;
 
-                if (TrySetToMove())
-                    return;
+            if (TrySetToMove())
+                return;
 
-                if (TrySetToReturn())
-                    return;
-                
-                state.Value = States.Idle;
-            }
-            else
-                state.Value = States.Idle;
+            if (TrySetToReturn())
+                return;
 
+            state.Value = States.Idle;
         }
 
         private void ProcessState()
@@ -364,6 +375,9 @@ namespace RGLabs.Unit.Components
             {
                 case States.Prepare:
                     OnPrepare();
+                    break;
+                case States.Idle:
+                    OnIdle();
                     break;
                 case States.Move:
                     OnMove();
@@ -389,6 +403,7 @@ namespace RGLabs.Unit.Components
 
         private void OnPrepare()
         {
+            attack.Clear();
             attack.finder.Clear();
             movement.Finder.Clear();
             movement.Stop();
@@ -403,7 +418,7 @@ namespace RGLabs.Unit.Components
 
             if (!AllowSkill)
                 return false;
-            
+
             if (_skill.Runner.IsRunning)
                 return true;
 
@@ -459,6 +474,11 @@ namespace RGLabs.Unit.Components
             }
 
             return false;
+        }
+
+        private void OnIdle()
+        {
+            lookDirection.Value = navAgent.position * 2f;
         }
 
         private void OnMove()

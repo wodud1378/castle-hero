@@ -9,8 +9,6 @@ namespace RGLabs.Unit.Skill
 
             Runner.OnReleaseEvent -= OnRelease;
             Runner.OnReleaseEvent += OnRelease;
-            
-            Cycle.StartWaiting();
         }
 
         protected abstract void OnExecute();

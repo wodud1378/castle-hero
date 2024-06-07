@@ -76,6 +76,8 @@ namespace RGLabs.Lobby.Behaviours
             }
 
             await UniTask.WhenAll(tasks);
+            
+            _userRepo.ApplyFieldCharacters(_gameRepo.characters);
         }
 
         public void Clear()
@@ -104,7 +106,7 @@ namespace RGLabs.Lobby.Behaviours
             _userRepo.ApplyFieldCharacters(_gameRepo.characters);
         }
 
-        public bool TryRegister(UnitBehaviour unit, int layer)
+        public bool TryRegister(UnitBehaviour unit, int layer, bool isExist)
         {
             if (!unit.IsValid())
                 return false;
@@ -115,10 +117,20 @@ namespace RGLabs.Lobby.Behaviours
 
             if (!IsValid(unit.Collider, layer))
                 return false;
+
+            var characters = _gameRepo.characters;
+            if (isExist)
+            {
+                int index = characters.IndexOf(unit);
+                characters[index].position = unit.position;
+            }
+            else
+            {
+                RemoveIfLimited(unit);
+                characters.Add(unit);   
+            }
             
-            RemoveIfLimited(unit);
-            _gameRepo.characters.Add(unit);
-            _userRepo.ApplyFieldCharacters(_gameRepo.characters);
+            _userRepo.ApplyFieldCharacters(characters);
             return true;
         }
 
@@ -205,7 +217,7 @@ namespace RGLabs.Lobby.Behaviours
                 return;
 
             unit.Core.movement.Default = position;
-            unit.Core.inBattle = false;
+            unit.Core.onRest.Value = true;
             
             _gameRepo.characters.Add(unit);
         }

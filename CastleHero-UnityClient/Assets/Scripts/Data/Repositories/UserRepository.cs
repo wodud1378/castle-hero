@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RGLabs.InGame;
-using RGLabs.Lobby.Behaviours;
 using RGLabs.Network.Model;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
@@ -78,8 +76,6 @@ namespace RGLabs.Data.Repositories
                     position = unit.position
                 });
             }
-            
-            SaveArray(FieldCharactersKey, fieldCharacters.ToArray());
         }
 
         private static int Load(string key, int defaultVal = -1) => PlayerPrefs.GetInt(key, defaultVal);

@@ -28,7 +28,7 @@ namespace RGLabs.Unit.Skill
             if (!TryUpdateAroundCenter())
                 return;
 
-            PlayEffect(0, aroundCenter.center.position);
+            PlayEffect(0, aroundCenter.center);
             foreach (var unit in aroundCenter.around)
             {
                 if (unit.IsAlley(Owner))

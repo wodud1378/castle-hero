@@ -1,4 +1,6 @@
 using System;
+using Cysharp.Threading.Tasks;
+using RGLabs.Common;
 using RGLabs.Common.Behaviours;
 using RGLabs.Data;
 using RGLabs.InGame.Effects.Behaviours;
@@ -128,6 +130,8 @@ namespace RGLabs.InGame.System
             collection.Add(recover);
 
             recover.Bind(collection, subscription);
+            
+            Effect.Play(Constants.RecoverEffect, recover.behaviour.position, recover.time);
         }
 
         private void PlayEffect(IUnitEvent ev)
@@ -157,9 +161,14 @@ namespace RGLabs.InGame.System
             return subscription;
         }
 
-        private void Recovery(WaitRecover recover)
+        private async void Recovery(WaitRecover recover)
         {
-            recover.behaviour.Recovery(recover.position);
+            var position = recover.position;
+            Effect.Play(Constants.SpawnEffect, position);
+
+            await UniTask.DelayFrame(6);
+           
+            recover.behaviour.Recovery(position);
             recover.Dispose();
         }
 

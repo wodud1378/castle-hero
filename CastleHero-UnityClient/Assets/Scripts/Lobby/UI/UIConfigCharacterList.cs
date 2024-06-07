@@ -137,7 +137,7 @@ namespace RGLabs.Lobby.UI
             var unit = await CreateFromPosition(eventData);
             if (unit != null)
             {
-                _dragField.unit.Value = unit;
+                _dragField.SetUnit(UIConfigDragField.UnitFrom.Slot, unit);
 
                 var obj = _dragField.gameObject;
                 eventData.pointerDrag = obj;
