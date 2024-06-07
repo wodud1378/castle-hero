@@ -23,7 +23,7 @@ namespace RGLabs.InGame.UI
 
     public class UIInGame : UIMain
     {
-        [field:SerializeField] public UICharacterList DeadCharacters { get; private set; }
+        [field:SerializeField] public UIRecoverList DeadCharacters { get; private set; }
         [field:SerializeField] public UIGameResult Result { get; private set; }
         [field:SerializeField] public UIPause Pause { get; private set; }
         [field:SerializeField] public UIGlobalSkill GlobalSkill { get; private set; }
@@ -111,25 +111,7 @@ namespace RGLabs.InGame.UI
 
         public void Init()
         {
-            Storage.inGameRepository.recovers
-                .ObserveAdd()
-                .Subscribe(_=> OnRecoveryCollectionChanged())
-                .AddTo(this);
-
-            Storage.inGameRepository.recovers
-                .ObserveRemove()
-                .Subscribe(_=> OnRecoveryCollectionChanged())
-                .AddTo(this);
-        }
-
-        private async void OnRecoveryCollectionChanged()
-        {
-            var recovers = Storage.inGameRepository.recovers;
-            var info = recovers
-                .Select(x => x.behaviour.Info)
-                .ToArray();
-
-            await DeadCharacters.Init(info);
+            DeadCharacters.Init();
         }
 
         private void SetPause(bool isPause)

@@ -140,13 +140,14 @@ namespace RGLabs.InGame.System
 
         private IDisposable ReserveRecover(WaitRecover recover)
         {
+            recover.leftTime.Value = recover.time;
             var stream = _root
                 .UpdateAsObservable()
                 .Select(_ => Time.deltaTime)
                 .Where(x =>
                 {
-                    recover.leftTime -= x;
-                    return recover.leftTime <= 0;
+                    recover.leftTime.Value -= x;
+                    return recover.leftTime.Value <= 0;
                 });
 
             var subscription = stream

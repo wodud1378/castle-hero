@@ -59,8 +59,8 @@ namespace RGLabs.Unit.Skill
             var castle = Storage.inGameRepository.castle.Value;
             var around = units.Where(x =>
                 {
-                    bool filterA = !includeCenter || x != centerUnit;
-                    bool filterB = !includeCastle || x != castle;
+                    bool filterA = includeCenter || x != centerUnit;
+                    bool filterB = includeCastle || x != castle;
 
                     return filterA && filterB;
                 })

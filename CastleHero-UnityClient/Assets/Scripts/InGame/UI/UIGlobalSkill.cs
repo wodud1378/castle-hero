@@ -43,7 +43,7 @@ namespace RGLabs.InGame.UI
         protected override async UniTask SetItem(UIGlobalSkillSlot item, GlobalSkill.Parameter data,
             CancellationToken ct)
         {
-            await item.InitAsync(Constants.GlobalSkillIcon[data.type], "Ramjui Thunder", CancellationToken.None);
+            await item.InitAsync(Constants.GlobalSkillIcon[data.type], string.Empty, CancellationToken.None);
         }
 
         public void OnBeginDrag(PointerEventData eventData)

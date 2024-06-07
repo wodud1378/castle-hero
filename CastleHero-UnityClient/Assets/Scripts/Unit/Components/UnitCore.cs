@@ -299,7 +299,7 @@ namespace RGLabs.Unit.Components
                 {
                     behaviour = owner,
                     position = movement.Default,
-                    leftTime = status.recovery
+                    time = status.recovery
                 }.Publish();
             }
 
