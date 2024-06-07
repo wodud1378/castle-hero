@@ -81,13 +81,12 @@ namespace RGLabs.Unit.Behaviours
             Released = false;
         }
 
-        public void Recovery(Vector2 at)
+        public void Recovery()
         {
             ForceActivate();
             Init(Info, Data, _balance);
 
-            position = at;
-            Core.movement.Default = at;
+            Core.movement.Default = position;
         }
         
         private void ProcessDead()

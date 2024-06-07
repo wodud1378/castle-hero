@@ -57,8 +57,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2a6e87714d86b014696fd5c1083ddb82
-    m_Address: DeadEffect
+  - m_GUID: f4753ef9bb4f7b541adb8add596a691d
+    m_Address: UnitEffect
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
