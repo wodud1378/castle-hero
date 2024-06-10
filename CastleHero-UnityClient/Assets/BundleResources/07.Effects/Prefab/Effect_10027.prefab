@@ -9796,7 +9796,6 @@ MonoBehaviour:
   - {fileID: 3873450666445489277}
   - {fileID: 8784120256677096998}
   - {fileID: 835279999114159667}
-  - {fileID: 1760519565750923474}
   slot: 2
   duration: 1
 --- !u!1 &3216651443518336544
@@ -44214,11 +44213,6 @@ ParticleSystem:
 --- !u!4 &1331789590065246603 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8408248901612470576, guid: 472d384a27ff8434cac30b3e32feb896, type: 3}
-  m_PrefabInstance: {fileID: 7407135236330942651}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &1760519565750923474 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 9125965713817567337, guid: 472d384a27ff8434cac30b3e32feb896, type: 3}
   m_PrefabInstance: {fileID: 7407135236330942651}
   m_PrefabAsset: {fileID: 0}
 --- !u!198 &2051779184589097929 stripped

@@ -1,0 +1,76 @@
+Character_10006.png
+	size: 512, 512
+	filter: Linear, Linear
+	scale: 0.5
+Arm_L
+	bounds: 229, 422, 87, 82
+	offsets: 5, 5, 97, 92
+	rotate: 90
+Arm_L2
+	bounds: 309, 7, 56, 46
+	offsets: 5, 5, 66, 56
+Arm_R
+	bounds: 241, 189, 67, 92
+	offsets: 5, 5, 77, 102
+Arm_R2
+	bounds: 368, 100, 53, 43
+	offsets: 5, 5, 63, 53
+	rotate: 90
+Belt
+	bounds: 193, 282, 131, 87
+	offsets: 3, 3, 135, 91
+	rotate: 270
+Chin
+	bounds: 209, 11, 99, 104
+	offsets: 2, 2, 102, 109
+Effect_Slash
+	bounds: 342, 303, 50, 50
+Elipse
+	bounds: 310, 216, 65, 65
+Finger_R
+	bounds: 127, 327, 68, 57
+	offsets: 5, 5, 78, 67
+	rotate: 90
+Foot
+	bounds: 307, 354, 78, 67
+	offsets: 5, 4, 86, 75
+	rotate: 270
+Gauntlet_L
+	bounds: 241, 125, 79, 62
+	offsets: 5, 5, 89, 72
+Gauntlet_R
+	bounds: 279, 283, 77, 61
+	offsets: 5, 5, 87, 71
+	rotate: 90
+Hair
+	bounds: 2, 123, 157, 144
+	offsets: 9, 1, 166, 147
+	rotate: 90
+Hand_L
+	bounds: 299, 55, 67, 68
+	offsets: 5, 5, 77, 78
+Hand_R
+	bounds: 313, 448, 62, 61
+	offsets: 5, 5, 72, 71
+Head
+	bounds: 2, 2, 149, 121
+	offsets: 0, 1, 150, 126
+Leg
+	bounds: 322, 155, 56, 59
+	offsets: 5, 5, 66, 69
+Shoulder_L
+	bounds: 127, 397, 100, 112
+	offsets: 5, 5, 110, 122
+Shoulder_R
+	bounds: 147, 83, 92, 113
+	offsets: 5, 5, 102, 123
+Toe
+	bounds: 368, 35, 63, 36
+	offsets: 3, 4, 69, 43
+	rotate: 90
+Torso
+	bounds: 109, 198, 116, 127
+	offsets: 3, 2, 121, 132
+Weapon
+	bounds: 2, 282, 123, 227
+	offsets: 5, 5, 133, 237
