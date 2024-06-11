@@ -1,4 +1,3 @@
-using System;
 using RGLabs.Unit.Behaviours;
 
 namespace RGLabs.Unit.Finding

@@ -28,7 +28,8 @@ namespace RGLabs.Network.Model
     {
         public int Id { get; set; }
         public int Quantity { get; set; }
-        
+
+        public int character;
         public int slot;
         public int[] stats;
         public float[] values;

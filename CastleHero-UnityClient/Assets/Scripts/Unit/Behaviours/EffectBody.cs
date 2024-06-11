@@ -28,25 +28,30 @@ namespace RGLabs.Unit.Behaviours
                 Effect.Slot.Top => top,
                 Effect.Slot.Middle => middle,
                 Effect.Slot.Bottom => bottom,
-                _ => null
+                _ => _fallBack
             };
-
-            parent ??= _fallBack;
-            effect.transform.position = parent.position;
+            
+            var tr = effect.transform;
+            tr.position = parent.position;
+            tr.localScale = parent.localScale;
+            
             var subscription = effect
                 .UpdateAsObservable()
-                .Subscribe(_ => effect.transform.position = parent.position)
+                .Subscribe(_ => tr.position = parent.position)
                 .AddTo(this);
 
             effect
                 .OnDisableAsObservable()
                 .Subscribe(_=> subscription.Dispose())
                 .AddTo(this);
+            
+            _attachments.Add(effect);
         }
 
         public void Clear()
         {
             _attachments.ForEach(x=> x.Stop());
+            _attachments.Clear();
         }
     }
 }

@@ -114,14 +114,14 @@ namespace RGLabs.Unit.Components
             if (_enableAttack)
             {
                 buffer = new Collider2D[Constants.BufferSize];
-                var atkFinder = Finder.Create(IDetection.Option.Circle, 1, buffer);
+                var atkFinder = Finder.Create(IDetection.Option.Circle, Constants.BufferSize, buffer);
                 attack = new Attack(this.owner, atkFinder, renderController, animationEvent);
             }
 
             if (_enableMove)
             {
                 buffer ??= new Collider2D[Constants.BufferSize];
-                var moveFinder = Finder.Create<FindMoveTarget>(IDetection.Option.Circle, 1, buffer);
+                var moveFinder = Finder.Create(IDetection.Option.Circle, 1, buffer);
                 movement = new DefaultMovement(this.owner, moveFinder, navAgent);
             }
             else
@@ -141,6 +141,7 @@ namespace RGLabs.Unit.Components
 
             lookDirection = new();
             lookDirection
+                .ThrottleFrame(5)
                 .Subscribe(UpdateLookDirection)
                 .AddTo(this.owner);
         }

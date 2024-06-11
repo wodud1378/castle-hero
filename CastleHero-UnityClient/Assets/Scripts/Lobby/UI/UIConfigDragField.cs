@@ -1,11 +1,13 @@
 using System.Threading;
+using RGLabs.Common;
+using RGLabs.Common.UI;
+using RGLabs.Data;
 using RGLabs.Lobby.Behaviours;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 
 namespace RGLabs.Lobby.UI
 {
@@ -30,7 +32,21 @@ namespace RGLabs.Lobby.UI
 
         private bool _onDrag;
 
-        public void SetUnit(UnitFrom unitFrom, UnitBehaviour unit)
+        public async void Create(UICharacterSlot slot)
+        {
+            var factory = Storage.unitFactory;
+
+            var info = slot.Info;
+            UnitBehaviour unit;
+            if(info.id == Constants.BarricadeId)
+                unit = await factory.CreateBarricade(info, slot.transform.position);
+            else
+                unit = await factory.Create(info, slot.transform.position);
+
+            SetUnit(UnitFrom.Slot, unit);
+        }
+        
+        private void SetUnit(UnitFrom unitFrom, UnitBehaviour unit)
         {
             _unitFrom = unitFrom;
             _unit.Value = unit;

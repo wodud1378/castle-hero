@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.Utility;
 using UniRx;
 using UniRx.Triggers;
@@ -15,7 +16,7 @@ namespace RGLabs.Unit.Skill
             Shield
         }
 
-        private enum Effect
+        private enum Effects
         {
             Self,
             HealTarget,
@@ -45,7 +46,7 @@ namespace RGLabs.Unit.Skill
             if (!TryGetGroupParameter(0, out int group))
                 return;
 
-            TryGetEffectPrefab(Effect.ShieldTarget, out string eff);
+            TryGetEffectPrefab(Effects.ShieldTarget, out string eff);
             
             var targets = aroundCenter.around.Where(x => x.Data.team == group);
             float amount = GetAmount(type, value);
@@ -65,6 +66,17 @@ namespace RGLabs.Unit.Skill
                 .Select(_ => Time.deltaTime)
                 .Subscribe(Heal)
                 .AddTo(Owner);
+
+            if (TryGetEffectPrefab(Effects.HealTarget, out string eff))
+            {
+                foreach (var target in aroundCenter.around)
+                {
+                    if (!target.IsValid())
+                        continue;
+                    
+                    Effect.Play(eff, target);
+                }   
+            }
         }
 
         private void Heal(float deltaTime)
@@ -77,7 +89,7 @@ namespace RGLabs.Unit.Skill
             if (!TryGetStatusParameter(Step.Heal, out var type, out var value))
                 return;
 
-            TryGetEffectPrefab(Effect.HealTarget, out string eff);
+            TryGetEffectPrefab(Effects.HealTarget, out string eff);
             
             float amount = GetAmount(type, value);
             foreach (var target in aroundCenter.around)

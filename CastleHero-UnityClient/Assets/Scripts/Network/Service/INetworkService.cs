@@ -21,5 +21,7 @@ namespace RGLabs.Network.Service
         
         // 스테이지
         public UniTask<StageClear> StageClear(int stage);
+
+        public UniTask SetStage(int stage);
     }
 }

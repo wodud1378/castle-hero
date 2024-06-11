@@ -62,10 +62,15 @@ namespace RGLabs.InGame.Effects.Behaviours
 
         public void SetTarget(UnitBehaviour unit)
         {
-            if (unit.EffectBody == null)
+            var effectBody = unit.EffectBody;
+            if (effectBody == null)
                 return;
 
-            unit.EffectBody.Attach(this);
+            effectBody.Attach(this);
+            foreach (var child in _children)
+            {
+                effectBody.Attach(child);
+            }
         }
 
         public void SetTarget(Vector2 position) => transform.position = position;

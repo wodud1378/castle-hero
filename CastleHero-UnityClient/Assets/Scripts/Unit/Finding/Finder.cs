@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using RGLabs.Common;
 using RGLabs.Unit.Behaviours;
@@ -18,8 +17,8 @@ namespace RGLabs.Unit.Finding
         public IDetection detection;
 
         public Finder() { }
-        
-        public Finder(IDetection detection)
+
+        protected Finder(IDetection detection)
         {
             this.detection = detection;
         }

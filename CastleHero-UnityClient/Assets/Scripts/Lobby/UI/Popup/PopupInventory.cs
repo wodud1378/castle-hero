@@ -26,6 +26,15 @@ namespace RGLabs.Lobby.UI.Popup
             Other
         }
 
+        public enum Category
+        {
+            All,
+            Weapon,
+            Armor,
+            Ring,
+            Necklace,
+        }
+
         [SerializeField] private UIInventoryItemList _itemList;
         [SerializeField] private ToggleGroup _tabToggle;
 
@@ -33,9 +42,9 @@ namespace RGLabs.Lobby.UI.Popup
 
         private CancellationTokenSource _ctSource;
         
-        protected override void OnAwake()
+        protected override void InitSubscriptions()
         {
-            base.OnAwake();
+            base.InitSubscriptions();
 
             this.UpdateAsObservable()
                 .Select(_ => _tabToggle.ActiveToggles().FirstOrDefault(t => t.isOn))
@@ -55,7 +64,7 @@ namespace RGLabs.Lobby.UI.Popup
                 .AddTo(this);
         }
 
-        public override UniTask Open(params object[] parameters)
+        public override UniTask OpenTask(params object[] parameters)
         {
             Tab tabParam;
             try { tabParam = (Tab)parameters[0]; }
@@ -68,7 +77,7 @@ namespace RGLabs.Lobby.UI.Popup
             return UpdateUI();
         }
 
-        public override UniTask Open() => Open(Tab.All);
+        public override UniTask Open() => OpenTask(Tab.All);
 
         protected override void OnClose()
         {
@@ -87,9 +96,9 @@ namespace RGLabs.Lobby.UI.Popup
             return _itemList.Init(items);
         }
         
-        private Predicate<IItem> CompareMethod(Tab tab)
+        private Predicate<IItem> CompareMethod(Tab tabValue)
         {
-            return tab switch
+            return tabValue switch
             {
                 Tab.All => _ => true,
                 Tab.Equipment => x => x.Id.ItemType() == ItemTypeCode.Equipment,

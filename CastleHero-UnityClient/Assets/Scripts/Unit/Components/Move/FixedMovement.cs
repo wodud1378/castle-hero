@@ -10,7 +10,7 @@ namespace RGLabs.Unit.Components.Move
         
         public Vector2 Default { get; set; }
         public UnitBehaviour CurrentTarget { get; set; }
-        public FindMoveTarget Finder => null;
+        public Finder Finder => null;
 
         public bool TryMoveToTarget() => false;
 

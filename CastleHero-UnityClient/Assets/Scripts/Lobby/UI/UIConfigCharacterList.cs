@@ -134,17 +134,15 @@ namespace RGLabs.Lobby.UI
             if (_ctSource.Token.IsCancellationRequested)
                 return;
 
-            var unit = await CreateFromPosition(eventData);
-            if (unit != null)
-            {
-                _dragField.SetUnit(UIConfigDragField.UnitFrom.Slot, unit);
-
-                var obj = _dragField.gameObject;
-                eventData.pointerDrag = obj;
-                ExecuteEvents.Execute(obj, eventData, ExecuteEvents.dragHandler);
-            }
-            else
-                _dragField = null;
+            var slot = GetItem(eventData);
+            if (slot == null)
+                return;
+            
+            _dragField.Create(slot);
+            
+            var obj = _dragField.gameObject;
+            eventData.pointerDrag = obj;
+            ExecuteEvents.Execute(obj, eventData, ExecuteEvents.dragHandler);
         }
         
         private async UniTask<UnitBehaviour> CreateFromPosition(PointerEventData eventData)

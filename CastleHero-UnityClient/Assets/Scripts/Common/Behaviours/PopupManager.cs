@@ -31,8 +31,16 @@ namespace RGLabs.Common.Behaviours
             var popup = await LoadPopup<T>();
             if (popup == null)
                 return null;
-            
-            await popup.Open(parameters);
+
+            try { await popup.OpenTask(parameters); }
+            catch (Exception e)
+            {
+                _popups.Remove(popup);
+                Addressables.ReleaseInstance(popup.gameObject);
+                
+                Debug.LogError(e);
+                return null;
+            }
             
             popup.gameObject.SetActive(true);
             return popup;
@@ -64,28 +72,30 @@ namespace RGLabs.Common.Behaviours
             }
             
             _popups.Add(popup);
-            popup.OnCloseEvent += OnCloseEventPopup;
+            popup.OnCloseEvent += OnClosed;
             return popup;
         }
 
         public async UniTask Close<T>(T popup) where T : PopupBase
-            => await popup.Close();
+            => await popup.CloseTask();
 
         public async UniTask CloseAll()
         {
             var list = new List<UniTask>();
             foreach (var popup in _popups)
             {
-                list.Add(popup.Close());
+                list.Add(popup.CloseTask());
             }
 
-            await UniTask.WhenAll();
+            await UniTask.WhenAll(list);
         }
 
-        private void OnCloseEventPopup(PopupBase popup)
+        private void OnClosed(PopupBase popup)
         {
             _popups.Remove(popup);
-            popup.OnCloseEvent -= OnCloseEventPopup;
+            
+            popup.OnCloseEvent -= OnClosed;
+            Addressables.ReleaseInstance(popup.gameObject);
         }
 
         private void OnPopupCollectionChanged(ReactiveCollection<PopupBase> collection)

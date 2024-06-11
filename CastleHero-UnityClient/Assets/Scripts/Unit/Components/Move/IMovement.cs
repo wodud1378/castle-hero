@@ -12,7 +12,7 @@ namespace RGLabs.Unit.Components.Move
         
         public UnitBehaviour CurrentTarget { get; }
         
-        public FindMoveTarget Finder { get; }
+        public Finder Finder { get; }
 
         public bool TryMoveToTarget();
 

@@ -24,6 +24,7 @@ namespace RGLabs.InGame.System
             SubscribeMessage<AtkEvent>(OnReceiveAtkEvent);
             SubscribeMessage<HealEvent>(OnReceiveHealEvent);
             SubscribeMessage<ShieldEvent>(OnReceiveShieldEvent);
+            SubscribeMessage<RestrictionEvent>(OnReceiveRestrictionEvent);
             SubscribeMessage<StatusEffectEvent>(OnReceiveStatusEffectEvent);
             SubscribeMessage<WaitRecover>(OnCreatedRecover);
         }
@@ -120,6 +121,17 @@ namespace RGLabs.InGame.System
             else
                 adjust.Decrease(ev.Amount);
 
+            PlayEffect(ev);
+        }
+        
+        private void OnReceiveRestrictionEvent(RestrictionEvent ev)
+        {
+            var to = ev.To;
+            if (!to.IsValid())
+                return;
+
+            to.Core.restrictions[(int)ev.Type] += ev.Duration;
+            
             PlayEffect(ev);
         }
 

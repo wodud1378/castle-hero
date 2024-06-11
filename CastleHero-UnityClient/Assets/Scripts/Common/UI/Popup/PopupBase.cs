@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Flow;
 using RGLabs.Utility;
-using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
@@ -15,21 +13,15 @@ namespace RGLabs.Common.UI.Popup
         public event Action<PopupBase> OnCloseEvent;
 
         private static readonly int CloseTrigger = Animator.StringToHash("Close");
-        
+
         [SerializeField] private Animator _animator;
         [SerializeField] private Button _close;
 
-        private void Awake() => OnAwake();
+        private void Awake() => InitSubscriptions();
 
-        protected virtual void OnAwake()
-        {
-            _close
-                .OnClickAsObservable()
-                .Subscribe(_ => Close())
-                .AddTo(this);
-        }
+        protected virtual void InitSubscriptions() => this.SubscribeButton(_close, () => CloseTask().Forget());
 
-        public virtual UniTask Open(params object[] parameters)
+        public virtual UniTask OpenTask(params object[] parameters)
         {
             return Open();
         }
@@ -39,14 +31,16 @@ namespace RGLabs.Common.UI.Popup
             return UniTask.CompletedTask;
         }
 
-        public UniTask Close()
+        public UniTask CloseTask()
         {
             OnClose();
-            
+
             return _animator == null ? DirectCloseTask() : CloseAnimationTask();
         }
-        
-        protected virtual void OnClose() { }
+
+        protected virtual void OnClose()
+        {
+        }
 
         private UniTask CloseAnimationTask() => TaskHelper.OnAnimationEnd(_animator, CloseTrigger, Closed);
 
@@ -55,14 +49,14 @@ namespace RGLabs.Common.UI.Popup
             Closed();
             return UniTask.CompletedTask;
         }
-        
+
         public bool OnProcessBack()
         {
-            Close();
-            
+            CloseTask();
+
             return true;
         }
-        
+
         private void Closed()
         {
             OnCloseEvent?.Invoke(this);

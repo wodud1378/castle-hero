@@ -29,6 +29,16 @@ namespace RGLabs.Data.Repositories
         public readonly ReactiveCollection<FieldCharacter> fieldCharacters;
         public readonly ReactiveCollection<UnitInfo> characters;
         public readonly ReactiveCollection<IItem> items;
+
+        public UserRepository(UserInfo userInfo)
+        {
+            stage = new(userInfo.stage);
+            castleLv = new(userInfo.castleLv);
+            
+            fieldCharacters = new(userInfo.fieldCharacters);
+            characters = new(userInfo.characters);
+            items = new(userInfo.items);
+        }
         
         public UserRepository()
         {

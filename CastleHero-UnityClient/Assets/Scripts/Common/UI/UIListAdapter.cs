@@ -39,36 +39,6 @@ namespace RGLabs.Common.UI
             await tasks.WhenAll(Ct);
         }
 
-        public TItem GetItem(Vector2 position)
-        {
-            var corners = new Vector3[4];
-            
-            itemRoot.GetWorldCorners(corners);
-
-            var rootPos = itemRoot.position;
-            var width = (corners[2] - corners[1]).x;
-            var height = (corners[1] - corners[0]).y;
-            rootPos.y -= height;
-            var rect = new Rect(rootPos.x, rootPos.y, width, height);
-
-            if (!rect.Contains(position))
-                return null;
-
-            TItem selected = null;
-            float lastDistance = float.MaxValue;
-            foreach (var item in _items)
-            {
-                float distance = Vector2.Distance(item.transform.position, position);
-                if (lastDistance > distance)
-                {
-                    selected = item;
-                    lastDistance = distance;
-                }
-            }
-
-            return selected;
-        }
-
         public TItem GetItem(PointerEventData eventData)
         {
             if (!RectTransformUtility

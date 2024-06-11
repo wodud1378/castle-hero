@@ -38,6 +38,16 @@ namespace RGLabs.Data.Model
         Gold = 6000,
         General = 7000,
     }
+
+    public enum ConsumeOption
+    {
+        Soul = 0,
+        Ap = 1,
+        Exp = 2,
+        PlayTicket = 3,
+        SummonTicket = 4,
+        ElementalStone = 5,
+    }
     
     public interface IItemEntity : IEntity
     {
@@ -107,10 +117,13 @@ namespace RGLabs.Data.Model
         public int SellPrice { get; set; }
         
         [DataField("Item_Use_Option")] 
-        public int option;
+        public ConsumeOption option;
 
         [DataField("Item_Use_Option_Value")]
         public int optionValue;
+
+        [DataField("Item_Use_Effect_Subject")]
+        public string consumeDesc;
     }
 
     public struct IngredientEntity : IItemEntity

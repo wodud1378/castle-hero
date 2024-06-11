@@ -7,6 +7,9 @@ namespace RGLabs.Network.Model
     [Serializable]
     public class UserInfo
     {
+        public int stage;
+        public int castleLv;
+        
         public UnitInfo[] characters;
         public FieldCharacter[] fieldCharacters;
 

@@ -1,12 +1,15 @@
 using PolyNav;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Finding;
+using RGLabs.Utility;
 using UnityEngine;
 
 namespace RGLabs.Unit.Components.Move
 {
     public class DefaultMovement : IMovement
     {
+        public Finder Finder { get; }
+        
         private readonly UnitBehaviour _owner;
         private readonly PolyNavAgent _agent;
 
@@ -21,20 +24,21 @@ namespace RGLabs.Unit.Components.Move
         public UnitBehaviour CurrentTarget
         {
             get => _currentTarget;
-            set
+            private set
             {
                 _currentTarget = value;
-
-                if (_currentTarget != null)
+                
+                if (_currentTarget.IsValid())
+                {
+                    _currentTarget.OnDead -= OnUnitDead;
                     _currentTarget.OnDead += OnUnitDead;
+                }
             }
         }
 
-        public FindMoveTarget Finder { get; }
-
         private UnitBehaviour _currentTarget;
 
-        public DefaultMovement(UnitBehaviour owner, FindMoveTarget finder, PolyNavAgent navAgent)
+        public DefaultMovement(UnitBehaviour owner, Finder finder, PolyNavAgent navAgent)
         {
             _owner = owner;
             _agent = navAgent;
@@ -46,12 +50,13 @@ namespace RGLabs.Unit.Components.Move
         {
             float range = _owner.status.moveRange;
             Finder.detection.SetRange(range, range);
-            
-            CurrentTarget = null;
-            if (!Finder.Update(_agent.position))
+
+            if (!Finder.Update(_owner.position))
                 return false;
 
-            CurrentTarget = Finder.Found[0];
+            CurrentTarget = !_currentTarget.IsValid() ? Finder.Found[0] :
+                Finder.Found.Contains(_currentTarget) ? _currentTarget : Finder.Found[0];
+            
             StartMove(CurrentTarget.position);
             return true;
         }
