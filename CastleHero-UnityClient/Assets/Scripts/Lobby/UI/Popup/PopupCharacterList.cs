@@ -103,7 +103,7 @@ namespace RGLabs.Lobby.UI.Popup
                 .AddTo(this);
         }
 
-        public override UniTask Open() => OpenTask(Tab.Storage, SortOption.HigherLevel);
+        public override UniTask OpenTask() => OpenTask(Tab.Storage, SortOption.HigherLevel);
 
         public override UniTask OpenTask(params object[] parameters)
         {

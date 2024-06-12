@@ -23,10 +23,10 @@ namespace RGLabs.Common.UI.Popup
 
         public virtual UniTask OpenTask(params object[] parameters)
         {
-            return Open();
+            return OpenTask();
         }
 
-        public virtual UniTask Open()
+        public virtual UniTask OpenTask()
         {
             return UniTask.CompletedTask;
         }

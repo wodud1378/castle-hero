@@ -52,7 +52,7 @@ namespace RGLabs.Common.Behaviours
             if (popup == null)
                 return null;
             
-            await popup.Open();
+            await popup.OpenTask();
             
             popup.gameObject.SetActive(true);
             return popup;

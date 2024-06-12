@@ -77,7 +77,7 @@ namespace RGLabs.Lobby.UI.Popup
             return UpdateUI();
         }
 
-        public override UniTask Open() => OpenTask(Tab.All);
+        public override UniTask OpenTask() => OpenTask(Tab.All);
 
         protected override void OnClose()
         {

@@ -1,4 +1,6 @@
 using System;
+using Cysharp.Threading.Tasks;
+using RGLabs.Common.Behaviours;
 using RGLabs.Data.Model;
 using RGLabs.Network.Model;
 using RGLabs.Unit;
@@ -36,14 +38,16 @@ namespace RGLabs.Lobby.UI.Popup
         private void OpenElementalStoneList()
         {
         }
+        
+        private void OpenCharacterList()
+        {
+            Context.popupManager
+                .Open<PopupCharacterList>()
+                .Forget();
+        }
 
         private void Release()
         {
-        }
-
-        private void OpenCharacterList()
-        {
-            
         }
 
         protected override void OnDataInitialized()

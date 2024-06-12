@@ -23,6 +23,12 @@ namespace RGLabs.Lobby.UI.Popup
 
         public override UniTask OpenTask(params object[] parameters)
         {
+            if (parameters == null || parameters.Length < 1)
+            {
+                var exception = new Exception("파라미터가 잘못되었습니다.");
+                return UniTask.FromException(exception);
+            }
+            
             if (parameters[0] is not TItem item)
             {
                 var exception = new InvalidCastException("첫 번째 인자를 아이템 데이터로 변환하지 못했습니다.");
