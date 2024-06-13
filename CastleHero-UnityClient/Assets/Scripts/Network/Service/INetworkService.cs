@@ -12,12 +12,12 @@ namespace RGLabs.Network.Service
         public UniTask LoadTables();
         
         // 캐릭터
-        public UniTask<CharacterLevelUp> LevelUp(int id, IEnumerable<ConsumeItem> items);
-        public UniTask<CharacterUpgrade> Upgrade(int id, IEnumerable<ConsumeItem> items);
+        public UniTask<CharacterLevelUp> LevelUp(int id, IEnumerable<Consume> items);
+        public UniTask<CharacterUpgrade> Upgrade(int id, IEnumerable<Consume> items);
         
         // 아이템
-        public UniTask Consume(IEnumerable<ConsumeItem> items);
-        public UniTask Consume(ConsumeItem items);
+        public UniTask Consume(IEnumerable<Consume> items);
+        public UniTask Consume(Consume items);
         
         // 스테이지
         public UniTask<StageClear> StageClear(int stage);

@@ -8,6 +8,7 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Data.Model;
 using RGLabs.Network.Model;
+using RGLabs.Unit;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Components;
 using RGLabs.Unit.Finding;
@@ -28,7 +29,7 @@ namespace RGLabs.Utility
 
         public PrefabPathAttribute(string path) => Path = path;
     }
-    
+
     public static class PrefabPathCache
     {
         private static Dictionary<Type, string> _cache;
@@ -47,7 +48,42 @@ namespace RGLabs.Utility
 
     public static class ItemHelder
     {
-        public static ItemTypeCode ItemType(this int id) => (ItemTypeCode)(id / 10000);
+        public static EquipmentGradeCode EquipmentGrade(this int id) => (EquipmentGradeCode)(id / 10000);
+
+        public static IngredientGradeCode IngredientGrade(this int id) => (IngredientGradeCode)(id % 10000 / 1000);
+
+        public static ChestTypeCode ChestType(this int id) => (ChestTypeCode)(id % 10000 / 1000);
+        
+        public static ItemTypeCode ItemType(this int id)
+        {
+            int val = id / 10000;
+            if (val < (int)ItemTypeCode.Consumable)
+                return ItemTypeCode.Equipment;
+
+            return (ItemTypeCode)val;
+        }
+    }
+
+    public static class StringHelper
+    {
+        private const string ColoredStringTag = "<color={0}>{1}</color>";
+        
+        private static readonly Color Positive = Color.green;
+        private static readonly Color Negative = Color.red;
+
+        public static string WithPositiveColor(this string text) => text.WithColor(Positive);
+        public static string WithNegativeColor(this string text) => text.WithColor(Negative);
+        
+        public static string WithColor(this string text, Color color) => string.Format(ColoredStringTag, color.Hex(), text);
+
+        private static string Hex(this Color color)
+        {
+            int r = Mathf.RoundToInt(color.r * 255);
+            int g = Mathf.RoundToInt(color.g * 255);
+            int b = Mathf.RoundToInt(color.b * 255);
+            int a = Mathf.RoundToInt(color.a * 255);
+            return $"#{r:X2}{g:X2}{b:X2}{a:X2}";
+        }
     }
 
     public static class EnumHelper
@@ -65,28 +101,24 @@ namespace RGLabs.Utility
 
     public static class AddressableHelper
     {
-        public static UniTask WhenAll(this IEnumerable<UniTask> tasks, CancellationToken ct) =>
-            UniTask.WhenAll(tasks)
-                .AttachExternalCancellation(ct)
-                .SuppressCancellationThrow();
-
         public static async UniTask<T> Instantiate<T>(this AssetReference reference, Transform transform,
             CancellationToken ct = default)
         {
             var task = reference.InstantiateAsync(transform)
-                .ToUniTask(cancellationToken:ct)
+                .ToUniTask(cancellationToken: ct)
                 .SuppressCancellationThrow();
 
             var obj = await task;
             return obj.Result == null ? default : obj.Result.GetComponent<T>();
         }
-        
-        public static async UniTask<T> Instantiate<T>(this string path, Transform transform, CancellationToken ct = default)
+
+        public static async UniTask<T> Instantiate<T>(this string path, Transform transform,
+            CancellationToken ct = default)
         {
             var task = Addressables.InstantiateAsync(path, transform)
                 .ToUniTask(cancellationToken: ct)
                 .SuppressCancellationThrow();
-            
+
             var obj = await task;
             return obj.Result == null ? default : obj.Result.GetComponent<T>();
         }
@@ -100,7 +132,7 @@ namespace RGLabs.Utility
 
             return handle.Result;
         }
-        
+
         public static void Release<T>(this AsyncOperationHandle<T> handle)
         {
             if (!handle.IsValid())
@@ -120,6 +152,71 @@ namespace RGLabs.Utility
 
     public static class UnitHelper
     {
+        public static void AdditionalStatus(this UnitBalanceEntity balanceData, int lv, int rate, out Dictionary<Status.Type, float> stats, out int skillLv)
+        {
+            skillLv = 1;
+            stats = null;
+            if (balanceData.rateOptions == null || balanceData.rateValues == null)
+                return;
+
+            int rateBonusLength = balanceData.rateOptions.Length;
+            int rateIndex = Mathf.Clamp(rate, 0, rateBonusLength) - 1;
+            if (rateIndex == -1)
+                return;
+            
+            stats = new Dictionary<Status.Type, float>
+            {
+                { Status.Type.Hp, balanceData.hp * lv },
+                { Status.Type.Atk, balanceData.atk * lv },
+                { Status.Type.Critical, balanceData.critical * lv },
+                { Status.Type.CriticalAtk, balanceData.criticalAtk * lv },
+                { Status.Type.AtkSpeed, balanceData.atkSpeed * lv },
+                { Status.Type.MoveSpeed, balanceData.speed * lv },
+                { Status.Type.AtkRange, balanceData.atkRange * lv },
+                { Status.Type.MoveRange, balanceData.moveRange * lv }
+            };
+
+            for (int i = 0; i < rateIndex; ++i)
+            {
+                var options = balanceData.rateOptions[i];
+                var values = balanceData.rateValues[i];
+                int length = options.Length;
+                for (int j = 0; j < length; ++j)
+                {
+                    Status.Type type;
+                    switch (options[j])
+                    {
+                        case 0:
+                            skillLv = skillLv > values[j] ? skillLv : (int)values[j];
+                            continue;
+                        case 1:
+                            type = Status.Type.Atk;
+                            break;
+                        case 2:
+                            type = Status.Type.Hp;
+                            break;
+                        case 3:
+                            type = Status.Type.AtkSpeed;
+                            break;
+                        case 4:
+                            type = Status.Type.MoveSpeed;
+                            break;
+                        case 5:
+                            type = Status.Type.Critical;
+                            break;
+                        case 6:
+                            type = Status.Type.CriticalAtk;
+                            break;
+                        default:
+                            continue;
+                    }
+
+                    if (!stats.TryAdd(type, values[j]))
+                        stats[type] += values[j];
+                }
+            }
+        }
+        
         public static void SetFilter(this IDetection detection, UnitBehaviour owner, Targeting targeting)
         {
             switch (targeting)
@@ -293,7 +390,7 @@ namespace RGLabs.Utility
         public static void ToPreviewLayer(this GameObject obj) => obj.ToLayer("UnitPreview");
 
         public static void ToLayer(this GameObject obj, string layer) => obj.ToLayer(SortingLayer.NameToID(layer));
-        
+
         public static void ToLayer(this GameObject obj, int layer)
         {
             if (!obj.TryGetComponent(out SortingGroup sortingGroup))
@@ -301,7 +398,7 @@ namespace RGLabs.Utility
 
             sortingGroup.sortingLayerID = layer;
         }
-        
+
         public static int GetLayer(this GameObject obj)
         {
             if (!obj.TryGetComponent(out SortingGroup sortingGroup))
@@ -327,7 +424,7 @@ namespace RGLabs.Utility
         public static UniTask OnAnimationEnd(Animator animator, int hash, Action onEnd)
         {
             animator.SetTrigger(hash);
-            
+
             return Observable
                 .EveryUpdate()
                 .Where(_ =>
@@ -336,7 +433,7 @@ namespace RGLabs.Utility
                     return state.shortNameHash == hash && state.normalizedTime >= 1f;
                 })
                 .ToUniTask()
-                .ContinueWith(_=> onEnd?.Invoke());
+                .ContinueWith(_ => onEnd?.Invoke());
         }
     }
 
@@ -348,7 +445,7 @@ namespace RGLabs.Utility
             {
                 var clear = collection.ObserveReset()
                     .Subscribe(_ => observer.OnNext(collection));
-                
+
                 var add = collection.ObserveAdd()
                     .Subscribe(_ => observer.OnNext(collection));
 
@@ -449,18 +546,6 @@ namespace RGLabs.Utility
                 return false;
 
             return index >= 0 && target.Count > index;
-        }
-    }
-
-    public static class UIHelper
-    {
-        public static string Hex(this Color color)
-        {
-            int r = Mathf.RoundToInt(color.r * 255);
-            int g = Mathf.RoundToInt(color.g * 255);
-            int b = Mathf.RoundToInt(color.b * 255);
-            int a = Mathf.RoundToInt(color.a * 255);
-            return $"#{r:X2}{g:X2}{b:X2}{a:X2}";
         }
     }
 }

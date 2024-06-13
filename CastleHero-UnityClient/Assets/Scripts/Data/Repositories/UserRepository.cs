@@ -115,7 +115,25 @@ namespace RGLabs.Data.Repositories
                 {
                     lv = 1,
                     rate = 1,
-                    id = 10000
+                    id = 10000,
+                    equipments = new EquipItem[]
+                    {
+                        new()
+                        {
+                            Id = 30001,
+                            Quantity = 1,
+                            character = 10000,
+                            slot = 0,
+                            stats = new[]
+                            {
+                                1, 2, 3
+                            },
+                            values = new[]
+                            {
+                                150, 0.3f, 0.3f
+                            }
+                        }
+                    },
                 },
                 new UnitInfo
                 {

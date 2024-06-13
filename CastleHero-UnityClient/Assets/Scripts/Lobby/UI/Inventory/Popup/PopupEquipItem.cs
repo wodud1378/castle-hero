@@ -1,25 +1,21 @@
 using System;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
+using RGLabs.Common.UI;
 using RGLabs.Data.Model;
+using RGLabs.Lobby.UI.Popup;
 using RGLabs.Network.Model;
 using RGLabs.Unit;
 using RGLabs.Utility;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace RGLabs.Lobby.UI.Popup
+namespace RGLabs.Lobby.UI.Inventory.Popup
 {
-    public class PopupEquipItem : PopupItemBase<EquipItem, EquipmentEntity>
+    [PrefabPath("Lobby/UI/Prefabs/Popup_Equipment.prefab")]
+
+    public class PopupEquipItem : PopupItemBase<UIEquipmentSlot, EquipItem, EquipmentEntity>
     {
-        [Serializable]
-        public class UIGrade
-        {
-            public EquipmentGradeCode grade;
-            public GameObject obj;
-        }
-        
-        [SerializeField] private UIGrade[] _grades;
         [SerializeField] private UIStatusText[] _stats;
 
         [SerializeField] private Button _refine;
@@ -34,6 +30,8 @@ namespace RGLabs.Lobby.UI.Popup
             this.SubscribeButton(_equip, OpenCharacterList);
             this.SubscribeButton(_release, Release);
         }
+
+        protected override UniTask InitSlot(UIEquipmentSlot slot) => slot.Init(Item, Entity);
 
         private void OpenElementalStoneList()
         {
@@ -52,11 +50,6 @@ namespace RGLabs.Lobby.UI.Popup
 
         protected override void OnDataInitialized()
         {
-            foreach (var e in _grades)
-            {
-                e.obj.SetActive(e.grade == (EquipmentGradeCode)Entity.grade);
-            }
-
             int index = 0;
             while (index.IsValidIndex(Item.stats, Item.values))
             {

@@ -21,12 +21,12 @@ namespace RGLabs.Common.UI.Popup
 
         protected virtual void InitSubscriptions() => this.SubscribeButton(_close, () => CloseTask().Forget());
 
-        public virtual UniTask OpenTask(params object[] parameters)
+        public virtual UniTask Open(params object[] parameters)
         {
-            return OpenTask();
+            return Open();
         }
 
-        public virtual UniTask OpenTask()
+        public virtual UniTask Open()
         {
             return UniTask.CompletedTask;
         }

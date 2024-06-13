@@ -32,7 +32,7 @@ namespace RGLabs.Common.Behaviours
             if (popup == null)
                 return null;
 
-            try { await popup.OpenTask(parameters); }
+            try { await popup.Open(parameters); }
             catch (Exception e)
             {
                 _popups.Remove(popup);
@@ -52,7 +52,7 @@ namespace RGLabs.Common.Behaviours
             if (popup == null)
                 return null;
             
-            await popup.OpenTask();
+            await popup.Open();
             
             popup.gameObject.SetActive(true);
             return popup;

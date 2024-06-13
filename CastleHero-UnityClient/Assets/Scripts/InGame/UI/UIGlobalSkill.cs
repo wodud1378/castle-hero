@@ -23,7 +23,7 @@ namespace RGLabs.InGame.UI
         private UIGlobalSkillSlot _selected;
 
         public override async UniTask Init(IEnumerable<GlobalSkill.Parameter> collection,
-            Action<UIItemSlot> onClick = null)
+            Action<UISlot> onClick = null)
         {
             _rangeDrawer.Init();
             _rangeDrawer.Color = _rangeColor;
@@ -40,11 +40,7 @@ namespace RGLabs.InGame.UI
             }
         }
 
-        protected override async UniTask SetItem(UIGlobalSkillSlot item, GlobalSkill.Parameter data,
-            CancellationToken ct)
-        {
-            await item.InitAsync(Constants.GlobalSkillIcon[data.type], string.Empty, CancellationToken.None);
-        }
+        protected override UniTask SetItem(UIGlobalSkillSlot slot, GlobalSkill.Parameter data) => slot.Init(Constants.GlobalSkillIcon[data.type]);
 
         public void OnBeginDrag(PointerEventData eventData)
         {

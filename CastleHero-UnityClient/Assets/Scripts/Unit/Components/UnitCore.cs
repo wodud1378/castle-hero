@@ -155,7 +155,8 @@ namespace RGLabs.Unit.Components
 
         public void SetData(UnitInfo info, UnitEntity data, UnitBalanceEntity balance)
         {
-            status.Init(data, info.lv, balance);
+            status.Init(data);
+            
             elemental.atkType = (Elemental.Type)data.elementalAtk;
             elemental.defType = (Elemental.Type)data.elementalDef;
 
@@ -175,7 +176,7 @@ namespace RGLabs.Unit.Components
             renderController.ApplySkin(data.skinName);
             UpdateLookDirection(movement.Default);
 
-            ApplyRateBonus(info.rate, balance, out int skillLv);
+            ApplyBalance(info.lv, info.rate, balance, out int skillLv);
 
             if (info.equipments != null)
                 ApplyEquipmentBonus(info.equipments);
@@ -215,55 +216,15 @@ namespace RGLabs.Unit.Components
             }
         }
 
-        private void ApplyRateBonus(int grade, UnitBalanceEntity balanceData, out int skillLv)
+        private void ApplyBalance(int lv, int rate, UnitBalanceEntity balanceData, out int skillLv)
         {
-            skillLv = 1;
-            if (balanceData.rateOptions == null || balanceData.rateValues == null)
+            balanceData.AdditionalStatus(lv, rate, out var stats, out skillLv);
+            if (stats == null)
                 return;
 
-            int rateBonusLength = balanceData.rateOptions.Length;
-            int rateIndex = Mathf.Clamp(grade, 0, rateBonusLength) - 1;
-            if (rateIndex == -1)
-                return;
-
-            for (int i = 0; i < rateIndex; ++i)
+            foreach (var e in stats)
             {
-                var options = balanceData.rateOptions[i];
-                var values = balanceData.rateValues[i];
-                int length = options.Length;
-                for (int j = 0; j < length; ++j)
-                {
-                    Status.Type type;
-                    switch (options[j])
-                    {
-                        case 0:
-                            skillLv = skillLv > values[j] ? skillLv : (int)values[j];
-                            continue;
-                        case 1:
-                            type = Status.Type.Atk;
-                            break;
-                        case 2:
-                            type = Status.Type.Hp;
-                            break;
-                        case 3:
-                            type = Status.Type.AtkSpeed;
-                            break;
-                        case 4:
-                            type = Status.Type.MoveSpeed;
-                            break;
-                        case 5:
-                            type = Status.Type.Critical;
-                            break;
-                        case 6:
-                            type = Status.Type.CriticalAtk;
-                            break;
-                        default:
-                            continue;
-                    }
-
-                    var ability = status[type];
-                    ability.fixedAdjust.Increase(values[j]);
-                }
+                status[e.Key].fixedAdjust.Increase(e.Value);
             }
         }
 

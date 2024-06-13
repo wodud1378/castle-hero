@@ -1,5 +1,5 @@
 using RGLabs.Common.Behaviours;
-using RGLabs.Common.UI.Popup;
+using RGLabs.Lobby.UI.Inventory.Popup;
 using RGLabs.Lobby.UI.Popup;
 using RGLabs.Utility;
 using UnityEngine;

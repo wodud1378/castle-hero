@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common;
+using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
@@ -20,6 +21,12 @@ namespace RGLabs.Lobby.UI.Popup
     [PrefabPath("Lobby/UI/Prefabs/Popup_Character.prefab")]
     public class PopupCharacterList : PopupBase
     {
+        public enum Mode
+        {
+            Select,
+            Equip,
+        }
+        
         public enum Tab
         {
             Storage,
@@ -101,11 +108,14 @@ namespace RGLabs.Lobby.UI.Popup
                 .ThrottleFrame(1)
                 .Subscribe(_ => UpdateUI())
                 .AddTo(this);
+
+            _characterList.OnSlotClickEvent += 
+                (x) => Context.popupManager.Open<PopupCharacter>(x.Info).Forget();
         }
 
-        public override UniTask OpenTask() => OpenTask(Tab.Storage, SortOption.HigherLevel);
+        public override UniTask Open() => Open(Tab.Storage, SortOption.HigherLevel);
 
-        public override UniTask OpenTask(params object[] parameters)
+        public override UniTask Open(params object[] parameters)
         {
             Tab tabParam;
             SortOption sortParam;

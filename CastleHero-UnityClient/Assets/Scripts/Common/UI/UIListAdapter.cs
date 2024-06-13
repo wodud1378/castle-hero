@@ -1,7 +1,5 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Threading;
 using Cysharp.Threading.Tasks;
 using RGLabs.Utility;
 using UnityEngine;
@@ -10,36 +8,31 @@ using UnityEngine.EventSystems;
 
 namespace RGLabs.Common.UI
 {
-    public abstract class UIListAdapter<TItem, TData> : MonoBehaviour, IDisposable
-        where TItem : UIItemSlot
+    public abstract class UIListAdapter<TSlot, TData> : MonoBehaviour, IDisposable
+        where TSlot : UISlot
     {
+        public event Action<TSlot> OnSlotClickEvent;
+        
         [SerializeField] protected RectTransform itemRoot;
 
         [SerializeField] private AssetReference _itemPrefab;
         
-        protected readonly List<TItem> _items = new();
+        protected readonly List<TSlot> _items = new();
 
-        private CancellationTokenSource _ctSource;
-        private CancellationToken Ct => _ctSource?.Token ?? default;
-        
-        public virtual async UniTask Init(IEnumerable<TData> collection, Action<UIItemSlot> onClick = null)
+        public virtual async UniTask Init(IEnumerable<TData> collection, Action<UISlot> onClick = null)
         {
-            _ctSource?.Cancel();
-            _ctSource = new CancellationTokenSource();
-
             Clear();
 
             var tasks = new List<UniTask>();
-            int order = 0;
             foreach (var data in collection)
             {
-                tasks.Add(Add(data, order++, onClick));
+                tasks.Add(Add(data));
             }
 
-            await tasks.WhenAll(Ct);
+            await UniTask.WhenAll(tasks);
         }
 
-        public TItem GetItem(PointerEventData eventData)
+        public TSlot GetItem(PointerEventData eventData)
         {
             if (!RectTransformUtility
                     .RectangleContainsScreenPoint(itemRoot, eventData.position, eventData.pressEventCamera))
@@ -48,9 +41,9 @@ namespace RGLabs.Common.UI
             RectTransformUtility
                 .ScreenPointToWorldPointInRectangle(itemRoot, eventData.position, eventData.pressEventCamera, out var worldPos);
 
-            TItem selected = null;
+            TSlot selected = null;
             float closest = float.MaxValue;
-            foreach (TItem item in _items)
+            foreach (TSlot item in _items)
             {
                 RectTransform childRectTransform = item.GetComponent<RectTransform>();
                 if (childRectTransform != null)
@@ -82,23 +75,28 @@ namespace RGLabs.Common.UI
             _items.Clear();
         }
 
-        protected abstract UniTask SetItem(TItem item, TData data, CancellationToken ct);
+        protected abstract UniTask SetItem(TSlot slot, TData data);
 
-        private async UniTask<TItem> Add(TData data, int order, Action<UIItemSlot> onClick = null)
+        private async UniTask<TSlot> Add(TData data)
         {
-            var item = await _itemPrefab.Instantiate<TItem>(itemRoot, Ct);
+            var item = await _itemPrefab.Instantiate<TSlot>(itemRoot);
             if (item == null)
                 return null;
 
-            if (onClick != null)
+            item.OnClick += (x) =>
             {
-                item.OnClick -= onClick;
-                item.OnClick += onClick;
-            }
+                if (x is not TSlot slot)
+                    return;
 
+                OnClick(slot);
+            };
+            
             _items.Add(item);
-            await SetItem(item, data, Ct);
+            await SetItem(item, data);
+            
             return item;
         }
+
+        private void OnClick(TSlot slot) => OnSlotClickEvent?.Invoke(slot);
     }
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1257849845860302246}
   - component: {fileID: 5895053209446398999}
   m_Layer: 5
-  m_Name: ETC
+  m_Name: Other
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -220,7 +220,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 0.47058824}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -258,10 +258,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_NormalColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 0.47058824}
+    m_HighlightedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
+    m_PressedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
+    m_SelectedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -280,11 +280,11 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4341441061258161476}
   toggleTransition: 0
   graphic: {fileID: 0}
-  m_Group: {fileID: 6399347501568283655}
+  m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &833674489339605705
 GameObject:
   m_ObjectHideFlags: 0
@@ -850,7 +850,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &1741748740719377193
 GameObject:
   m_ObjectHideFlags: 0
@@ -1036,7 +1036,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 0.47058824}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1074,10 +1074,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_NormalColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 0.47058824}
+    m_HighlightedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
+    m_PressedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
+    m_SelectedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -1096,7 +1096,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7748262781771226997}
   toggleTransition: 0
   graphic: {fileID: 0}
-  m_Group: {fileID: 6399347501568283655}
+  m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1160,7 +1160,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 0.47058824}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1198,10 +1198,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_NormalColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 0.47058824}
+    m_HighlightedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
+    m_PressedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
+    m_SelectedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -1220,7 +1220,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 9163826235031969928}
   toggleTransition: 0
   graphic: {fileID: 0}
-  m_Group: {fileID: 6399347501568283655}
+  m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1235,7 +1235,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1448196628681405783}
   - component: {fileID: 8124916945320846333}
-  - component: {fileID: 6399347501568283655}
   m_Layer: 5
   m_Name: Category_2nd
   m_TagString: Untagged
@@ -1296,19 +1295,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &6399347501568283655
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1993568063553690933}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fafe2cfe61f6974895a912c3755e8f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_AllowSwitchOff: 0
 --- !u!1 &2273863148730851330
 GameObject:
   m_ObjectHideFlags: 0
@@ -1650,7 +1636,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 0.47058824}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1688,10 +1674,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_NormalColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 0.47058824}
+    m_HighlightedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
+    m_PressedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
+    m_SelectedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -1710,7 +1696,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 288363750185781773}
   toggleTransition: 0
   graphic: {fileID: 0}
-  m_Group: {fileID: 6399347501568283655}
+  m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1944,7 +1930,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 0.47058824}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1982,10 +1968,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_NormalColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 0.47058824}
+    m_HighlightedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
+    m_PressedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
+    m_SelectedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -2004,7 +1990,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8554598913183465700}
   toggleTransition: 0
   graphic: {fileID: 0}
-  m_Group: {fileID: 6399347501568283655}
+  m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2307,7 +2293,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _close: {fileID: 805691974223758956}
   _itemList: {fileID: 5475374127242407973}
-  _tabToggle: {fileID: 0}
+  _tabToggle: {fileID: 758988085107885619}
+  _categoryToggles:
+  - {fileID: 3300623155762418963}
+  - {fileID: 8083751900590788968}
+  - {fileID: 8922407999732026857}
+  - {fileID: 1119372909382225458}
+  - {fileID: 1712844539527608028}
+  - {fileID: 6322578584199960226}
+  - {fileID: 8194401926814085535}
+  - {fileID: 6873032828376381881}
 --- !u!1 &4950418651353449211
 GameObject:
   m_ObjectHideFlags: 0
@@ -2645,7 +2640,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 0.47058824}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2683,10 +2678,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_NormalColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 0.47058824}
+    m_HighlightedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
+    m_PressedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
+    m_SelectedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -2705,7 +2700,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2394445846908613309}
   toggleTransition: 0
   graphic: {fileID: 0}
-  m_Group: {fileID: 6399347501568283655}
+  m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2807,7 +2802,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 0.47058824}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2845,10 +2840,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_NormalColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 0.47058824}
+    m_HighlightedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
+    m_PressedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
+    m_SelectedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -2867,7 +2862,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5290269497725902280}
   toggleTransition: 0
   graphic: {fileID: 0}
-  m_Group: {fileID: 6399347501568283655}
+  m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -3587,7 +3582,7 @@ GameObject:
   - component: {fileID: 6377080433214218661}
   - component: {fileID: 3123436180208945531}
   m_Layer: 5
-  m_Name: Equip
+  m_Name: Equipment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3832,7 +3827,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 0.47058824}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3870,10 +3865,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_NormalColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 0.47058824}
+    m_HighlightedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
+    m_PressedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
+    m_SelectedColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -3892,7 +3887,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7187338899427865015}
   toggleTransition: 0
   graphic: {fileID: 0}
-  m_Group: {fileID: 6399347501568283655}
+  m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []

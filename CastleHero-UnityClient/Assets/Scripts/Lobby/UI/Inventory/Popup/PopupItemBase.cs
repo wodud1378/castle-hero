@@ -9,19 +9,20 @@ using RGLabs.Utility;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace RGLabs.Lobby.UI.Popup
+namespace RGLabs.Lobby.UI.Inventory.Popup
 {
-    public abstract class PopupItemBase<TItem, TEntity> : PopupBase
+    public abstract class PopupItemBase<TSlot, TItem, TEntity> : PopupBase
+        where TSlot : UIItemSlot
         where TItem : IItem
         where TEntity : IItemEntity
     {
-        [SerializeField] private UIItemSlot _itemSlot;
+        [SerializeField] private TSlot _itemSlot;
         [SerializeField] private Button _sell;
 
         public TItem Item { get; private set; }
         public TEntity Entity { get; private set; }
 
-        public override UniTask OpenTask(params object[] parameters)
+        public override UniTask Open(params object[] parameters)
         {
             if (parameters == null || parameters.Length < 1)
             {
@@ -48,8 +49,10 @@ namespace RGLabs.Lobby.UI.Popup
             
             OnDataInitialized();
             
-            return _itemSlot.InitAsync(entity.Icon, entity.Name, default);
+            return InitSlot(_itemSlot);
         }
+
+        protected virtual UniTask InitSlot(TSlot slot) => slot.Init(Item, Entity);
 
         protected abstract void OnDataInitialized();
         

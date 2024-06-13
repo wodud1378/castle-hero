@@ -9,6 +9,8 @@ namespace RGLabs.Common
         public static readonly float HitEffectDuration = 0.15f;
 
         public static readonly float DragDistanceThreshold = 0.3f;
+        
+        public static string ColoredStringTag = "<color={0}>{1}</color>";
 
         public static readonly int BarricadeId = 10000;
         public static readonly string BarricadeIcon = "Common/Portrait/Character_10000.png";

@@ -1,17 +1,22 @@
 using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Network.Model;
+using RGLabs.Utility;
 using UnityEngine;
 
-namespace RGLabs.Lobby.UI.Popup
+namespace RGLabs.Lobby.UI.Inventory.Popup
 {
+    [PrefabPath("Lobby/UI/Prefabs/Popup_EquipmentCompare.prefab")]
     public class PopupCompareEquipment : PopupBase
     {
+        [SerializeField] private UIEquipmentSlot _left;
+        [SerializeField] private UIEquipmentSlot _right;
         [SerializeField] private UIStatusText[] _statusTexts;
 
-        public override UniTask OpenTask(params object[] parameters)
+        public override UniTask Open(params object[] parameters)
         {
             if (parameters == null || parameters.Length < 2)
             {
@@ -30,7 +35,23 @@ namespace RGLabs.Lobby.UI.Popup
             return UniTask.CompletedTask;
         }
 
+        protected override void OnClose()
+        {
+            base.OnClose();
+            
+            _left.Dispose();
+            _right.Dispose();
+        }
+
         private void UpdateUI(EquipItem leftItem, EquipItem rightItem)
+        {
+            _left.Init(leftItem).Forget();
+            _right.Init(rightItem).Forget();
+
+            UpdateText(leftItem, rightItem);
+        }
+
+        private void UpdateText(EquipItem leftItem, EquipItem rightItem)
         {
             // 타입, 값을 묶은 튜플 배열 l, r
             var l = leftItem.stats.Zip(leftItem.values, (type, value) => (type, value)).ToArray();

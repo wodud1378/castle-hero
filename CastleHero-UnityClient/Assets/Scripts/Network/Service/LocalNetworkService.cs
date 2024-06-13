@@ -41,7 +41,7 @@ namespace RGLabs.Network.Service
 
         }
 
-        public UniTask<CharacterLevelUp> LevelUp(int id, IEnumerable<ConsumeItem> items)
+        public UniTask<CharacterLevelUp> LevelUp(int id, IEnumerable<Consume> items)
         {
             var characters = LoadArray<UnitInfo>(CharactersKey);
             int index = Array.FindIndex(characters, x => x.id == id);
@@ -50,18 +50,18 @@ namespace RGLabs.Network.Service
 
         }
         
-        public UniTask<CharacterUpgrade> Upgrade(int id, IEnumerable<ConsumeItem> items)
+        public UniTask<CharacterUpgrade> Upgrade(int id, IEnumerable<Consume> items)
         {
             throw new NotImplementedException();
 
         }
 
-        public UniTask Consume(IEnumerable<ConsumeItem> items)
+        public UniTask Consume(IEnumerable<Consume> items)
         {
             throw new System.NotImplementedException();
         }
 
-        public UniTask Consume(ConsumeItem items)
+        public UniTask Consume(Consume items)
         {
             throw new System.NotImplementedException();
         }

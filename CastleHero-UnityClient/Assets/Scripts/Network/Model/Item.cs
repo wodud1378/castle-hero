@@ -3,7 +3,7 @@ using System;
 namespace RGLabs.Network.Model
 {
     [Serializable]
-    public struct ConsumeItem
+    public struct Consume
     {
         public enum Method
         {
@@ -21,6 +21,15 @@ namespace RGLabs.Network.Model
     {
         public int Id { get; }
         public int Quantity { get; }
+    }
+
+    [Serializable]
+    public struct ConsumableItem : IItem
+    {
+        public int Id { get; }
+        public int Quantity { get; }
+
+        public int consumeOption;
     }
 
     [Serializable]

@@ -19,9 +19,6 @@ namespace RGLabs.InGame.UI
                 .AddTo(this);
         }
         
-        protected override async UniTask SetItem(UIRecoverSlot item, WaitRecover data, CancellationToken ct)
-        {
-            await item.InitAsync(data);
-        }
+        protected override UniTask SetItem(UIRecoverSlot slot, WaitRecover data) => slot.InitAsync(data);
     }
 }

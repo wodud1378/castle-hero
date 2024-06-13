@@ -116,11 +116,11 @@ namespace RGLabs.Lobby.UI
 
         public void OnPointerUp(PointerEventData eventData) => _ctSource?.Cancel();
 
-        protected override UniTask SetItem(UICharacterSlot item, UnitInfo data, CancellationToken ct)
+        protected override UniTask SetItem(UICharacterSlot slot, UnitInfo data)
         {
-            item.ReceiveRay = false;
+            slot.ReceiveRay = false;
 
-            return base.SetItem(item, data, ct);
+            return base.SetItem(slot, data);
         }
 
         private async void PressTask(PointerEventData eventData)

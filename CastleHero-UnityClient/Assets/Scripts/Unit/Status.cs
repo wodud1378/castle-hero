@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RGLabs.Data.Model;
+using RGLabs.Utility;
 using UnityEngine;
 
 namespace RGLabs.Unit
@@ -265,7 +266,7 @@ namespace RGLabs.Unit
             };
         }
 
-        public void Init(UnitEntity data, int lv, UnitBalanceEntity balanceData)
+        public void Init(UnitEntity data)
         {
             _updates = new List<IUpdate>();
 
@@ -279,20 +280,6 @@ namespace RGLabs.Unit
             moveRange.Init(_updates, data.moveRange);
             recovery.Init(_updates, data.recovery);
             shield.Init(_updates);
-
-            ApplyLevelBonus(lv, balanceData);
-        }
-
-        private void ApplyLevelBonus(int lv, UnitBalanceEntity balanceData)
-        {
-            hp.fixedAdjust.Increase(lv * balanceData.hp);
-            atk.fixedAdjust.Increase(lv * balanceData.atk);
-            critical.fixedAdjust.Increase(lv * balanceData.critical);
-            criticalAtk.fixedAdjust.Increase(lv * balanceData.criticalAtk);
-            atkSpeed.fixedAdjust.Increase(lv * balanceData.atkSpeed);
-            speed.fixedAdjust.Increase(lv * balanceData.speed);
-            atkRange.fixedAdjust.Increase(lv * balanceData.atkRange);
-            moveRange.fixedAdjust.Increase(lv * balanceData.moveRange);
         }
 
         public void Update()
