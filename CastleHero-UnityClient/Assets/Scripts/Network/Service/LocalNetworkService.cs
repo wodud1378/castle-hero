@@ -21,6 +21,11 @@ namespace RGLabs.Network.Service
         private const string CastleKey = "saved-castle";
         private const string InventoryKey = "inventory";
 
+        public UniTask Init()
+        {
+            throw new NotImplementedException();
+        }
+
         public UniTask<UserInfo> Login()
         {
             var info = new UserInfo

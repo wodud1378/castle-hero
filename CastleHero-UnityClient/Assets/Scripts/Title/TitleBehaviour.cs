@@ -13,5 +13,10 @@ namespace RGLabs.Title
             
             
         }
+
+        private async void Start()
+        {
+            
+        }
     }
 }

@@ -26,8 +26,8 @@ namespace RGLabs.Network.Model
     [Serializable]
     public struct ConsumableItem : IItem
     {
-        public int Id { get; }
-        public int Quantity { get; }
+        public int Id { get; set; }
+        public int Quantity { get; set; }
 
         public int consumeOption;
     }

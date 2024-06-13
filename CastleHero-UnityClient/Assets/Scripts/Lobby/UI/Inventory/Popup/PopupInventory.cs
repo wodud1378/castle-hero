@@ -23,7 +23,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             Default,
             Refine,
         }
-        
+
         public enum Tab
         {
             All,
@@ -35,13 +35,13 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         public enum Category
         {
             All = 0,
-            Weapon = 1 << 0,
-            Armor = 1 << 1,
-            Ring = 1 << 2,
-            Necklace = 1 << 3,
-            Ingredient = 1 << 4,
-            Consumable = 1 << 5,
-            Chest = 1 << 6,
+            Weapon,
+            Armor,
+            Ring,
+            Necklace,
+            Ingredient,
+            Consumable,
+            Chest,
         }
 
         [SerializeField] private UIInventoryItemList _itemList;
@@ -50,49 +50,66 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         [SerializeField] private Toggle[] _categoryToggles;
 
         public readonly ReactiveProperty<Tab> tab = new();
-        public readonly ReactiveProperty<Category> category = new();
+        private readonly ReactiveCollection<Category> selected = new();
 
         private Dictionary<Category, Toggle> _toggles;
 
         private UniTask _updateTask;
-        
+
         protected override void InitSubscriptions()
         {
             base.InitSubscriptions();
 
             _toggles = new();
-            for(int i = 0; i < _categoryToggles.Length; ++i)
+            for (int i = 0; i < _categoryToggles.Length; ++i)
             {
                 var toggle = _categoryToggles[i];
                 Category target = (Category)i;
                 toggle.onValueChanged
                     .AsObservable()
-                    .Subscribe(x=>
+                    .Subscribe(x =>
                     {
                         if (target == Category.All)
-                            category.Value = Category.All;
-                        
+                        {
+                            foreach (var toggle in _toggles)
+                            {
+                                toggle.Value.isOn = true;
+                            }
+                        }
+
                         if (x)
-                            category.Value |= target;
+                        {
+                            if (!selected.Contains(target))
+                                selected.Add(target);
+                        }
                         else
-                            category.Value &= ~ target;
+                        {
+                            if (selected.Contains(target))
+                                selected.Remove(target);
+                        }
                     })
                     .AddTo(this);
 
                 _toggles.TryAdd(target, toggle);
             }
-            
+
             this.UpdateAsObservable()
                 .Select(_ => _tabToggle.ActiveToggles().FirstOrDefault(t => t.isOn))
                 .DistinctUntilChanged()
                 .Select(toggle => Enum.Parse<Tab>(toggle.gameObject.name))
                 .Subscribe(selected => tab.Value = selected)
                 .AddTo(this);
-            
-            var itemObservable = Storage.userRepository.items.ChangeAsObservable();
-            tab.CombineLatest(category, itemObservable, (t, c, i) => (t, c, i))
+
+            var itemObservable = Storage.userRepository.items.ChangeAsObservable().Select(_ => UniRx.Unit.Default);
+            var categoryObservable = selected.ChangeAsObservable().Select(_ => UniRx.Unit.Default);
+            var merged = tab
+                .AsObservable()
+                .Select(_ => UniRx.Unit.Default)
+                .Merge(categoryObservable, itemObservable);
+
+            merged
                 .ThrottleFrame(1)
-                .Subscribe(_=> UpdateList())
+                .Subscribe(_ => UpdateList())
                 .AddTo(this);
 
             tab
@@ -103,15 +120,27 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         public override UniTask Open(params object[] parameters)
         {
             Tab tabParam;
-            Category categoryParam;
-            try { tabParam = (Tab)parameters[0]; }
-            catch { tabParam = default; }
+            Category category;
+            try
+            {
+                tabParam = (Tab)parameters[0];
+            }
+            catch
+            {
+                tabParam = default;
+            }
 
-            try { categoryParam = (Category)parameters[1]; }
-            catch { categoryParam = default; }
+            try
+            {
+                category = (Category)parameters[1];
+            }
+            catch
+            {
+                category = default;
+            }
 
             tab.Value = tabParam;
-            category.Value = categoryParam;
+            _toggles[category].isOn = true;
 
             return _updateTask;
         }
@@ -123,9 +152,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             var items = Storage.userRepository.items
                 .Where(CompareMethod(tab.Value).Invoke);
 
-            if (category.Value != Category.All)
-                items = items.Where(Filter);
-
+            items = items.Where(Filter);
             _updateTask = _itemList.Init(items);
         }
 
@@ -137,10 +164,10 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 {
                     toggle.Value.gameObject.SetActive(true);
                 }
-                
+
                 return;
             }
-            
+
             foreach (var toggle in _toggles)
             {
                 bool isActive;
@@ -161,7 +188,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                         isActive = true;
                         break;
                 }
-                
+
                 toggle.Value.gameObject.SetActive(isActive);
             }
         }
@@ -177,34 +204,34 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                     switch (slot)
                     {
                         case EquipmentSlot.Weapon:
-                            return (category.Value & Category.Weapon) != 0;
+                            return selected.Contains(Category.Weapon);
                         case EquipmentSlot.Armor:
-                            return (category.Value & Category.Armor) != 0;
+                            return selected.Contains(Category.Armor);
                         case EquipmentSlot.Ring:
-                            return (category.Value & Category.Ring) != 0;
+                            return selected.Contains(Category.Ring);
                         case EquipmentSlot.Necklace:
-                            return (category.Value & Category.Necklace) != 0;
+                            return selected.Contains(Category.Necklace);
                     }
                 }
                 else
                     return false;
             }
-            
+
             switch (item.Id.ItemType())
-            {    
+            {
                 case ItemTypeCode.Consumable:
-                    return (category.Value & Category.Consumable) != 0;
+                    return selected.Contains(Category.Consumable);
 
                 case ItemTypeCode.Ingredient:
-                    return (category.Value & Category.Ingredient) != 0;
+                    return selected.Contains(Category.Ingredient);
 
                 case ItemTypeCode.Chest:
-                    return (category.Value & Category.Chest) != 0;
+                    return selected.Contains(Category.Chest);
             }
 
             return false;
         }
-        
+
         private Predicate<IItem> CompareMethod(Tab tabValue)
         {
             return tabValue switch

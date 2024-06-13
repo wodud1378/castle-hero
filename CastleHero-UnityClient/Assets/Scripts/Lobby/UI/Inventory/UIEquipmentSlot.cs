@@ -10,7 +10,7 @@ namespace RGLabs.Lobby.UI.Inventory
     public class UIEquipmentSlot : UIItemSlot
     {
         [SerializeField] private UIGrade _grade;
-
+        
         public UniTask Init(EquipItem item)
         {
             if (!Storage.db.itemDBAccessor.TryLoad(item.Id, out var entity) ||

@@ -2093,7 +2093,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemRoot: {fileID: 9175853057697710409}
   _itemPrefab:
-    m_AssetGUID: d59b4b6f26c962547b606d6a59a4aef7
+    m_AssetGUID: 2401a27730e387c4f93a0c4ba37d0dcd
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0

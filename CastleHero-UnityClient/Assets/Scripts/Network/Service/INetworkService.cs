@@ -6,6 +6,8 @@ namespace RGLabs.Network.Service
 {
     public interface INetworkService
     {
+        public UniTask Init();
+        
         // 로그인
         public UniTask<UserInfo> Login();
 

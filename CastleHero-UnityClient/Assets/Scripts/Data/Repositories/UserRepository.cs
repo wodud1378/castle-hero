@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using RGLabs.Network.Model;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
@@ -11,12 +12,6 @@ namespace RGLabs.Data.Repositories
 {
     public class UserRepository
     {
-        [Serializable]
-        public class ArrayWrap<T>
-        {
-            public T[] array;
-        }
-
         private const string SavedStageKey = "saved-stage";
         private const string CharactersKey = "characters";
         private const string FieldCharactersKey = "characters-field";
@@ -34,12 +29,12 @@ namespace RGLabs.Data.Repositories
         {
             stage = new(userInfo.stage);
             castleLv = new(userInfo.castleLv);
-            
+
             fieldCharacters = new(userInfo.fieldCharacters);
             characters = new(userInfo.characters);
             items = new(userInfo.items);
         }
-        
+
         public UserRepository()
         {
             stage = new(Load(SavedStageKey, 1));
@@ -52,23 +47,23 @@ namespace RGLabs.Data.Repositories
                 .ThrottleFrame(1)
                 .Subscribe(x => Save(CastleKey, x));
 
-            characters = new(LoadArray<UnitInfo>(CharactersKey, TestData()));
+            characters = new(LoadAsArray<UnitInfo>(CharactersKey, TestCharacter()));
             characters
                 .ChangeAsObservable()
                 .ThrottleFrame(1)
-                .Subscribe(x=> SaveArray(CharactersKey, x));
-            
-            items = new(LoadArray<IItem>(InventoryKey));
+                .Subscribe(x => SaveAsArray(CharactersKey, x));
+
+            items = new(LoadAsArray<IItem>(InventoryKey, TestItem()));
             items
                 .ChangeAsObservable()
                 .ThrottleFrame(1)
-                .Subscribe(x => SaveArray(InventoryKey, x));
-            
-            fieldCharacters = new(LoadArray<FieldCharacter>(FieldCharactersKey));
+                .Subscribe(x => SaveAsArray(InventoryKey, x));
+
+            fieldCharacters = new(LoadAsArray<FieldCharacter>(FieldCharactersKey));
             fieldCharacters
                 .ChangeAsObservable()
                 .ThrottleFrame(1)
-                .Subscribe(x => SaveArray(FieldCharactersKey, x));
+                .Subscribe(x => SaveAsArray(FieldCharactersKey, x));
         }
 
         public void ApplyFieldCharacters(IEnumerable<UnitBehaviour> units)
@@ -79,7 +74,7 @@ namespace RGLabs.Data.Repositories
                 int index = characters.IndexOf(unit.Info);
                 if (!index.IsValidIndex())
                     continue;
-                
+
                 fieldCharacters.Add(new FieldCharacter
                 {
                     index = index,
@@ -92,22 +87,104 @@ namespace RGLabs.Data.Repositories
 
         private static void Save(string key, int value) => PlayerPrefs.SetInt(key, value);
 
-        private static T[] LoadArray<T>(string key, string defaultVal = "")
+        private static T[] LoadAsArray<T>(string key, string defaultVal = "")
         {
-            var wrap = JsonUtility.FromJson<ArrayWrap<T>>(PlayerPrefs.GetString(key, defaultVal));
-            return wrap == null ? Array.Empty<T>() : wrap.array;
+            var value = PlayerPrefs.GetString(key, defaultVal);
+            var array = typeof(T).IsInterface
+                ? JsonConvert.DeserializeObject<T[]>(value,
+                    new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All })
+                : JsonConvert.DeserializeObject<T[]>(value);
+
+            return array ?? Array.Empty<T>();
         }
 
-        private static void SaveArray<T>(string key, IEnumerable<T> value)
+        private static void SaveAsArray<T>(string key, IEnumerable<T> value)
         {
-            var wrap = new ArrayWrap<T> { array = value.ToArray() };
-            var data = JsonUtility.ToJson(wrap);
+            string json = typeof(T).IsInterface
+                ? JsonConvert.SerializeObject(value, Formatting.None,
+                    new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All })
+                : JsonConvert.SerializeObject(value);
 
-            Debug.Log(data);
-            PlayerPrefs.SetString(key, data);
+            Debug.Log(json);
+            PlayerPrefs.SetString(key, json);
         }
 
-        private static string TestData()
+        private static string TestItem()
+        {
+            var array = new IItem[]
+            {
+                new EquipItem
+                {
+                    Id = 30001,
+                    Quantity = 1,
+                    character = 0,
+                    slot = 0,
+                    stats = new[] { 1, 2, 3 },
+                    values = new[] { 150, 0.3f, 0.3f }
+                },
+                new EquipItem
+                {
+                    Id = 30002,
+                    Quantity = 1,
+                    character = 0,
+                    slot = 1,
+                    stats = new[] { 0 },
+                    values = new[] { 100f }
+                },
+                new EquipItem
+                {
+                    Id = 30002,
+                    Quantity = 1,
+                    character = 0,
+                    slot = 2,
+                    stats = new[] { 4 },
+                    values = new[] { 0.1f }
+                },
+                new EquipItem
+                {
+                    Id = 30002,
+                    Quantity = 1,
+                    character = 0,
+                    slot = 3,
+                    stats = new[] { 5 },
+                    values = new[] { 0.1f }
+                },
+                new ConsumableItem
+                {
+                    Id = 51001,
+                    Quantity = 3,
+                    consumeOption = 1
+                },
+                new ConsumableItem
+                {
+                    Id = 52001,
+                    Quantity = 5,
+                    consumeOption = 2
+                },
+                new ConsumableItem
+                {
+                    Id = 53001,
+                    Quantity = 10,
+                    consumeOption = 3
+                },
+                new ConsumableItem
+                {
+                    Id = 54001,
+                    Quantity = 5,
+                    consumeOption = 4
+                },
+                new Item
+                {
+                    Id = 60001,
+                    Quantity = 150,
+                }
+            };
+
+            return JsonConvert.SerializeObject(array, Formatting.None,
+                new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
+        }
+
+        private static string TestCharacter()
         {
             var array = new[]
             {
@@ -161,7 +238,7 @@ namespace RGLabs.Data.Repositories
                 },
             };
 
-            return JsonUtility.ToJson(new ArrayWrap<UnitInfo> { array = array });
+            return JsonConvert.SerializeObject(array);
         }
     }
 }
