@@ -13,7 +13,7 @@ Belt
 	offsets: 3, 1, 76, 66
 	rotate: 90
 Bluser
-	bounds: 257, 2, 73, 13
+	bounds: 253, 585, 73, 13
 	offsets: 4, 9, 81, 24
 	rotate: 90
 Effect_Circle_Blur
@@ -27,22 +27,22 @@ Effect_Wave
 Elipse
 	bounds: 127, 557, 65, 65
 Explosion
-	bounds: 224, 910, 59, 26
+	bounds: 225, 581, 59, 26
 	rotate: 90
 Eyebrow_L
-	bounds: 241, 260, 15, 10
+	bounds: 246, 522, 15, 10
 Eyebrow_R
-	bounds: 209, 959, 11, 10
+	bounds: 209, 973, 11, 10
 Eyes
-	bounds: 202, 67, 73, 31
-	offsets: 1, 3, 76, 36
+	bounds: 200, 93, 76, 31
+	offsets: 0, 3, 76, 36
 	rotate: 90
 Foot_L
-	bounds: 231, 742, 46, 45
+	bounds: 230, 149, 46, 45
 	offsets: 3, 8, 52, 57
-	rotate: 180
+	rotate: 90
 Foot_R
-	bounds: 228, 870, 46, 45
+	bounds: 233, 859, 46, 45
 	offsets: 4, 8, 53, 55
 	rotate: 180
 Glow
@@ -53,8 +53,9 @@ GroundShockWave_01
 	offsets: 3, 0, 68, 49
 	rotate: 90
 GroundShockWave_02
-	bounds: 225, 565, 52, 26
+	bounds: 236, 735, 52, 26
 	offsets: 3, 0, 68, 49
+	rotate: 90
 GroundShockWave_03
 	bounds: 192, 517, 52, 38
 	offsets: 3, 0, 68, 49
@@ -66,24 +67,24 @@ GroundShockWave_05
 	bounds: 127, 508, 63, 47
 	offsets: 3, 0, 68, 49
 GroundSmoke_01
-	bounds: 193, 819, 11, 11
+	bounds: 209, 1011, 11, 11
 	offsets: 25, 14, 65, 65
 GroundSmoke_02
 	bounds: 126, 815, 27, 22
 	offsets: 18, 14, 65, 65
 GroundSmoke_03
-	bounds: 236, 717, 41, 24
+	bounds: 236, 709, 41, 24
 	offsets: 11, 14, 65, 65
 GroundSmoke_04
-	bounds: 242, 977, 45, 26
+	bounds: 246, 534, 45, 26
 	offsets: 9, 14, 65, 65
 	rotate: 90
 GroundSmoke_05
-	bounds: 237, 468, 47, 28
+	bounds: 241, 288, 47, 28
 	offsets: 9, 14, 65, 65
 	rotate: 90
 GroundSmoke_06
-	bounds: 237, 158, 47, 28
+	bounds: 237, 468, 47, 28
 	offsets: 9, 14, 65, 65
 	rotate: 90
 GroundSmoke_07
@@ -91,23 +92,23 @@ GroundSmoke_07
 	offsets: 9, 14, 65, 65
 	rotate: 90
 GroundSmoke_08
-	bounds: 234, 77, 48, 29
+	bounds: 235, 406, 48, 29
 	offsets: 9, 14, 65, 65
 	rotate: 90
 GroundSmoke_09
-	bounds: 231, 789, 49, 29
+	bounds: 232, 99, 49, 29
 	offsets: 9, 14, 65, 65
 	rotate: 90
 GroundSmoke_10
-	bounds: 227, 26, 49, 29
+	bounds: 231, 789, 49, 29
 	offsets: 10, 14, 65, 65
 	rotate: 90
 GroundSmoke_11
-	bounds: 226, 658, 49, 29
+	bounds: 227, 48, 49, 29
 	offsets: 10, 14, 65, 65
 	rotate: 90
 GroundSmoke_12
-	bounds: 237, 128, 35, 28
+	bounds: 241, 258, 35, 28
 	offsets: 24, 14, 65, 65
 Hair_Back
 	bounds: 2, 624, 145, 127
@@ -131,7 +132,7 @@ Hand_R
 	bounds: 174, 642, 50, 60
 	offsets: 5, 10, 60, 74
 Hand_R_Back
-	bounds: 235, 414, 34, 40
+	bounds: 227, 6, 34, 40
 	offsets: 5, 5, 44, 51
 Head
 	bounds: 2, 507, 123, 115
@@ -146,7 +147,7 @@ Horn_R
 	bounds: 204, 337, 36, 58
 	offsets: 5, 5, 46, 68
 JumpingSmoke_01
-	bounds: 242, 350, 62, 19
+	bounds: 249, 960, 62, 19
 	offsets: 41, 4, 152, 85
 	rotate: 90
 JumpingSmoke_02
@@ -175,7 +176,7 @@ Leg_R
 	bounds: 159, 958, 48, 64
 	offsets: 5, 5, 60, 74
 Mouth
-	bounds: 226, 643, 24, 13
+	bounds: 244, 845, 24, 13
 Muffler
 	bounds: 202, 257, 57, 37
 	offsets: 5, 5, 70, 47
@@ -188,9 +189,10 @@ Muffler_3
 	offsets: 2, 3, 94, 138
 	rotate: 180
 Nose
-	bounds: 244, 850, 26, 19
+	bounds: 194, 819, 26, 19
+	rotate: 90
 Pierce_01
-	bounds: 225, 593, 47, 31
+	bounds: 226, 660, 47, 31
 	offsets: 0, 4, 83, 35
 	rotate: 90
 Pierce_02
@@ -198,23 +200,24 @@ Pierce_02
 	offsets: 0, 0, 83, 35
 	rotate: 90
 Pierce_03
-	bounds: 241, 296, 39, 33
+	bounds: 242, 365, 39, 33
 	offsets: 0, 0, 83, 35
 	rotate: 90
 Pierce_04
-	bounds: 209, 971, 51, 31
+	bounds: 224, 899, 51, 31
 	offsets: 0, 1, 83, 35
 	rotate: 90
 Pierce_05
-	bounds: 165, 142, 70, 23
+	bounds: 224, 952, 70, 23
 	offsets: 0, 6, 83, 35
+	rotate: 90
 Smoke
-	bounds: 241, 272, 24, 22
+	bounds: 242, 341, 24, 22
 Sphere_Half
 	bounds: 159, 910, 46, 63
 	rotate: 90
 Stretch
-	bounds: 194, 845, 5, 24
+	bounds: 209, 985, 5, 24
 	offsets: 1, 1, 7, 26
 Torso
 	bounds: 2, 57, 95, 91
