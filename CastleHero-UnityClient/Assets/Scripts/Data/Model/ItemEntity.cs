@@ -4,39 +4,57 @@ namespace RGLabs.Data.Model
 {
     public enum ItemTypeCode
     {
-        Equipment = 10000,
-        Consumable = 50000,
-        Ingredient = 60000,
-        Chest = 70000,
+        Equipment = 0,
+        Consumable = 5,
+        Ingredient = 6,
+        Chest = 7,
     }
 
     public enum EquipmentGradeCode
     {
-        Legend = 1000,
-        Epic = 2000,
-        Rare = 3000,
-        Common = 4000
+        Legend = 0,
+        Epic = 1,
+        Rare = 2,
+        Common = 3
     }
 
     public enum IngredientGradeCode
     {
-        Legend = 1000,
-        Epic = 2000,
-        Rare = 3000,
-        High = 4000,
-        Middle = 5000,
-        Low = 6000,
+        Legend = 1,
+        Epic = 2,
+        Rare = 3,
+        High = 4,
+        Middle = 5,
+        Low = 6,
     }
 
     public enum ChestTypeCode
     {
-        Soul = 1000,
-        Ap = 2000,
-        Exp = 3000,
-        ElementalStone = 4000,
-        Equipment = 5000,
-        Gold = 6000,
-        General = 7000,
+        Soul = 1,
+        Ap = 2,
+        Exp = 3,
+        ElementalStone = 4,
+        Equipment = 5,
+        Gold = 6,
+        General = 7,
+    }
+
+    public enum ConsumeOption
+    {
+        Soul = 0,
+        Ap = 1,
+        Exp = 2,
+        PlayTicket = 3,
+        SummonTicket = 4,
+        ElementalStone = 5,
+    }
+
+    public enum EquipmentSlot
+    {
+        Weapon = 0,
+        Armor = 1,
+        Ring = 2,
+        Necklace = 3,
     }
     
     public interface IItemEntity : IEntity
@@ -71,10 +89,10 @@ namespace RGLabs.Data.Model
         public int SellPrice { get; set; }
 
         [DataField("Item_Equip_Class")] 
-        public int grade;
+        public EquipmentGradeCode grade;
 
         [DataField("Item_Equip_Slot")]
-        public int slot;
+        public EquipmentSlot slot;
 
         [DataField("Item_Equip_Set")]
         public string set;
@@ -107,10 +125,13 @@ namespace RGLabs.Data.Model
         public int SellPrice { get; set; }
         
         [DataField("Item_Use_Option")] 
-        public int option;
+        public ConsumeOption option;
 
         [DataField("Item_Use_Option_Value")]
         public int optionValue;
+
+        [DataField("Item_Use_Effect_Subject")]
+        public string consumeDesc;
     }
 
     public struct IngredientEntity : IItemEntity

@@ -1,12 +1,10 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace RGLabs.Common.UI
 {
-    [Serializable]
-    public class UIExp
+    public class UIExp : MonoBehaviour
     {
         [SerializeField] private Slider _gauge;
         [SerializeField] private TMP_Text _percentage;

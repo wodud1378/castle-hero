@@ -116,11 +116,11 @@ namespace RGLabs.Lobby.UI
 
         public void OnPointerUp(PointerEventData eventData) => _ctSource?.Cancel();
 
-        protected override UniTask SetItem(UICharacterSlot item, UnitInfo data, CancellationToken ct)
+        protected override UniTask SetItem(UICharacterSlot slot, UnitInfo data)
         {
-            item.ReceiveRay = false;
+            slot.ReceiveRay = false;
 
-            return base.SetItem(item, data, ct);
+            return base.SetItem(slot, data);
         }
 
         private async void PressTask(PointerEventData eventData)
@@ -134,17 +134,15 @@ namespace RGLabs.Lobby.UI
             if (_ctSource.Token.IsCancellationRequested)
                 return;
 
-            var unit = await CreateFromPosition(eventData);
-            if (unit != null)
-            {
-                _dragField.SetUnit(UIConfigDragField.UnitFrom.Slot, unit);
-
-                var obj = _dragField.gameObject;
-                eventData.pointerDrag = obj;
-                ExecuteEvents.Execute(obj, eventData, ExecuteEvents.dragHandler);
-            }
-            else
-                _dragField = null;
+            var slot = GetItem(eventData);
+            if (slot == null)
+                return;
+            
+            _dragField.Create(slot);
+            
+            var obj = _dragField.gameObject;
+            eventData.pointerDrag = obj;
+            ExecuteEvents.Execute(obj, eventData, ExecuteEvents.dragHandler);
         }
         
         private async UniTask<UnitBehaviour> CreateFromPosition(PointerEventData eventData)

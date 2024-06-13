@@ -10,8 +10,8 @@ namespace RGLabs.Unit.Components
     public class Attack
     {
         public readonly Finder finder;
-
-        private readonly UnitBehaviour _unit;
+        
+        private readonly UnitBehaviour _owner;
         private readonly RenderController _renderController;
         private readonly AnimationEvents _animationEvents;
         
@@ -19,9 +19,11 @@ namespace RGLabs.Unit.Components
 
         public string projectile;
 
-        public Attack(UnitBehaviour unit, Finder finder, RenderController renderController, AnimationEvents animationEvents)
+        private UnitBehaviour _target;
+
+        public Attack(UnitBehaviour owner, Finder finder, RenderController renderController, AnimationEvents animationEvents)
         {
-            _unit = unit;
+            _owner = owner;
             
             this.finder = finder;
 
@@ -37,12 +39,13 @@ namespace RGLabs.Unit.Components
 
         public bool IsAbleToAttack()
         {
-            float range = _unit.status.atkRange;
+            float range = _owner.status.atkRange;
             finder.detection.SetRange(range, range);
             
-            if (!finder.Update(_unit.position))
+            if (!finder.Update(_owner.position))
                 return false;
 
+            _target = !_target.IsValid() ? finder.Found[0] : finder.Found.Contains(_target) ? _target : finder.Found[0];
             return true;
         }
         
@@ -65,15 +68,15 @@ namespace RGLabs.Unit.Components
                 var data = new AtkEvent
                 {
                     Type = DamageType.Normal,
-                    From = _unit,
+                    From = _owner,
                     To = target,
-                    Amount = _unit.status.atk
+                    Amount = _owner.status.atk
                 };
 
                 data.Publish();
                 
                 if(!string.IsNullOrEmpty(projectile))
-                    Effect.Play(projectile, target, _unit.position);
+                    Effect.Play(projectile, target, _owner.position);
             }
         }
 

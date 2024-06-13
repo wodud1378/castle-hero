@@ -9,28 +9,33 @@ using UnityEngine.UI;
 
 namespace RGLabs.Common.UI
 {
-    public class UIItemSlot : MonoBehaviour, IDisposable, IPointerClickHandler
+    public class UISlot : MonoBehaviour, IDisposable, IPointerClickHandler
     {
         [SerializeField] private Graphic _raycastTarget;
         
-        public event Action<UIItemSlot> OnClick;
-
-        public Image icon;
-        public TMP_Text label;
-
+        public event Action<UISlot> OnClick;
+        
         public bool ReceiveRay
         {
             set { if (_raycastTarget != null) _raycastTarget.enabled = value; }
         }
 
-        public async UniTask InitAsync(string spritePath, string text, CancellationToken ct)
+        public Image icon;
+        public TMP_Text label;
+
+        private CancellationTokenSource _ctSource;
+
+        public async UniTask Init(string spritePath, string text = "")
         {
+            _ctSource?.Cancel();
+            _ctSource = new();
+            
             icon.enabled = false;
 
             Sprite sprite;
             try
             {
-                sprite = await spritePath.Load<Sprite>(ct);
+                sprite = await spritePath.Load<Sprite>(_ctSource.Token);
             }
             catch
             {
@@ -55,6 +60,10 @@ namespace RGLabs.Common.UI
 
         public virtual void Dispose()
         {
+            _ctSource?.Cancel();
+            _ctSource?.Dispose();
+            _ctSource = null;
+            
             icon.sprite = null;
         }
 

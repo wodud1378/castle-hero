@@ -7,17 +7,17 @@ using UnityEngine.UI;
 
 namespace RGLabs.InGame.UI
 {
-    public class UIRecoverSlot : UIItemSlot
+    public class UIRecoverSlot : UISlot
     {
         [SerializeField] private Image _gauge;
         
-        public async UniTask InitAsync(WaitRecover data)
+        public UniTask InitAsync(WaitRecover data)
         {
-            await base.InitAsync(data.behaviour.Data.icon, string.Empty, default);
-
             data.summary
                 .Subscribe(OnUpdate)
                 .AddTo(this);
+            
+            return Init(data.behaviour.Data.icon);
         }
 
         private void OnUpdate((float left, float total) summary) => _gauge.fillAmount = summary.left / summary.total;

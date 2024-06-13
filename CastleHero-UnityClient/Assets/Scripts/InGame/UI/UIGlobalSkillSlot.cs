@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace RGLabs.InGame.UI
 {
-    public class UIGlobalSkillSlot : UIItemSlot
+    public class UIGlobalSkillSlot : UISlot
     {
         [SerializeField] private Image _coolTime;
 

@@ -1,6 +1,7 @@
 using System;
 using RGLabs.Unit;
 using RGLabs.Unit.Behaviours;
+using RGLabs.Unit.Components;
 using UniRx;
 using UnityEngine;
 
@@ -84,6 +85,16 @@ namespace RGLabs.InGame.System
         public float Duration { get; set; }
     }
 
+    public struct RestrictionEvent : IUnitEvent
+    {
+        public UnitBehaviour From { get; set; }
+        public UnitBehaviour To { get; set; }
+        public UnitCore.Restrictions Type { get; set; }
+        public float Amount { get; set; }
+        public string Effect { get; set; }
+        public float Duration { get; set; }
+    }
+    
     public struct StatusEffectEvent : IUnitEvent
     {
         public UnitBehaviour From { get; set; }

@@ -27,14 +27,13 @@ namespace RGLabs.Stage.UI
         [SerializeField] private AssetReference _rewardPrefab;
         [SerializeField] private AssetReferenceT<SpriteAtlas> _rewardIconAtlas;
 
-        private readonly List<UIItemSlot> _uiSlots = new();
+        private readonly List<UISlot> _uiSlots = new();
         private readonly ReactiveProperty<StageEntity> _stageData = new(default);
 
         private UserRepository _repository;
         private DBCollections _db;
 
         private readonly List<IDisposable> _subscriptions = new();
-        private CancellationTokenSource _ctSource;
 
         public void Init()
         {
@@ -73,27 +72,25 @@ namespace RGLabs.Stage.UI
         {
             Clear();
             
-            _ctSource = new();
-            
             if (stageData is { goldMin: > 0, goldMax: > 0 })
-                AddRewardUI(Constants.GoldIcon, _ctSource.Token);
+                AddRewardUI(Constants.GoldIcon);
 
             if (stageData.exp > 0)
-                AddRewardUI(Constants.ExpIcon, _ctSource.Token);
+                AddRewardUI(Constants.ExpIcon);
 
             if (_db.itemDBAccessor.TryLoad(stageData.propItemId, out var entity))
-                AddRewardUI(entity.Icon, _ctSource.Token);
+                AddRewardUI(entity.Icon);
         }
 
-        private async void AddRewardUI(string icon, CancellationToken ct)
+        private async void AddRewardUI(string icon)
         {
             var obj = await Addressables.InstantiateAsync(_rewardPrefab, _rewardParent);
-            if (!obj.TryGetComponent(out UIItemSlot slot))
+            if (!obj.TryGetComponent(out UISlot slot))
                 return;
 
             _uiSlots.Add(slot);
 
-            await slot.InitAsync(icon, string.Empty, ct);
+            await slot.Init(icon, string.Empty);
         }
 
         private void Clear()
@@ -105,8 +102,6 @@ namespace RGLabs.Stage.UI
             }
             
             _uiSlots.Clear();
-            _ctSource?.Cancel();
-            _ctSource?.Dispose();
         }
 
         private void OnStageSelected(int stage)

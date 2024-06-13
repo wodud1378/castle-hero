@@ -29,6 +29,16 @@ namespace RGLabs.Data.Repositories
         public readonly ReactiveCollection<FieldCharacter> fieldCharacters;
         public readonly ReactiveCollection<UnitInfo> characters;
         public readonly ReactiveCollection<IItem> items;
+
+        public UserRepository(UserInfo userInfo)
+        {
+            stage = new(userInfo.stage);
+            castleLv = new(userInfo.castleLv);
+            
+            fieldCharacters = new(userInfo.fieldCharacters);
+            characters = new(userInfo.characters);
+            items = new(userInfo.items);
+        }
         
         public UserRepository()
         {
@@ -105,7 +115,25 @@ namespace RGLabs.Data.Repositories
                 {
                     lv = 1,
                     rate = 1,
-                    id = 10000
+                    id = 10000,
+                    equipments = new EquipItem[]
+                    {
+                        new()
+                        {
+                            Id = 30001,
+                            Quantity = 1,
+                            character = 10000,
+                            slot = 0,
+                            stats = new[]
+                            {
+                                1, 2, 3
+                            },
+                            values = new[]
+                            {
+                                150, 0.3f, 0.3f
+                            }
+                        }
+                    },
                 },
                 new UnitInfo
                 {

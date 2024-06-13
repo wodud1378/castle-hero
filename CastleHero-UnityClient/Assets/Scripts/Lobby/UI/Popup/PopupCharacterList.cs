@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common;
+using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
@@ -19,6 +21,12 @@ namespace RGLabs.Lobby.UI.Popup
     [PrefabPath("Lobby/UI/Prefabs/Popup_Character.prefab")]
     public class PopupCharacterList : PopupBase
     {
+        public enum Mode
+        {
+            Select,
+            Equip,
+        }
+        
         public enum Tab
         {
             Storage,
@@ -55,7 +63,9 @@ namespace RGLabs.Lobby.UI.Popup
             {
                 switch (tab.Value)
                 {
-                    case Tab.Storage: return Storage.userRepository.characters.ToArray();
+                    case Tab.Storage: return Storage.userRepository.characters
+                        .Where(x=> x.id != Constants.BarricadeId)
+                        .ToArray();
                     case Tab.Collections:
                         return Storage.db.units
                             .Where(x => x.Id / 10000 == 1)
@@ -83,9 +93,9 @@ namespace RGLabs.Lobby.UI.Popup
         private readonly ReactiveProperty<SortOption> _sortOption = new();
         private UniTask _updateTask;
         
-        protected override void OnAwake()
+        protected override void InitSubscriptions()
         {
-            base.OnAwake();
+            base.InitSubscriptions();
             
             this.UpdateAsObservable()
                 .Select(_ => _tabToggle.ActiveToggles().FirstOrDefault(t => t.isOn))
@@ -98,6 +108,9 @@ namespace RGLabs.Lobby.UI.Popup
                 .ThrottleFrame(1)
                 .Subscribe(_ => UpdateUI())
                 .AddTo(this);
+
+            _characterList.OnSlotClickEvent += 
+                (x) => Context.popupManager.Open<PopupCharacter>(x.Info).Forget();
         }
 
         public override UniTask Open() => Open(Tab.Storage, SortOption.HigherLevel);

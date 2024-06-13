@@ -25,9 +25,11 @@ namespace RGLabs.Network.Service
         {
             var info = new UserInfo
             {
+                stage = Load(SavedStageKey, 1),
+                castleLv = Load(CastleKey, 1),
                 characters = LoadArray<UnitInfo>(CharactersKey, TemplateCharacters()),
                 fieldCharacters = LoadArray<FieldCharacter>(FieldCharactersKey),
-                items = LoadArray<IItem>(FieldCharactersKey)
+                items = LoadArray<IItem>(InventoryKey)
             };
 
             return UniTask.FromResult(info);
@@ -39,7 +41,7 @@ namespace RGLabs.Network.Service
 
         }
 
-        public UniTask<CharacterLevelUp> LevelUp(int id, IEnumerable<ConsumeItem> items)
+        public UniTask<CharacterLevelUp> LevelUp(int id, IEnumerable<Consume> items)
         {
             var characters = LoadArray<UnitInfo>(CharactersKey);
             int index = Array.FindIndex(characters, x => x.id == id);
@@ -47,24 +49,19 @@ namespace RGLabs.Network.Service
             throw new NotImplementedException();
 
         }
-
-        UniTask<CharacterUpgrade> INetworkService.Upgrade(int id, IEnumerable<ConsumeItem> items)
-        {
-            throw new NotImplementedException();
-        }
-
-        public UniTask Upgrade(int id, IEnumerable<ConsumeItem> items)
+        
+        public UniTask<CharacterUpgrade> Upgrade(int id, IEnumerable<Consume> items)
         {
             throw new NotImplementedException();
 
         }
 
-        public UniTask Consume(IEnumerable<ConsumeItem> items)
+        public UniTask Consume(IEnumerable<Consume> items)
         {
             throw new System.NotImplementedException();
         }
 
-        public UniTask Consume(ConsumeItem items)
+        public UniTask Consume(Consume items)
         {
             throw new System.NotImplementedException();
         }
@@ -72,6 +69,11 @@ namespace RGLabs.Network.Service
         public UniTask<StageClear> StageClear(int stage)
         {
             throw new System.NotImplementedException();
+        }
+
+        public UniTask SetStage(int stage)
+        {
+            throw new NotImplementedException();
         }
 
         private static int Load(string key, int defaultVal = -1) => PlayerPrefs.GetInt(key, defaultVal);
@@ -104,6 +106,18 @@ namespace RGLabs.Network.Service
                 {
                     lv = 1,
                     rate = 1,
+                    id = 10000
+                },
+                new UnitInfo
+                {
+                    lv = 1,
+                    rate = 1,
+                    id = 10001
+                },
+                new UnitInfo
+                {
+                    lv = 1,
+                    rate = 1,
                     id = 10021
                 },
                 new UnitInfo
@@ -117,12 +131,6 @@ namespace RGLabs.Network.Service
                     lv = 1,
                     rate = 1,
                     id = 10034
-                },
-                new UnitInfo
-                {
-                    lv = 1,
-                    rate = 1,
-                    id = 10000
                 },
             };
 
