@@ -14,17 +14,18 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         [SerializeField] private Slider _slider;
         [SerializeField] private Button _use;
         [SerializeField] private TMP_Text _description;
+        [SerializeField] private TMP_Text _useCount;
         [SerializeField] private TMP_Text _effect;
 
-        protected override void InitSubscriptions()
+        protected override void OnAwake()
         {
-            base.InitSubscriptions();
+            base.OnAwake();
 
             this.SubscribeButton(_use, OnUse);
             
             _slider.onValueChanged
                 .AsObservable()
-                .Subscribe(x=> UpdateEffectText((int)x))
+                .Subscribe(UpdateWithQuantity)
                 .AddTo(this);
         }
 
@@ -33,8 +34,21 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             _description.text = Entity.Desc;
             
             SetActiveSlider();
+
+            if (_slider.gameObject.activeSelf)
+            {
+                _slider.value = 0;
+                UpdateWithQuantity(0);
+            }
         }
 
+        private void UpdateWithQuantity(float value)
+        {
+            int toInt = (int)value;
+            _useCount.text = (toInt).ToString();
+            UpdateEffectText(toInt);
+        }
+        
         private void UpdateEffectText(int count)
         {
             if (Entity is ConsumableEntity { option: ConsumeOption.Ap or ConsumeOption.Exp } consumable)
@@ -67,6 +81,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 isActive = option is ConsumeOption.Ap;
             }
 
+            _useCount.gameObject.SetActive(isActive);
             _slider.gameObject.SetActive(isActive);
             _slider.maxValue = Item.Quantity;
         }

@@ -6,6 +6,7 @@ using RGLabs.Data.Load;
 using RGLabs.Data.Model;
 using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
+using RGLabs.Utility;
 using UniRx;
 
 namespace RGLabs.Data.Repositories
@@ -28,58 +29,43 @@ namespace RGLabs.Data.Repositories
 
         public bool TryLoad(int id, out IItemEntity entity)
         {
-            var values = Enum.GetValues(typeof(ItemTypeCode));
-            bool found = false;
-            ItemTypeCode code = ItemTypeCode.Equipment;
-            foreach (ItemTypeCode value in values)
+            switch (id.ItemType())
             {
-                int sub = id - (int)value;
-                found = sub is > 0 and < 10000;
+                case ItemTypeCode.Equipment:
+                    if (_equipmentItems.TryFind(id, out var equipment))
+                    {
+                        entity = equipment;
+                        return true;
+                    }
 
-                if (found)
-                    code = value;
+                    break;
+                case ItemTypeCode.Consumable:
+                    if (_consumableItems.TryFind(id, out var consumable))
+                    {
+                        entity = consumable;
+                        return true;
+                    }
+
+                    break;
+                case ItemTypeCode.Ingredient:
+                    if (_ingredientItems.TryFind(id, out var ingredient))
+                    {
+                        entity = ingredient;
+                        return true;
+                    }
+
+                    break;
+                case ItemTypeCode.Chest:
+                    if (_chestItems.TryFind(id, out var chest))
+                    {
+                        entity = chest;
+                        return true;
+                    }
+
+                    break;
             }
 
-            if (found)
-            {
-                switch (code)
-                {
-                    case ItemTypeCode.Equipment:
-                        if (_equipmentItems.TryFind(id, out var equipment))
-                        {
-                            entity = equipment;
-                            return true;
-                        }
-
-                        break;
-                    case ItemTypeCode.Consumable:
-                        if (_consumableItems.TryFind(id, out var consumable))
-                        {
-                            entity = consumable;
-                            return true;
-                        }
-
-                        break;
-                    case ItemTypeCode.Ingredient:
-                        if (_ingredientItems.TryFind(id, out var ingredient))
-                        {
-                            entity = ingredient;
-                            return true;
-                        }
-
-                        break;
-                    case ItemTypeCode.Chest:
-                        if (_chestItems.TryFind(id, out var chest))
-                        {
-                            entity = chest;
-                            return true;
-                        }
-
-                        break;
-                }
-            }
-
-            entity = default;
+            entity = null;
             return false;
         }
     }
@@ -164,7 +150,8 @@ namespace RGLabs.Data.Repositories
         {
             castle.Value = null;
             characters.Dispose();
-            characters.Clear();;
+            characters.Clear();
+            ;
             recovers.Dispose();
             recovers.Clear();
 

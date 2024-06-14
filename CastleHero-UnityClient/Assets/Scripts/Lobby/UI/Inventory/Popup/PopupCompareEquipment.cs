@@ -53,6 +53,12 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         private void UpdateText(EquipItem leftItem, EquipItem rightItem)
         {
+            if (leftItem.stats == null || leftItem.values == null)
+            {
+                leftItem.stats = Array.Empty<int>();
+                leftItem.values = Array.Empty<float>();
+            }
+            
             // 타입, 값을 묶은 튜플 배열 l, r
             var l = leftItem.stats.Zip(leftItem.values, (type, value) => (type, value)).ToArray();
             var r = rightItem.stats.Zip(rightItem.values, (type, value) => (type, value)).ToArray();

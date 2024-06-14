@@ -140,7 +140,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: SWORD
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b2e30944874a15545876a27cbb65a879, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 026de58f61cae5a469ddc11ef0bdb2ce, type: 2}
@@ -274,7 +274,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100 / 9999
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b2e30944874a15545876a27cbb65a879, type: 2}
   m_sharedMaterial: {fileID: 7644107486547799300, guid: b2e30944874a15545876a27cbb65a879, type: 2}
@@ -301,7 +301,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 21.5
+  m_fontSize: 22
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -637,10 +637,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34b6d78b90a642199ae25092911e0803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _raycastTarget: {fileID: 9126526809648958470}
   icon: {fileID: 862319264759628413}
   label: {fileID: 4988924296871623459}
   _quantity: {fileID: 6468670213117842385}
+  _portraitRoot: {fileID: 0}
 --- !u!1 &9121787907966090228
 GameObject:
   m_ObjectHideFlags: 0

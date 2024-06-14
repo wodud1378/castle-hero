@@ -20,13 +20,15 @@ namespace RGLabs.Network.Model
     public interface IItem
     {
         public int Id { get; }
+        public int ItemId { get; }
         public int Quantity { get; }
     }
 
     [Serializable]
     public struct ConsumableItem : IItem
     {
-        public int Id { get; set; }
+        public int Id { get;set; }
+        public int ItemId { get; set; }
         public int Quantity { get; set; }
 
         public int consumeOption;
@@ -35,7 +37,8 @@ namespace RGLabs.Network.Model
     [Serializable]
     public struct EquipItem : IItem
     {
-        public int Id { get; set; }
+        public int Id { get;set; }
+        public int ItemId { get; set; }
         public int Quantity { get; set; }
 
         public int character;
@@ -48,6 +51,7 @@ namespace RGLabs.Network.Model
     public struct Item : IItem
     {
         public int Id { get; set; }
+        public int ItemId { get; set; }
         public int Quantity { get; set; }
     }
 }

@@ -8,6 +8,7 @@ using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
+using RGLabs.Lobby.UI.Inventory.Popup;
 using RGLabs.Network.Model;
 using RGLabs.Utility;
 using TMPro;
@@ -21,7 +22,7 @@ namespace RGLabs.Lobby.UI.Popup
     [PrefabPath("Lobby/UI/Prefabs/Popup_Character.prefab")]
     public class PopupCharacterList : PopupBase
     {
-        public enum Mode
+        public enum ClickMethod
         {
             Select,
             Equip,
@@ -84,18 +85,21 @@ namespace RGLabs.Lobby.UI.Popup
                 if (tab.Value == Tab.Collections)
                     return Comparer[SortOption.Id];
 
-                return Comparer[_sortOption.Value];
+                return Comparer[sortOption.Value];
             }
         }
         
         public readonly ReactiveProperty<Tab> tab = new();
+        public readonly ReactiveProperty<SortOption> sortOption = new();
 
-        private readonly ReactiveProperty<SortOption> _sortOption = new();
+        public ClickMethod clickMethod;
+        public int equipmentId;
+        
         private UniTask _updateTask;
         
-        protected override void InitSubscriptions()
+        protected override void OnAwake()
         {
-            base.InitSubscriptions();
+            base.OnAwake();
             
             this.UpdateAsObservable()
                 .Select(_ => _tabToggle.ActiveToggles().FirstOrDefault(t => t.isOn))
@@ -104,13 +108,13 @@ namespace RGLabs.Lobby.UI.Popup
                 .Subscribe(selected => tab.Value = selected)
                 .AddTo(this);
             
-            tab.CombineLatest(_sortOption, (t, s) => (t, s))
+            tab.CombineLatest(sortOption, (t, s) => (t, s))
                 .ThrottleFrame(1)
                 .Subscribe(_ => UpdateUI())
                 .AddTo(this);
 
-            _characterList.OnSlotClickEvent += 
-                (x) => Context.popupManager.Open<PopupCharacter>(x.Info).Forget();
+            _characterList.OnSlotClickEvent -= OnClickSlot;
+            _characterList.OnSlotClickEvent += OnClickSlot;
         }
 
         public override UniTask Open() => Open(Tab.Storage, SortOption.HigherLevel);
@@ -127,7 +131,7 @@ namespace RGLabs.Lobby.UI.Popup
             catch { sortParam = SortOption.HigherLevel; }
 
             tab.Value = tabParam;
-            _sortOption.Value = sortParam;
+            sortOption.Value = sortParam;
 
             return _updateTask;
         }
@@ -138,6 +142,39 @@ namespace RGLabs.Lobby.UI.Popup
             Array.Sort(characters, Sort);
 
             _updateTask =_characterList.Init(characters);
+        }
+        
+        private void OnClickSlot(UICharacterSlot slot)
+        {
+            switch (clickMethod)
+            {
+                case ClickMethod.Select:
+                    Context.popupManager.Open<PopupCharacter>(slot.Info).Forget();
+                    break;
+                case ClickMethod.Equip:
+                    OpenEquipmentCompare(slot.Info);
+                    break;
+            }
+        }
+
+        private void OpenEquipmentCompare(UnitInfo unit)
+        {
+            var item = Storage.userRepository.items
+                .FirstOrDefault(x => x.Id == equipmentId);
+
+            if (item is not EquipItem right)
+                return;
+
+            EquipItem left;
+            if (unit.equipments != null)
+            {
+                int index = Array.FindIndex(unit.equipments, x => x.slot == right.slot);
+                left = index.IsValidIndex(unit.equipments) ? unit.equipments[index] : default;
+            }
+            else
+                left = default;
+            
+            Context.popupManager.Open<PopupCompareEquipment>(left, right).Forget();
         }
     }
 }

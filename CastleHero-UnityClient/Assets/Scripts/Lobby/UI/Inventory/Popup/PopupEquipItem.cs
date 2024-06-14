@@ -22,9 +22,9 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         [SerializeField] private Button _equip;
         [SerializeField] private Button _release;
 
-        protected override void InitSubscriptions()
+        protected override void OnAwake()
         {
-            base.InitSubscriptions();
+            base.OnAwake();
             
             this.SubscribeButton(_refine, OpenElementalStoneList);
             this.SubscribeButton(_equip, OpenCharacterList);
@@ -37,11 +37,11 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         {
         }
         
-        private void OpenCharacterList()
+        private async void OpenCharacterList()
         {
-            Context.popupManager
-                .Open<PopupCharacterList>()
-                .Forget();
+            var popup = await Context.popupManager.Open<PopupCharacterList>();
+            popup.clickMethod = PopupCharacterList.ClickMethod.Equip;
+            popup.equipmentId = Item.Id;
         }
 
         private void Release()
@@ -50,18 +50,17 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         protected override void OnDataInitialized()
         {
-            int index = 0;
-            while (index.IsValidIndex(Item.stats, Item.values))
+            foreach (var label in _stats)
             {
-                var label = Array.Find(_stats,
-                    x => x.type == (Status.Type)Item.stats[index]);
-
-                if (label != null)
+                var type = (int)label.type;
+                int index = Array.FindIndex(Item.stats, x => x == type);
+                if (index.IsValidIndex(Item.stats, Item.values))
                 {
                     label.SetText(Item.values[index]);
+                    label.gameObject.SetActive(true);
                 }
-
-                ++index;
+                else 
+                    label.gameObject.SetActive(false);
             }
         }
     }

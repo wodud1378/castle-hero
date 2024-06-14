@@ -36,9 +36,9 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 return UniTask.FromException(exception);
             }
 
-            if (!Storage.db.itemDBAccessor.TryLoad(item.Id, out var entity))
+            if (!Storage.db.itemDBAccessor.TryLoad(item.ItemId, out var entity))
             {
-                var exception = new Exception($"아이템을 찾을 수 없습니다. id={item.Id}");
+                var exception = new Exception($"아이템을 찾을 수 없습니다. id={item.ItemId}");
                 return UniTask.FromException(exception);
             }
 
@@ -56,9 +56,9 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         protected abstract void OnDataInitialized();
         
-        protected override void InitSubscriptions()
+        protected override void OnAwake()
         {
-            base.InitSubscriptions();
+            base.OnAwake();
             
             this.SubscribeButton(_sell, Sell);
         }

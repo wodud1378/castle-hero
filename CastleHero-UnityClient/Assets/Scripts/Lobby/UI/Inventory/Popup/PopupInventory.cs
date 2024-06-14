@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
@@ -62,10 +63,13 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         private UniTask _updateTask;
 
-        protected override void InitSubscriptions()
+        protected override void OnAwake()
         {
-            base.InitSubscriptions();
+            base.OnAwake();
 
+            _itemList.OnSlotClickEvent -= OnClickItemSlot;
+            _itemList.OnSlotClickEvent += OnClickItemSlot;
+            
             BindTabToggle(Tab.All, all);
             BindTabToggle(Tab.Equipment, equipment);
             BindTabToggle(Tab.Other, other);
@@ -89,6 +93,22 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 .Merge(filter.ChangeAsObservable().Select(_ => UniRx.Unit.Default))
                 .Subscribe(_ => UpdateList())
                 .AddTo(this);
+        }
+        
+        private void OnClickItemSlot(UIItemSlot slot)
+        {
+            var item = slot.Item;
+            var type = item.ItemId.ItemType();
+            switch (type)
+            {
+                case ItemTypeCode.Equipment:
+                    Context.popupManager.Open<PopupEquipItem>(item).Forget();
+                    break;
+                case ItemTypeCode.Consumable:
+                case ItemTypeCode.Ingredient:
+                    Context.popupManager.Open<PopupUseItem>(item).Forget();
+                    break;
+            }
         }
 
         private void UpdateTogglesStatus(ReactiveCollection<Category> categories)
@@ -249,7 +269,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         private bool Filter(IItem item)
         {
-            var type = item.Id.ItemType();
+            var type = item.ItemId.ItemType();
             if (type == ItemTypeCode.Equipment)
             {
                 if (item is EquipItem equipItem)
@@ -271,7 +291,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                     return false;
             }
 
-            switch (item.Id.ItemType())
+            switch (item.ItemId.ItemType())
             {
                 case ItemTypeCode.Consumable:
                     return filter.Contains(Category.Consumable);
@@ -291,8 +311,8 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             return tabValue switch
             {
                 Tab.All => _ => true,
-                Tab.Equipment => x => x.Id.ItemType() == ItemTypeCode.Equipment,
-                Tab.Other => x => x.Id.ItemType() != ItemTypeCode.Equipment,
+                Tab.Equipment => x => x.ItemId.ItemType() == ItemTypeCode.Equipment,
+                Tab.Other => x => x.ItemId.ItemType() != ItemTypeCode.Equipment,
                 _ => null
             };
         }

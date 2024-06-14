@@ -126,8 +126,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _suffix: 
-  _increaseColor: {r: 0, g: 1, b: 0, a: 1}
-  _decreasedColor: {r: 1, g: 0, b: 0, a: 1}
   type: 5
   label: {fileID: 8711616406525578298}
 --- !u!1 &1424051160213518057
@@ -668,8 +666,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _suffix: 
-  _increaseColor: {r: 0, g: 1, b: 0, a: 1}
-  _decreasedColor: {r: 1, g: 0, b: 0, a: 1}
   type: 4
   label: {fileID: 3466193268058071038}
 --- !u!1 &2778535386743143418
@@ -983,8 +979,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _suffix: '%'
-  _increaseColor: {r: 0, g: 1, b: 0, a: 1}
-  _decreasedColor: {r: 1, g: 0, b: 0, a: 1}
   type: 3
   label: {fileID: 2035079646266978070}
 --- !u!1 &3790691181059528307
@@ -1876,8 +1870,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _suffix: '%'
-  _increaseColor: {r: 0, g: 1, b: 0, a: 1}
-  _decreasedColor: {r: 1, g: 0, b: 0, a: 1}
   type: 2
   label: {fileID: 884219363623687095}
 --- !u!1 &6093095510353773994
@@ -2088,8 +2080,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _suffix: 
-  _increaseColor: {r: 0, g: 1, b: 0, a: 1}
-  _decreasedColor: {r: 1, g: 0, b: 0, a: 1}
   type: 1
   label: {fileID: 4876341357750410951}
 --- !u!1 &6135690349294063676
@@ -3287,8 +3277,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _suffix: 
-  _increaseColor: {r: 0, g: 1, b: 0, a: 1}
-  _decreasedColor: {r: 1, g: 0, b: 0, a: 1}
   type: 0
   label: {fileID: 2173524612286574932}
 --- !u!1 &9116971342982384210
@@ -3388,9 +3376,9 @@ MonoBehaviour:
   m_Padding:
     m_Left: 0
     m_Right: 0
-    m_Top: 0
+    m_Top: 15
     m_Bottom: 0
-  m_ChildAlignment: 4
+  m_ChildAlignment: 1
   m_Spacing: 10
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0

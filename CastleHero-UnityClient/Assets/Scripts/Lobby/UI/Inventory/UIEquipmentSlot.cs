@@ -13,7 +13,7 @@ namespace RGLabs.Lobby.UI.Inventory
         
         public UniTask Init(EquipItem item)
         {
-            if (!Storage.db.itemDBAccessor.TryLoad(item.Id, out var entity) ||
+            if (!Storage.db.itemDBAccessor.TryLoad(item.ItemId, out var entity) ||
                 entity is not EquipmentEntity equipmentEntity)
                 return UniTask.CompletedTask;
             

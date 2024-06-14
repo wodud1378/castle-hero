@@ -14,26 +14,10 @@ namespace RGLabs.Lobby.UI.Inventory
         protected override UniTask SetItem(UIItemSlot slot, IItem data)
         {
             var accessor = Storage.db.itemDBAccessor;
-            if (!accessor.TryLoad(data.Id, out var entity))
+            if (!accessor.TryLoad(data.ItemId, out var entity))
                 return UniTask.CompletedTask;
 
             return slot.Init(data, entity);
-        }
-
-        private void OnClickItem(UIItemSlot slot)
-        {
-            var item = slot.Item;
-            var type = item.Id.ItemType();
-            switch (type)
-            {
-                case ItemTypeCode.Equipment:
-                    Context.popupManager.Open<PopupEquipItem>(item).Forget();
-                    break;
-                case ItemTypeCode.Consumable:
-                    break;
-                case ItemTypeCode.Ingredient:
-                    break;
-            }
         }
     }
 }

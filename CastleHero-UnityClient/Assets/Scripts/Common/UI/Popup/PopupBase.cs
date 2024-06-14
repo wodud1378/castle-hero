@@ -17,9 +17,9 @@ namespace RGLabs.Common.UI.Popup
         [SerializeField] private Animator _animator;
         [SerializeField] private Button _close;
 
-        private void Awake() => InitSubscriptions();
+        private void Awake() => OnAwake();
 
-        protected virtual void InitSubscriptions() => this.SubscribeButton(_close, () => CloseTask().Forget());
+        protected virtual void OnAwake() => this.SubscribeButton(_close, () => CloseTask().Forget());
 
         public virtual UniTask Open(params object[] parameters)
         {

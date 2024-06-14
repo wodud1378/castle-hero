@@ -28,9 +28,11 @@ namespace RGLabs.Common.UI
             var builder = new StringBuilder();
             if (additionalValue != 0f)
             {
-                var str = $"{additionalValue}{_suffix}";
-                str = additionalValue > 0f ? str.WithPositiveColor() : str.WithNegativeColor();
-                builder.Append(str);
+                bool isPositive = additionalValue > 0f;
+                var sign = isPositive ? "+" : "-";
+                var str = $"({sign}{additionalValue}{_suffix})";
+                str = isPositive ? str.WithPositiveColor() : str.WithNegativeColor();
+                builder.Append($"{str} ");
             }
 
             builder

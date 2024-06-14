@@ -11,14 +11,7 @@ namespace RGLabs.Common.UI
 {
     public class UISlot : MonoBehaviour, IDisposable, IPointerClickHandler
     {
-        [SerializeField] private Graphic _raycastTarget;
-        
         public event Action<UISlot> OnClick;
-        
-        public bool ReceiveRay
-        {
-            set { if (_raycastTarget != null) _raycastTarget.enabled = value; }
-        }
 
         public Image icon;
         public TMP_Text label;
