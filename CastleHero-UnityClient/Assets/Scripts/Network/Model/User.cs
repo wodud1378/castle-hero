@@ -20,7 +20,8 @@ namespace RGLabs.Network.Model
     public class FieldCharacter
     {
         public int index;
-        public Vector2 position;
+        public float x;
+        public float y;
     }
     
     [Serializable]

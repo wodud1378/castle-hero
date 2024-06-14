@@ -199,7 +199,8 @@ namespace RGLabs.Lobby.Behaviours
                     continue;
 
                 var character = _userRepo.characters[index];
-                tasks.Add(CreateCharacter(character, data.position));
+                var position = new Vector2(data.x, data.y);
+                tasks.Add(CreateCharacter(character, position));
             }
 
             await UniTask.WhenAll(tasks);

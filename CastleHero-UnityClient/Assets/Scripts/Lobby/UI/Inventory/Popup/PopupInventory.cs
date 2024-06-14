@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
@@ -9,7 +8,6 @@ using RGLabs.Data.Model;
 using RGLabs.Network.Model;
 using RGLabs.Utility;
 using UniRx;
-using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -31,7 +29,6 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             Other
         }
 
-        [Flags]
         public enum Category
         {
             All = 0,
@@ -43,16 +40,25 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             Consumable,
             Chest,
         }
+        
+        public Toggle all;
+        public Toggle equipment;
+        public Toggle other;
 
+        public Toggle[] categoryToggles;
+        
         [SerializeField] private UIInventoryItemList _itemList;
-        [SerializeField] private ToggleGroup _tabToggle;
 
-        [SerializeField] private Toggle[] _categoryToggles;
-
+        [Header("Tab Sprites")]
+        [SerializeField] private SpriteState _tabSprites;
+        [Header("Category Colors")]
+        [SerializeField] private ColorBlock _categoryColors;
+  
         public readonly ReactiveProperty<Tab> tab = new();
-        private readonly ReactiveCollection<Category> selected = new();
+        public readonly ReactiveCollection<Category> filter = new();
 
-        private Dictionary<Category, Toggle> _toggles;
+        private readonly Dictionary<Tab, Toggle> _tabToggles = new();
+        private readonly Dictionary<Category, Toggle> _categoryToggles = new();
 
         private UniTask _updateTask;
 
@@ -60,61 +66,103 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         {
             base.InitSubscriptions();
 
-            _toggles = new();
-            for (int i = 0; i < _categoryToggles.Length; ++i)
+            BindTabToggle(Tab.All, all);
+            BindTabToggle(Tab.Equipment, equipment);
+            BindTabToggle(Tab.Other, other);
+
+            for (var i = 0; i < categoryToggles.Length; i++)
             {
-                var toggle = _categoryToggles[i];
-                Category target = (Category)i;
-                toggle.onValueChanged
-                    .AsObservable()
-                    .Subscribe(x =>
-                    {
-                        if (target == Category.All)
-                        {
-                            foreach (var toggle in _toggles)
-                            {
-                                toggle.Value.isOn = true;
-                            }
-                        }
-
-                        if (x)
-                        {
-                            if (!selected.Contains(target))
-                                selected.Add(target);
-                        }
-                        else
-                        {
-                            if (selected.Contains(target))
-                                selected.Remove(target);
-                        }
-                    })
-                    .AddTo(this);
-
-                _toggles.TryAdd(target, toggle);
+                BindCategoryToggle((Category)i, categoryToggles[i]);
             }
-
-            this.UpdateAsObservable()
-                .Select(_ => _tabToggle.ActiveToggles().FirstOrDefault(t => t.isOn))
-                .DistinctUntilChanged()
-                .Select(toggle => Enum.Parse<Tab>(toggle.gameObject.name))
-                .Subscribe(selected => tab.Value = selected)
-                .AddTo(this);
-
-            var itemObservable = Storage.userRepository.items.ChangeAsObservable().Select(_ => UniRx.Unit.Default);
-            var categoryObservable = selected.ChangeAsObservable().Select(_ => UniRx.Unit.Default);
-            var merged = tab
-                .AsObservable()
-                .Select(_ => UniRx.Unit.Default)
-                .Merge(categoryObservable, itemObservable);
-
-            merged
-                .ThrottleFrame(1)
-                .Subscribe(_ => UpdateList())
+            
+            filter
+                .ChangeAsObservable()
+                .Subscribe(UpdateTogglesStatus)
                 .AddTo(this);
 
             tab
-                .Subscribe(UpdateTogglesActive)
+                .Subscribe(UpdateTabsStatus)
                 .AddTo(this);
+
+            tab.AsObservable()
+                .Select(_ => UniRx.Unit.Default)
+                .Merge(filter.ChangeAsObservable().Select(_ => UniRx.Unit.Default))
+                .Subscribe(_ => UpdateList())
+                .AddTo(this);
+        }
+
+        private void UpdateTogglesStatus(ReactiveCollection<Category> categories)
+        {
+            foreach (var pair in _categoryToggles)
+            {
+                if (pair.Key == Category.All)
+                    continue;
+                        
+                var toggle = pair.Value;
+                var color = categories.Contains(pair.Key)? _categoryColors.selectedColor : _categoryColors.normalColor;
+                toggle.image.CrossFadeColor(color, _categoryColors.fadeDuration, true, true);
+            }
+                    
+            _categoryToggles[Category.All].image
+                .CrossFadeColor(categories.Any() 
+                        ? _categoryColors.normalColor
+                        : _categoryColors.selectedColor,
+                    _categoryColors.fadeDuration,
+                    true, true);
+        }
+
+        private void UpdateTabsStatus(Tab tab)
+        {
+            foreach (var pair in _tabToggles)
+            {
+                var toggle = pair.Value;
+                toggle.image.overrideSprite = tab == pair.Key ? _tabSprites.selectedSprite : null;
+            }
+                    
+            UpdateTogglesActive(tab);
+        }
+
+        private void BindTabToggle(Tab tab, Toggle toggle)
+        {
+            toggle.onValueChanged
+                .AsObservable()
+                .DistinctUntilChanged()
+                .Subscribe(x =>
+                {
+                    if (x)
+                        this.tab.Value = tab;
+                })
+                .AddTo(toggle);
+
+            _tabToggles.Add(tab, toggle);
+        }
+
+        private void BindCategoryToggle(Category category, Toggle toggle)
+        {
+            toggle.onValueChanged
+                .AsObservable()
+                .DistinctUntilChanged()
+                .Subscribe(x =>
+                {
+                    if (category == Category.All)
+                        filter.Clear();
+                    else
+                    {
+                        if (x)
+                        {
+                            if (!filter.Contains(category))
+                                filter.Add(category);
+                        }
+                        else
+                        {
+                            if (filter.Contains(category))
+                                filter.Remove(category);
+                        }
+                    }
+                })
+                .AddTo(toggle);
+
+            _categoryToggles.Add(category, toggle);
         }
 
         public override UniTask Open(params object[] parameters)
@@ -140,7 +188,11 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             }
 
             tab.Value = tabParam;
-            _toggles[category].isOn = true;
+            
+            if(category != Category.All)
+                filter.Add(category);
+            else
+                UpdateTogglesStatus(filter);
 
             return _updateTask;
         }
@@ -152,15 +204,17 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             var items = Storage.userRepository.items
                 .Where(CompareMethod(tab.Value).Invoke);
 
-            items = items.Where(Filter);
+            if(filter.Count > 0)
+                items = items.Where(Filter);
+            
             _updateTask = _itemList.Init(items);
         }
-
+        
         private void UpdateTogglesActive(Tab val)
         {
             if (val == Tab.All)
             {
-                foreach (var toggle in _toggles)
+                foreach (var toggle in _categoryToggles)
                 {
                     toggle.Value.gameObject.SetActive(true);
                 }
@@ -168,7 +222,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 return;
             }
 
-            foreach (var toggle in _toggles)
+            foreach (var toggle in _categoryToggles)
             {
                 bool isActive;
                 switch (toggle.Key)
@@ -204,13 +258,13 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                     switch (slot)
                     {
                         case EquipmentSlot.Weapon:
-                            return selected.Contains(Category.Weapon);
+                            return filter.Contains(Category.Weapon);
                         case EquipmentSlot.Armor:
-                            return selected.Contains(Category.Armor);
+                            return filter.Contains(Category.Armor);
                         case EquipmentSlot.Ring:
-                            return selected.Contains(Category.Ring);
+                            return filter.Contains(Category.Ring);
                         case EquipmentSlot.Necklace:
-                            return selected.Contains(Category.Necklace);
+                            return filter.Contains(Category.Necklace);
                     }
                 }
                 else
@@ -220,13 +274,13 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             switch (item.Id.ItemType())
             {
                 case ItemTypeCode.Consumable:
-                    return selected.Contains(Category.Consumable);
+                    return filter.Contains(Category.Consumable);
 
                 case ItemTypeCode.Ingredient:
-                    return selected.Contains(Category.Ingredient);
+                    return filter.Contains(Category.Ingredient);
 
                 case ItemTypeCode.Chest:
-                    return selected.Contains(Category.Chest);
+                    return filter.Contains(Category.Chest);
             }
 
             return false;

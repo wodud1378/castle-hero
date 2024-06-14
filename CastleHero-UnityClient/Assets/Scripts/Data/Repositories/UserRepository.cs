@@ -75,10 +75,12 @@ namespace RGLabs.Data.Repositories
                 if (!index.IsValidIndex())
                     continue;
 
+                var position = unit.position;
                 fieldCharacters.Add(new FieldCharacter
                 {
                     index = index,
-                    position = unit.position
+                    x = position.x,
+                    y = position.y,
                 });
             }
         }
