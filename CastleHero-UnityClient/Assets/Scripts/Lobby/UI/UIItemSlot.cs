@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI;
 using RGLabs.Data;
@@ -5,6 +7,7 @@ using RGLabs.Data.Model;
 using RGLabs.Network.Model;
 using RGLabs.Utility;
 using TMPro;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,30 +15,56 @@ namespace RGLabs.Lobby.UI
 {
     public class UIItemSlot : UISlot
     {
+        public enum QuantityDisplay
+        {
+            Default,
+            ValueOnly,
+        }
+        
         [SerializeField] private TMP_Text _quantity;
         [SerializeField] private GameObject _portraitRoot;
         
         public IItem Item { get; private set; }
         public IItemEntity Entity { get; private set; }
+
+        public ReactiveProperty<QuantityDisplay> quantityDisplay = new();
+
+        private void Awake()
+        {
+            quantityDisplay
+                .Subscribe()
+                .AddTo(this);
+        }
+
+        public UniTask Init(IItem item)
+        {
+            if(!Storage.db.itemDBAccessor.TryLoad(item.ItemId, out var entity))
+                return UniTask.CompletedTask;
+
+            return Init(item, entity);
+        }
         
         public UniTask Init(IItem item, IItemEntity entity)
         {
             Item = item;
             Entity = entity;
 
-            if (_quantity != null)
-                _quantity.text = $"{item.Quantity} / 9999";
+            UpdateQuantity(quantityDisplay.Value);
             
-            if(_portraitRoot != null && item is EquipItem equipItem)
-                SetPortrait(equipItem.character).Forget();
-            
-            return Init(entity.Icon, entity.Name);
+            var portraitTask = UpdatePortrait();
+            var initTask = Init(entity.Icon, entity.Name);
+
+            return UniTask.WhenAll(portraitTask, initTask);
         }
         
-        private async UniTask SetPortrait(int character)
+        private async UniTask UpdatePortrait()
         {
-            _portraitRoot.SetActive(false);
+            if (_portraitRoot == null || Item is not EquipItem equipItem)
+                return;
             
+            _portraitRoot.SetActive(false);
+
+            int character = equipItem.character;
             if (character == 0)
                 return;
 
@@ -49,6 +78,22 @@ namespace RGLabs.Lobby.UI
             var sprite = await entity.icon.Load<Sprite>();
             image.sprite = sprite;
             _portraitRoot.SetActive(sprite != null);
+        }
+
+        private void UpdateQuantity(QuantityDisplay mode)
+        {
+            if (Item == null || _quantity == null)
+                return;
+            
+            switch (mode)
+            {
+                case QuantityDisplay.Default:
+                    _quantity.text = $"{Item.Quantity} / 9999";
+                    break;
+                case QuantityDisplay.ValueOnly:
+                    _quantity.text = $"{Item.Quantity}";
+                    break;
+            }
         }
     }
 }

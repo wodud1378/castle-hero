@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
@@ -12,6 +13,7 @@ using Spine.Unity;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.UI;
 
 namespace RGLabs.Lobby.UI.Popup
 {
@@ -22,9 +24,22 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private TMP_Text _lv;
         [SerializeField] private GameObject[] _stars;
         [SerializeField] private SkeletonGraphic _skeleton;
-        [SerializeField] private UIExp _exp;
+        [SerializeField] private UILevel _level;
         [SerializeField] private UIStatusText[] _statusTexts;
         [SerializeField] private UIEquipmentSlot[] _equipments;
+
+        [SerializeField] private Button _levelUp;
+        [SerializeField] private Button _upgrade;
+
+        private UnitInfo _unit;
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+            
+            this.SubscribeButton(_levelUp, OnLevelUp);
+            this.SubscribeButton(_upgrade, OnUpgrade);
+        }
 
         public override UniTask Open(params object[] parameters)
         {
@@ -36,26 +51,24 @@ namespace RGLabs.Lobby.UI.Popup
 
         private void Init(UnitInfo info)
         {
-            if (!Storage.db.units.TryFind(info.id, out var unitEntity))
+            _unit = info;
+            
+            if (!Storage.db.units.TryFind(_unit.id, out var unitEntity))
                 return;
 
-            if (!Storage.db.balances.TryFind(info.id, out var balanceEntity))
-                return;
-
-            if (!Storage.db.levels.TryFind(info.lv, out var levelEntity))
+            if (!Storage.db.balances.TryFind(_unit.id, out var balanceEntity))
                 return;
 
             _name.text = unitEntity.name;
+            _level.Set(_unit);
 
-            int lv = info.lv;
-            int rate = info.rate;
-            _lv.text = $"Lv.{lv}";
-            _exp.Set(info.exp, levelEntity.exp);
+            int lv = _unit.lv;
+            int rate = _unit.rate;
 
             SetSkeleton(unitEntity.skeletonData).Forget();
             UpdateRate(rate);
-            UpdateStatusTexts(lv, rate, unitEntity, balanceEntity, info.equipments);
-            UpdateEquipmentSlots(info.equipments);
+            UpdateStatusTexts(lv, rate, unitEntity, balanceEntity, _unit.equipments);
+            UpdateEquipmentSlots(_unit.equipments);
         }
 
         private async UniTask SetSkeleton(string dataPath)
@@ -151,5 +164,9 @@ namespace RGLabs.Lobby.UI.Popup
 
             return dic;
         }
+
+        private void OnLevelUp() => Context.popupManager.Open<PopupLevelUp>(_unit).Forget();
+
+        private void OnUpgrade()=> Context.popupManager.Open<PopupRateUp>(_unit).Forget();
     }
 }

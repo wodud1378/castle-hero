@@ -80,6 +80,8 @@ namespace RGLabs.Data.Model
             
         [DataField("Character_Property_Def")]
         public int elementalDef;
+
+        public int soulItemId;
         
         public float size;
     }

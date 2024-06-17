@@ -32,6 +32,11 @@ namespace RGLabs.Network.Model
         public int Quantity { get; set; }
 
         public int consumeOption;
+
+        public ConsumableItem(int itemId) : this()
+        {
+            ItemId = itemId;
+        }
     }
 
     [Serializable]

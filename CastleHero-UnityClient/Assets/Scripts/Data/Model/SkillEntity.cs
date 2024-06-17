@@ -27,16 +27,16 @@ namespace RGLabs.Data.Model
         [DataField("Stack", 4)]
         public int stack;
       
-        [DataField("Status")]
+        [DataField("Status", 0)]
         public int[] stats;
         
-        [DataField("Type")]
+        [DataField("Type", 0)]
         public float[] values;
 
         [DataField("Target")] 
         public int[] targetQty;
         
-        [DataField("Grp")]
+        [DataField("Grp", 5)]
         public int[] groups;
 
         [DataField("Effect")] 

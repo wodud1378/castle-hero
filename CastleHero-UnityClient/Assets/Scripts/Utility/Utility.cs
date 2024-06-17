@@ -71,6 +71,8 @@ namespace RGLabs.Utility
         private static readonly Color Positive = Color.green;
         private static readonly Color Negative = Color.red;
 
+        public static string CurrencyText(this int value) => value.ToString("N0");
+        
         public static string WithPositiveColor(this string text) => text.WithColor(Positive);
         public static string WithNegativeColor(this string text) => text.WithColor(Negative);
         

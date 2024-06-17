@@ -1176,7 +1176,7 @@ GameObject:
   - component: {fileID: 6867661985450409182}
   - component: {fileID: 5137496396990291365}
   m_Layer: 5
-  m_Name: Button_Sell
+  m_Name: Button_Upgrade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3852,7 +3852,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5244315701040765572}
   - component: {fileID: 9070998211277495439}
-  - component: {fileID: 9179979980583661778}
   - component: {fileID: 5579423062182619302}
   m_Layer: 5
   m_Name: Popup_CharInfo
@@ -3891,36 +3890,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6135690349294063676}
   m_CullTransparentMesh: 1
---- !u!114 &9179979980583661778
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6135690349294063676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.627451}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!114 &5579423062182619302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3944,7 +3913,7 @@ MonoBehaviour:
   - {fileID: 4674123968262444038}
   - {fileID: 5375219684954042510}
   _skeleton: {fileID: 388369197376655691}
-  _exp: {fileID: 4232870145102894419}
+  _level: {fileID: 7788084448690515158}
   _statusTexts:
   - {fileID: 3799198534493547799}
   - {fileID: 8967571420347485475}
@@ -3959,6 +3928,8 @@ MonoBehaviour:
   - {fileID: 6463055229487450366}
   - {fileID: 6155355594057052343}
   - {fileID: 534277958158224762}
+  _levelUp: {fileID: 4794964850755981218}
+  _upgrade: {fileID: 6867661985450409182}
 --- !u!1 &6204712038852205772
 GameObject:
   m_ObjectHideFlags: 0
@@ -5420,7 +5391,7 @@ GameObject:
   - component: {fileID: 4794964850755981218}
   - component: {fileID: 7065918808785839795}
   m_Layer: 5
-  m_Name: Button_Release
+  m_Name: Button_LevelUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5961,7 +5932,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3038311105388316889}
-  - component: {fileID: 4232870145102894419}
+  - component: {fileID: 7788084448690515158}
   m_Layer: 5
   m_Name: EXP
   m_TagString: Untagged
@@ -5992,7 +5963,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -25}
   m_SizeDelta: {x: 680, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &4232870145102894419
+--- !u!114 &7788084448690515158
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6001,12 +5972,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 8829840680080834450}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1866d68694d044ca86c9bae1be4ecb79, type: 3}
+  m_Script: {fileID: 11500000, guid: 128343d81de94f0fad7fe771c35525ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _lvColor: {r: 0.9490197, g: 0.69803923, b: 0, a: 1}
+  _lvText: {fileID: 8532521052709389175}
   _gauge: {fileID: 1497372754374768633}
   _percentage: {fileID: 4362885440222498114}
   _value: {fileID: 7757838817900803983}
+  _transitionTime: 0.1
+  _overrideGaugeSprite: {fileID: 21300000, guid: c46c65208c43375459ce1af9880ea68b, type: 3}
 --- !u!1 &8842017281895142288
 GameObject:
   m_ObjectHideFlags: 0

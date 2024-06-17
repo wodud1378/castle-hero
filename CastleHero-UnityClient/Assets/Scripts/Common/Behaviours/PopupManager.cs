@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Utility;
@@ -100,7 +98,8 @@ namespace RGLabs.Common.Behaviours
 
         private void OnPopupCollectionChanged(ReactiveCollection<PopupBase> collection)
         {
-            _dim.transform.SetSiblingIndex(_popups.Count);
+            _dim.gameObject.SetActive(collection.Count > 0);
+            _dim.transform.SetSiblingIndex(_popups.Count - 1);
         }
     }
 }

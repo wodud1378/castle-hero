@@ -11,7 +11,7 @@ namespace RGLabs.Common.UI
             if (!Storage.db.units.TryFind(data.id, out var entity))
                 return UniTask.CompletedTask;
             
-            return slot.InitAsync(data, entity);
+            return slot.Init(data, entity);
         }
     }
 }

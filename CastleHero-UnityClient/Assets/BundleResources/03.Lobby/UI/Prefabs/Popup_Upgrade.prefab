@@ -1571,13 +1571,13 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5244315701040765572}
+  m_Father: {fileID: 5825543834737164325}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -200, y: -730}
+  m_AnchoredPosition: {x: -20, y: -20}
   m_SizeDelta: {x: 80, y: 80}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 1, y: 1}
 --- !u!222 &4761698863544450602
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2015,6 +2015,7 @@ RectTransform:
   - {fileID: 6341011377021745468}
   - {fileID: 2638370946807906197}
   - {fileID: 4752960365187306867}
+  - {fileID: 6751651833887448805}
   m_Father: {fileID: 5244315701040765572}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -2069,8 +2070,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5244315701040765572}
-  - component: {fileID: 9070998211277495439}
-  - component: {fileID: 9179979980583661778}
+  - component: {fileID: 1284938363507258083}
   m_Layer: 5
   m_Name: Popup_Upgrade
   m_TagString: Untagged
@@ -2092,7 +2092,6 @@ RectTransform:
   m_Children:
   - {fileID: 5125299971327640313}
   - {fileID: 5825543834737164325}
-  - {fileID: 6751651833887448805}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2100,15 +2099,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &9070998211277495439
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6135690349294063676}
-  m_CullTransparentMesh: 1
---- !u!114 &9179979980583661778
+--- !u!114 &1284938363507258083
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2117,27 +2108,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 6135690349294063676}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: 0b9a630bd84d4826a27257560b8808e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.627451}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  _animator: {fileID: 0}
+  _close: {fileID: 2229213631922384869}
+  _stars:
+  - {fileID: 2482025810242073629}
+  - {fileID: 8573583174738274766}
+  - {fileID: 7593505629747461718}
+  - {fileID: 564338567132716858}
+  - {fileID: 8914216426891606773}
+  _unitSlot: {fileID: 685533172332585482}
+  _soulSlot: {fileID: 5890389502189836478}
+  _requireSoul: {fileID: 2662308221677747859}
+  _requireGold: {fileID: 935001383701076851}
+  _confirm: {fileID: 8836847270182427559}
 --- !u!1 &6293950933180312253
 GameObject:
   m_ObjectHideFlags: 0
@@ -2807,6 +2793,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 237675651658370466, guid: 2401a27730e387c4f93a0c4ba37d0dcd, type: 3}
   m_PrefabInstance: {fileID: 2273852470477836836}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5890389502189836478 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5634151350692399770, guid: 2401a27730e387c4f93a0c4ba37d0dcd, type: 3}
+  m_PrefabInstance: {fileID: 2273852470477836836}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34b6d78b90a642199ae25092911e0803, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8276690644587923019
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2817,7 +2814,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2239700490961799308, guid: 812703f21c5538e40842973ab81395c0, type: 3}
       propertyPath: m_Name
-      value: Portrait_Character
+      value: Slot_Portrait
       objectReference: {fileID: 0}
     - target: {fileID: 5995545489721487100, guid: 812703f21c5538e40842973ab81395c0, type: 3}
       propertyPath: m_Pivot.x
@@ -2904,6 +2901,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 812703f21c5538e40842973ab81395c0, type: 3}
+--- !u!114 &685533172332585482 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8889884129359242305, guid: 812703f21c5538e40842973ab81395c0, type: 3}
+  m_PrefabInstance: {fileID: 8276690644587923019}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52f5194e976c40adb0b518763431a140, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &2443416727887620279 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5995545489721487100, guid: 812703f21c5538e40842973ab81395c0, type: 3}
