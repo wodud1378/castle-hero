@@ -809,7 +809,7 @@ ParticleSystem:
           m_RotationOrder: 4
     arc:
       value: 180
-      mode: 0
+      mode: 3
       spread: 0
       speed:
         serializedVersion: 2
@@ -9735,6 +9735,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _children:
   - {fileID: 8209159452633372672}
+  _particles:
+  - {fileID: 7145295016233965724}
+  - {fileID: 488053365009630281}
+  - {fileID: 4456096420576132634}
+  - {fileID: 3696037942591395075}
+  - {fileID: 8223441624403361002}
+  - {fileID: 1941850212549270199}
+  - {fileID: 6256874771274985708}
+  - {fileID: 2640259586116811001}
   slot: 2
   duration: 1
 --- !u!1 &8287700018613489605
@@ -14696,9 +14705,29 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8fdfc05c1ce1be4abb3083857b5d10a, type: 3}
+--- !u!198 &1941850212549270199 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 5983644100769035462, guid: a8fdfc05c1ce1be4abb3083857b5d10a, type: 3}
+  m_PrefabInstance: {fileID: 5330286006467243633}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &2640259586116811001 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 7880434012516832904, guid: a8fdfc05c1ce1be4abb3083857b5d10a, type: 3}
+  m_PrefabInstance: {fileID: 5330286006467243633}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &3696037942591395075 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 8841142266747796338, guid: a8fdfc05c1ce1be4abb3083857b5d10a, type: 3}
+  m_PrefabInstance: {fileID: 5330286006467243633}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4416029240623443777 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8408248901612470576, guid: a8fdfc05c1ce1be4abb3083857b5d10a, type: 3}
+  m_PrefabInstance: {fileID: 5330286006467243633}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &6256874771274985708 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 2246197346662997661, guid: a8fdfc05c1ce1be4abb3083857b5d10a, type: 3}
   m_PrefabInstance: {fileID: 5330286006467243633}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &8209159452633372672 stripped
@@ -14712,3 +14741,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1d8502039904d84b6790c68146f8a83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!198 &8223441624403361002 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 4316544626691281563, guid: a8fdfc05c1ce1be4abb3083857b5d10a, type: 3}
+  m_PrefabInstance: {fileID: 5330286006467243633}
+  m_PrefabAsset: {fileID: 0}

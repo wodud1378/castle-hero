@@ -810,7 +810,7 @@ ParticleSystem:
           m_RotationOrder: 4
     arc:
       value: 180
-      mode: 0
+      mode: 3
       spread: 0
       speed:
         serializedVersion: 2
