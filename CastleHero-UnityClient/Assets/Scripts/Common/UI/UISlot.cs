@@ -13,10 +13,21 @@ namespace RGLabs.Common.UI
     {
         public event Action<UISlot> OnClick;
 
+        public Graphic rayTarget;
         public Image icon;
         public TMP_Text label;
 
         private CancellationTokenSource _ctSource;
+
+        public bool Clickable
+        {
+            get => rayTarget != null && rayTarget.enabled;
+            set
+            {
+                if(rayTarget != null)
+                    rayTarget.enabled = value;
+            }
+        }
 
         public async UniTask Init(string spritePath, string text = "")
         {
@@ -61,5 +72,11 @@ namespace RGLabs.Common.UI
         }
 
         public void OnPointerClick(PointerEventData eventData) => OnClick?.Invoke(this);
+
+        private void OnValidate()
+        {
+            if(rayTarget == null)
+                rayTarget = GetComponent<Graphic>();
+        }
     }
 }

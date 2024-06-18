@@ -151,6 +151,13 @@ namespace RGLabs.Lobby.UI
                 return await _factory.Create(slot.Info, slot.transform.position);
         }
 
+        protected override UniTask SetItem(UICharacterSlot slot, UnitInfo data)
+        {
+            slot.Clickable = false;
+            
+            return base.SetItem(slot, data);
+        }
+
         private void OnDestroy()
         {
             Destroy(_formation.gameObject);
