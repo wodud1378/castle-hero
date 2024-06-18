@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using RGLabs.Common;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
+using UniRx;
 using UnityEngine;
 
 namespace RGLabs.Unit.Finding
@@ -9,21 +10,22 @@ namespace RGLabs.Unit.Finding
     public class Finder
     {
         private static readonly DetectionFactory DetectionFactory = new();
-        
         private static readonly Dictionary<Collider2D, UnitBehaviour> CachedUnits = new();
 
         public List<UnitBehaviour> Found { get; } = new();
 
-        public IDetection detection;
+        public UnitBehaviour Override => _overrides.Count > 0 ? _overrides[^1] : null;
+        
+        private readonly List<UnitBehaviour> _overrides = new();
 
-        public Finder() { }
+        public readonly IDetection detection;
 
-        protected Finder(IDetection detection)
+        private Finder(IDetection detection)
         {
             this.detection = detection;
         }
 
-        protected virtual bool OnUpdate(int found)
+        private bool OnUpdate(int found)
         {
             int added = 0;
             for (int i = 0; i < found; ++i)
@@ -50,7 +52,22 @@ namespace RGLabs.Unit.Finding
 
         public void Clear() => Found.Clear();
 
-        protected bool TryGetUnit(Collider2D collider, out UnitBehaviour unit)
+        public void RegisterOverride(UnitBehaviour unit)
+        {
+            _overrides.Add(unit);
+
+            unit.OnDead += ReleaseOverride;
+        }
+
+        public void ReleaseOverride(UnitBehaviour unit)
+        {
+            if (_overrides.Contains(unit))
+                _overrides.Remove(unit);
+            
+            unit.OnDead -= ReleaseOverride;
+        }
+
+        private bool TryGetUnit(Collider2D collider, out UnitBehaviour unit)
         {
             if (!CachedUnits.TryGetValue(collider, out unit))
             {
@@ -63,18 +80,16 @@ namespace RGLabs.Unit.Finding
             return unit.IsValid();
         }
 
-        public static Finder Create(IDetection.Option option, int maxTarget, Collider2D[] buffer = null) => Create<Finder>(option, maxTarget, buffer);
-
-        public static T Create<T>(IDetection.Option option, int maxTarget, Collider2D[] buffer = null) where T : Finder, new()
+        public static Finder Create(IDetection.Option option, int maxTarget, Collider2D[] buffer = null)
         {
             IDetection detection = DetectionFactory.GetDetection(option);
-            
+
             buffer ??= new Collider2D[Constants.BufferSize];
             detection.Buffer = buffer;
             detection.MaxTarget = maxTarget == 0 ? Constants.BufferSize : maxTarget;
 
-            var t = new T { detection = detection };
-            return t;
+            var finder = new Finder(detection);
+            return finder;
         }
     }
 }

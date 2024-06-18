@@ -3,28 +3,29 @@ using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Finding;
 using RGLabs.Utility;
+using UnityEngine;
 
 namespace RGLabs.Unit.Components
 {
-
     public class Attack
     {
         public readonly Finder finder;
-        
+
         private readonly UnitBehaviour _owner;
         private readonly RenderController _renderController;
         private readonly AnimationEvents _animationEvents;
-        
+
         public bool IsRunning { get; private set; }
 
         public string projectile;
 
         private UnitBehaviour _target;
 
-        public Attack(UnitBehaviour owner, Finder finder, RenderController renderController, AnimationEvents animationEvents)
+        public Attack(UnitBehaviour owner, Finder finder, RenderController renderController,
+            AnimationEvents animationEvents)
         {
             _owner = owner;
-            
+
             this.finder = finder;
 
             _renderController = renderController;
@@ -40,15 +41,21 @@ namespace RGLabs.Unit.Components
         public bool IsAbleToAttack()
         {
             float range = _owner.status.atkRange;
+            if (finder.Override.IsValid())
+            {
+                float distance = finder.Override.position.DistanceTo(_owner.position);
+                return distance <= Mathf.Pow(range, 2f);
+            }
+
             finder.detection.SetRange(range, range);
-            
+
             if (!finder.Update(_owner.position))
                 return false;
 
             _target = !_target.IsValid() ? finder.Found[0] : finder.Found.Contains(_target) ? _target : finder.Found[0];
             return true;
         }
-        
+
         public void Run()
         {
             _renderController.SetAnimation(UnitCore.AnimationsHash[UnitCore.States.Attack]);
@@ -59,25 +66,21 @@ namespace RGLabs.Unit.Components
 
         private void ProcessHit()
         {
-            var targets = finder.Found;
-            foreach (var target in targets)
+            if (!_target.IsValid())
+                return;
+
+            var data = new AtkEvent
             {
-                if (!target.IsValid())
-                    continue;
+                Type = DamageType.Normal,
+                From = _owner,
+                To = _target,
+                Amount = _owner.status.atk
+            };
 
-                var data = new AtkEvent
-                {
-                    Type = DamageType.Normal,
-                    From = _owner,
-                    To = target,
-                    Amount = _owner.status.atk
-                };
+            data.Publish();
 
-                data.Publish();
-                
-                if(!string.IsNullOrEmpty(projectile))
-                    Effect.Play(projectile, target, _owner.position);
-            }
+            if (!string.IsNullOrEmpty(projectile))
+                Effect.Play(projectile, _target, _owner.position);
         }
 
         private void OnReleaseAttack() => IsRunning = false;
