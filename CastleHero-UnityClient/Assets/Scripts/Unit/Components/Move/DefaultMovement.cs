@@ -49,13 +49,24 @@ namespace RGLabs.Unit.Components.Move
         public bool TryMoveToTarget()
         {
             float range = _owner.status.moveRange;
+            var overrideUnit = Finder.Override;
+            if (overrideUnit.IsValid())
+            {
+                CurrentTarget = overrideUnit;
+                StartMove(CurrentTarget.position);
+                return true;
+            }
+            
             Finder.detection.SetRange(range, range);
 
             if (!Finder.Update(_owner.position))
                 return false;
 
-            CurrentTarget = !_currentTarget.IsValid() ? Finder.Found[0] :
-                Finder.Found.Contains(_currentTarget) ? _currentTarget : Finder.Found[0];
+            CurrentTarget = !_currentTarget.IsValid() 
+                ? Finder.Found[0] 
+                : Finder.Found.Contains(_currentTarget) 
+                    ? _currentTarget 
+                    : Finder.Found[0];
             
             StartMove(CurrentTarget.position);
             return true;

@@ -41,10 +41,14 @@ namespace RGLabs.Unit.Components
         public bool IsAbleToAttack()
         {
             float range = _owner.status.atkRange;
-            if (finder.Override.IsValid())
+            var overrideUnit = finder.Override;
+            if (overrideUnit.IsValid())
             {
-                float distance = finder.Override.position.DistanceTo(_owner.position);
-                return distance <= Mathf.Pow(range, 2f);
+                float distance = overrideUnit.position.DistanceTo(_owner.position);
+                bool inRange = distance <= Mathf.Pow(range, 2f);
+                _target = inRange ? overrideUnit : null;
+
+                return inRange;
             }
 
             finder.detection.SetRange(range, range);
@@ -52,7 +56,12 @@ namespace RGLabs.Unit.Components
             if (!finder.Update(_owner.position))
                 return false;
 
-            _target = !_target.IsValid() ? finder.Found[0] : finder.Found.Contains(_target) ? _target : finder.Found[0];
+            _target = !_target.IsValid() 
+                ? finder.Found[0] 
+                : finder.Found.Contains(_target) 
+                    ? _target
+                    : finder.Found[0];
+            
             return true;
         }
 
