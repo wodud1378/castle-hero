@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using RGLabs.Unit.Behaviours;
 using Spine.Unity;
@@ -8,6 +10,61 @@ namespace RGLabs.Editor
 {
     public static class UnitHelper
     {
+        [MenuItem("GameObject/RGLabs/Animation Events Correction")]
+        public static void AnimationEventsCorrection()
+        {
+            var selection = Selection.gameObjects[0];
+            if (!selection.TryGetComponent(out UnitBehaviour unit))
+                return;
+            
+            var spine = unit.GetComponentInChildren<SkeletonMecanim>();
+            if (spine == null)
+                return;
+            
+            var events = spine.GetComponent<AnimationEvents>();
+            if (events == null)
+                return;
+
+            var animator = spine.GetComponent<Animator>();
+            var controller = animator.runtimeAnimatorController;
+            var clips = controller.animationClips;
+
+            foreach (var clip in clips)
+            { 
+                string begin;
+                string end;
+                if (clip.name.Contains("Attack"))
+                {
+                    begin = nameof(events.OnHit);
+                    end = nameof(events.OnReleaseAttack);
+                }
+                else if (clip.name.Contains("Skill"))
+                {
+                    begin = nameof(events.OnExecuteSkill);
+                    end = nameof(events.OnReleaseSkill);
+                }
+                else
+                    continue;
+
+                var clipEvents = AnimationUtility
+                    .GetAnimationEvents(clip)
+                    .GroupBy(ev => ev.time)
+                    .Select(group => group.First())
+                    .ToArray();
+
+                if (clipEvents.Length != 2)
+                {
+                    Debug.LogError($"{clip.length} 클립의 이벤트 개수가 잘못되었습니다.");
+                    continue;
+                }
+
+                clipEvents[0].functionName = begin;
+                clipEvents[1].functionName = end;
+                
+                AnimationUtility.SetAnimationEvents(clip, clipEvents);
+            }
+        }
+        
         [MenuItem("GameObject/RGLabs/Attach Effect Body")]
         public static void AttachEffectBody()
         {
@@ -38,6 +95,9 @@ namespace RGLabs.Editor
             if (!selection.TryGetComponent(out UnitBehaviour unit))
                 return;
 
+            if (unit.Type == UnitBehaviour.BehaviourType.Barricade)
+                return;
+            
             var spine = unit.GetComponentInChildren<SkeletonMecanim>();
             if (spine == null)
                 return;

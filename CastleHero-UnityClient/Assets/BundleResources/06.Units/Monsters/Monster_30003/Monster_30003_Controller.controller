@@ -129,21 +129,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0
-    functionName: Skill
-    data: SpineEvent
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 1
-  - time: 0
     functionName: OnExecuteSkill
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 1
-  - time: 1.3333334
-    functionName: Release
     data: SpineEvent
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
@@ -151,7 +137,7 @@ AnimationClip:
     messageOptions: 1
   - time: 1.3333334
     functionName: OnReleaseSkill
-    data: 
+    data: SpineEvent
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
@@ -568,21 +554,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.36666667
-    functionName: Hit
-    data: SpineEvent
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 1
-  - time: 0.36666667
     functionName: OnHit
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 1
-  - time: 1.3333334
-    functionName: Release
     data: SpineEvent
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
@@ -590,7 +562,7 @@ AnimationClip:
     messageOptions: 1
   - time: 1.3333334
     functionName: OnReleaseAttack
-    data: 
+    data: SpineEvent
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
