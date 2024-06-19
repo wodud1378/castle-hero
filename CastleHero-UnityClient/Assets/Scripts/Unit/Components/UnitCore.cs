@@ -141,7 +141,6 @@ namespace RGLabs.Unit.Components
 
             lookDirection = new();
             lookDirection
-                .ThrottleFrame(5)
                 .Subscribe(UpdateLookDirection)
                 .AddTo(this.owner);
         }
@@ -155,6 +154,11 @@ namespace RGLabs.Unit.Components
 
         public void SetData(UnitInfo info, UnitEntity data, UnitBalanceEntity balance)
         {
+            for (var i = 0; i < restrictions.Length; i++)
+            {
+                restrictions[i] = 0f;
+            }
+            
             status.Init(data);
             
             elemental.atkType = (Elemental.Type)data.elementalAtk;

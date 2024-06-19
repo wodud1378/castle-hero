@@ -17,7 +17,7 @@ namespace RGLabs.Unit.Skill
             
             float amount = GetAmount(type, value);
             PublishAtk(aroundCenter.center, DamageType.Normal, amount);
-            foreach (var unit in aroundCenter.around)
+            foreach (var unit in aroundCenter.units)
             {
                 PublishAtk(unit, DamageType.Normal, amount);
             }

@@ -49,7 +49,7 @@ namespace RGLabs.Common.UI
         public void Set(int lv, int exp)
         {
             _lv.Value = lv;
-            _exp.Value = exp;
+            _exp.Value = exp; 
         }
         
         public void SetOverride(int nextLv, int exp)

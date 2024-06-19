@@ -20,7 +20,7 @@ namespace RGLabs.Unit.Skill
             float totalDamage = 0f;
             float amount = GetAmount(type, value);
             PlayEffect(Step.Atk, aroundCenter.center);
-            foreach (var unit in aroundCenter.around)
+            foreach (var unit in aroundCenter.units)
             {
                 totalDamage += amount;
                 PublishAtk(unit, DamageType.Normal, amount);

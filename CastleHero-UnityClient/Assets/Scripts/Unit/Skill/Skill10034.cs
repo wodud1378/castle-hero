@@ -10,7 +10,7 @@ namespace RGLabs.Unit.Skill
                 return;
 
             TryGetEffectPrefab(0, out string effect);
-            foreach (var unit in aroundCenter.around)
+            foreach (var unit in aroundCenter.units)
             {
                 PublishBuff(unit, type, value, Data.duration, true, effect);
             }

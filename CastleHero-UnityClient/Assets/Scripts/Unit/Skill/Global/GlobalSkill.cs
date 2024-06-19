@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
@@ -93,7 +94,7 @@ namespace RGLabs.Unit.Skill.Global
             var units = _bound.UnitsInBound(position, default);
             units.ForEach(action);
 
-            Effect.Play(_centerEffect, position);
+            Effect.Play(_centerEffect, position).Forget();
             
             coolTime.StartWaiting();
         }

@@ -32,7 +32,7 @@ namespace RGLabs.Unit.Skill
                 PlayEffect(0, center.position);
             }
             
-            foreach (var unit in aroundCenter.around)
+            foreach (var unit in aroundCenter.units)
             {
                 onEnemy.Invoke(unit);
             }

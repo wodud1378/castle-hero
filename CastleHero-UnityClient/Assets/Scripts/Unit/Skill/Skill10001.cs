@@ -29,7 +29,7 @@ namespace RGLabs.Unit.Skill
                 return;
 
             PlayEffect(0, aroundCenter.center);
-            foreach (var unit in aroundCenter.around)
+            foreach (var unit in aroundCenter.units)
             {
                 if (unit.IsAlley(Owner))
                     onAlley?.Invoke(unit);

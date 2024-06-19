@@ -19,7 +19,7 @@ namespace RGLabs.Unit.Skill
             PlayEffect(0, center.position);
 
             float amount = GetAmount(type, value);
-            foreach (var unit in aroundCenter.around)
+            foreach (var unit in aroundCenter.units)
             {
                 PublishAtk(unit, DamageType.Normal, amount);
             }

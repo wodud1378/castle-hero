@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using PolyNav;
 using RGLabs.Common;
 using RGLabs.Common.Behaviours;
@@ -10,7 +11,6 @@ using RGLabs.Utility;
 using UniRx;
 using UnityEditor;
 using UnityEngine;
-using Random = System.Random;
 using UnitInfo = RGLabs.Network.Model.UnitInfo;
 
 namespace RGLabs.Unit.Behaviours
@@ -102,8 +102,8 @@ namespace RGLabs.Unit.Behaviours
             
             if (Core.Team == UnitCore.Teams.Monster)
             {
-                Effect.Play(Constants.DeadEffect, position);
-                Effect.Play(Constants.ManaDropEffect, position);
+                Effect.Play(Constants.DeadEffect, position).Forget();
+                Effect.Play(Constants.ManaDropEffect, position).Forget();
                 
                 // int 랜덤은 맥스값 - 1, 가독성을 위해 +1.
                 Storage.inGameRepository.mana.Value += UnityEngine.Random.Range(3, 10 + 1);

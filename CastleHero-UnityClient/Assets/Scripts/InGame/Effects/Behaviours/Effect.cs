@@ -58,6 +58,8 @@ namespace RGLabs.InGame.Effects.Behaviours
 
             foreach (var child in _children)
                 child.Stop();
+            
+            DestroySelf();
         }
 
         public void SetTarget(UnitBehaviour unit)
@@ -85,7 +87,7 @@ namespace RGLabs.InGame.Effects.Behaviours
                 return;
 
             _isRunning = false;
-            DestroySelf();
+            Stop();
         }
 
         private void SetParticleActive(bool isActive)
@@ -117,35 +119,50 @@ namespace RGLabs.InGame.Effects.Behaviours
             }
         }
 
-        public static async void Play(string prefab, Vector2 position, Vector2 startAt = default)
+        public static async UniTask<IEffect> Play(string prefab, Vector2 position, Vector2 startAt = default)
         {
             var effect = await GetEffect(prefab);
             if (effect == null)
-                return;
+                return null;
 
             effect.SetTarget(position);
             effect.Run(startAt);
+            return effect;
         }
 
-        public static async void Play(string prefab, UnitBehaviour unit, Vector2 startAt = default)
+        public static async UniTask<IEffect> Play(string prefab, UnitBehaviour unit, Vector2 startAt = default)
         {
             var effect = await GetEffect(prefab);
             if (effect == null)
-                return;
+                return null;
 
             effect.SetTarget(unit);
             effect.Run(startAt);
+            return effect;
         }
 
-        public static async void Play(string prefab, Vector2 position, float duration)
+        public static async UniTask<IEffect> Play(string prefab, Vector2 position, float duration)
         {
             var effect = await GetEffect(prefab);
             if (effect == null)
-                return;
+                return null;
 
             effect.Duration = duration;
             effect.SetTarget(position);
             effect.Run();
+            return effect;
+        }
+        
+        public static async UniTask<IEffect> Play(string prefab, UnitBehaviour unit, float duration)
+        {
+            var effect = await GetEffect(prefab);
+            if (effect == null)
+                return null;
+
+            effect.Duration = duration;
+            effect.SetTarget(unit);
+            effect.Run();
+            return effect;
         }
 
         private static async UniTask<IEffect> GetEffect(string prefab)

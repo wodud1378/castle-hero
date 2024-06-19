@@ -28,7 +28,7 @@ namespace RGLabs.Unit.Skill
             if (TryGetStatusParameter(Step.BoundAtk, out type, out value))
             {
                 float amount = GetAmount(type, value);
-                foreach (var unit in aroundCenter.around)
+                foreach (var unit in aroundCenter.units)
                 {
                     PublishAtk(unit, DamageType.Normal, amount);
                 }

@@ -79,7 +79,6 @@ namespace RGLabs.Lobby.UI.Popup
                 ItemId = soulItemId,
                 consumeOption = (int)ConsumeOption.Soul
             };
-
             
             for (int i = 0; i < _stars.Length; ++i)
             {
@@ -97,8 +96,12 @@ namespace RGLabs.Lobby.UI.Popup
                     .From(0f)
                     .SetLoops(-1, LoopType.Yoyo);
             }
+
+            string text = $"{item.Quantity}/{rateEntity.soul}";
+            _requireSoul.text = item.Quantity >= rateEntity.soul
+                ? text.WithColor(Color.white)
+                : text.WithNegativeColor();
             
-            _requireSoul.text = $"{item.Quantity}/{rateEntity.soul}"; 
             _requireGold.text = rateEntity.gold.CurrencyText();
             
             var unitTask = _unitSlot.Init(unitInfo, unitEntity);

@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using RGLabs.Common;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
+using RGLabs.Unit.Components;
 using RGLabs.Unit.Skill.Components;
 using RGLabs.Utility;
 using UnityEngine;
@@ -32,7 +34,7 @@ namespace RGLabs.Unit.Skill
         protected struct AroundCenter
         {
             public UnitBehaviour center;
-            public IEnumerable<UnitBehaviour> around;
+            public IEnumerable<UnitBehaviour> units;
             public Vector2 forward;
         }
 
@@ -76,7 +78,7 @@ namespace RGLabs.Unit.Skill
 
             aroundCenter.center = centerUnit;
             aroundCenter.forward = forward;
-            aroundCenter.around = around;
+            aroundCenter.units = around;
             return true;
         }
 
@@ -125,6 +127,18 @@ namespace RGLabs.Unit.Skill
             bool isMultiplier, string effect = "")
         {
             GetStatusEffectEvent(unit, type, amount, duration, false, isMultiplier, effect).Publish();
+        }
+
+        protected void PublishRestriction(UnitBehaviour unit, UnitCore.Restrictions type, float duration, string effect = "")
+        {
+            new RestrictionEvent
+            {
+                From = Owner,
+                To = unit,
+                Type = UnitCore.Restrictions.Move,
+                Duration = duration,
+                Effect = effect,
+            }.Publish();
         }
 
         private StatusEffectEvent GetStatusEffectEvent(UnitBehaviour unit, Status.Type type,
@@ -241,7 +255,7 @@ namespace RGLabs.Unit.Skill
             if (!index.IsValidIndex(Data.effects))
                 return;
 
-            Effect.Play(Data.effects[index], position);
+            Effect.Play(Data.effects[index], position).Forget();
         }
 
         protected void PlayEffect(int index, UnitBehaviour target)
@@ -249,7 +263,7 @@ namespace RGLabs.Unit.Skill
             if (!index.IsValidIndex(Data.effects))
                 return;
 
-            Effect.Play(Data.effects[index], target);
+            Effect.Play(Data.effects[index], target).Forget();
         }
     }
 }

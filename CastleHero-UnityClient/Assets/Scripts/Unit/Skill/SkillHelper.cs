@@ -23,6 +23,8 @@ namespace RGLabs.Unit.Skill
                 case 10004: buildMethod = Build10004; break;
                 case 10006: buildMethod = Build10006; break;
                 case 10007: buildMethod = Build10007; break;
+                case 10010: buildMethod = Build10010; break;
+                case 10011: buildMethod = Build10011; break;
                 case 10013: buildMethod = Build10013; break;
                 case 10016: buildMethod = Build10016; break;
                 case 10021: buildMethod = Build10021; break;
@@ -80,6 +82,22 @@ namespace RGLabs.Unit.Skill
             return builder
                 .SetTargeting(Targeting.Self, 1)
                 .SetBound(IDetection.Option.Circle, Targeting.Enemy, 0)
+                .BuildActiveSkill();
+        }
+        
+        private static ISkill Build10010(SkillBuilder builder)
+        {
+            return builder
+                .SetTargeting(Targeting.Self, 1)
+                .SetBound(IDetection.Option.Circle, Targeting.Enemy, 0)
+                .BuildActiveSkill();
+        }
+        
+        private static ISkill Build10011(SkillBuilder builder)
+        {
+            return builder
+                .SetTargeting(Targeting.Self, 1)
+                .SetBound(IDetection.Option.Arc, Targeting.Enemy, 0)
                 .BuildActiveSkill();
         }
 

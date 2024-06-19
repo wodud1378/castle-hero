@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.Utility;
 using UniRx;
@@ -48,7 +49,7 @@ namespace RGLabs.Unit.Skill
 
             TryGetEffectPrefab(Effects.ShieldTarget, out string eff);
             
-            var targets = aroundCenter.around.Where(x => x.Data.team == group);
+            var targets = aroundCenter.units.Where(x => x.Data.team == group);
             float amount = GetAmount(type, value);
             foreach (var target in targets)
             {
@@ -69,12 +70,12 @@ namespace RGLabs.Unit.Skill
 
             if (TryGetEffectPrefab(Effects.HealTarget, out string eff))
             {
-                foreach (var target in aroundCenter.around)
+                foreach (var target in aroundCenter.units)
                 {
                     if (!target.IsValid())
                         continue;
                     
-                    Effect.Play(eff, target);
+                    Effect.Play(eff, target).Forget();
                 }   
             }
         }
@@ -92,7 +93,7 @@ namespace RGLabs.Unit.Skill
             TryGetEffectPrefab(Effects.HealTarget, out string eff);
             
             float amount = GetAmount(type, value);
-            foreach (var target in aroundCenter.around)
+            foreach (var target in aroundCenter.units)
             {
                 if (!target.IsValid())
                     continue;

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
@@ -9,6 +11,12 @@ namespace RGLabs.Unit.Components
 {
     public class Attack
     {
+        public class Additional
+        {
+            public string effect;
+            public float damage;
+        }
+        
         public readonly Finder finder;
 
         private readonly UnitBehaviour _owner;
@@ -18,7 +26,7 @@ namespace RGLabs.Unit.Components
         public bool IsRunning { get; private set; }
 
         public string projectile;
-
+        
         private UnitBehaviour _target;
 
         public Attack(UnitBehaviour owner, Finder finder, RenderController renderController,
@@ -89,7 +97,7 @@ namespace RGLabs.Unit.Components
             data.Publish();
 
             if (!string.IsNullOrEmpty(projectile))
-                Effect.Play(projectile, _target, _owner.position);
+                Effect.Play(projectile, _target, _owner.position).Forget();
         }
 
         private void OnReleaseAttack() => IsRunning = false;

@@ -30,20 +30,22 @@ namespace RGLabs.Unit.Behaviours
                 Effect.Slot.Bottom => bottom,
                 _ => _fallBack
             };
-            
-            var tr = effect.transform;
-            tr.position = parent.position;
-            tr.localScale = parent.localScale;
-            
-            var subscription = effect
-                .UpdateAsObservable()
-                .Subscribe(_ => tr.position = parent.position)
-                .AddTo(this);
 
-            effect
-                .OnDisableAsObservable()
-                .Subscribe(_=> subscription.Dispose())
-                .AddTo(this);
+            var inverse = 1f / transform.parent.localScale.y;
+            var tr = effect.transform;
+            tr.SetParent(parent);
+            tr.position = parent.position;
+            tr.localScale = parent.localScale * inverse;
+            
+            // var subscription = effect
+            //     .UpdateAsObservable()
+            //     .Subscribe(_ => tr.position = parent.position)
+            //     .AddTo(this);
+            //
+            // effect
+            //     .OnDisableAsObservable()
+            //     .Subscribe(_=> subscription.Dispose())
+            //     .AddTo(this);
             
             _attachments.Add(effect);
         }

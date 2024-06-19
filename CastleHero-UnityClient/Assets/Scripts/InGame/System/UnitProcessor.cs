@@ -121,7 +121,7 @@ namespace RGLabs.InGame.System
             else
                 adjust.Decrease(ev.Amount);
 
-            PlayEffect(ev);
+            PlayEffect(ev, ev.Duration);
         }
         
         private void OnReceiveRestrictionEvent(RestrictionEvent ev)
@@ -132,7 +132,7 @@ namespace RGLabs.InGame.System
 
             to.Core.restrictions[(int)ev.Type] += ev.Duration;
             
-            PlayEffect(ev);
+            PlayEffect(ev, ev.Duration);
         }
 
         private void OnCreatedRecover(WaitRecover recover)
@@ -143,15 +143,18 @@ namespace RGLabs.InGame.System
 
             recover.Bind(collection, subscription);
             
-            Effect.Play(Constants.RecoverEffect, recover.behaviour.position, recover.time);
+            Effect.Play(Constants.RecoverEffect, recover.behaviour.position, recover.time).Forget();
         }
 
-        private void PlayEffect(IUnitEvent ev)
+        private void PlayEffect(IUnitEvent ev, float duration = 0f)
         {
             if (string.IsNullOrEmpty(ev.Effect))
                 return;
 
-            Effect.Play(ev.Effect, ev.To);
+            if(duration == 0f)
+                Effect.Play(ev.Effect, ev.To).Forget();
+            else
+                Effect.Play(ev.Effect, ev.To, duration).Forget();
         }
 
         private IDisposable ReserveRecover(WaitRecover recover)
@@ -180,7 +183,7 @@ namespace RGLabs.InGame.System
             var behaviour = recover.behaviour;
             behaviour.position = recover.position;
             
-            Effect.Play(Constants.SpawnEffect, behaviour.transform.position);
+            Effect.Play(Constants.SpawnEffect, behaviour.transform.position).Forget();
 
             for (int i = 0; i < 6; ++i)
             {

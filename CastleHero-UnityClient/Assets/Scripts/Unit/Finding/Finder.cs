@@ -50,7 +50,17 @@ namespace RGLabs.Unit.Finding
             return OnUpdate(found);
         }
 
-        public void Clear() => Found.Clear();
+        public void Clear()
+        {
+            Found.Clear();
+
+            foreach (var unit in _overrides)
+            {
+                ReleaseOverride(unit);
+            }
+
+            _overrides.Clear();
+        }
 
         public void RegisterOverride(UnitBehaviour unit)
         {

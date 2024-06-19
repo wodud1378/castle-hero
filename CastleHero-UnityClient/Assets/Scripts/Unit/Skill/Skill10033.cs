@@ -1,6 +1,8 @@
+using RGLabs.InGame.System;
+
 namespace RGLabs.Unit.Skill
 {
-    public class Skill10025 : ActiveSkill
+    public class Skill10033 : ActiveSkill
     {
         protected override void OnExecute()
         {
@@ -8,14 +10,12 @@ namespace RGLabs.Unit.Skill
                 !TryUpdateAroundCenter(quantity) ||
                 !TryGetStatusParameter(0, out var type, out var value))
                 return;
-
-            TryGetEffectPrefab(1, out string eff);
             
             float amount = GetAmount(type, value);
+            PlayEffect(0, aroundCenter.center);
             foreach (var unit in aroundCenter.units)
             {
-                PlayEffect(0, unit);
-                PublishShield(unit, amount, 0f, eff);
+                PublishAtk(unit, DamageType.Normal, amount);
             }
         }
     }
