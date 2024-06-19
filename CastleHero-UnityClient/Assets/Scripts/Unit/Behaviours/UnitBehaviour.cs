@@ -128,12 +128,6 @@ namespace RGLabs.Unit.Behaviours
                 agent.slowingDistance = 0f;
                 agent.lookAheadDistance = 0f;
             }
-            
-            if (!gameObject.TryGetComponent(out CircleCollider2D collider))
-                return;
-                
-            agent.avoidRadius = collider.radius;
-            agent.centerOffset = collider.offset;
         }
 
         private void OnDrawGizmosSelected()
