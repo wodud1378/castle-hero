@@ -1,3 +1,4 @@
+using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.InGame.System;
 
 namespace RGLabs.Unit.Skill
@@ -14,7 +15,13 @@ namespace RGLabs.Unit.Skill
 
             var target = Targeting.Targets[0]; 
             PublishAtk(target, DamageType.Normal, GetAmount(type, value));
-            PlayEffect(0, target);
+            if (TryGetEffectPrefab(0, out var effect))
+            {
+                Effect.Builder
+                    .StartBuild(effect)
+                    .To(target)
+                    .Run();
+            }
         }
     }
 }

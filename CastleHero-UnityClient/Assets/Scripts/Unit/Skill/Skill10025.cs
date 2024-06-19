@@ -1,3 +1,5 @@
+using RGLabs.InGame.Effects.Behaviours;
+
 namespace RGLabs.Unit.Skill
 {
     public class Skill10025 : ActiveSkill
@@ -14,7 +16,14 @@ namespace RGLabs.Unit.Skill
             float amount = GetAmount(type, value);
             foreach (var unit in aroundCenter.units)
             {
-                PlayEffect(0, unit);
+                if (TryGetEffectPrefab(0, out var effect))
+                {
+                    Effect.Builder
+                        .StartBuild(effect)
+                        .To(unit)
+                        .Run();
+                }
+                
                 PublishShield(unit, amount, 0f, eff);
             }
         }

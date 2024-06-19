@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Common;
 using RGLabs.Data;
 using RGLabs.Data.Model;
+using RGLabs.InGame.Effects;
 using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
@@ -30,7 +31,7 @@ namespace RGLabs.Unit.Skill
     }
 
     public abstract class SkillBase : ISkill
-    {
+    {   
         protected struct AroundCenter
         {
             public UnitBehaviour center;
@@ -242,28 +243,6 @@ namespace RGLabs.Unit.Skill
                 return true;
 
             return false;
-        }
-
-        protected void PlayEffect<T>(T index, Vector2 position) where T : Enum
-            => PlayEffect(Convert.ToInt32(index), position);
-
-        protected void PlayEffect<T>(T index, UnitBehaviour target) where T : Enum
-            => PlayEffect(Convert.ToInt32(index), target);
-
-        protected void PlayEffect(int index, Vector2 position)
-        {
-            if (!index.IsValidIndex(Data.effects))
-                return;
-
-            Effect.Play(Data.effects[index], position).Forget();
-        }
-
-        protected void PlayEffect(int index, UnitBehaviour target)
-        {
-            if (!index.IsValidIndex(Data.effects))
-                return;
-
-            Effect.Play(Data.effects[index], target).Forget();
         }
     }
 }

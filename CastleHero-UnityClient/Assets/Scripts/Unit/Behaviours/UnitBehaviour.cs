@@ -102,8 +102,8 @@ namespace RGLabs.Unit.Behaviours
             
             if (Core.Team == UnitCore.Teams.Monster)
             {
-                Effect.Play(Constants.DeadEffect, position).Forget();
-                Effect.Play(Constants.ManaDropEffect, position).Forget();
+                Effect.Builder.Run(Constants.DeadEffect, position);
+                Effect.Builder.Run(Constants.ManaDropEffect, position);
                 
                 // int 랜덤은 맥스값 - 1, 가독성을 위해 +1.
                 Storage.inGameRepository.mana.Value += UnityEngine.Random.Range(3, 10 + 1);

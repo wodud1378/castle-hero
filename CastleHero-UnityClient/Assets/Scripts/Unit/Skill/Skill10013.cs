@@ -1,3 +1,4 @@
+using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.InGame.System;
 
 namespace RGLabs.Unit.Skill
@@ -21,7 +22,13 @@ namespace RGLabs.Unit.Skill
             if (!TryGetStatusParameter(Step.SingleAtk, out var type, out var value))
             {
                 var center = aroundCenter.center;
-                PlayEffect(0, center.position);
+                if (TryGetEffectPrefab(0, out var effect))
+                {
+                    Effect.Builder
+                        .StartBuild(effect)
+                        .To(center.position)
+                        .Run();
+                }
                 PublishAtk(center, DamageType.Normal, GetAmount(type, value));    
             }
 

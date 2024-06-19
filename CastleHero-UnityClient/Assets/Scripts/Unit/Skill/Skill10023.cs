@@ -49,7 +49,7 @@ namespace RGLabs.Unit.Skill
 
             TryGetEffectPrefab(Effects.ShieldTarget, out string eff);
             
-            var targets = aroundCenter.units.Where(x => x.Data.team == group);
+            var targets = aroundCenter.units.Where(x => x.Data.group == group);
             float amount = GetAmount(type, value);
             foreach (var target in targets)
             {
@@ -75,7 +75,10 @@ namespace RGLabs.Unit.Skill
                     if (!target.IsValid())
                         continue;
                     
-                    Effect.Play(eff, target).Forget();
+                    Effect.Builder
+                        .StartBuild(eff)
+                        .To(target)
+                        .Run();
                 }   
             }
         }

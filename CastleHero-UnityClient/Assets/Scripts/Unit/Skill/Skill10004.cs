@@ -1,3 +1,4 @@
+using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.InGame.System;
 
 namespace RGLabs.Unit.Skill
@@ -22,7 +23,13 @@ namespace RGLabs.Unit.Skill
                 PublishAtk(unit, DamageType.Normal, amount);
             }
             
-            PlayEffect(0, aroundCenter.forward * Data.y);
+            if (TryGetEffectPrefab(0, out var effect))
+            {
+                Effect.Builder
+                    .StartBuild(effect)
+                    .To(aroundCenter.forward * Data.y)
+                    .Run();
+            }
         }
     }
 }

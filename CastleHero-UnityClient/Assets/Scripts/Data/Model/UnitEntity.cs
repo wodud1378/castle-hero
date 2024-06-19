@@ -31,7 +31,7 @@ namespace RGLabs.Data.Model
         public int rate;
         
         [DataField("Character_Team")]
-        public int team;
+        public int group;
 
         [DataField("Character_Skill")] 
         public int skill;

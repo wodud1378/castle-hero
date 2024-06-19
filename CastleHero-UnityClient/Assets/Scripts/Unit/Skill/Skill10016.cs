@@ -1,3 +1,4 @@
+using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.InGame.System;
 
 namespace RGLabs.Unit.Skill
@@ -19,7 +20,15 @@ namespace RGLabs.Unit.Skill
             
             float totalDamage = 0f;
             float amount = GetAmount(type, value);
-            PlayEffect(Step.Atk, aroundCenter.center);
+            
+            if (TryGetEffectPrefab(Step.Atk, out var effect))
+            {
+                Effect.Builder
+                    .StartBuild(effect)
+                    .To( aroundCenter.center)
+                    .Run();
+            }
+            
             foreach (var unit in aroundCenter.units)
             {
                 totalDamage += amount;
@@ -29,7 +38,14 @@ namespace RGLabs.Unit.Skill
             if (!TryGetStatusParameter(Step.Heal, out type, out value))
                 return;
             
-            PlayEffect(Step.Heal, Owner);
+            if (TryGetEffectPrefab(Step.Heal, out effect))
+            {
+                Effect.Builder
+                    .StartBuild(effect)
+                    .To(Owner)
+                    .Run();
+            }
+            
             PublishHeal(Owner, totalDamage);
         }
     }

@@ -1,16 +1,18 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Data;
 using RGLabs.Unit.Behaviours;
+using RGLabs.Utility;
 using UnityEngine;
 
 namespace RGLabs.InGame.Effects.Behaviours
 {
     public class Effect : PoolItemBase, IEffect
     {
+        public static readonly EffectBuilder Builder = new();
+            
         public enum Slot
         {
             Top,
@@ -32,6 +34,8 @@ namespace RGLabs.InGame.Effects.Behaviours
             get => duration;
             set => duration = value;
         }
+
+        public void SetForward(Vector2 forward) => transform.localRotation = Quaternion.Euler(0, 0, 180f - forward.ToFloat());
 
         public void Run(Vector2 _ = default)
         {
@@ -118,69 +122,7 @@ namespace RGLabs.InGame.Effects.Behaviours
                 onParticle.Invoke(particle);
             }
         }
-
-        public static async UniTask<IEffect> Play(string prefab, Vector2 position, Vector2 startAt = default)
-        {
-            var effect = await GetEffect(prefab);
-            if (effect == null)
-                return null;
-
-            effect.SetTarget(position);
-            effect.Run(startAt);
-            return effect;
-        }
-
-        public static async UniTask<IEffect> Play(string prefab, UnitBehaviour unit, Vector2 startAt = default)
-        {
-            var effect = await GetEffect(prefab);
-            if (effect == null)
-                return null;
-
-            effect.SetTarget(unit);
-            effect.Run(startAt);
-            return effect;
-        }
-
-        public static async UniTask<IEffect> Play(string prefab, Vector2 position, float duration)
-        {
-            var effect = await GetEffect(prefab);
-            if (effect == null)
-                return null;
-
-            effect.Duration = duration;
-            effect.SetTarget(position);
-            effect.Run();
-            return effect;
-        }
         
-        public static async UniTask<IEffect> Play(string prefab, UnitBehaviour unit, float duration)
-        {
-            var effect = await GetEffect(prefab);
-            if (effect == null)
-                return null;
-
-            effect.Duration = duration;
-            effect.SetTarget(unit);
-            effect.Run();
-            return effect;
-        }
-
-        private static async UniTask<IEffect> GetEffect(string prefab)
-        {
-            if (string.IsNullOrEmpty(prefab))
-                return null;
-            
-            var container = Storage.poolContainer;
-            var item = await container.GetItem(prefab);
-            if (item == null)
-                return null;
-
-            if (item is IEffect effect)
-                return effect;
-            
-            return null;
-        }
-
         private void OnValidate()
         {
             _children = GetComponentsInChildren<Effect>()

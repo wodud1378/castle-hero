@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.InGame.System;
@@ -11,13 +10,8 @@ namespace RGLabs.Unit.Components
 {
     public class Attack
     {
-        public class Additional
-        {
-            public string effect;
-            public float damage;
-        }
-        
         public readonly Finder finder;
+        public readonly AdditionalAttack additional;
 
         private readonly UnitBehaviour _owner;
         private readonly RenderController _renderController;
@@ -25,6 +19,7 @@ namespace RGLabs.Unit.Components
 
         public bool IsRunning { get; private set; }
 
+        
         public string projectile;
         
         private UnitBehaviour _target;
@@ -35,6 +30,7 @@ namespace RGLabs.Unit.Components
             _owner = owner;
 
             this.finder = finder;
+            additional = new(_owner);
 
             _renderController = renderController;
             _animationEvents = animationEvents;
@@ -86,18 +82,21 @@ namespace RGLabs.Unit.Components
             if (!_target.IsValid())
                 return;
 
-            var data = new AtkEvent
+            new AtkEvent
             {
                 Type = DamageType.Normal,
                 From = _owner,
                 To = _target,
                 Amount = _owner.status.atk
-            };
+            }.Publish();
+            
+            additional.Execute(_target);
 
-            data.Publish();
-
-            if (!string.IsNullOrEmpty(projectile))
-                Effect.Play(projectile, _target, _owner.position).Forget();
+            if (!string.IsNullOrEmpty(projectile))Effect.Builder
+                .StartBuild(projectile)
+                .To(_target)
+                .From(_owner.position)
+                .Run();
         }
 
         private void OnReleaseAttack() => IsRunning = false;

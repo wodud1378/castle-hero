@@ -143,7 +143,11 @@ namespace RGLabs.InGame.System
 
             recover.Bind(collection, subscription);
             
-            Effect.Play(Constants.RecoverEffect, recover.behaviour.position, recover.time).Forget();
+            Effect.Builder
+                .StartBuild(Constants.RecoverEffect)
+                .To(recover.behaviour.position)
+                .Duration(recover.time)
+                .Run();
         }
 
         private void PlayEffect(IUnitEvent ev, float duration = 0f)
@@ -151,10 +155,11 @@ namespace RGLabs.InGame.System
             if (string.IsNullOrEmpty(ev.Effect))
                 return;
 
-            if(duration == 0f)
-                Effect.Play(ev.Effect, ev.To).Forget();
-            else
-                Effect.Play(ev.Effect, ev.To, duration).Forget();
+            Effect.Builder
+                .StartBuild(ev.Effect)
+                .To(ev.To)
+                .Duration(duration)
+                .Run();
         }
 
         private IDisposable ReserveRecover(WaitRecover recover)
@@ -183,7 +188,7 @@ namespace RGLabs.InGame.System
             var behaviour = recover.behaviour;
             behaviour.position = recover.position;
             
-            Effect.Play(Constants.SpawnEffect, behaviour.transform.position).Forget();
+            Effect.Builder.Run(Constants.SpawnEffect, behaviour.transform.position);
 
             for (int i = 0; i < 6; ++i)
             {

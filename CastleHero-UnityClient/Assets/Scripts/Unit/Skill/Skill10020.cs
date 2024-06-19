@@ -15,7 +15,7 @@ namespace RGLabs.Unit.Skill
             
             TryGetEffectPrefab(0, out string buffEff);
             
-            var characters = Characters(x => x.Data.team == group, quantity);
+            var characters = Characters(x => x.Data.group == group, quantity);
             foreach (var character in characters)
             {
                 PublishBuff(character, type, value, Data.duration, true, buffEff);

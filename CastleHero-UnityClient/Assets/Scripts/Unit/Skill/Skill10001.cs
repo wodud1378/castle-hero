@@ -1,4 +1,5 @@
 using System;
+using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
@@ -27,8 +28,15 @@ namespace RGLabs.Unit.Skill
 
             if (!TryUpdateAroundCenter())
                 return;
-
-            PlayEffect(0, aroundCenter.center);
+            
+            if (TryGetEffectPrefab(0, out var effect))
+            {
+                Effect.Builder
+                    .StartBuild(effect)
+                    .To(aroundCenter.center)
+                    .Run();
+            }
+            
             foreach (var unit in aroundCenter.units)
             {
                 if (unit.IsAlley(Owner))

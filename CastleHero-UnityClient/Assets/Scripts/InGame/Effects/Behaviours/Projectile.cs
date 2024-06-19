@@ -2,6 +2,7 @@ using RGLabs.Common.Behaviours;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using UnityEngine;
+using NotImplementedException = System.NotImplementedException;
 
 namespace RGLabs.InGame.Effects.Behaviours
 {
@@ -16,6 +17,8 @@ namespace RGLabs.InGame.Effects.Behaviours
         private float _arrivalTime;
 
         public float Duration { get; set; }
+
+        public void SetForward(Vector2 forward) { }
 
         public void Run(Vector2 startAt = default)
         {

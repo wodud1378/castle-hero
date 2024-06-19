@@ -24,7 +24,15 @@ namespace RGLabs.Unit.Skill
             if (!TryGetQuantityParameter(0, out int quantity)  ||
                 !TryUpdateAroundCenter(quantity))
                 return;
-
+            
+            if (TryGetEffectPrefab(0, out var effect))
+            {
+                Effect.Builder
+                    .StartBuild(effect)
+                    .To(Owner)
+                    .Run();
+            }
+            
             Attach().Forget();
         }
 
@@ -37,12 +45,16 @@ namespace RGLabs.Unit.Skill
             _currentTime = duration;
             _effects.Clear();
 
-            if(TryGetEffectPrefab(0, out string effect))
+            if(TryGetEffectPrefab(1, out string effect))
             {
                 var tasks = new List<UniTask<IEffect>>();
                 foreach (var unit in aroundCenter.units)
                 {
-                    tasks.Add(Effect.Play(effect, unit, duration));
+                    tasks.Add(Effect.Builder
+                        .StartBuild(effect)
+                        .To(unit)
+                        .Duration(duration)
+                        .RunAsync());
                 }
 
                 _effects.AddRange(await UniTask.WhenAll(tasks));

@@ -1,4 +1,4 @@
-using Cysharp.Threading.Tasks;
+using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.Unit.Components;
 
 namespace RGLabs.Unit.Skill
@@ -17,6 +17,15 @@ namespace RGLabs.Unit.Skill
                 PublishRestriction(unit, UnitCore.Restrictions.Attack, duration);
                 PublishRestriction(unit, UnitCore.Restrictions.Skill, duration);
                 PublishRestriction(unit, UnitCore.Restrictions.Move, duration);
+            } 
+            
+            if (TryGetEffectPrefab(0, out var effect))
+            {
+                Effect.Builder
+                    .StartBuild(effect)
+                    .To(Owner)
+                    .LookAt(aroundCenter.forward)
+                    .Run();
             }
         }
     }

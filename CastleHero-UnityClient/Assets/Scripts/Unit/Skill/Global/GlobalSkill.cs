@@ -94,7 +94,7 @@ namespace RGLabs.Unit.Skill.Global
             var units = _bound.UnitsInBound(position, default);
             units.ForEach(action);
 
-            Effect.Play(_centerEffect, position).Forget();
+            Effect.Builder.Run(_centerEffect, position);
             
             coolTime.StartWaiting();
         }

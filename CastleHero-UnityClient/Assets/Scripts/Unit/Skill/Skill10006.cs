@@ -1,3 +1,5 @@
+using RGLabs.InGame.Effects.Behaviours;
+
 namespace RGLabs.Unit.Skill
 {
     public class Skill10006 : ActiveSkill
@@ -22,9 +24,15 @@ namespace RGLabs.Unit.Skill
             if (!TryGetQuantityParameter(0, out int quantity))
                 return;
             
-            PlayEffect(0, Targeting.Targets[0]);
+            if (TryGetEffectPrefab(0, out var effect))
+            {
+                Effect.Builder
+                    .StartBuild(effect)
+                    .To(Targeting.Targets[0])
+                    .Run();
+            }
             
-            var characters = Characters(x => x.Data.team == group, quantity);
+            var characters = Characters(x => x.Data.group == group, quantity);
             foreach (var character in characters)
             {
                 PublishBuff(character, type1, value1, Data.duration, true);

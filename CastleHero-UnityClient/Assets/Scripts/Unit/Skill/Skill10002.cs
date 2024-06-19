@@ -1,4 +1,5 @@
 using System;
+using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
 
@@ -29,7 +30,14 @@ namespace RGLabs.Unit.Skill
             {
                 var center = aroundCenter.center;
                 PublishAtk(aroundCenter.center, DamageType.Normal, GetAmount(type, value));
-                PlayEffect(0, center.position);
+                
+                if (TryGetEffectPrefab(0, out var effect))
+                {
+                    Effect.Builder
+                        .StartBuild(effect)
+                        .To(center.position)
+                        .Run();
+                }
             }
             
             foreach (var unit in aroundCenter.units)
