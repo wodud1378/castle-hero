@@ -6,122 +6,119 @@ Effect_Slash
 	bounds: 230, 818, 50, 50
 Elipse
 	bounds: 180, 582, 65, 65
-Flail_1
-	bounds: 210, 677, 18, 240
-Flail_2
-	bounds: 275, 725, 13, 91
-	offsets: 3, 0, 18, 91
-Pitchfork
+Var_01/Pitchfork
 	bounds: 2, 734, 125, 277
 	offsets: 5, 5, 135, 287
-Sickle
-	bounds: 124, 76, 93, 103
-	offsets: 2, 2, 98, 107
-Var_1_Arm_L
+Var_01/Var_1_Arm_L
 	bounds: 259, 200, 38, 57
 	offsets: 5, 5, 48, 67
-Var_1_Arm_R
+Var_01/Var_1_Arm_R
 	bounds: 233, 282, 43, 56
 	offsets: 5, 5, 53, 66
-Var_1_Eyes
+Var_01/Var_1_Eyes
 	bounds: 197, 2, 72, 44
 	rotate: 90
-Var_1_Hair_Back
+Var_01/Var_1_Hair_Back
 	bounds: 2, 60, 120, 119
 	offsets: 5, 5, 130, 129
-Var_1_Hair_Front_1
+Var_01/Var_1_Hair_Front_1
 	bounds: 200, 197, 80, 62
 	offsets: 4, 3, 87, 68
 	rotate: 90
-Var_1_Hair_Front_2
+Var_01/Var_1_Hair_Front_2
 	bounds: 119, 458, 122, 102
 	offsets: 5, 5, 132, 112
 	rotate: 90
-Var_1_Hand_L
+Var_01/Var_1_Hand_L
 	bounds: 243, 12, 45, 53
 	offsets: 5, 5, 55, 63
-Var_1_Hand_R
+Var_01/Var_1_Hand_R
 	bounds: 230, 870, 48, 55
 	offsets: 5, 5, 58, 65
-Var_1_Hand_R_Grip
-	bounds: 267, 483, 39, 40
+Var_01/Var_1_Hand_R_Grip
+	bounds: 266, 158, 39, 40
 	offsets: 1, 1, 42, 42
-Var_1_Head
+Var_01/Var_1_Head
 	bounds: 2, 181, 124, 116
 	offsets: 5, 5, 134, 126
-Var_1_Leg
+Var_01/Var_1_Leg
 	bounds: 222, 428, 48, 75
 	offsets: 2, 3, 53, 80
-Var_1_Mustache
+Var_01/Var_1_Mustache
 	bounds: 273, 527, 69, 23
 	offsets: 1, 3, 70, 29
 	rotate: 90
-Var_1_Torso
+Var_01/Var_1_Torso
 	bounds: 129, 905, 105, 106
 	offsets: 0, 3, 106, 113
-Var_2_Arm_L
+Var_02/Flail_1
+	bounds: 210, 677, 18, 240
+Var_02/Flail_2
+	bounds: 271, 432, 13, 91
+	offsets: 3, 0, 18, 91
+Var_02/Var_2_Arm_L
 	bounds: 257, 373, 38, 57
 	offsets: 5, 5, 48, 67
-Var_2_Arm_R
+Var_02/Var_2_Arm_R
 	bounds: 230, 702, 43, 56
 	offsets: 5, 5, 53, 66
-Var_2_Eyes
+Var_02/Var_2_Eyes
 	bounds: 124, 30, 72, 44
-Var_2_Hair_Back
+Var_02/Var_2_Hair_Back
 	bounds: 2, 582, 150, 137
 	offsets: 5, 2, 159, 141
 	rotate: 90
-Var_2_Hair_Front
+Var_02/Var_2_Hair_Front
 	bounds: 129, 766, 138, 81
 	offsets: 1, 1, 139, 82
 	rotate: 90
-Var_2_Hand_L
+Var_02/Var_2_Hand_L
 	bounds: 243, 67, 45, 53
 	offsets: 5, 5, 55, 63
-Var_2_Hand_R
+Var_02/Var_2_Hand_R
 	bounds: 226, 927, 48, 55
 	offsets: 5, 5, 58, 65
-Var_2_Leg
+Var_02/Var_2_Leg
 	bounds: 219, 121, 48, 75
 	offsets: 2, 3, 53, 80
-Var_2_Mouth
+Var_02/Var_2_Mouth
 	bounds: 129, 901, 29, 13
-Var_2_Torso
+Var_02/Var_2_Torso
 	bounds: 128, 243, 105, 106
 	offsets: 0, 3, 106, 113
-Var_3_Arm_L
+Var_03/Sickle
+	bounds: 124, 76, 93, 103
+	offsets: 2, 2, 98, 107
+Var_03/Var_3_Arm_L
 	bounds: 247, 596, 38, 57
 	offsets: 5, 5, 48, 67
-Var_3_Arm_R
+Var_03/Var_3_Arm_R
 	bounds: 230, 760, 43, 56
 	offsets: 5, 5, 53, 66
-Var_3_Eyes
+Var_03/Var_3_Eyes
 	bounds: 128, 181, 72, 44
-Var_3_Hair
+Var_03/Var_3_Hair
 	bounds: 141, 648, 120, 37
 	offsets: 2, 3, 124, 43
 	rotate: 90
-Var_3_Hand_L
+Var_03/Var_3_Hand_L
 	bounds: 230, 655, 45, 53
 	offsets: 5, 5, 55, 63
 	rotate: 90
-Var_3_Hand_R
+Var_03/Var_3_Hand_R
 	bounds: 223, 525, 48, 55
 	offsets: 5, 5, 58, 65
-Var_3_Hand_R_Grip
-	bounds: 266, 158, 39, 40
-	offsets: 1, 1, 42, 42
-Var_3_Hat
+Var_03/Var_3_Hat
 	bounds: 2, 417, 163, 115
 	rotate: 90
-Var_3_Head
+Var_03/Var_3_Head
 	bounds: 2, 299, 124, 116
 	offsets: 5, 5, 134, 126
-Var_3_Leg
+Var_03/Var_3_Leg
 	bounds: 210, 339, 48, 75
 	offsets: 2, 3, 53, 80
-Var_3_Mustache
+Var_03/Var_3_Mustache
 	bounds: 234, 984, 41, 27
-Var_3_Torso
+Var_03/Var_3_Torso
 	bounds: 121, 350, 105, 106
 	offsets: 0, 3, 106, 113
