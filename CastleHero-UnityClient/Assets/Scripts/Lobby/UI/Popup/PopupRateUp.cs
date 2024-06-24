@@ -7,6 +7,7 @@ using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Network.Model;
+using RGLabs.Network.Service.Character;
 using RGLabs.Utility;
 using TMPro;
 using UniRx;
@@ -27,14 +28,15 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private Button _confirm;
 
         private readonly ReactiveProperty<UnitInfo> _unit = new();
-        
+        private readonly ICharacterModifyService _service = new LocalCharacterModifyService();
+
         private UniTask _updateTask;
 
         protected override void OnAwake()
         {
             base.OnAwake();
-            
-            this.SubscribeButton(_confirm, OnConfirm);
+
+            this.SubscribeButton(_confirm, () => Confirm().Forget());
 
             _unit
                 .Subscribe(UpdateUI)
@@ -57,7 +59,7 @@ namespace RGLabs.Lobby.UI.Popup
         {
             if (unitInfo == null)
                 return;
-            
+
             int rate = unitInfo.rate;
             if (!Storage.db.rates.TryFind(rate, out var rateEntity))
             {
@@ -72,17 +74,17 @@ namespace RGLabs.Lobby.UI.Popup
                 Debug.LogError(exception);
                 return;
             }
-            
+
             int soulItemId = unitEntity.soulItemId;
             var item = Storage.userRepository.items.FirstOrDefault(x => x.ItemId == soulItemId) ?? new ConsumableItem
             {
                 ItemId = soulItemId,
                 consumeOption = (int)ConsumeOption.Soul
             };
-            
+
             for (int i = 0; i < _stars.Length; ++i)
             {
-                var star =_stars[i];
+                var star = _stars[i];
                 star.DOKill();
                 star.gameObject.SetActive((i + 1) <= rate);
             }
@@ -101,27 +103,26 @@ namespace RGLabs.Lobby.UI.Popup
             _requireSoul.text = item.Quantity >= rateEntity.soul
                 ? text.WithColor(Color.white)
                 : text.WithNegativeColor();
-            
+
             _requireGold.text = rateEntity.gold.CurrencyText();
-            
+
             var unitTask = _unitSlot.Init(unitInfo, unitEntity);
             var soulTask = _soulSlot.Init(item);
 
             _updateTask = UniTask.WhenAll(unitTask, soulTask);
         }
 
-        private void OnConfirm()
+        private async UniTaskVoid Confirm()
         {
-            var unit = _unit.Value;
-            var characters = Storage.userRepository.characters;
-            int index = characters.IndexOf(unit);
-            if (!index.IsValidIndex(characters))
+            if (_soulSlot.Item is not ConsumableItem item)
                 return;
 
-            unit.rate++;
-            
-            characters.RemoveAt(index);
-            characters.Insert(index, unit);
+            if (!Storage.db.rates.TryFind(_unit.Value.rate, out var rateEntity))
+                return;
+
+            var result = await _service.Upgrade(_unit.Value, item, rateEntity.soul);
+            _unit.Value = result.Info;
+            _soulSlot.Init(result.ItemResult);
         }
     }
 }

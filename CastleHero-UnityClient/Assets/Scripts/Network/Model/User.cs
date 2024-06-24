@@ -1,6 +1,4 @@
 using System;
-using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace RGLabs.Network.Model
 {
@@ -37,27 +35,35 @@ namespace RGLabs.Network.Model
 
     public interface IModifyCharacter
     {
-        public enum ResultCode
+        public enum FailedCauses
         {
-            Success,
-            Failed,
+            None,
+            AlreadyMaxValue,
+            NotEnoughItem,
+            Unknown,
         }
 
-        public ResultCode Result { get; }
+        public FailedCauses FailedCause { get; }
         public UnitInfo Info { get; }
+        public ConsumableItem ItemResult { get; }
+        public int GoldResult { get; }
     }
 
     [Serializable]
-    public class CharacterLevelUp : IModifyCharacter
+    public class LevelUpResult : IModifyCharacter
     {
-        public IModifyCharacter.ResultCode Result { get; }
-        public UnitInfo Info { get; }
+        public IModifyCharacter.FailedCauses FailedCause { get; set; }
+        public UnitInfo Info { get; set; }
+        public ConsumableItem ItemResult { get; set; }
+        public int GoldResult { get; set; }
     }
     
     [Serializable]
-    public class CharacterUpgrade : IModifyCharacter
+    public class UpgradeResult : IModifyCharacter
     {
-        public IModifyCharacter.ResultCode Result { get; }
-        public UnitInfo Info { get; }
+        public IModifyCharacter.FailedCauses FailedCause { get; set; }
+        public UnitInfo Info { get; set; }
+        public ConsumableItem ItemResult { get; set; }
+        public int GoldResult { get; set; }
     }
 }

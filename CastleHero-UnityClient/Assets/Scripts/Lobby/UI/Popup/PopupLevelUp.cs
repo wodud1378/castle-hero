@@ -6,6 +6,7 @@ using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Network.Model;
+using RGLabs.Network.Service.Character;
 using RGLabs.Utility;
 using TMPro;
 using UniRx;
@@ -36,8 +37,8 @@ namespace RGLabs.Lobby.UI.Popup
         private readonly ReactiveProperty<UnitInfo> _unit = new();
         private readonly ReactiveProperty<UIItemSlot> _selected = new();
 
-        private int _targetLv;
-        private int _targetExp;
+        private readonly ICharacterModifyService _service = new LocalCharacterModifyService();
+        
 
         protected override void OnAwake()
         {
@@ -60,7 +61,7 @@ namespace RGLabs.Lobby.UI.Popup
             _expSlotM.OnClick += (x) => _selected.Value = (UIItemSlot)x;
             _expSlotL.OnClick += (x) => _selected.Value = (UIItemSlot)x;
 
-            this.SubscribeButton(_confirm, Confirm);
+            this.SubscribeButton(_confirm, ()=> Confirm().Forget());
         }
 
         public override async UniTask Open(params object[] parameters)
@@ -124,11 +125,11 @@ namespace RGLabs.Lobby.UI.Popup
                 return;
             }
 
-            Calculate(_unit.Value.lv, out _targetLv, out _targetExp, out int maxExp, out int gold);
+            Calculate(_unit.Value.lv, out int lv, out int exp, out int maxExp, out int gold);
 
             _gold.text = gold.CurrencyText();
             _maxCount.text = count.ToString();
-            _level.SetOverride(_targetLv, _targetExp);
+            _level.SetOverride(lv, exp);
         }
 
         private void Calculate(int startLv, out int endLv, out int endExp, out int maxExp, out int requireGold)
@@ -163,21 +164,14 @@ namespace RGLabs.Lobby.UI.Popup
             _slider.maxValue = slot.Item.Quantity;
         }
 
-        private void Confirm()
+        private async UniTaskVoid Confirm()
         {
-            var unit = _unit.Value;
-            var characters = Storage.userRepository.characters;
-            int index = characters.IndexOf(unit);
-            if (!index.IsValidIndex(characters))
+            if (_selected.Value.Item is not ConsumableItem item)
                 return;
-
-            unit.lv = _targetLv;
-            unit.exp = _targetExp;
-
-            characters.RemoveAt(index);
-            characters.Insert(index, unit);
-
-            _unit.Value = unit;
+            
+            var result = await _service.LevelUp(_unit.Value, item, (int)_slider.value);
+            _unit.Value = result.Info;
+            _selected.Value.Init(result.ItemResult);
         }
     }
 }

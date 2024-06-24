@@ -3,7 +3,7 @@ using System;
 namespace RGLabs.Network.Model
 {
     [Serializable]
-    public struct Consume
+    public class Consume
     {
         public enum Method
         {
@@ -25,22 +25,25 @@ namespace RGLabs.Network.Model
     }
 
     [Serializable]
-    public struct ConsumableItem : IItem
+    public class ConsumeResult
+    {
+        public int id;
+        public int consumed;
+        public int left;
+    }
+
+    [Serializable]
+    public class ConsumableItem : IItem
     {
         public int Id { get;set; }
         public int ItemId { get; set; }
         public int Quantity { get; set; }
 
         public int consumeOption;
-
-        public ConsumableItem(int itemId) : this()
-        {
-            ItemId = itemId;
-        }
     }
 
     [Serializable]
-    public struct EquipItem : IItem
+    public class EquipItem : IItem
     {
         public int Id { get;set; }
         public int ItemId { get; set; }
@@ -53,7 +56,7 @@ namespace RGLabs.Network.Model
     }
 
     [Serializable]
-    public struct Item : IItem
+    public class Item : IItem
     {
         public int Id { get; set; }
         public int ItemId { get; set; }

@@ -100,6 +100,9 @@ namespace RGLabs.Data.Repositories
         public UnitBalanceDB balances;
         public SkillDB skills;
 
+        public SummonDB summons;
+        public SummonGroupDB summonGroups;
+
         private DBCollections()
         {
             _loader = new DataLoader(new LocalCsvProvider());
@@ -116,7 +119,9 @@ namespace RGLabs.Data.Repositories
                 _loader.Load<UnitRateDB>(x => rates = x),
                 _loader.Load<UnitBalanceDB>(x => balances = x),
                 _loader.Load<SkillDB>(x => skills = x, true),
-                _loader.Load<CastleDB>(x => castles = x)
+                _loader.Load<CastleDB>(x => castles = x),
+                _loader.Load<SummonDB>(x => summons = x),
+                _loader.Load<SummonGroupDB>(x => summonGroups = x),
             };
 
             EquipmentDB equipmentItems = null;

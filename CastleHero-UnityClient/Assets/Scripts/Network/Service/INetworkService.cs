@@ -14,8 +14,8 @@ namespace RGLabs.Network.Service
         public UniTask LoadTables();
         
         // 캐릭터
-        public UniTask<CharacterLevelUp> LevelUp(int id, IEnumerable<Consume> items);
-        public UniTask<CharacterUpgrade> Upgrade(int id, IEnumerable<Consume> items);
+        public UniTask<LevelUpResult> LevelUp(int id, IEnumerable<Consume> items);
+        public UniTask<UpgradeResult> Upgrade(int id, IEnumerable<Consume> items);
         
         // 아이템
         public UniTask Consume(IEnumerable<Consume> items);

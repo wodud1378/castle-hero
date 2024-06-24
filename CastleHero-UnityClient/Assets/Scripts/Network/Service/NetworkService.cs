@@ -23,12 +23,12 @@ namespace RGLabs.Network.Service
             throw new System.NotImplementedException();
         }
 
-        public UniTask<CharacterLevelUp> LevelUp(int id, IEnumerable<Consume> items)
+        public UniTask<LevelUpResult> LevelUp(int id, IEnumerable<Consume> items)
         {
             throw new System.NotImplementedException();
         }
 
-        public UniTask<CharacterUpgrade> Upgrade(int id, IEnumerable<Consume> items)
+        public UniTask<UpgradeResult> Upgrade(int id, IEnumerable<Consume> items)
         {
             throw new System.NotImplementedException();
         }

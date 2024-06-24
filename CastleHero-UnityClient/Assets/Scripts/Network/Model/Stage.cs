@@ -3,7 +3,7 @@ using System;
 namespace RGLabs.Network.Model
 {
     [Serializable]
-    public struct StageClear
+    public class StageClear
     {
         public int stage;
         public int exp;
@@ -14,7 +14,7 @@ namespace RGLabs.Network.Model
     }
 
     [Serializable]
-    public struct CharacterGrowth
+    public class CharacterGrowth
     {
         public int prevLv;
         public int currentLv;

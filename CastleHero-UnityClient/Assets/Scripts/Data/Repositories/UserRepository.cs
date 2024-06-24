@@ -17,12 +17,19 @@ namespace RGLabs.Data.Repositories
         private const string FieldCharactersKey = "characters-field";
         private const string CastleKey = "saved-castle";
         private const string InventoryKey = "inventory";
+        private const string GoldKey = "gold";
+        private const string FreeDiaKey = "diamond-free";
+        private const string PaidDiaKey = "diamond-paid";
 
         public readonly ReactiveProperty<int> stage;
         public readonly ReactiveProperty<int> castleLv;
 
         public readonly ReactiveCollection<FieldCharacter> fieldCharacters;
         public readonly ReactiveCollection<UnitInfo> characters;
+        
+        public readonly ReactiveProperty<int> gold;
+        public readonly ReactiveProperty<int> freeDia;
+        public readonly ReactiveProperty<int> paidDia;
         public readonly ReactiveCollection<IItem> items;
 
         public UserRepository(UserInfo userInfo)
@@ -53,17 +60,32 @@ namespace RGLabs.Data.Repositories
                 .ThrottleFrame(1)
                 .Subscribe(x => SaveAsArray(CharactersKey, x));
 
+            fieldCharacters = new(LoadAsArray<FieldCharacter>(FieldCharactersKey));
+            fieldCharacters
+                .ChangeAsObservable()
+                .ThrottleFrame(1)
+                .Subscribe(x => SaveAsArray(FieldCharactersKey, x));
+            
             items = new(LoadAsArray<IItem>(InventoryKey, TestItem()));
             items
                 .ChangeAsObservable()
                 .ThrottleFrame(1)
                 .Subscribe(x => SaveAsArray(InventoryKey, x));
 
-            fieldCharacters = new(LoadAsArray<FieldCharacter>(FieldCharactersKey));
-            fieldCharacters
-                .ChangeAsObservable()
+            gold = new(Load(GoldKey, 0));
+            gold
                 .ThrottleFrame(1)
-                .Subscribe(x => SaveAsArray(FieldCharactersKey, x));
+                .Subscribe(x => Save(GoldKey, x));
+            
+            freeDia = new(Load(FreeDiaKey, 0));
+            freeDia
+                .ThrottleFrame(1)
+                .Subscribe(x => Save(FreeDiaKey, x));
+            
+            paidDia = new(Load(PaidDiaKey, 0));
+            paidDia
+                .ThrottleFrame(1)
+                .Subscribe(x => Save(PaidDiaKey, x));
         }
 
         public void ApplyFieldCharacters(IEnumerable<UnitBehaviour> units)
