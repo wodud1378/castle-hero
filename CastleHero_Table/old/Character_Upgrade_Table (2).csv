@@ -1,0 +1,8 @@
+﻿Character_ID,Character_Hp_Up,Character_Atk_Up,Character_Cri_Up,Character_Cri_Damage_Up,Character_Speed_Atk_Up,Character_Speed_Move_Up,Character_Range_Atk_Up,Character_Range_Move_Up,Rate_1_option_1,Rate_1_option_Value_1,Rate_1_option_2,Rate_1_option_Value_2,Rate_2_option_1,Rate_2_option_Value_1,Rate_2_option_2,Rate_2_option_Value_2,Rate_3_option_1,Rate_3_option_Value_1,Rate_3_option_2,Rate_3_option_Value_2,Rate_4_option_1,Rate_4_option_Value_1,Rate_4_option_2,Rate_4_option_Value_2,Rate_5_option_1,Rate_5_option_Value_1,Rate_5_option_2,Rate_5_option_Value_2
+10021,30,10,0.05,0.05,0.01,0.01,0,0,0,10,,,1,100,3,10,0,10,,,1,100,3,10,0,10,,
+20001,50,10,0,0.05,0.01,0.01,0,0,,,,,,,,,,,,,,,,,,,,
+20002,50,10,0,0.05,0.01,0.01,0,0,,,,,,,,,,,,,,,,,,,,
+20003,50,10,0,0.05,0.01,0.01,0,0,,,,,,,,,,,,,,,,,,,,
+30003,100,20,0.05,0.05,0.01,0.01,0,0,0,10,,,2,300,,,0,10,,,2,300,3,10,0,10,,
+10023,30,10,0.05,0.05,0.01,0.01,0,0,0,10,,,1,100,3,10,0,10,,,1,100,3,10,0,10,,
+10034,30,10,0.05,0.05,0.01,0.01,0,0,0,10,,,1,100,3,10,0,10,,,1,100,3,10,0,10,,
