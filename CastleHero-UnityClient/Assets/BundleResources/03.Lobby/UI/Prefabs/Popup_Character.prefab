@@ -1028,7 +1028,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Padding: {x: 0, y: 14, z: 0, w: 14}
+  m_Padding: {x: 0, y: 24, z: 0, w: 24}
   m_Softness: {x: 0, y: 0}
 --- !u!1 &1819918223858918748
 GameObject:
@@ -2885,6 +2885,8 @@ MonoBehaviour:
   _groups: {fileID: 3283582073139927979}
   _tabToggle: {fileID: 5314591697334345403}
   _characterList: {fileID: 5934711479436281327}
+  clickMethod: 0
+  equipmentId: 0
 --- !u!1 &4770415721060156741
 GameObject:
   m_ObjectHideFlags: 0
@@ -4355,7 +4357,6 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  _animator: {fileID: 0}
 --- !u!1 &6776239052560475495
 GameObject:
   m_ObjectHideFlags: 0
@@ -4390,7 +4391,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.0018943283}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &8145148107928938071
@@ -4406,15 +4407,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 20
-    m_Right: 20
-    m_Top: 20
-    m_Bottom: 20
+    m_Left: 10
+    m_Right: 10
+    m_Top: 10
+    m_Bottom: 10
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 130, y: 130}
-  m_Spacing: {x: 27.5, y: 25}
+  m_CellSize: {x: 170, y: 170}
+  m_Spacing: {x: -18, y: -18}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!114 &5140812659899165941

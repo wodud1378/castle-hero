@@ -975,7 +975,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Padding: {x: 0, y: 20, z: 0, w: 20}
+  m_Padding: {x: 0, y: 24, z: 0, w: 24}
   m_Softness: {x: 0, y: 0}
 --- !u!1 &1819918223858918748
 GameObject:
@@ -3301,15 +3301,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 20
-    m_Right: 20
-    m_Top: 20
-    m_Bottom: 20
+    m_Left: 9
+    m_Right: 9
+    m_Top: 6
+    m_Bottom: 6
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 160, y: 160}
-  m_Spacing: {x: 10, y: 20}
+  m_CellSize: {x: 190, y: 190}
+  m_Spacing: {x: -22, y: -16}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!114 &5140812659899165941
