@@ -68,7 +68,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 0e723f01ec8b73c4a8cf66e64c0661f6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3c64ea73e21a7e847ae74b15cbe0bde0, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -175,7 +175,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: d71ea1b45087be8489ab7286b78c8ecf, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -198,7 +198,7 @@ GameObject:
   - component: {fileID: 5939900915470212147}
   - component: {fileID: 5470961368439747737}
   m_Layer: 5
-  m_Name: RewardItem
+  m_Name: RewardItem_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -236,9 +236,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3f07f0f215140e4b18744387695e10c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rayTarget: {fileID: 0}
   icon: {fileID: 6837201186312370611}
   label: {fileID: 0}
-  button: {fileID: 5939900915470212147}
 --- !u!114 &5939900915470212147
 MonoBehaviour:
   m_ObjectHideFlags: 0
