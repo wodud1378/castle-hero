@@ -37,7 +37,7 @@ namespace RGLabs.Lobby.UI.Popup
         private readonly ReactiveProperty<UnitInfo> _unit = new();
         private readonly ReactiveProperty<UIItemSlot> _selected = new();
 
-        private readonly ICharacterModifyService _service = new LocalCharacterModifyService();
+        private readonly ICharacterService _service = new LocalCharacterService();
         
 
         protected override void OnAwake()

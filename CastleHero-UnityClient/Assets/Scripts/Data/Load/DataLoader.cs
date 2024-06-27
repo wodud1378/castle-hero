@@ -183,22 +183,6 @@ namespace RGLabs.Data.Load
             onLoadComplete.Invoke((T)instance);
         }
 
-        private object Parse(string value, Type type)
-        {
-            object result = Type.GetTypeCode(type) switch
-            {
-                TypeCode.Boolean => bool.TryParse(value, out var boolean) && boolean,
-                TypeCode.Int32 => int.TryParse(value, out var int32) ? int32 : -1,
-                TypeCode.Int64 => long.TryParse(value, out var int64) ? int64 : -1,
-                TypeCode.Single => float.TryParse(value, out var single) ? single : -1f,
-                TypeCode.Double => double.TryParse(value, out var @double) ? @double : -1,
-                TypeCode.String => value,
-                _ => null
-            };
-
-            return result;
-        }
-
         private bool TryParse(string value, Type type, out object result)
         {
             bool success = false;
@@ -272,7 +256,6 @@ namespace RGLabs.Data.Load
 
             int rowCount = rows.Length;
             var map = new string[rowCount][];
-
             map[0] = splitColumns.Split(rows[0])
                 .Select(x =>
                 {

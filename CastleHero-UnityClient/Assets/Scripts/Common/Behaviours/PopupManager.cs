@@ -51,7 +51,7 @@ namespace RGLabs.Common.Behaviours
                 return null;
             
             await popup.Open();
-            
+
             popup.gameObject.SetActive(true);
             return popup;
         }
@@ -70,19 +70,20 @@ namespace RGLabs.Common.Behaviours
             }
             
             _popups.Add(popup);
+            popup.fromManager = true;
             popup.OnCloseEvent += OnClosed;
             return popup;
         }
 
         public async UniTask Close<T>(T popup) where T : PopupBase
-            => await popup.CloseTask();
+            => await popup.Close();
 
         public async UniTask CloseAll()
         {
             var list = new List<UniTask>();
             foreach (var popup in _popups)
             {
-                list.Add(popup.CloseTask());
+                list.Add(popup.Close());
             }
 
             await UniTask.WhenAll(list);

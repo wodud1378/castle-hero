@@ -37,12 +37,6 @@ namespace RGLabs.Data
             unitFactory = new UnitFactory();
             castleFactory = new CastleFactory();
         }
-
-        private static async void Asdf()
-        {
-            var service = new LocalNetworkService();
-            await service.Login();
-        }
         
         private static async UniTask InitAddressable()
         {

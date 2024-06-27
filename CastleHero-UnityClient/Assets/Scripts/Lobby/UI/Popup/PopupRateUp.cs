@@ -28,7 +28,7 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private Button _confirm;
 
         private readonly ReactiveProperty<UnitInfo> _unit = new();
-        private readonly ICharacterModifyService _service = new LocalCharacterModifyService();
+        private readonly ICharacterService _service = new LocalCharacterService();
 
         private UniTask _updateTask;
 

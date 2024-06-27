@@ -22,6 +22,7 @@ namespace RGLabs.Data.Repositories
         private const string PaidDiaKey = "diamond-paid";
 
         public readonly ReactiveProperty<int> stage;
+        public readonly ReactiveProperty<int> focusedStage;
         public readonly ReactiveProperty<int> castleLv;
 
         public readonly ReactiveCollection<FieldCharacter> fieldCharacters;

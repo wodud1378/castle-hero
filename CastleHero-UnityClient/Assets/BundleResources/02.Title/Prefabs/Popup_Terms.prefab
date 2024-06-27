@@ -828,6 +828,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6922082938267527475}
+  - component: {fileID: 9064036317077677451}
   m_Layer: 5
   m_Name: Confirm
   m_TagString: Untagged
@@ -856,6 +857,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 800, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &9064036317077677451
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2359423141013677304}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &2558191193135937274
 GameObject:
   m_ObjectHideFlags: 0
@@ -3543,6 +3556,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3102346936822925942}
+  - component: {fileID: 1115245984241619540}
   m_Layer: 5
   m_Name: Popup_Terms
   m_TagString: Untagged
@@ -3579,6 +3593,28 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 900, y: 680}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1115245984241619540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8585035751772918074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 580a1f2cf24749cfbf4a14d58dee4b8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fromManager: 0
+  _animator: {fileID: 0}
+  _close: {fileID: 0}
+  _all: {fileID: 3240996805928927776}
+  _terms: {fileID: 2199611418301792844}
+  _privacy: {fileID: 7609031382031369004}
+  _push: {fileID: 1814680356421665742}
+  _nightPush: {fileID: 7207425123566360596}
+  _confirm: {fileID: 4898677310760982550}
+  _needEssential: {fileID: 9064036317077677451}
 --- !u!1 &8911240762209838035
 GameObject:
   m_ObjectHideFlags: 0

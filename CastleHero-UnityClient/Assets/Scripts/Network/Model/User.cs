@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace RGLabs.Network.Model
 {
@@ -6,12 +7,22 @@ namespace RGLabs.Network.Model
     public class UserInfo
     {
         public int stage;
+        public int focusedStage;
         public int castleLv;
         
-        public UnitInfo[] characters;
-        public FieldCharacter[] fieldCharacters;
+        public List<UnitInfo> characters;
+        public List<FieldCharacter> fieldCharacters;
 
+        public Currency currency;
         public IItem[] items;
+    }
+
+    [Serializable]
+    public class Currency
+    {
+        public int gold;
+        public int freeDia;
+        public int paidDia;
     }
     
     [Serializable]

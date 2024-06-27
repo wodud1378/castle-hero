@@ -9,17 +9,7 @@ namespace RGLabs.Network.Model
         public int exp;
         public int gold;
         public bool isFirstClear;
-        public Item[] items;
-        public CharacterGrowth[] growths;
-    }
-
-    [Serializable]
-    public class CharacterGrowth
-    {
-        public int prevLv;
-        public int currentLv;
-
-        public int lastExp;
-        public int currentExp;
+        public Item[] acquired;
+        public UnitInfo[] updated;
     }
 }

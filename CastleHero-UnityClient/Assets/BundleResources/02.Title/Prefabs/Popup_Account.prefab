@@ -336,12 +336,12 @@ GameObject:
   - component: {fileID: 4898677310760982550}
   - component: {fileID: 2705519974177540507}
   m_Layer: 5
-  m_Name: Button_Google
+  m_Name: PlayStore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3229866515664397550
 RectTransform:
   m_ObjectHideFlags: 0
@@ -358,9 +358,9 @@ RectTransform:
   - {fileID: 3105321075966024383}
   m_Father: {fileID: 8122650295655452339}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 450, y: -280}
   m_SizeDelta: {x: 480, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3602173174242118714
@@ -614,12 +614,12 @@ GameObject:
   - component: {fileID: 7228997308520065205}
   - component: {fileID: 8295811492384471170}
   m_Layer: 5
-  m_Name: Button_Apple
+  m_Name: AppStore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1974973427566473256
 RectTransform:
   m_ObjectHideFlags: 0
@@ -636,9 +636,9 @@ RectTransform:
   - {fileID: 7860271460791011015}
   m_Father: {fileID: 8122650295655452339}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 450, y: -410}
   m_SizeDelta: {x: 480, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8715013515987565412
@@ -913,7 +913,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7497610465744422596
 RectTransform:
   m_ObjectHideFlags: 0
@@ -930,9 +930,9 @@ RectTransform:
   - {fileID: 2078389653371317707}
   m_Father: {fileID: 8122650295655452339}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 450, y: -540}
   m_SizeDelta: {x: 480, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3235274425086276374
@@ -1168,6 +1168,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3102346936822925942}
+  - component: {fileID: 353613501003107583}
   m_Layer: 5
   m_Name: Popup_Account
   m_TagString: Untagged
@@ -1195,6 +1196,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 900, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &353613501003107583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8585035751772918074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb42a31abd19418ab1ecb86e627baa5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fromManager: 0
+  _animator: {fileID: 0}
+  _close: {fileID: 0}
+  _platformButtons:
+  - {fileID: 4898677310760982550}
+  - {fileID: 7228997308520065205}
+  - {fileID: 6268658118169973330}
 --- !u!1 &8912374120594217756
 GameObject:
   m_ObjectHideFlags: 0

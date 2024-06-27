@@ -12,6 +12,8 @@ namespace RGLabs.Common.UI.Popup
     {
         public event Action<PopupBase> OnCloseEvent;
 
+        public bool fromManager;
+        
         private static readonly int CloseTrigger = Animator.StringToHash("Close");
 
         [SerializeField] private Animator _animator;
@@ -19,19 +21,17 @@ namespace RGLabs.Common.UI.Popup
 
         private void Awake() => OnAwake();
 
-        protected virtual void OnAwake() => this.SubscribeButton(_close, () => CloseTask().Forget());
-
-        public virtual UniTask Open(params object[] parameters)
+        protected virtual void OnAwake()
         {
-            return Open();
+            if(_close != null)
+                this.SubscribeButton(_close, () => Close().Forget());
         }
 
-        public virtual UniTask Open()
-        {
-            return UniTask.CompletedTask;
-        }
+        public virtual UniTask Open(params object[] parameters) => Open();
 
-        public UniTask CloseTask()
+        public virtual UniTask Open() => UniTask.CompletedTask;
+
+        public UniTask Close()
         {
             OnClose();
 
@@ -52,7 +52,7 @@ namespace RGLabs.Common.UI.Popup
 
         public bool OnProcessBack()
         {
-            CloseTask();
+            Close();
 
             return true;
         }
@@ -60,7 +60,11 @@ namespace RGLabs.Common.UI.Popup
         private void Closed()
         {
             OnCloseEvent?.Invoke(this);
-            Addressables.ReleaseInstance(gameObject);
+            
+            if(fromManager)
+                Addressables.ReleaseInstance(gameObject);
+            else
+                gameObject.SetActive(false);
         }
     }
 }

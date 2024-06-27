@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Network.Model;
+using RGLabs.Network.Service.Query;
 using UnityEngine;
 using Random = System.Random;
 
@@ -11,6 +12,7 @@ namespace RGLabs.Network.Service.Summon
     public class LocalSummonService : ISummonService
     {
         public SummonEntity Entity { get; }
+        public QueryBase Query { get; }
 
         private readonly SummonGroupEntity[] _groupEntities;
         private readonly Random _random = new();
@@ -45,7 +47,7 @@ namespace RGLabs.Network.Service.Summon
         private ISummonResult[] GetSummonResult(params int[] ids)
         {
             int length = ids.Length;
-            var owned = Storage.userRepository.characters.ToArray();
+            var owned = Query.Characters(0);
             var result = new ISummonResult[length];
             for (int i = 0; i < length; i++)
             {
