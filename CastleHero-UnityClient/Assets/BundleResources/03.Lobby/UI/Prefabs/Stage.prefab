@@ -2241,8 +2241,6 @@ MonoBehaviour:
   _validationCircle: {fileID: 0}
   _validColor: {r: 0, g: 1, b: 0, a: 0.33333334}
   _invalidColor: {r: 1, g: 0, b: 0, a: 0.33333334}
-  unit:
-    value: {fileID: 0}
 --- !u!222 &5006014367086945438
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2338,8 +2336,8 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 180, y: 180}
-  m_Spacing: {x: 25, y: 25}
+  m_CellSize: {x: 220, y: 220}
+  m_Spacing: {x: -15, y: -15}
   m_Constraint: 1
   m_ConstraintCount: 5
 --- !u!114 &5884955925273506912
