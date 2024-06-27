@@ -25682,7 +25682,7 @@ GameObject:
   - component: {fileID: 2380424826977878242}
   - component: {fileID: 5975500520798702586}
   m_Layer: 5
-  m_Name: QuestResult
+  m_Name: ReceiveResult
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
