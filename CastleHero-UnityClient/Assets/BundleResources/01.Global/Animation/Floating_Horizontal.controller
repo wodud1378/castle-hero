@@ -28,7 +28,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Upgrade_Floating
+  m_Name: Floating_Horizontal
   serializedVersion: 5
   m_AnimatorParameters: []
   m_AnimatorLayers:
@@ -51,7 +51,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Upgrade_Floating
+  m_Name: Floating_Horizontal
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -64,7 +64,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: f66323e25c2ff4442bde83245370e275, type: 2}
+  m_Motion: {fileID: 7400000, guid: 59225df935c0dde47b598c82b0539d9a, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

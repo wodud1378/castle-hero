@@ -58,7 +58,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 1
-  m_Spacing: 70
+  m_Spacing: 20
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -2927,7 +2927,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -10}
-  m_SizeDelta: {x: 800, y: 860}
+  m_SizeDelta: {x: 800, y: 900}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1359757834317497391
 CanvasRenderer:
@@ -4010,6 +4010,10 @@ PrefabInstance:
       propertyPath: m_HorizontalAlignment
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 4043501257691164760, guid: 02a01eb974780734b9525d51493e7210, type: 3}
+      propertyPath: rayTarget
+      value: 
+      objectReference: {fileID: 8842322511871118414}
     - target: {fileID: 4045129957703354887, guid: 02a01eb974780734b9525d51493e7210, type: 3}
       propertyPath: m_Name
       value: Slot_ExpItem_M
@@ -4076,11 +4080,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8458187311632578400, guid: 02a01eb974780734b9525d51493e7210, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 162
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 8458187311632578400, guid: 02a01eb974780734b9525d51493e7210, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 162
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 8458187311632578400, guid: 02a01eb974780734b9525d51493e7210, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4241,6 +4245,10 @@ PrefabInstance:
       propertyPath: m_HorizontalAlignment
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 4043501257691164760, guid: 02a01eb974780734b9525d51493e7210, type: 3}
+      propertyPath: rayTarget
+      value: 
+      objectReference: {fileID: 6399395063310791490}
     - target: {fileID: 4045129957703354887, guid: 02a01eb974780734b9525d51493e7210, type: 3}
       propertyPath: m_Name
       value: Slot_ExpItem_S
@@ -4307,11 +4315,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8458187311632578400, guid: 02a01eb974780734b9525d51493e7210, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 162
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 8458187311632578400, guid: 02a01eb974780734b9525d51493e7210, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 162
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 8458187311632578400, guid: 02a01eb974780734b9525d51493e7210, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4472,6 +4480,10 @@ PrefabInstance:
       propertyPath: m_HorizontalAlignment
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 4043501257691164760, guid: 02a01eb974780734b9525d51493e7210, type: 3}
+      propertyPath: rayTarget
+      value: 
+      objectReference: {fileID: 743060182142610103}
     - target: {fileID: 4045129957703354887, guid: 02a01eb974780734b9525d51493e7210, type: 3}
       propertyPath: m_Name
       value: Slot_ExpItem_L
@@ -4538,11 +4550,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8458187311632578400, guid: 02a01eb974780734b9525d51493e7210, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 162
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 8458187311632578400, guid: 02a01eb974780734b9525d51493e7210, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 162
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 8458187311632578400, guid: 02a01eb974780734b9525d51493e7210, type: 3}
       propertyPath: m_LocalPosition.x

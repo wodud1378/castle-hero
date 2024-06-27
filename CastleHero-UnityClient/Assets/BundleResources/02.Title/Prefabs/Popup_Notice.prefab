@@ -1044,7 +1044,7 @@ GameObject:
   - component: {fileID: 2570431322153722535}
   - component: {fileID: 4642988523361438338}
   m_Layer: 5
-  m_Name: ScrollView_01
+  m_Name: ScrollView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1070,7 +1070,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 648, y: 480}
+  m_SizeDelta: {x: 650, y: 480}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3358348630426942226
 CanvasRenderer:
@@ -1461,7 +1461,6 @@ GameObject:
   - component: {fileID: 9141243055171526234}
   - component: {fileID: 3242463292368755383}
   - component: {fileID: 9034277974006583691}
-  - component: {fileID: 8266937718324300620}
   m_Layer: 5
   m_Name: Date
   m_TagString: Untagged
@@ -1486,7 +1485,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -320, y: 250}
-  m_SizeDelta: {x: 0, y: 40.14}
+  m_SizeDelta: {x: 147.29, y: 40.14}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &3242463292368755383
 CanvasRenderer:
@@ -1585,20 +1584,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &8266937718324300620
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6918426835263801280}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_HorizontalFit: 2
-  m_VerticalFit: 0
 --- !u!1 &7828208092565030655
 GameObject:
   m_ObjectHideFlags: 0

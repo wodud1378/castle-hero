@@ -199,11 +199,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2789072734669016412, guid: ef27739df46ffbc4fa934582e26541b9, type: 3}
       propertyPath: m_SizeDelta.x
-      value: -918
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2789072734669016412, guid: ef27739df46ffbc4fa934582e26541b9, type: 3}
       propertyPath: m_SizeDelta.y
-      value: -1758
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2789072734669016412, guid: ef27739df46ffbc4fa934582e26541b9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -261,6 +261,10 @@ PrefabInstance:
       propertyPath: _quantity
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7766497773775030884, guid: ef27739df46ffbc4fa934582e26541b9, type: 3}
+      propertyPath: rayTarget
+      value: 
+      objectReference: {fileID: 1851253115886273771}
     - target: {fileID: 7766497773775030884, guid: ef27739df46ffbc4fa934582e26541b9, type: 3}
       propertyPath: _portraitRoot
       value: 
