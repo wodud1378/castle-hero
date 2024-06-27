@@ -227,6 +227,12 @@ namespace RGLabs.Data.Repositories
                     lv = 1,
                     rate = 1,
                     id = 10000,
+                },
+                new UnitInfo
+                {
+                    lv = 1,
+                    rate = 1,
+                    id = 10001,
                     equipments = new EquipItem[]
                     {
                         new()
@@ -250,7 +256,13 @@ namespace RGLabs.Data.Repositories
                 {
                     lv = 1,
                     rate = 1,
-                    id = 10001
+                    id = 10006
+                },
+                new UnitInfo
+                {
+                    lv = 1,
+                    rate = 1,
+                    id = 10010
                 },
                 new UnitInfo
                 {
@@ -263,6 +275,12 @@ namespace RGLabs.Data.Repositories
                     lv = 1,
                     rate = 1,
                     id = 10023
+                },
+                new UnitInfo
+                {
+                    lv = 1,
+                    rate = 1,
+                    id = 10033
                 },
                 new UnitInfo
                 {
