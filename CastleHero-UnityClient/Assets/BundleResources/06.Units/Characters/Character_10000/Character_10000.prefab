@@ -536,7 +536,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Type>k__BackingField: 1
-  <Collider>k__BackingField: {fileID: 0}
+  <Collider>k__BackingField: {fileID: 5920150268716686069}
   <Hit>k__BackingField: {fileID: 3461385075006033567}
   <EffectBody>k__BackingField: {fileID: 5603259187318335576}
   _enableAttack: 0
