@@ -2840,6 +2840,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7291280788632044758}
   - component: {fileID: 3135153118128970889}
+  - component: {fileID: 8272312466967312267}
   m_Layer: 5
   m_Name: Popup_Character
   m_TagString: Untagged
@@ -2879,7 +2880,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dadc8d0b6e904f899400952fe699f7b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animator: {fileID: 0}
+  fromManager: 0
+  _animator: {fileID: 8272312466967312267}
   _close: {fileID: 805691974223758956}
   _sortOptions: {fileID: 5649018379333037742}
   _groups: {fileID: 3283582073139927979}
@@ -2887,6 +2889,27 @@ MonoBehaviour:
   _characterList: {fileID: 5934711479436281327}
   clickMethod: 0
   equipmentId: 0
+--- !u!95 &8272312466967312267
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4319836645406940673}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7945977ad089bf44aa5f9b25d6f8e798, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &4770415721060156741
 GameObject:
   m_ObjectHideFlags: 0
