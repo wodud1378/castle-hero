@@ -2026,7 +2026,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5196590479398200850}
   - {fileID: 544207056540482132}
   - {fileID: 6027106647233187169}
   - {fileID: 1448196628681405783}
@@ -2034,6 +2033,7 @@ RectTransform:
   - {fileID: 4681481541835765355}
   - {fileID: 6785215771148075230}
   - {fileID: 5288025426482063019}
+  - {fileID: 5196590479398200850}
   m_Father: {fileID: 7291280788632044758}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -2290,6 +2290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf094505e6ec4f2490a14c36063db6df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fromManager: 0
   _animator: {fileID: 0}
   _close: {fileID: 805691974223758956}
   all: {fileID: 1003802721485926888}
