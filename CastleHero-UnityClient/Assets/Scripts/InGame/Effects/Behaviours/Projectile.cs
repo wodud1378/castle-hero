@@ -9,6 +9,8 @@ namespace RGLabs.InGame.Effects.Behaviours
     public class Projectile : PoolItemBase, IEffect
     {
         [SerializeField] private float _speed;
+        [SerializeField] private TrailRenderer _trail;
+        [SerializeField] private ParticleSystem _particle;
 
         private UnitBehaviour _target;
         private Vector2 _destination;
@@ -24,6 +26,12 @@ namespace RGLabs.InGame.Effects.Behaviours
         {
             transform.position = startAt;
             _isRunning = true;
+
+            if (_trail != null)
+                _trail.enabled = true;
+            
+            if(_particle != null)
+                _particle.Play(true);
         }
 
         public void SetTarget(UnitBehaviour unit)
@@ -43,6 +51,16 @@ namespace RGLabs.InGame.Effects.Behaviours
         public void Stop()
         {
             _isRunning = false;
+
+            if (_trail != null)
+            {
+                _trail.Clear();
+                _trail.enabled = false;
+            }
+            
+            if(_particle != null)
+                _particle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+            
             DestroySelf();
         }
 
@@ -78,6 +96,15 @@ namespace RGLabs.InGame.Effects.Behaviours
             var direction = diff.normalized;
             transform.localRotation = Quaternion.Euler(0, 0, 180f - direction.ToFloat());
             transform.Translate(direction * (_speed * Time.deltaTime), Space.World);
+        }
+
+        private void OnValidate()
+        {
+            if (_trail == null)
+                _trail = GetComponentInChildren<TrailRenderer>();
+
+            if (_particle == null)
+                _particle = GetComponentInChildren<ParticleSystem>();
         }
     }
 }

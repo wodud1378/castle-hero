@@ -1092,7 +1092,7 @@ MonoBehaviour:
   shapeType: 1
   obstaclesMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2304
   autoRegenerateInterval: 0
   radiusOffset: 0.1
   invertMasterPolygon: 0
