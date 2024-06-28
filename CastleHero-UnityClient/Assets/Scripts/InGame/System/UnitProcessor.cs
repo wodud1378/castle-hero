@@ -181,9 +181,7 @@ namespace RGLabs.InGame.System
         }
 
         private async void Recovery(WaitRecover recover)
-        {
-            Debug.Log("Recover");
-            
+        { 
             var behaviour = recover.behaviour;
             behaviour.position = recover.position;
             

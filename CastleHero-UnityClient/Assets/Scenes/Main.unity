@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Radius>k__BackingField: 5.5
+  _map: {fileID: 1008868207}
   _defaultCastleId: 1
   _autoPlacementRadius: 3
 --- !u!4 &34114958

@@ -10,7 +10,7 @@ namespace RGLabs.InGame.UI
 {
     public class UIDamage : PoolItemBase
     {
-        public enum Position
+        public enum ShowOn
         {
             Top,
             Direction
@@ -18,47 +18,17 @@ namespace RGLabs.InGame.UI
 
         [SerializeField] private Animator _animator;
         [SerializeField] private TMP_Text _label;
-        [SerializeField] private Position _position;
+        
+        public ShowOn showOn;
 
         private RectTransform _rectTransform;
-        private Func<IUnitEvent, Vector2> _calcPosition;
 
-        private void Awake()
+        private void Awake() => _rectTransform = transform as RectTransform;
+
+        public void Show(int amount, Vector2 position)
         {
-            _rectTransform = transform as RectTransform;
-
-            switch (_position)
-            {
-                case Position.Direction:
-                    _calcPosition = CalculatePositionOnDirection;
-                    break;
-                default:
-                    _calcPosition = CalculatePositionOnTop;
-                    break;
-            }
-        }
-
-        public void Show(IUnitEvent modify)
-        {
-            _label.text = ((int)modify.Amount).ToString();
-            _rectTransform.position = _calcPosition.Invoke(modify);
-        }
-
-        private Vector2 CalculatePositionOnDirection(IUnitEvent unitEvent)
-        {
-            var from = unitEvent.From;
-            var to = unitEvent.To;
-            if (!to.IsValid() || !from.IsValid())
-                return CalculatePositionOnTop(unitEvent);
-            
-            var closest = to.Collider.ClosestPoint(from.position);
-            return closest * Random.Range(0.9f, 1.1f);
-        }
-
-        private Vector2 CalculatePositionOnTop(IUnitEvent modify)
-        {
-            var bounds = modify.To.Collider.bounds;
-            return new Vector2(bounds.center.x, bounds.max.y);
+            _label.text = amount.ToString();
+            _rectTransform.position = position;
         }
     }
 }
