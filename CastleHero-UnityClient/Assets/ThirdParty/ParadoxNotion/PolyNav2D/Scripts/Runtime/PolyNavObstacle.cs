@@ -34,8 +34,8 @@ namespace PolyNav
         ///<summary>The number of paths defining the obstacle</summary>
         public int GetPathCount() {
             if ( myCollider is BoxCollider2D ) { return 1; }
-            if ( myCollider is PolygonCollider2D ) { return ( myCollider as PolygonCollider2D ).pathCount; }
-            if ( myCollider is CompositeCollider2D ) { return ( myCollider as CompositeCollider2D ).pathCount; }
+            if ( myCollider is PolygonCollider2D ) { return ( (PolygonCollider2D)myCollider ).pathCount; }
+            if ( myCollider is CompositeCollider2D ) { return ( (CompositeCollider2D)myCollider ).pathCount; }
             return 0;
         }
 
@@ -44,10 +44,12 @@ namespace PolyNav
             Vector2[] points = null;
             if ( myCollider is BoxCollider2D ) {
                 var box = (BoxCollider2D)myCollider;
-                var tl = box.offset + ( new Vector2(-box.size.x, box.size.y) / 2 );
-                var tr = box.offset + ( new Vector2(box.size.x, box.size.y) / 2 );
-                var br = box.offset + ( new Vector2(box.size.x, -box.size.y) / 2 );
-                var bl = box.offset + ( new Vector2(-box.size.x, -box.size.y) / 2 );
+                var offset = box.offset;
+                var size = box.size;
+                var tl = offset + ( new Vector2(-size.x, size.y) / 2 );
+                var tr = offset + ( new Vector2(size.x, size.y) / 2 );
+                var br = offset + ( new Vector2(size.x, -size.y) / 2 );
+                var bl = offset + ( new Vector2(-size.x, -size.y) / 2 );
                 points = new Vector2[] { tl, tr, br, bl };
             }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using PolyNav;
 using RGLabs.Common;
 using RGLabs.Data;
 using RGLabs.Data.Repositories;
@@ -18,6 +19,7 @@ namespace RGLabs.Lobby.Behaviours
     {
         [field: SerializeField] public float Radius { get; private set; }
 
+        [SerializeField] private PolyNavMap _map;
         [SerializeField] private int _defaultCastleId;
         [SerializeField] private float _autoPlacementRadius;
 
@@ -54,6 +56,20 @@ namespace RGLabs.Lobby.Behaviours
 
             await LoadCastle();
             await LoadSavedUnits();
+
+            var barricades = _gameRepo.characters
+                .Where(x => x.Id == Constants.BarricadeId)
+                .ToArray();
+            
+            if (barricades.Length > 0)
+            {
+                foreach (var barricade in barricades)
+                {
+                    _map.AddObstacle(barricade, false);
+                }
+                
+                _map.GenerateMap();
+            }
         }
 
         public async void AutoPlacement()
@@ -99,6 +115,9 @@ namespace RGLabs.Lobby.Behaviours
             if (unit == _gameRepo.castle.Value)
                 return;
 
+            if(unit.Id == Constants.BarricadeId)
+                _map.RemoveObstacle(unit);
+                
             var characters = _gameRepo.characters;
             characters.Remove(unit);
             unit.DestroySelf();
@@ -114,6 +133,7 @@ namespace RGLabs.Lobby.Behaviours
             if (!IsValid(unit.Collider, layer))
                 return false;
 
+            bool isBarricade = unit.Id == Constants.BarricadeId;
             var characters = _gameRepo.characters;
             if (isExist)
             {
@@ -122,7 +142,7 @@ namespace RGLabs.Lobby.Behaviours
             }
             else
             {
-                if (unit.Id != Constants.BarricadeId &&
+                if (!isBarricade &&
                     placed.Value >= capacity.Value)
                     return false;
                 
@@ -131,6 +151,10 @@ namespace RGLabs.Lobby.Behaviours
             }
             
             _userRepo.ApplyFieldCharacters(characters);
+            
+            if(isBarricade)
+                _map.AddObstacle(unit);
+            
             return true;
         }
 
