@@ -1,7 +1,10 @@
 using System;
-using BackEnd;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using RGLabs.Data;
+using RGLabs.Network.DB;
 using RGLabs.Network.Service.Login;
+using UnityEngine.AddressableAssets;
 
 namespace RGLabs.Network.Service.Boot
 {
@@ -10,12 +13,17 @@ namespace RGLabs.Network.Service.Boot
         private readonly IBootServiceHandler _handler;
         private readonly IBackendErrorHandler _errorHandler;
         private readonly ILoginService _autoLoginService;
+        private readonly BootConfig _config;
+        
+        private readonly Chart _chart = new();
 
-        public BootService(IBootServiceHandler handler, IBackendErrorHandler errorHandler = null)
+        public BootService(BootConfig config, IBootServiceHandler handler, IBackendErrorHandler errorHandler = null)
         {
             _handler = handler;
             _autoLoginService = new AutoLoginService();
             _errorHandler = errorHandler;
+            _config = config;
+            
             _errorHandler?.Attach();
         }
         
@@ -27,6 +35,10 @@ namespace RGLabs.Network.Service.Boot
             var isSuccess = await AutoLogin();
             if (!isSuccess)
                 await _handler.OnNeedLogin();
+
+            await InitStorage();
+            
+            _handler.OnInitDone();
         }
 
         private async UniTask Init()
@@ -34,6 +46,17 @@ namespace RGLabs.Network.Service.Boot
             var initResult = await BackendWrapper.Init("Dev");
             if (initResult.result != ResultCode.Success)
                 await _handler.OnError(initResult);
+            
+            await Addressables.InitializeAsync();
+            var catalogs = await Addressables.CheckForCatalogUpdates();
+            var tasks = new List<UniTask>();
+            foreach (var catalog in catalogs)
+            {
+                var handle = Addressables.DownloadDependenciesAsync(catalog);
+                tasks.Add(handle.ToUniTask());
+            }
+
+            await UniTask.WhenAll(tasks);
         }
 
         private async UniTask CheckVersion()
@@ -52,6 +75,17 @@ namespace RGLabs.Network.Service.Boot
         {
             var response = await _autoLoginService.Login();
             return response.result == ResultCode.Success;
+        }
+
+        private async UniTask InitStorage()
+        {
+            DBCollections collections;
+            if (_config.useLocalDatabase)
+                collections = await _chart.LoadFromLocal();
+            else
+                collections = await _chart.LoadFromServer();
+
+            Storage.Init(collections);
         }
 
         public void Dispose() => _errorHandler?.Detach();

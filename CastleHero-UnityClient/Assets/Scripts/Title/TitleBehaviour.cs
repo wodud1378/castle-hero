@@ -1,6 +1,7 @@
 using System;
 using BackEnd;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Behaviours;
 using RGLabs.Network;
 using RGLabs.Network.Service.Boot;
 using RGLabs.Network.Service.Login;
@@ -11,12 +12,13 @@ namespace RGLabs.Title
 {
     public class TitleBehaviour : MonoBehaviour, IBootServiceHandler
     {
+        [SerializeField] private BootConfig _config;
         [SerializeField] private PopupLogin _loginPopup;
         [SerializeField] private PopupPolicy _policyPopup;
 
         private void Awake()
         {
-            var service = new BootService(this);
+            var service = new BootService(_config, this);
             service.Start().Forget();
 
             Backend.ErrorHandler.InitializePoll(true);
@@ -63,8 +65,13 @@ namespace RGLabs.Title
             }
 
             // 신규 유저 약관 동의,
-            if (response.row.GetStatusCode() == "201")
+            if (response.raw.GetStatusCode() == "201")
                 await CheckPolicy();
+        }
+
+        public void OnInitDone()
+        {
+            Loading.NextScene = "Main";
         }
 
         private async UniTask CheckPolicy()

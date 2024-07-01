@@ -70,80 +70,6 @@ namespace RGLabs.Data.Repositories
         }
     }
 
-    public class DBCollections
-    {
-        public static async UniTask<DBCollections> Load()
-        {
-            if (_loaded == null)
-            {
-                _loaded = new DBCollections();
-
-                await _loaded.Init();
-            }
-
-            return _loaded;
-        }
-
-        private static DBCollections _loaded;
-        private readonly DataLoader _loader;
-
-        public StageDB stages;
-        public WaveDB waves;
-
-        public ItemDBAccessor itemDBAccessor;
-
-        public CastleDB castles;
-        public UnitDB units;
-
-        public UnitLevelDB levels;
-        public UnitRateDB rates;
-        public UnitBalanceDB balances;
-        public SkillDB skills;
-
-        public SummonDB summons;
-        public SummonGroupDB summonGroups;
-
-        private DBCollections()
-        {
-            _loader = new DataLoader(new LocalCsvProvider());
-        }
-
-        private async UniTask Init()
-        {
-            var tasks = new List<UniTask>
-            {
-                _loader.Load<StageDB>(x => stages = x),
-                _loader.Load<WaveDB>(x => waves = x),
-                _loader.Load<UnitDB>(x => units = x),
-                _loader.Load<UnitLevelDB>(x => levels = x),
-                _loader.Load<UnitRateDB>(x => rates = x),
-                _loader.Load<UnitBalanceDB>(x => balances = x),
-                _loader.Load<SkillDB>(x => skills = x, true),
-                _loader.Load<CastleDB>(x => castles = x),
-                _loader.Load<SummonDB>(x => summons = x),
-                _loader.Load<SummonGroupDB>(x => summonGroups = x),
-            };
-
-            EquipmentDB equipmentItems = null;
-            tasks.Add(_loader.Load<EquipmentDB>(x => equipmentItems = x));
-
-            ConsumableDB consumableItems = null;
-            tasks.Add(_loader.Load<ConsumableDB>(x => consumableItems = x));
-
-            IngredientDB ingredientItems = null;
-            tasks.Add(_loader.Load<IngredientDB>(x => ingredientItems = x));
-
-            ChestDB chestItems = null;
-            tasks.Add(_loader.Load<ChestDB>(x => chestItems = x));
-
-            await UniTask.WhenAll(tasks);
-
-            itemDBAccessor = new ItemDBAccessor(equipmentItems, consumableItems, ingredientItems, chestItems);
-
-            units.CacheUnitSizes();
-        }
-    }
-
     public class InGameRepository : IDisposable
     {
         public readonly ReactiveProperty<int> mana = new(0);
@@ -156,7 +82,7 @@ namespace RGLabs.Data.Repositories
             castle.Value = null;
             characters.Dispose();
             characters.Clear();
-            ;
+            
             recovers.Dispose();
             recovers.Clear();
 

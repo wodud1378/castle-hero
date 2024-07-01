@@ -1,4 +1,5 @@
 using BackEnd;
+using LitJson;
 using Newtonsoft.Json;
 using RGLabs.Network.Parse;
 
@@ -18,13 +19,13 @@ namespace RGLabs.Network
     public class Response
     {
         public readonly ResultCode result;
-        public readonly BackendReturnObject row;
+        public readonly BackendReturnObject raw;
 
-        public Response(BackendReturnObject row)
+        public Response(BackendReturnObject raw)
         {
-            this.row = row;
+            this.raw = raw;
 
-            result = GetResult(row);
+            result = GetResult(raw);
         }
         
         private ResultCode GetResult(BackendReturnObject obj)
@@ -46,19 +47,20 @@ namespace RGLabs.Network
     public class Response<T> : Response
     {
         public readonly ResultCode result;
-        public readonly BackendReturnObject row;
+        public readonly BackendReturnObject raw;
         public readonly T data;
         
         private readonly IParser<T> _parser;
         
-        public Response(BackendReturnObject row, IParser<T> parser = null) : base(row)
+        public Response(BackendReturnObject raw, IParser<T> parser = null) : base(raw)
         {
             if (result != ResultCode.Success)
                 return;
             
             _parser = parser;
-            var json = row.GetReturnValue();
-            data = JsonConvert.DeserializeObject<T>(json);
+            var json = raw.FlattenRows();
+            var str = JsonMapper.ToJson(json);
+            data = JsonConvert.DeserializeObject<T>(str);
         }
     }
 }

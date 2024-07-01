@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LitJson;
 using RGLabs.Data.Model;
 using RGLabs.Utility;
 using UnityEngine;
@@ -27,14 +28,13 @@ namespace RGLabs.Data.DB
     public class DBAttribute : Attribute
     {
         public string LocalFile { get; }
-        public string Api { get; }
-
+        public string ChartName { get; }
         public string Path => $"LocalDB/{LocalFile}";
 
-        public DBAttribute(string localFile, string api = "")
+        public DBAttribute(string localFile, string chartName = "")
         {
             LocalFile = localFile;
-            Api = api;
+            ChartName = chartName;
         }
     }
     
@@ -140,7 +140,7 @@ namespace RGLabs.Data.DB
         {
             return new() { IsValid = true };
         }
-
+        
         protected virtual void Convert(object from, ref T to)
         {
             to = (T)from;

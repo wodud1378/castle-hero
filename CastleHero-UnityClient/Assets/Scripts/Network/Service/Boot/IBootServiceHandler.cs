@@ -10,5 +10,7 @@ namespace RGLabs.Network.Service.Boot
         public UniTask OnForceUpdate();
 
         public UniTask OnNeedLogin();
+
+        public void OnInitDone();
     }
 }
