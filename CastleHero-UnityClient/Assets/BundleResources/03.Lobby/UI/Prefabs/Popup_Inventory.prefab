@@ -2251,6 +2251,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7291280788632044758}
   - component: {fileID: 6327873953197435209}
+  - component: {fileID: 759961974045793985}
   m_Layer: 5
   m_Name: Popup_Inventory
   m_TagString: Untagged
@@ -2291,7 +2292,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fromManager: 0
-  _animator: {fileID: 0}
+  _animator: {fileID: 759961974045793985}
   _close: {fileID: 805691974223758956}
   all: {fileID: 1003802721485926888}
   equipment: {fileID: 3123436180208945531}
@@ -2319,6 +2320,27 @@ MonoBehaviour:
     m_DisabledColor: {r: 0.8745098, g: 0.8117647, b: 0.6666667, a: 0.47058824}
     m_ColorMultiplier: 0
     m_FadeDuration: 0.1
+--- !u!95 &759961974045793985
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4319836645406940673}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 36aa0cf8878a07c42bed3051e39b2d45, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &4950418651353449211
 GameObject:
   m_ObjectHideFlags: 0

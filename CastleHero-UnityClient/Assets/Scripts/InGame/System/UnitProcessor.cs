@@ -1,26 +1,22 @@
 using System;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common;
-using RGLabs.Common.Behaviours;
 using RGLabs.Data;
 using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.Unit.Components;
 using RGLabs.Utility;
 using UniRx;
-using UniRx.Triggers;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace RGLabs.InGame.System
 {
-    public class UnitProcessor
+    public class UnitProcessor : IDisposable
     {
-        private readonly SceneBehaviour _root;
-
-        public UnitProcessor(SceneBehaviour root)
+        private readonly CompositeDisposable _disposables = new();
+        
+        public UnitProcessor()
         {
-            _root = root;
-
             SubscribeMessage<AtkEvent>(OnReceiveAtkEvent);
             SubscribeMessage<HealEvent>(OnReceiveHealEvent);
             SubscribeMessage<ShieldEvent>(OnReceiveShieldEvent);
@@ -29,12 +25,14 @@ namespace RGLabs.InGame.System
             SubscribeMessage<WaitRecover>(OnCreatedRecover);
         }
 
+        public void Dispose() => _disposables.Dispose();
+
         private void SubscribeMessage<T>(Action<T> onReceive)
         {
             MessageBroker.Default
                 .Receive<T>()
                 .Subscribe(onReceive)
-                .AddTo(_root);
+                .AddTo(_disposables);
         }
 
         private void OnReceiveAtkEvent(AtkEvent ev)
@@ -165,26 +163,25 @@ namespace RGLabs.InGame.System
         private IDisposable ReserveRecover(WaitRecover recover)
         {
             recover.leftTime.Value = recover.time;
-            var stream = _root
-                .UpdateAsObservable()
+            return Observable.EveryUpdate()
                 .Select(_ => Time.deltaTime)
-                .Where(x =>
+                .Select(x =>
                 {
                     recover.leftTime.Value -= x;
-                    return recover.leftTime.Value <= 0;
-                });
-
-            var subscription = stream
-                .Subscribe(_ => Recovery(recover))
-                .AddTo(_root);
-
-            return subscription;
+                    return recover.leftTime.Value <= 0f;
+                })
+                .DistinctUntilChanged()
+                .Where(isDone => isDone)
+                .Take(1)
+                .Subscribe(_ =>
+                {
+                    Recovery(recover);
+                })
+                .AddTo(_disposables);
         }
 
         private async void Recovery(WaitRecover recover)
-        {
-            Debug.Log("Recover");
-            
+        { 
             var behaviour = recover.behaviour;
             behaviour.position = recover.position;
             

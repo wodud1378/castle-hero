@@ -10,6 +10,7 @@ using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace RGLabs.InGame.UI
 {
@@ -76,8 +77,33 @@ namespace RGLabs.InGame.UI
             var tr = uiDamage.transform;
             tr.SetParent(_damageRoot);
             tr.localScale = Vector3.one;
+
+            var pos = uiDamage.showOn switch
+            {
+                UIDamage.ShowOn.Direction => UIDamagePosOnTop(result),
+                UIDamage.ShowOn.Top => UIDamagePosOnDirection(result),
+                _ => default
+            };
+            
             uiDamage.Container = Storage.poolContainer;
-            uiDamage.Show(result);
+            uiDamage.Show((int)result.Amount, pos);
+        }
+
+        private Vector2 UIDamagePosOnTop(IUnitEvent ev)
+        {
+            var bounds = ev.To.Collider.bounds;
+            return new Vector2(bounds.center.x, bounds.max.y);
+        }
+
+        private Vector2 UIDamagePosOnDirection(IUnitEvent ev)
+        {
+            var from = ev.From;
+            var to = ev.To;
+            if (!to.IsValid() || !from.IsValid())
+                return UIDamagePosOnTop(ev);
+            
+            var closest = to.Collider.ClosestPoint(from.position);
+            return closest * Random.Range(0.9f, 1.1f);
         }
 
         private async UniTask<UIDamage> GetUIDamage(DamageType type, bool isCritical)
@@ -121,11 +147,6 @@ namespace RGLabs.InGame.UI
             else
                 Pause.Close();
         }
-
-        // private void OnApplicationFocus(bool hasFocus)
-        // {
-        //     SetPause(!hasFocus);
-        // }
 
         private async void OnResult(Result result)
         {

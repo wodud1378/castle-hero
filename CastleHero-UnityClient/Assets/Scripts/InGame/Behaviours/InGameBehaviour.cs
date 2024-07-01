@@ -60,7 +60,7 @@ namespace RGLabs.InGame.Behaviours
             _uiInGame.Init();
             _uiInGame.Open();
             
-            _unitProcessor = new UnitProcessor(this);
+            _unitProcessor = new UnitProcessor();
 
             RunWave();
             RunUnits();
@@ -171,6 +171,7 @@ namespace RGLabs.InGame.Behaviours
         {
             base.Dispose();
             
+            _unitProcessor.Dispose();
             _uiInGame.Dispose();
         }
     }

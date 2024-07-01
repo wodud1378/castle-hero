@@ -76,6 +76,34 @@ namespace PolyNav
 
         ///----------------------------------------------------------------------------------------------
 
+        public void AddObstacle<T>(T obj, bool generateMap = true) where T : MonoBehaviour
+        {
+            if (!obj.TryGetComponent(out PolyNavObstacle obstacle))
+                return;
+
+            if (navObstacles.Contains(obstacle))
+                return;
+            
+            navObstacles.Add(obstacle);
+            
+            if (generateMap)
+                GenerateMap();
+        }
+
+        public void RemoveObstacle<T>(T obj, bool generateMap = true) where T : MonoBehaviour
+        {
+            if (!obj.TryGetComponent(out PolyNavObstacle obstacle))
+                return;
+            
+            if (!navObstacles.Contains(obstacle))
+                return;
+            
+            navObstacles.Remove(obstacle);
+            
+            if (generateMap)
+                GenerateMap();
+        }
+        
         void Awake() {
             if ( _current == null ) {
                 _current = this;
