@@ -1,4 +1,4 @@
-﻿Skill_Id,Name,CoolTime,Range,Scale_x,Scale_y,Duration(3),Stack(4),Effect_0,Status_0,Type_0,Grp_0,Target_0,Effect_1,Status_1,Type_1,Grp_1,Target_1,Effect_2,Status_2,Type_2,Grp_2,Target_2,Description
+﻿Skill_Id,Name,CoolTime,Range,Scale_x,Scale_y,Duration,Stack,Effect_0,Status_0,Type_0,Grp_0,Target_0,Effect_1,Status_1,Type_1,Grp_1,Target_1,Effect_2,Status_2,Type_2,Grp_2,Target_2,Description
 100011,Lv1 죽음과 부패,23,원형,8,8,10,,,1,0.2,,0,Effect_Heal,1,0.6,1,0,,,,,,"바닥 위 아군의 체력 [{0}] 만큼 회복
 <{6}>에게 [{3}]초간 무적 효과 부여"
 100012,Lv2 죽음과 부패,20,원형,8,8,11,,,1,0.3,,0,Effect_Heal,1,0.6,1,0,,1,0.1,,8,"바닥 위 아군의 체력 [{0}] 만큼 회
