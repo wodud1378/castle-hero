@@ -4,7 +4,7 @@ namespace RGLabs.Data.Model
 {
     public struct SkillEntity : IEntity
     {
-        [DataField("Id")]
+        [DataField("Skill_Id")]
         public int Id { get; set; }
         
         public bool IsValid { get; set; }
