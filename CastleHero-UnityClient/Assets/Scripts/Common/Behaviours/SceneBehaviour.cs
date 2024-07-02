@@ -43,7 +43,6 @@ namespace RGLabs.Common.Behaviours
             Storage.inGameRepository.Dispose();
 
             Loading.NextScene = sceneName;
-            SceneManager.LoadScene("Loading", LoadSceneMode.Additive);
         }
     }
 }

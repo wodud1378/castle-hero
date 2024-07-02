@@ -14,6 +14,7 @@ namespace RGLabs.Common.Behaviours
             {
                 _nextScene = value;
                 _prevScene = SceneManager.GetActiveScene();
+                SceneManager.LoadScene("Loading", LoadSceneMode.Additive);
             }
         }
         
