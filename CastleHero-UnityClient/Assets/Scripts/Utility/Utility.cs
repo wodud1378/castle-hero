@@ -158,14 +158,6 @@ namespace RGLabs.Utility
         {
             skillLv = 1;
             stats = null;
-            if (balanceData.rateOptions == null || balanceData.rateValues == null)
-                return;
-
-            int rateBonusLength = balanceData.rateOptions.Length;
-            int rateIndex = Mathf.Clamp(rate, 0, rateBonusLength) - 1;
-            if (rateIndex == -1)
-                return;
-            
             stats = new Dictionary<Status.Type, float>
             {
                 { Status.Type.Hp, balanceData.hp * lv },
@@ -177,6 +169,14 @@ namespace RGLabs.Utility
                 { Status.Type.AtkRange, balanceData.atkRange * lv },
                 { Status.Type.MoveRange, balanceData.moveRange * lv }
             };
+            
+            if (balanceData.rateOptions == null || balanceData.rateValues == null)
+                return;
+
+            int rateBonusLength = balanceData.rateOptions.Length;
+            int rateIndex = Mathf.Clamp(rate, 0, rateBonusLength) - 1;
+            if (rateIndex == -1)
+                return;
 
             for (int i = 0; i < rateIndex; ++i)
             {
