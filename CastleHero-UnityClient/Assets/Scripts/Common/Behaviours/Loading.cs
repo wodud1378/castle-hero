@@ -34,10 +34,6 @@ namespace RGLabs.Common.Behaviours
             while (!loadHandle.isDone)
                 yield return null;
             
-            // var unloadHandle = SceneManager.UnloadSceneAsync(unload);
-            // while (!unloadHandle.isDone)
-            //     yield return null;
-            //
             var finishHandle = SceneManager.UnloadSceneAsync("Loading");
             while (!finishHandle.isDone)
                  yield return null;

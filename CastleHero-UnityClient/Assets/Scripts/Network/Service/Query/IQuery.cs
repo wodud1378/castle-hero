@@ -22,8 +22,6 @@ namespace RGLabs.Network.Service.Query
 
         public List<FieldCharacter> Formation(ulong uid) => GetUser(uid)?.fieldCharacters;
 
-        public Currency Currency(ulong uid) => GetUser(uid)?.currency;
-
         public List<IItem> Inventory(ulong uid) => GetUser(uid)?.items.ToList();
 
         public void AddCharacter(ulong uid, UnitInfo unitInfo)

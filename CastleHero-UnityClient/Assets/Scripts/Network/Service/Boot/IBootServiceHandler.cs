@@ -1,4 +1,6 @@
 using Cysharp.Threading.Tasks;
+using RGLabs.Network.Service.Login;
+using RGLabs.Title;
 
 namespace RGLabs.Network.Service.Boot
 {
@@ -9,7 +11,9 @@ namespace RGLabs.Network.Service.Boot
         public UniTask OnMaintenance();
         public UniTask OnForceUpdate();
 
-        public UniTask OnNeedLogin();
+        public UniTask<ILoginService> ProvideLoginService();
+
+        public UniTask<PolicyAgreement> CheckPolicy();
 
         public void OnInitDone();
     }

@@ -50,17 +50,14 @@ namespace RGLabs.Network
         public readonly BackendReturnObject raw;
         public readonly T data;
         
-        private readonly IParser<T> _parser;
-        
         public Response(BackendReturnObject raw, IParser<T> parser = null) : base(raw)
         {
             if (result != ResultCode.Success)
                 return;
             
-            _parser = parser;
             var json = raw.FlattenRows();
             var str = JsonMapper.ToJson(json);
-            data = JsonConvert.DeserializeObject<T>(str);
+            data = JsonMapper.ToObject<T>(str);
         }
     }
 }

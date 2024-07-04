@@ -41,7 +41,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         {
             var popup = await Context.popupManager.Open<PopupCharacterList>();
             popup.clickMethod = PopupCharacterList.ClickMethod.Equip;
-            popup.equipmentId = Item.Id;
+            popup.equipmentId = Item.ItemId;
         }
 
         private void Release()

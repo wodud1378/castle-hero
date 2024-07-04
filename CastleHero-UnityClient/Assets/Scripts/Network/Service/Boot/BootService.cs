@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
+using BackEnd;
 using Cysharp.Threading.Tasks;
+using LitJson;
 using RGLabs.Data;
+using RGLabs.Data.Repositories;
 using RGLabs.Network.DB;
+using RGLabs.Network.Model;
 using RGLabs.Network.Service.Login;
 using UnityEngine.AddressableAssets;
 
@@ -32,11 +36,31 @@ namespace RGLabs.Network.Service.Boot
             await Init();
             await CheckVersion();
             
-            var isSuccess = await AutoLogin();
-            if (!isSuccess)
-                await _handler.OnNeedLogin();
+            var loginResponse = await _autoLoginService.Login();
+            if (loginResponse.result != ResultCode.Success)
+            {
+                var loginService = await _handler.ProvideLoginService();
+                loginResponse = await loginService.Login();
+            }
 
-            await InitStorage();
+            if (loginResponse.result != ResultCode.Success)
+            {
+                // TODO 로그인 실패 처리.
+            }
+
+            UserInfo userInfo;
+            if (loginResponse.raw.GetStatusCode() == "201")
+            {
+                await _handler.CheckPolicy();
+                userInfo = (await BackendWrapper.NewUser()).data;
+            }
+            else
+            {
+                userInfo = (await BackendWrapper.GetUserInfo()).data;
+            }
+
+            await InitStorage(userInfo);
+            await ShowNotice();
             
             _handler.OnInitDone();
         }
@@ -70,22 +94,20 @@ namespace RGLabs.Network.Service.Boot
                 await _handler.OnForceUpdate();
 #endif
         }
-
-        private async UniTask<bool> AutoLogin()
-        {
-            var response = await _autoLoginService.Login();
-            return response.result == ResultCode.Success;
-        }
-
-        private async UniTask InitStorage()
+        private async UniTask InitStorage(UserInfo userInfo)
         {
             DBCollections collections;
             if (_config.useLocalDatabase)
                 collections = await _chart.LoadFromLocal();
             else
                 collections = await _chart.LoadFromServer();
+            
+            Storage.Init(userInfo, collections);
+        }
 
-            Storage.Init(collections);
+        private UniTask ShowNotice()
+        {
+            return UniTask.CompletedTask;
         }
 
         public void Dispose() => _errorHandler?.Detach();

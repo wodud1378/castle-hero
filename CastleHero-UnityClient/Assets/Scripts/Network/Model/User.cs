@@ -10,25 +10,19 @@ namespace RGLabs.Network.Model
         public int focusedStage;
         public int castleLv;
         
-        public List<UnitInfo> characters;
-        public List<FieldCharacter> fieldCharacters;
-
-        public Currency currency;
-        public IItem[] items;
-    }
-
-    [Serializable]
-    public class Currency
-    {
         public int gold;
         public int freeDia;
         public int paidDia;
+        
+        public List<UnitInfo> characters;
+        public List<FieldCharacter> fieldCharacters;
+        public List<IItem> items;
     }
     
     [Serializable]
     public class FieldCharacter
     {
-        public int index;
+        public int id;
         public float x;
         public float y;
     }

@@ -10,17 +10,17 @@ using UnityEngine.UI;
 
 namespace RGLabs.Title.UI.Popup
 {
-    public class PopupLogin : PopupBase
+    public class PopupSelectLoginPlatform : PopupBase
     {
         [SerializeField] private Button[] _platformButtons;
 
-        public UniTask<Response> LoginTask => _completionSource.Task;
+        public UniTask<ILoginService> LoginTask => _completionSource.Task;
 
-        private UniTaskCompletionSource<Response> _completionSource;
+        private UniTaskCompletionSource<ILoginService> _completionSource;
 
         public override UniTask Open(params object[] parameters)
         {
-            _completionSource = new UniTaskCompletionSource<Response>();
+            _completionSource = new UniTaskCompletionSource<ILoginService>();
             foreach (var parameter in parameters)
             {
                 if (parameter is not Platform platform)
@@ -36,15 +36,14 @@ namespace RGLabs.Title.UI.Popup
                 
                 current.gameObject.SetActive(true);
                 
-                async void OnClick()
+                void OnClick()
                 {
                     foreach (var button in _platformButtons)
                     {
                         button.enabled = false;
                     }
                     
-                    var response = await service.Login();
-                    _completionSource.TrySetResult(response);
+                    _completionSource.TrySetResult(service);
                     
                     Close().Forget();
                 }

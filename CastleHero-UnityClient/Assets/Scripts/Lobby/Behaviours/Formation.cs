@@ -218,11 +218,10 @@ namespace RGLabs.Lobby.Behaviours
             var tasks = new List<UniTask>();
             foreach (var data in _userRepo.fieldCharacters)
             {
-                int index = data.index;
-                if (!index.IsValidIndex(_userRepo.characters))
+                var character = _userRepo.characters.FirstOrDefault(x => x.id == data.id);
+                if (character == null)
                     continue;
-
-                var character = _userRepo.characters[index];
+                
                 var position = new Vector2(data.x, data.y);
                 tasks.Add(CreateCharacter(character, position));
             }

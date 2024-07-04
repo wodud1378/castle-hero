@@ -40,7 +40,7 @@ namespace RGLabs.Network.Utility
             {
                 new EquipItem
                 {
-                    Id = 1,
+                    Guid = Guid.NewGuid().ToString(),
                     ItemId = 30001,
                     Quantity = 1,
                     character = 0,
@@ -50,7 +50,7 @@ namespace RGLabs.Network.Utility
                 },
                 new EquipItem
                 {
-                    Id = 2,
+                    Guid = Guid.NewGuid().ToString(),
                     ItemId = 30002,
                     Quantity = 1,
                     character = 0,
@@ -60,7 +60,7 @@ namespace RGLabs.Network.Utility
                 },
                 new EquipItem
                 {
-                    Id = 3,
+                    Guid = Guid.NewGuid().ToString(),
                     ItemId = 30002,
                     Quantity = 1,
                     character = 0,
@@ -70,7 +70,7 @@ namespace RGLabs.Network.Utility
                 },
                 new EquipItem
                 {
-                    Id = 4,
+                    Guid = Guid.NewGuid().ToString(),
                     ItemId = 30002,
                     Quantity = 1,
                     character = 0,
@@ -80,35 +80,30 @@ namespace RGLabs.Network.Utility
                 },
                 new ConsumableItem
                 {
-                    Id = 5,
                     ItemId = 51001,
                     Quantity = 3,
                     consumeOption = 1
                 },
                 new ConsumableItem
                 {
-                    Id = 6,
                     ItemId = 52001,
                     Quantity = 5,
                     consumeOption = 2
                 },
                 new ConsumableItem
                 {
-                    Id = 7,
                     ItemId = 53001,
                     Quantity = 10,
                     consumeOption = 3
                 },
                 new ConsumableItem
                 {
-                    Id = 8,
                     ItemId = 54001,
                     Quantity = 5,
                     consumeOption = 4
                 },
                 new Item
                 {
-                    Id = 9,
                     ItemId = 60001,
                     Quantity = 150,
                 }

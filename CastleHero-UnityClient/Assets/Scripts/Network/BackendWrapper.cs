@@ -2,6 +2,8 @@ using System;
 using BackEnd;
 using BackEnd.MultiSettings;
 using Cysharp.Threading.Tasks;
+using LitJson;
+using RGLabs.Network.Model;
 
 namespace RGLabs.Network
 {
@@ -72,7 +74,9 @@ namespace RGLabs.Network
         
         public static UniTask<Response> FederationLogin(string token, FederationType type)
         {
-            var api = new Api(onResult => Backend.BMember.AuthorizeFederation(token, type, onResult.Invoke));
+            var api = new Api(
+                onResult => Backend.BMember.AuthorizeFederation(token, type, onResult.Invoke));
+            
             return Call(api);
         }
 
@@ -82,11 +86,31 @@ namespace RGLabs.Network
         public static UniTask<Response<ChartInfo[]>> GetChartList() 
             => Call<ChartInfo[]>(Backend.Chart.GetChartListV2);
 
+        public static UniTask<Response<UserInfo>> GetUserInfo()
+        {
+            var api = new Api(
+                onResult => Backend.GameData.GetMyData("userdata", new Where(), onResult.Invoke));
+
+            return Call<UserInfo>(api);
+        }
+
         public static async UniTask<(string chartName, Response response)> GetChartContent(string chartName, string id)
         {
-            var response = await Call(onResult => Backend.Chart.GetChartContents(id, onResult.Invoke));
+            var response = await Call(
+                onResult => Backend.Chart.GetChartContents(id, onResult.Invoke));
 
             return (chartName, response);
+        }
+
+        public static async UniTask<Response<UserInfo>> NewUser()
+        {
+            var param = new Param { { "functionName", "DefaultData" } };
+            var api = new Api(
+                onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke));
+
+            await Call(api);
+
+            return await GetUserInfo();
         }
 
         private static async UniTask<Response> Call(Api api)

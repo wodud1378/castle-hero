@@ -7,13 +7,22 @@ using RGLabs.Network.Service.Boot;
 using RGLabs.Network.Service.Login;
 using RGLabs.Title.UI.Popup;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace RGLabs.Title
 {
+    public struct PolicyAgreement
+    {
+        public bool terms;
+        public bool privacy;
+        public bool push;
+        public bool nightPush;
+    }
+    
     public class TitleBehaviour : MonoBehaviour, IBootServiceHandler
     {
         [SerializeField] private BootConfig _config;
-        [SerializeField] private PopupLogin _loginPopup;
+        [FormerlySerializedAs("_loginPopup")] [SerializeField] private PopupSelectLoginPlatform selectLoginPlatformPopupSelect;
         [SerializeField] private PopupPolicy _policyPopup;
 
         private void Awake()
@@ -45,28 +54,18 @@ namespace RGLabs.Title
             throw new NotImplementedException();
         }
 
-        public async UniTask OnNeedLogin()
+        public async UniTask<ILoginService> ProvideLoginService()
         {
-            _loginPopup.gameObject.SetActive(true);
+            selectLoginPlatformPopupSelect.gameObject.SetActive(true);
             
 #if UNITY_EDITOR
-            await _loginPopup.Open(Platform.Guest);
+            await selectLoginPlatformPopupSelect.Open(Platform.Guest);
 #elif UNITY_ANDROID
             await _loginPopup.Open(Platform.PlayStore, Platform.Guest);
 #elif UNITY_iOS
             await _loginPopup.Open(Platform.AppStore, Platform.Guest);
 #endif
-
-            var response = await _loginPopup.LoginTask;
-            if (response.result != ResultCode.Success)
-            {
-                // TODO 로그인 실패 에러 처리.
-                return;
-            }
-
-            // 신규 유저 약관 동의,
-            if (response.raw.GetStatusCode() == "201")
-                await CheckPolicy();
+            return await selectLoginPlatformPopupSelect.LoginTask;
         }
 
         public void OnInitDone()
@@ -74,7 +73,7 @@ namespace RGLabs.Title
             Loading.NextScene = "Main";
         }
 
-        private async UniTask CheckPolicy()
+        public async UniTask<PolicyAgreement> CheckPolicy()
         {
             _policyPopup.gameObject.SetActive(true);
 
@@ -83,6 +82,8 @@ namespace RGLabs.Title
 
             PlayerPrefs.SetInt("push", agreement.push ? 1 : 0);
             PlayerPrefs.SetInt("push-night", agreement.nightPush ? 1 : 0);
+
+            return agreement;
         }
     }
 }

@@ -159,7 +159,7 @@ namespace RGLabs.Lobby.UI.Popup
         private void OpenEquipmentCompare(UnitInfo unit)
         {
             var item = Storage.userRepository.items
-                .FirstOrDefault(x => x.Id == equipmentId);
+                .FirstOrDefault(x => x.ItemId == equipmentId);
 
             if (item is not EquipItem right)
                 return;

@@ -11,14 +11,6 @@ namespace RGLabs.Title.UI.Popup
 {
     public class PopupPolicy : PopupBase
     {
-        public struct Agreement
-        {
-            public bool terms;
-            public bool privacy;
-            public bool push;
-            public bool nightPush;
-        }
-
         [SerializeField] private Toggle _all;
         [SerializeField] private Toggle _terms;
         [SerializeField] private Toggle _privacy;
@@ -27,9 +19,9 @@ namespace RGLabs.Title.UI.Popup
         [SerializeField] private Button _confirm;
         [SerializeField] private CanvasGroup _needEssential;
 
-        public UniTask<Agreement> AgreementTask => _completionSource.Task;
+        public UniTask<PolicyAgreement> AgreementTask => _completionSource.Task;
         
-        private UniTaskCompletionSource<Agreement> _completionSource;
+        private UniTaskCompletionSource<PolicyAgreement> _completionSource;
         private Sequence _sequence;
 
         protected override void OnAwake()
@@ -86,7 +78,7 @@ namespace RGLabs.Title.UI.Popup
                 return;
             }
             
-            var agreement = new Agreement
+            var agreement = new PolicyAgreement
             {
                 terms = _terms.isOn,
                 privacy = _privacy.isOn,
