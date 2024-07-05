@@ -335,8 +335,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spriteCollection: {fileID: 8109079146137074710}
   _animator: {fileID: 7883919529514807641}
+  _quest: {fileID: 1694556404051944499}
+  _mail: {fileID: 443266197945880958}
+  _attendence: {fileID: 6853834941849222258}
+  _setting: {fileID: 8606707329807751712}
   _characters: {fileID: 4247259264058424911}
   _inventory: {fileID: 7253160913362542540}
+  _summon: {fileID: 3001186427410011717}
+  _dungeon: {fileID: 6869267406591306359}
 --- !u!95 &7883919529514807641
 Animator:
   serializedVersion: 5

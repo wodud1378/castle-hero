@@ -95,9 +95,6 @@ namespace RGLabs.Lobby.Behaviours
             _uiLobby.Dispose();
             _uiStage.Dispose();
 
-            Destroy(_uiLobby.gameObject);
-            Destroy(_uiStage.gameObject);
-
             new StartGame().Publish();
 
             Context.Back.Clear();
