@@ -157,10 +157,5 @@ namespace RGLabs.Lobby.UI
             
             return base.SetItem(slot, data);
         }
-
-        private void OnDestroy()
-        {
-            Destroy(_formation.gameObject);
-        }
     }
 }

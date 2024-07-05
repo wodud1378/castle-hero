@@ -54,6 +54,7 @@ namespace RGLabs.Common.Behaviours
             gameObject.SetActive(false);
             
             OnCloseAnimationEnd?.Invoke();
+            OnCloseAnimationEnd = null;
         }
 
         #endregion
