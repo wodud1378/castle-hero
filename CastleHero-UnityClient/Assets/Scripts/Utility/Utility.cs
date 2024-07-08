@@ -426,7 +426,7 @@ namespace RGLabs.Utility
         public static UniTask OnAnimationEnd(Animator animator, int hash, Action onEnd)
         {
             animator.SetTrigger(hash);
-
+            
             return Observable
                 .EveryUpdate()
                 .Where(_ =>
@@ -434,6 +434,7 @@ namespace RGLabs.Utility
                     var state = animator.GetCurrentAnimatorStateInfo(0);
                     return state.shortNameHash == hash && state.normalizedTime >= 1f;
                 })
+                .First()
                 .ToUniTask()
                 .ContinueWith(_ => onEnd?.Invoke());
         }

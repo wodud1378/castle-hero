@@ -59,7 +59,7 @@ namespace RGLabs.Common.UI.Popup
 
         public bool OnProcessBack()
         {
-            Close();
+            Close().Forget();
 
             return true;
         }
