@@ -233,24 +233,6 @@ namespace RGLabs.Data.Repositories
                     lv = 1,
                     rate = 1,
                     id = 10001,
-                    equipments = new EquipItem[]
-                    {
-                        new()
-                        {
-                            ItemId = 30001,
-                            Quantity = 1,
-                            character = 10000,
-                            slot = 0,
-                            stats = new[]
-                            {
-                                1, 2, 3
-                            },
-                            values = new[]
-                            {
-                                150, 0.3f, 0.3f
-                            }
-                        }
-                    },
                 },
                 new UnitInfo
                 {
