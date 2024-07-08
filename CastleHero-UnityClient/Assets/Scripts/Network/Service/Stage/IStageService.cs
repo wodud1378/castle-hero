@@ -3,7 +3,7 @@ using RGLabs.Network.Model;
 
 namespace RGLabs.Network.Service.Stage
 {
-    public interface IStageService: INetworkService
+    public interface IStageService
     {
         public UniTask<StageClear> StageClear(string inDate, int stage);
         public UniTask SetStageFocus(string inDate, int stage);

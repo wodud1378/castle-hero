@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI;
@@ -67,8 +68,11 @@ namespace RGLabs.Lobby.UI.Popup
 
             SetSkeleton(unitEntity.skeletonData).Forget();
             UpdateRate(rate);
-            UpdateStatusTexts(lv, rate, unitEntity, balanceEntity, _unit.equipments);
-            UpdateEquipmentSlots(_unit.equipments);
+
+            var equipments = Storage.userRepository.EquipItems(info.equipments).ToArray();
+            
+            UpdateStatusTexts(lv, rate, unitEntity, balanceEntity, equipments);
+            UpdateEquipmentSlots(equipments);
         }
 
         private async UniTask SetSkeleton(string dataPath)

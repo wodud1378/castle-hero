@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data;
@@ -33,7 +34,7 @@ namespace RGLabs.Network.Service.Summon
             return UniTask.FromResult(GetSummonResult(id)[0]); 
         }
 
-        public UniTask<ISummonResult[]> SummonTenth()
+        public UniTask<List<ISummonResult>> SummonTenth()
         {
             var array = new int[10];
             for (int i = 0; i < 10; ++i)
@@ -44,11 +45,11 @@ namespace RGLabs.Network.Service.Summon
             return UniTask.FromResult(GetSummonResult(array)); 
         }
 
-        private ISummonResult[] GetSummonResult(params int[] ids)
+        private List<ISummonResult> GetSummonResult(params int[] ids)
         {
             int length = ids.Length;
             var owned = Query.Characters(0);
-            var result = new ISummonResult[length];
+            var result = new List<ISummonResult>();
             for (int i = 0; i < length; i++)
             {
                 int id = ids[i];
@@ -60,18 +61,18 @@ namespace RGLabs.Network.Service.Summon
                 var exist = owned.FirstOrDefault(x => x.id == unitId);
                 if (exist != default)
                 {
-                    result[i] = new SummonedSoul
+                    result.Add(new SummonedSoul
                     {
                         Id = groupEntity.soulId,
                         quantity = groupEntity.soulCount
-                    };
+                    });
                 }
                 else
                 {
-                    result[i] = new SummonedUnit
+                    result.Add(new SummonedUnit
                     {
                         Id = unitId
-                    };
+                    });
                 }
             }
 

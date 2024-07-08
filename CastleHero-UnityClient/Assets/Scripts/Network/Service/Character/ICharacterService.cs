@@ -4,7 +4,7 @@ using RGLabs.Network.Model;
 
 namespace RGLabs.Network.Service.Character
 {
-    public interface ICharacterService : INetworkService
+    public interface ICharacterService
     {
         public UniTask<LevelUpResult> LevelUp(UnitInfo unit, ConsumableItem item, int consumeQuantity);
         public UniTask<UpgradeResult> Upgrade(UnitInfo unit, ConsumableItem item, int consumeQuantity);

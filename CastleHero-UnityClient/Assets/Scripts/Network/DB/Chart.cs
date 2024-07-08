@@ -19,18 +19,17 @@ namespace RGLabs.Network.DB
         {
             DBCollections collections = new();
             
-            var tasks = new List<UniTask<(string chartName, Response reponse)>>();
+            var tasks = new List<UniTask<(string chartName, int id, Response response)>>();
             foreach (var chartInfo in await GetChartList())
             {
-                var id = chartInfo.selectedChartFileId.ToString();
                 var name = chartInfo.chartName;
-                tasks.Add(BackendWrapper.GetChartContent(name, id));
+                var id = chartInfo.selectedChartFileId;
+                tasks.Add(GetChartContent(name, id));
             }
-
+            
             var results = await UniTask.WhenAll(tasks);
             var map = results
-                .Select(x => (x.chartName, x.reponse.raw.GetFlattenJSON()))
-                .ToDictionary(x => x.chartName, y => y.Item2["rows"]);
+                .ToDictionary(x => x.chartName, y => (y.id, y.response.raw.GetFlattenJSON()));
             
             LoadInstance<StageDB>(map, x => collections.stages = x);
             LoadInstance<WaveDB>(map, x => collections.waves = x);
@@ -62,6 +61,8 @@ namespace RGLabs.Network.DB
 
             return collections;
         }
+
+        private async UniTask<(string chartName, int id, Response response)> GetChartContent(string chartName, int id) => (chartName, id, await BackendWrapper.GetChartContent(id.ToString()));
 
         public async UniTask<DBCollections> LoadFromLocal()
         {
@@ -101,17 +102,19 @@ namespace RGLabs.Network.DB
             return collections;
         }
 
-        private void LoadInstance<T>(Dictionary<string, JsonData> map, Action<T> onResult) where T : class, IDataBase
+        private void LoadInstance<T>(Dictionary<string, (int id, JsonData json)> map, Action<T> onResult) where T : class, IDataBase
         {
             var type = typeof(T);
             var att = type.GetCustomAttribute<DBAttribute>();
             if (att == null)
                 return;
             
-            if (!map.TryGetValue(att.ChartName, out var json))
+            if (!map.TryGetValue(att.ChartName, out var data))
                 return;
-            
-            onResult.Invoke(_jsonToDB.Convert<T>(json, type == typeof(SkillDB)));
+
+            var obj = _jsonToDB.Convert<T>(data.json, type == typeof(SkillDB));
+            obj.Id = data.id;
+            onResult.Invoke(obj);
         }
 
         private async UniTask<ChartInfo[]> GetChartList()

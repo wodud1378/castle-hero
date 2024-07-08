@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using PolyNav;
 using RGLabs.Common;
+using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.InGame.System;
 using RGLabs.Network.Model;
@@ -183,7 +185,13 @@ namespace RGLabs.Unit.Components
             ApplyBalance(info.lv, info.rate, balance, out int skillLv);
 
             if (info.equipments != null)
-                ApplyEquipmentBonus(info.equipments);
+            {
+                var equipments = Storage.userRepository.items
+                    .OfType<EquipItem>()
+                    .Where(x => info.equipments.Contains(x.Guid));
+                
+                ApplyEquipmentBonus(equipments);
+            }
 
             if (data.skill != 0)
             {

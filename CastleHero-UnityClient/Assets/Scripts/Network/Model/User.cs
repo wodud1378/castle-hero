@@ -35,7 +35,7 @@ namespace RGLabs.Network.Model
         public int rate;
         public int exp;
 
-        public EquipItem[] equipments;
+        public List<string> equipments;
     }
 
     public interface IModifyCharacter

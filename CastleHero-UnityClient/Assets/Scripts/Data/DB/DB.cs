@@ -10,6 +10,7 @@ namespace RGLabs.Data.DB
 {
     public interface IDataBase
     {
+        public int Id { get; set; }
         public void Load(object[] data);
     }
     
@@ -40,6 +41,8 @@ namespace RGLabs.Data.DB
     
     public abstract class DB<T> : IDataBase where T : IEntity, new()
     {
+        public int Id { get; set; }
+        
         protected T[] entities;
 
         private readonly Dictionary<int, int> _resultCache = new();

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using BackEnd;
 using BackEnd.MultiSettings;
 using Cysharp.Threading.Tasks;
@@ -43,7 +44,7 @@ namespace RGLabs.Network
         public string chartExplain;
         public int selectedChartFileId;
     }
-    
+
     public static class BackendWrapper
     {
         public delegate void Api(Backend.BackendCallback onResult);
@@ -60,10 +61,10 @@ namespace RGLabs.Network
             return Call(api);
         }
 
-        public static UniTask<Response<VersionInfo>> CheckVersion() 
+        public static UniTask<Response<VersionInfo>> CheckVersion()
             => Call<VersionInfo>(Backend.Utils.GetLatestVersion);
 
-        public static UniTask<Response<ServerStatus>> CheckServerStatus() 
+        public static UniTask<Response<ServerStatus>> CheckServerStatus()
             => Call<ServerStatus>(Backend.Utils.GetServerStatus);
 
         public static UniTask<Response> AutoLogin()
@@ -71,46 +72,87 @@ namespace RGLabs.Network
 
         public static UniTask<Response> GuestLogin()
             => Call(Backend.BMember.GuestLogin);
-        
-        public static UniTask<Response> FederationLogin(string token, FederationType type)
-        {
-            var api = new Api(
-                onResult => Backend.BMember.AuthorizeFederation(token, type, onResult.Invoke));
-            
-            return Call(api);
-        }
+
+        public static UniTask<Response> FederationLogin(string token, FederationType type) 
+            => Call(onResult => Backend.BMember.AuthorizeFederation(token, type, onResult.Invoke));
 
         public static UniTask<Response<Policy>> GetPolicy()
             => Call<Policy>(Backend.Policy.GetPolicyV2);
 
-        public static UniTask<Response<ChartInfo[]>> GetChartList() 
+        public static UniTask<Response<ChartInfo[]>> GetChartList()
             => Call<ChartInfo[]>(Backend.Chart.GetChartListV2);
 
-        public static UniTask<Response<UserInfo>> GetUserInfo()
+        public static UniTask<Response<List<ISummonResult>>> Summon(int count, int eventIndex, int eventChartId, int listChartId)
         {
-            var api = new Api(
-                onResult => Backend.GameData.GetMyData("userdata", new Where(), onResult.Invoke));
+            var param = new Param
+            {
+                { "functionName", $"SummonX{count}" },
+                { "eventIndex", eventIndex },
+                { "eventChartId", eventChartId },
+                { "listChartId", listChartId },
+            };
 
-            return Call<UserInfo>(api);
+            return Call<List<ISummonResult>>(
+                onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke));
         }
+        
+        public static UniTask<Response<UserInfo>> GetUserInfo() 
+            => Call<UserInfo>(onResult => Backend.GameData.GetMyData("userdata", new Where(), onResult.Invoke));
 
-        public static async UniTask<(string chartName, Response response)> GetChartContent(string chartName, string id)
-        {
-            var response = await Call(
-                onResult => Backend.Chart.GetChartContents(id, onResult.Invoke));
-
-            return (chartName, response);
-        }
+        public static UniTask<Response> GetChartContent(string id) 
+            => Call(onResult => Backend.Chart.GetChartContents(id, onResult.Invoke));
 
         public static async UniTask<Response<UserInfo>> NewUser()
         {
-            var param = new Param { { "functionName", "DefaultData" } };
-            var api = new Api(
-                onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke));
+            var api = NewDataFromServer();
 
             await Call(api);
 
             return await GetUserInfo();
+        }
+
+        private static Api NewDataFromServer()
+        {
+            var param = new Param { { "functionName", "DefaultData" } };
+            return onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke);
+        }
+
+        private static Api NewDataFromLocal()
+        {
+            var userInfo = new UserInfo
+            {
+                stage = 1,
+                focusedStage = 1,
+                castleLv = 1,
+                characters = new List<UnitInfo>()
+                {
+                    new()
+                    {
+                        id = 10001,
+                        lv = 1,
+                    }
+                },
+                fieldCharacters = new(),
+                items = new()
+            };
+
+            var param = new Param
+            {
+                { nameof(userInfo.stage), userInfo.stage },
+                { nameof(userInfo.focusedStage), userInfo.focusedStage },
+                { nameof(userInfo.castleLv), userInfo.castleLv },
+                { nameof(userInfo.gold), userInfo.gold },
+                { nameof(userInfo.freeDia), userInfo.freeDia },
+                { nameof(userInfo.paidDia), userInfo.paidDia },
+                { nameof(userInfo.characters), userInfo.characters },
+                { nameof(userInfo.fieldCharacters), userInfo.fieldCharacters },
+                { nameof(userInfo.items), userInfo.items }
+            };
+
+            var api = new Api(
+                onResult => Backend.GameData.Insert("userdata", param, onResult));
+
+            return api;
         }
 
         private static async UniTask<Response> Call(Api api)
@@ -121,10 +163,10 @@ namespace RGLabs.Network
                 var response = new Response(result);
                 src.TrySetResult(response);
             });
-            
+
             return await src.Task;
         }
-        
+
         private static UniTask<Response<T>> Call<T>(Api api)
         {
             var src = new UniTaskCompletionSource<Response<T>>();
@@ -133,7 +175,7 @@ namespace RGLabs.Network
                 var response = new Response<T>(result);
                 src.TrySetResult(response);
             });
-            
+
             return src.Task;
         }
     }

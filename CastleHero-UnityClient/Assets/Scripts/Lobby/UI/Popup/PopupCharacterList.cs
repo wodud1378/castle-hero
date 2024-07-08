@@ -158,8 +158,8 @@ namespace RGLabs.Lobby.UI.Popup
 
         private void OpenEquipmentCompare(UnitInfo unit)
         {
-            var item = Storage.userRepository.items
-                .FirstOrDefault(x => x.ItemId == equipmentId);
+            var items = Storage.userRepository.items;
+            var item = items.FirstOrDefault(x => x.ItemId == equipmentId);
 
             if (item is not EquipItem right)
                 return;
@@ -167,11 +167,11 @@ namespace RGLabs.Lobby.UI.Popup
             EquipItem left;
             if (unit.equipments != null)
             {
-                int index = Array.FindIndex(unit.equipments, x => x.slot == right.slot);
-                left = index.IsValidIndex(unit.equipments) ? unit.equipments[index] : default;
+                var equipments = Storage.userRepository.EquipItems(unit.equipments).ToList();
+                left = equipments.Find(x => x.slot == right.slot);
             }
             else
-                left = default;
+                left = null;
             
             Context.popupManager.Open<PopupCompareEquipment>(left, right).Forget();
         }

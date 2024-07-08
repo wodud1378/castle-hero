@@ -100,6 +100,13 @@ namespace RGLabs.Data.Repositories
             }
         }
 
+        public IEnumerable<EquipItem> EquipItems(IList<string> guids)
+        {
+            return items
+                .OfType<EquipItem>()
+                .Where(x => guids.Contains(x.Guid));
+        }
+
         private static int Load(string key, int defaultVal = -1) => PlayerPrefs.GetInt(key, defaultVal);
 
         private static void Save(string key, int value) => PlayerPrefs.SetInt(key, value);
@@ -141,24 +148,6 @@ namespace RGLabs.Data.Repositories
                     lv = 1,
                     rate = 1,
                     id = 10001,
-                    equipments = new EquipItem[]
-                    {
-                        new()
-                        {
-                            ItemId = 30001,
-                            Quantity = 1,
-                            character = 10000,
-                            slot = 0,
-                            stats = new[]
-                            {
-                                1, 2, 3
-                            },
-                            values = new[]
-                            {
-                                150, 0.3f, 0.3f
-                            }
-                        }
-                    },
                 },
                 new UnitInfo
                 {
