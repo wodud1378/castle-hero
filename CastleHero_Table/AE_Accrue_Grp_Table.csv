@@ -1,5 +1,5 @@
 ﻿AE_Accrue_Grp_ID,AE_Accrue_Grp_Index,AE_Accrue_Grp_Count,AE_Accrue_Grp_Rwd_Cash,AE_Accrue_Grp_Rwd_Gold,AE_Accrue_Grp_Rwd_Item,AE_Accrue_Grp_Rwd_Value
 0,0,1,100,,,
 0,1,10,,20000,,
-0,2,20,,,12000,1
+0,2,20,,,20000,1
 0,3,30,300,,,
