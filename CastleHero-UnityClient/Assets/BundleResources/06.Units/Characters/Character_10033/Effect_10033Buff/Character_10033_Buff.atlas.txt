@@ -1,4 +1,4 @@
-Effect_Buff.png
+Character_10033_Buff.png
 	size: 256, 256
 	filter: Linear, Linear
 	scale: 0.5

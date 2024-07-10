@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7952871261646566749}
   - component: {fileID: 8255258030162387922}
   m_Layer: 0
-  m_Name: Feather_04
+  m_Name: Shield_04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 28af8d844058f624d87bc5c684bc8e34, type: 2}
+  - {fileID: 2100000, guid: 8ef2bb98b66c2bd4face00c527ba2f72, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -111,7 +111,7 @@ GameObject:
   - component: {fileID: 2459006045800023039}
   - component: {fileID: 2260865328935212067}
   m_Layer: 0
-  m_Name: Spine Mecanim GameObject (Character_10033_Buff)
+  m_Name: Spine Mecanim GameObject (Skill_Global_01_Buff)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -196,7 +196,7 @@ Animator:
   m_GameObject: {fileID: 1973173330686691472}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 5c2de4f637c32364b8f1209df39a6394, type: 2}
+  m_Controller: {fileID: 9100000, guid: 954cc3f13cb520345a9f5f0c1077c677, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -219,7 +219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9db98c60740638449864eb028fbe7ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skeletonDataAsset: {fileID: 11400000, guid: 5c7b4691a73964f4d9a7e6043f348771, type: 2}
+  skeletonDataAsset: {fileID: 11400000, guid: 166f21c6157771d4aadab09842e1114e, type: 2}
   initialSkinName: 
   fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
@@ -282,7 +282,7 @@ GameObject:
   - component: {fileID: 3177614186734004716}
   - component: {fileID: 6813874547230821051}
   m_Layer: 0
-  m_Name: Effect_10033_Buff
+  m_Name: Effect_Global_01_Buff
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -333,7 +333,7 @@ GameObject:
   - component: {fileID: 4533048171365529221}
   - component: {fileID: 5160503215263621237}
   m_Layer: 0
-  m_Name: Feather_03
+  m_Name: Shield_03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -382,7 +382,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 28af8d844058f624d87bc5c684bc8e34, type: 2}
+  - {fileID: 2100000, guid: 8ef2bb98b66c2bd4face00c527ba2f72, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -429,7 +429,7 @@ GameObject:
   - component: {fileID: 9214073300572142133}
   - component: {fileID: 324151307155495244}
   m_Layer: 0
-  m_Name: Feather_02
+  m_Name: Shield_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -478,7 +478,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 28af8d844058f624d87bc5c684bc8e34, type: 2}
+  - {fileID: 2100000, guid: 8ef2bb98b66c2bd4face00c527ba2f72, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -525,7 +525,7 @@ GameObject:
   - component: {fileID: 1986040846019287877}
   - component: {fileID: 502755542321467721}
   m_Layer: 0
-  m_Name: Feather_01
+  m_Name: Shield_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -574,7 +574,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 28af8d844058f624d87bc5c684bc8e34, type: 2}
+  - {fileID: 2100000, guid: 8ef2bb98b66c2bd4face00c527ba2f72, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
