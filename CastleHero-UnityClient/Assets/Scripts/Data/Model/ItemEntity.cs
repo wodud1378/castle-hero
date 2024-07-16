@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using RGLabs.Data.DB;
 
 namespace RGLabs.Data.Model
@@ -193,5 +194,39 @@ namespace RGLabs.Data.Model
 
         [DataField("Item_Chest_Item_Value")]
         public int resultItemId;
+    }
+
+    public enum ItemType
+    {
+        Equipment = 0,
+        Consumable,
+        Ingredient,
+        Chest,
+    }
+
+    public struct ItemEntity : IEntity
+    {
+        [DataField("id")]
+        public int Id { get; set; }
+        
+        public bool IsValid { get; set; }
+
+        [DataField("type")]
+        public ItemType type;
+        
+        [DataField("icon")]
+        public string icon;
+        
+        [DataField("Item_Name")] 
+        public string name;
+        
+        [DataField("Item_Desc")]
+        public string[] desc;
+        
+        [DataField("Item_Sell")]
+        public int sellPrice;
+        
+        [DataField("Item_Option")]
+        public string[] options;
     }
 }

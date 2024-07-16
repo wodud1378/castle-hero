@@ -13,4 +13,6 @@ namespace RGLabs.Data.DB
 
     [DB("Item_Parts_Table", "parts")]
     public class IngredientDB : DB<IngredientEntity> { }
+    
+    public class ItemDB : DB<ItemEntity> {}
 }

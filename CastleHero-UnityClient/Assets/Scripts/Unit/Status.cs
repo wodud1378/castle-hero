@@ -118,6 +118,14 @@ namespace RGLabs.Unit
             root?.Add(this);
         }
 
+        public override void Update()
+        {
+            multiplyAdjust.Update();
+            fixedAdjust.Update();
+            
+            base.Update();
+        }
+
         protected override float Value => (multiplyAdjust * origin) + fixedAdjust;
 
         public static implicit operator float(Ability it) => it.Value;
