@@ -1,0 +1,61 @@
+Monster_20009.png
+	size: 512, 512
+	filter: Linear, Linear
+	scale: 0.5
+Elipse
+	bounds: 127, 323, 65, 65
+Round_Half
+	bounds: 169, 394, 25, 39
+Symbol_Heal
+	bounds: 205, 20, 16, 16
+	offsets: 1, 1, 18, 18
+Var_01/Var_01_Arm_L
+	bounds: 183, 158, 38, 57
+	offsets: 5, 5, 48, 67
+Var_01/Var_01_Arm_R
+	bounds: 183, 217, 43, 56
+	offsets: 5, 5, 53, 66
+Var_01/Var_01_Cape
+	bounds: 172, 37, 100, 42
+	offsets: 2, 3, 103, 47
+	rotate: 90
+Var_01/Var_01_Eyes
+	bounds: 128, 434, 72, 45
+	offsets: 0, 0, 72, 46
+	rotate: 90
+Var_01/Var_01_Hair_Back
+	bounds: 2, 275, 113, 123
+	offsets: 5, 5, 123, 133
+	rotate: 90
+Var_01/Var_01_Hair_Front_01
+	bounds: 120, 178, 95, 61
+	rotate: 90
+Var_01/Var_01_Hair_Front_02
+	bounds: 2, 11, 107, 74
+Var_01/Var_01_Hat
+	bounds: 2, 179, 109, 94
+	offsets: 5, 7, 119, 108
+Var_01/Var_01_Mouth
+	bounds: 172, 18, 31, 20
+Var_01/Var_01_Robe
+	bounds: 2, 87, 91, 125
+	offsets: 2, 2, 95, 129
+	rotate: 90
+Var_01/Var_1_Hand_L
+	bounds: 174, 446, 46, 60
+	offsets: 4, 9, 55, 72
+Var_01/Var_1_Hand_R
+	bounds: 128, 114, 49, 62
+	offsets: 5, 9, 58, 72
+Var_01/Var_1_Hand_R_Grip
+	bounds: 128, 393, 39, 40
+	offsets: 1, 1, 42, 42
+Var_01/Var_1_Head
+	bounds: 2, 390, 124, 116
+	offsets: 5, 5, 134, 126
+Var_01/Var_1_Leg
+	bounds: 137, 273, 48, 75
+	offsets: 2, 3, 53, 80
+	rotate: 270
+Var_01/Weapon
+	bounds: 111, 2, 59, 83
