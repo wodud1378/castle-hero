@@ -46,18 +46,27 @@ namespace RGLabs.Network
     
     public class Response<T> : Response
     {
+        public delegate T Convert(BackendReturnObject raw);
+        
         public readonly ResultCode result;
         public readonly BackendReturnObject raw;
         public readonly T data;
         
-        public Response(BackendReturnObject raw, IParser<T> parser = null) : base(raw)
+        public Response(BackendReturnObject raw, Convert convert = null) : base(raw)
         {
             if (result != ResultCode.Success)
                 return;
             
-            var json = raw.FlattenRows();
-            var str = JsonMapper.ToJson(json);
-            data = JsonMapper.ToObject<T>(str);
+            if (convert == null)
+            {
+                var json = raw.FlattenRows();
+                var str = JsonMapper.ToJson(json);
+                data = JsonMapper.ToObject<T>(str);   
+            }
+            else
+            {
+                data = convert.Invoke(raw);
+            }
         }
     }
 }

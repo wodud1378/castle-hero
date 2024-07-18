@@ -6,7 +6,7 @@ using LitJson;
 using RGLabs.Data;
 using RGLabs.Data.Repositories;
 using RGLabs.Network.DB;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Network.Service.Login;
 using UnityEngine.AddressableAssets;
 
@@ -36,31 +36,24 @@ namespace RGLabs.Network.Service.Boot
             await Init();
             await CheckVersion();
             
-            var loginResponse = await _autoLoginService.Login();
-            if (loginResponse.result != ResultCode.Success)
+            bool newUser = false;
+            var autoLogin = await _autoLoginService.Login();
+            if (autoLogin.result != ResultCode.Success)
             {
                 var loginService = await _handler.ProvideLoginService();
-                loginResponse = await loginService.Login();
-            }
+                var loginResponse = await loginService.Login();
 
-            if (loginResponse.result != ResultCode.Success)
-            {
-                // TODO 로그인 실패 처리.
+                newUser = loginResponse.raw.GetStatusCode() == "201";
+                if (newUser)
+                    await _handler.CheckPolicy();
             }
+            // var userData = newUser
+            //     ? (await BackendWrapper.NewUser()).data
+            //     : (await BackendWrapper.GetUserData()).data;
 
-            UserInfo userInfo;
-            if (loginResponse.raw.GetStatusCode() == "201")
-            {
-                await _handler.CheckPolicy();
-                userInfo = (await BackendWrapper.NewUser()).data;
-            }
-            else
-            {
-                userInfo = (await BackendWrapper.GetUserInfo()).data;
-            }
+            var userData = (await BackendWrapper.NewUser()).data;
 
-            await InitStorage(userInfo);
-            await ShowNotice();
+            await InitStorage(userData);
             
             _handler.OnInitDone();
         }
@@ -94,7 +87,7 @@ namespace RGLabs.Network.Service.Boot
                 await _handler.OnForceUpdate();
 #endif
         }
-        private async UniTask InitStorage(UserInfo userInfo)
+        private async UniTask InitStorage(UserData userData)
         {
             DBCollections collections;
             if (_config.useLocalDatabase)
@@ -102,12 +95,7 @@ namespace RGLabs.Network.Service.Boot
             else
                 collections = await _chart.LoadFromServer();
             
-            Storage.Init(userInfo, collections);
-        }
-
-        private UniTask ShowNotice()
-        {
-            return UniTask.CompletedTask;
+            Storage.Init(userData, collections);
         }
 
         public void Dispose() => _errorHandler?.Detach();

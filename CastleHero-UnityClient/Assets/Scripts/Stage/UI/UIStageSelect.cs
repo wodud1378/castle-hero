@@ -78,8 +78,8 @@ namespace RGLabs.Stage.UI
             if (stageData.exp > 0)
                 AddRewardUI(Constants.ExpIcon);
 
-            if (_db.itemDBAccessor.TryLoad(stageData.propItemId, out var entity))
-                AddRewardUI(entity.Icon);
+            if (_db.items.TryFind(stageData.propItemId, out var entity))
+                AddRewardUI(entity.icon);
         }
 
         private async void AddRewardUI(string icon)

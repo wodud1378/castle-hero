@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using UniRx;
@@ -16,82 +16,60 @@ namespace RGLabs.Data.Repositories
         public readonly ReactiveProperty<int> focusedStage;
         public readonly ReactiveProperty<int> castleLv;
 
-        public readonly ReactiveCollection<FieldCharacter> fieldCharacters;
+        public readonly ReactiveCollection<FieldUnit> fieldCharacters;
         public readonly ReactiveCollection<UnitInfo> characters;
         
-        public readonly ReactiveProperty<int> gold;
-        public readonly ReactiveProperty<int> freeDia;
         public readonly ReactiveProperty<int> paidDia;
+        public readonly ReactiveProperty<int> freeDia;
+        public readonly ReactiveProperty<int> gold;
         public readonly ReactiveCollection<IItem> items;
 
-        public UserRepository(UserInfo userInfo)
+        public UserRepository(UserData userData)
         {
-            stage = new(userInfo.stage);
-            focusedStage = new(userInfo.focusedStage);
-            castleLv = new(userInfo.castleLv);
+            var info = userData.info;
+            stage = new(info.stage);
+            focusedStage = new(info.focusedStage);
+            castleLv = new(info.castleLv);
 
-            fieldCharacters = new(userInfo.fieldCharacters);
-            characters = new(userInfo.characters);
-            items = new(userInfo.items);
+            fieldCharacters = new(userData.formation.fieldUnits);
+            characters = new(userData.characters.units);
+            items = new(userData.inventory.items);
 
-            gold = new(userInfo.gold);
-            freeDia = new(userInfo.freeDia);
-            paidDia = new(userInfo.paidDia);
+            var currency = userData.currency;
+            paidDia = new(currency.paidDia);
+            freeDia = new(currency.freeDia);
+            gold = new(currency.gold);
         }
 
-        // public UserRepository()
-        // {
-        //     stage = new(Load(SavedStageKey, 1));
-        //     stage
-        //         .ThrottleFrame(1)
-        //         .Subscribe(x => Save(SavedStageKey, x));
-        //
-        //     castleLv = new(Load(CastleKey, 1));
-        //     castleLv
-        //         .ThrottleFrame(1)
-        //         .Subscribe(x => Save(CastleKey, x));
-        //
-        //     characters = new(LoadAsArray<UnitInfo>(CharactersKey, TestCharacter()));
-        //     characters
-        //         .ChangeAsObservable()
-        //         .ThrottleFrame(1)
-        //         .Subscribe(x => SaveAsArray(CharactersKey, x));
-        //
-        //     fieldCharacters = new(LoadAsArray<FieldCharacter>(FieldCharactersKey));
-        //     fieldCharacters
-        //         .ChangeAsObservable()
-        //         .ThrottleFrame(1)
-        //         .Subscribe(x => SaveAsArray(FieldCharactersKey, x));
-        //     
-        //     items = new(LoadAsArray<IItem>(InventoryKey, TestItem()));
-        //     items
-        //         .ChangeAsObservable()
-        //         .ThrottleFrame(1)
-        //         .Subscribe(x => SaveAsArray(InventoryKey, x));
-        //
-        //     gold = new(Load(GoldKey, 0));
-        //     gold
-        //         .ThrottleFrame(1)
-        //         .Subscribe(x => Save(GoldKey, x));
-        //     
-        //     freeDia = new(Load(FreeDiaKey, 0));
-        //     freeDia
-        //         .ThrottleFrame(1)
-        //         .Subscribe(x => Save(FreeDiaKey, x));
-        //     
-        //     paidDia = new(Load(PaidDiaKey, 0));
-        //     paidDia
-        //         .ThrottleFrame(1)
-        //         .Subscribe(x => Save(PaidDiaKey, x));
-        // }
 
+        public void UpdateCurrency(Currency currency)
+        {
+            paidDia.Value = currency.paidDia;
+            freeDia.Value = currency.freeDia;
+            gold.Value = currency.gold;
+        }
+
+        public void UpdateCharacter(UnitInfo unit) => UpdateElement(unit, x => x.id == unit.id, characters);
+        public void UpdateItem(IItem item) => UpdateElement(item, x => x.ItemId == item.ItemId, items);
+
+        private void UpdateElement<T>(T value, Predicate<T> predicate, ReactiveCollection<T> collection)
+        {
+            var exist = collection.FirstOrDefault(predicate.Invoke);
+            if (exist == null)
+                return;
+
+            int index = collection.IndexOf(exist);
+            collection.Remove(exist);
+            collection.Insert(index, value);
+        }
+        
         public void ApplyFieldCharacters(IEnumerable<UnitBehaviour> units)
         {
             fieldCharacters.Clear();
             foreach (var unit in units)
             {
                 var position = unit.position;
-                fieldCharacters.Add(new FieldCharacter
+                fieldCharacters.Add(new FieldUnit
                 {
                     id = unit.Id,
                     x = position.x,

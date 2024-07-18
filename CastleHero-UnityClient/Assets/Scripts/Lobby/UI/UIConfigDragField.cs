@@ -8,6 +8,7 @@ using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace RGLabs.Lobby.UI
 {
@@ -20,7 +21,7 @@ namespace RGLabs.Lobby.UI
             Field
         }
         
-        [SerializeField] private Formation _formation;
+        [FormerlySerializedAs("_formation")] [SerializeField] private FormationField formationField;
         [SerializeField] private PolygonDrawer _validationCircle;
         [SerializeField] private Color _validColor;
         [SerializeField] private Color _invalidColor;
@@ -89,7 +90,7 @@ namespace RGLabs.Lobby.UI
             _onDrag = true;
 
             var position = eventData.position.ScreenToWorld();
-            if (!_formation.InArea(position))
+            if (!formationField.InArea(position))
                 return;
 
             SetUnit(UnitFrom.Field, FindFromRay(position));
@@ -102,7 +103,7 @@ namespace RGLabs.Lobby.UI
 
             _unit.Value.transform.position = eventData.position.ScreenToWorld();
             _validationCircle.Color =
-                _formation.IsValid(_unit.Value.Collider, _originLayer) ? _validColor : _invalidColor;
+                formationField.IsValid(_unit.Value.Collider, _originLayer) ? _validColor : _invalidColor;
         }
 
         public void OnEndDrag(PointerEventData eventData)
@@ -113,7 +114,7 @@ namespace RGLabs.Lobby.UI
             if (hold == null)
                 return;
 
-            if (!_formation.TryRegister(hold, _originLayer, _unitFrom == UnitFrom.Field))
+            if (!formationField.TryRegister(hold, _originLayer, _unitFrom == UnitFrom.Field))
             {
                 hold.DestroySelf();
                 _unit.Value = null;
@@ -145,7 +146,7 @@ namespace RGLabs.Lobby.UI
             {
                 var selected = FindFromRay(eventData.position.ScreenToWorld());
                 if (selected != null)
-                    _formation.Remove(selected);
+                    formationField.Remove(selected);
             }
 
             _onDrag = false;

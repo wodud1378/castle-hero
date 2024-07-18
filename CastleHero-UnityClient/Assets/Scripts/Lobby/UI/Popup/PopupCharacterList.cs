@@ -8,7 +8,7 @@ using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Lobby.UI.Inventory.Popup;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using TMPro;
 using UniRx;

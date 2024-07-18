@@ -15,6 +15,6 @@ namespace RGLabs.Network.DB
         public SkillDB skills;
         public SummonDB summons;
         public SummonGroupDB summonGroups;
-        public ItemDBAccessor itemDBAccessor;
+        public ItemDB items;
     }
 }

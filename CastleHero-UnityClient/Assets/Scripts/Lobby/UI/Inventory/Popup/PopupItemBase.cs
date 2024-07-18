@@ -4,23 +4,22 @@ using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace RGLabs.Lobby.UI.Inventory.Popup
 {
-    public abstract class PopupItemBase<TSlot, TItem, TEntity> : PopupBase
+    public abstract class PopupItemBase<TSlot, TItem> : PopupBase
         where TSlot : UIItemSlot
         where TItem : IItem
-        where TEntity : IItemEntity
     {
         [SerializeField] private TSlot _itemSlot;
         [SerializeField] private Button _sell;
 
         public TItem Item { get; private set; }
-        public TEntity Entity { get; private set; }
+        public ItemEntity Entity { get; private set; }
 
         public override UniTask Open(params object[] parameters)
         {
@@ -36,16 +35,16 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 return UniTask.FromException(exception);
             }
 
-            if (!Storage.db.itemDBAccessor.TryLoad(item.ItemId, out var entity))
+            if (!Storage.db.items.TryFind(item.ItemId, out var entity))
             {
                 var exception = new Exception($"아이템을 찾을 수 없습니다. id={item.ItemId}");
                 return UniTask.FromException(exception);
             }
 
             Item = item;
-            Entity = (TEntity)entity;
+            Entity = entity;
             
-            _sell.gameObject.SetActive(Entity.SellPrice > 0);
+            _sell.gameObject.SetActive(Entity.sellPrice > 0);
             
             OnDataInitialized();
             
@@ -65,7 +64,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         
         private void Sell()
         {
-            if (Entity.SellPrice <= 0)
+            if (Entity.sellPrice <= 0)
                 return;
             
             // TODO 판매 로직.

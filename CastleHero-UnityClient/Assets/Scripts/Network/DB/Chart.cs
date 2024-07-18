@@ -41,21 +41,7 @@ namespace RGLabs.Network.DB
             LoadInstance<SkillDB>(map, x => collections.skills = x);
             LoadInstance<SummonDB>(map, x => collections.summons = x);
             LoadInstance<SummonGroupDB>(map, x => collections.summonGroups = x);
-
-            EquipmentDB equipmentItems = null;
-            LoadInstance<EquipmentDB>(map, x => equipmentItems = x);
-
-            ConsumableDB consumableItems = null;
-            LoadInstance<ConsumableDB>(map, x => consumableItems = x);
-
-            IngredientDB ingredientItems = null;
-            LoadInstance<IngredientDB>(map, x => ingredientItems = x);
-
-            ChestDB chestItems = null;
-            LoadInstance<ChestDB>(map, x => chestItems = x);
-
-            collections.itemDBAccessor =
-                new ItemDBAccessor(equipmentItems, consumableItems, ingredientItems, chestItems);
+            LoadInstance<ItemDB>(map, x => collections.items = x);
             
             collections.units.CacheUnitSizes();
 
@@ -80,23 +66,9 @@ namespace RGLabs.Network.DB
                 _csvToDB.Load<CastleDB>(x => collections.castles = x),
                 _csvToDB.Load<SummonDB>(x => collections.summons = x),
                 _csvToDB.Load<SummonGroupDB>(x => collections.summonGroups = x), 
+                _csvToDB.Load<ItemDB>(x => collections.items = x),
             };
 
-            EquipmentDB equipmentItems = null;
-            tasks.Add(_csvToDB.Load<EquipmentDB>(x => equipmentItems = x));
-
-            ConsumableDB consumableItems = null;
-            tasks.Add(_csvToDB.Load<ConsumableDB>(x => consumableItems = x));
-
-            IngredientDB ingredientItems = null;
-            tasks.Add(_csvToDB.Load<IngredientDB>(x => ingredientItems = x));
-
-            ChestDB chestItems = null;
-            tasks.Add(_csvToDB.Load<ChestDB>(x => chestItems = x));
-
-            await UniTask.WhenAll(tasks);
-
-            collections.itemDBAccessor = new ItemDBAccessor(equipmentItems, consumableItems, ingredientItems, chestItems);
             collections.units.CacheUnitSizes();
 
             return collections;

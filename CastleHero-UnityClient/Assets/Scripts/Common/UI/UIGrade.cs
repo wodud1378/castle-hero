@@ -10,14 +10,12 @@ namespace RGLabs.Common.UI
         [SerializeField] private GameObject _rare;
         [SerializeField] private GameObject _common;
 
-        public void Set(IngredientGradeCode grade) { }
-
-        public void Set(EquipmentGradeCode grade)
+        public void Set(EquipmentGrade grade)
         {
-            _legend.SetActive(grade == EquipmentGradeCode.Legend);
-            _epic.SetActive(grade == EquipmentGradeCode.Epic);
-            _rare.SetActive(grade == EquipmentGradeCode.Rare);
-            _common.SetActive(grade == EquipmentGradeCode.Common);
+            _legend.SetActive(grade == EquipmentGrade.Legend);
+            _epic.SetActive(grade == EquipmentGrade.Epic);
+            _rare.SetActive(grade == EquipmentGrade.Rare);
+            _common.SetActive(grade == EquipmentGrade.Common);
         }
     }
 }

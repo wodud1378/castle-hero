@@ -22,7 +22,7 @@ namespace RGLabs.Data.Load
             var arrayMap = new Dictionary<int, Dictionary<IDataField, IList>>();
             var fails = new HashSet<string>();
             int entityIndex = -1;
-            foreach (JsonData row in source)
+            foreach (JsonData row in source["rows"])
             {
                 ++entityIndex;
                 var keys = row.Keys;

@@ -4,7 +4,9 @@ using BackEnd;
 using BackEnd.MultiSettings;
 using Cysharp.Threading.Tasks;
 using LitJson;
-using RGLabs.Network.Model;
+using RGLabs.Data;
+using RGLabs.Network.Shared;
+using RGLabs.Utility;
 
 namespace RGLabs.Network
 {
@@ -45,8 +47,14 @@ namespace RGLabs.Network
         public int selectedChartFileId;
     }
 
-    public static class BackendWrapper
+    public static partial class BackendWrapper
     {
+        private const string InfoTable = "info";
+        private const string CurrencyTable = "currency";
+        private const string CharactersTable = "characters";
+        private const string FormationTable = "formation";
+        private const string InventoryTable = "inventory";
+
         public delegate void Api(Backend.BackendCallback onResult);
 
         public static UniTask<Response> Init(string serverName)
@@ -73,7 +81,7 @@ namespace RGLabs.Network
         public static UniTask<Response> GuestLogin()
             => Call(Backend.BMember.GuestLogin);
 
-        public static UniTask<Response> FederationLogin(string token, FederationType type) 
+        public static UniTask<Response> FederationLogin(string token, FederationType type)
             => Call(onResult => Backend.BMember.AuthorizeFederation(token, type, onResult.Invoke));
 
         public static UniTask<Response<Policy>> GetPolicy()
@@ -82,7 +90,8 @@ namespace RGLabs.Network
         public static UniTask<Response<ChartInfo[]>> GetChartList()
             => Call<ChartInfo[]>(Backend.Chart.GetChartListV2);
 
-        public static UniTask<Response<List<ISummonResult>>> Summon(int count, int eventIndex, int eventChartId, int listChartId)
+        public static UniTask<Response<SummonResult>> Summon(int count, int eventIndex, int eventChartId,
+            int listChartId)
         {
             var param = new Param
             {
@@ -92,67 +101,110 @@ namespace RGLabs.Network
                 { "listChartId", listChartId },
             };
 
-            return Call<List<ISummonResult>>(
+            return Call<SummonResult>(
                 onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke));
         }
-        
-        public static UniTask<Response<UserInfo>> GetUserInfo() 
-            => Call<UserInfo>(onResult => Backend.GameData.GetMyData("userdata", new Where(), onResult.Invoke));
 
-        public static UniTask<Response> GetChartContent(string id) 
+        public static async UniTask<Response<UserData>> GetUserData()
+        {
+            var read = TransactionGet(
+                InfoTable,
+                CurrencyTable,
+                CharactersTable,
+                FormationTable,
+                InventoryTable
+            );
+
+            return await Call(
+                onResult => Backend.GameData.TransactionReadV2(read, onResult.Invoke),
+                (raw) =>
+                {
+                    var json = raw.GetFlattenJSON();
+                    return new UserData
+                    {
+                        info = json[InfoTable].Cast<Info>(),
+                        currency = json[CurrencyTable].Cast<Currency>(),
+                        characters = json[CharactersTable].Cast<Characters>(),
+                        formation = json[FormationTable].Cast<Formation>(),
+                        inventory = json[InfoTable].Cast<Inventory>(),
+                    };
+                });
+        }
+
+        public static UniTask<Response> GetChartContent(string id)
             => Call(onResult => Backend.Chart.GetChartContents(id, onResult.Invoke));
 
-        public static async UniTask<Response<UserInfo>> NewUser()
+        public static async UniTask<Response<UserData>> NewUser()
         {
-            var api = NewDataFromServer();
+            var response = await InvokeFunc("DefaultData");
 
-            await Call(api);
-
-            return await GetUserInfo();
+            return await GetUserData();
         }
 
-        private static Api NewDataFromServer()
+        public static UniTask<Response<GrowthResult>> Growth(string method, int chartId, int unitId, int itemId,
+            int itemQty)
         {
-            var param = new Param { { "functionName", "DefaultData" } };
-            return onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke);
-        }
-
-        private static Api NewDataFromLocal()
-        {
-            var userInfo = new UserInfo
+            var parameters = new List<KeyValuePair<string, object>>
             {
-                stage = 1,
-                focusedStage = 1,
-                castleLv = 1,
-                characters = new List<UnitInfo>()
+                new("chartId", chartId),
+                new("itemChartId", Storage.db.items.Id),
+                new(nameof(unitId), unitId),
+                new(nameof(itemId), itemId),
+                new(nameof(itemQty), itemQty),
+            };
+
+            return InvokeFunc<GrowthResult>(method, parameters);
+        }
+
+        public static UniTask<Response<Inventory>> TEST_AddItem(int[] itemIds, int[] quantities)
+        {
+            var parameters = new List<KeyValuePair<string, object>>
+            {
+                new(nameof(itemIds), itemIds),
+                new(nameof(quantities), quantities),
+            };
+
+            return InvokeFunc<Inventory>("AddItems", parameters);
+        }
+
+        public static UniTask<Response<Currency>> TEST_AddCurrency(int paidDia, int freeDia, int gold)
+        {
+            var parameters = new List<KeyValuePair<string, object>>
+            {
+                new(nameof(paidDia), paidDia),
+                new(nameof(freeDia), freeDia),
+                new(nameof(gold), gold)
+            };
+
+            return InvokeFunc<Currency>("AddCurrency", parameters);
+        }
+
+        private static UniTask<Response> InvokeFunc(string functionName,
+            List<KeyValuePair<string, object>> parameters = null)
+        {
+            var param = FunctionParam(functionName, parameters);
+            return Call(onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke));
+        }
+
+        private static UniTask<Response<T>> InvokeFunc<T>(string functionName,
+            List<KeyValuePair<string, object>> parameters = null)
+        {
+            var param = FunctionParam(functionName, parameters);
+            return Call<T>(onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke));
+        }
+
+        private static Param FunctionParam(string functionName, List<KeyValuePair<string, object>> parameters = null)
+        {
+            var param = new Param { { "functionName", functionName } };
+            if (parameters != null)
+            {
+                foreach (var kvp in parameters)
                 {
-                    new()
-                    {
-                        id = 10001,
-                        lv = 1,
-                    }
-                },
-                fieldCharacters = new(),
-                items = new()
-            };
+                    param.Add(kvp.Key, kvp.Value);
+                }
+            }
 
-            var param = new Param
-            {
-                { nameof(userInfo.stage), userInfo.stage },
-                { nameof(userInfo.focusedStage), userInfo.focusedStage },
-                { nameof(userInfo.castleLv), userInfo.castleLv },
-                { nameof(userInfo.gold), userInfo.gold },
-                { nameof(userInfo.freeDia), userInfo.freeDia },
-                { nameof(userInfo.paidDia), userInfo.paidDia },
-                { nameof(userInfo.characters), userInfo.characters },
-                { nameof(userInfo.fieldCharacters), userInfo.fieldCharacters },
-                { nameof(userInfo.items), userInfo.items }
-            };
-
-            var api = new Api(
-                onResult => Backend.GameData.Insert("userdata", param, onResult));
-
-            return api;
+            return param;
         }
 
         private static async UniTask<Response> Call(Api api)
@@ -167,12 +219,12 @@ namespace RGLabs.Network
             return await src.Task;
         }
 
-        private static UniTask<Response<T>> Call<T>(Api api)
+        private static UniTask<Response<T>> Call<T>(Api api, Response<T>.Convert convert = null)
         {
             var src = new UniTaskCompletionSource<Response<T>>();
             api.Invoke(result =>
             {
-                var response = new Response<T>(result);
+                var response = new Response<T>(result, convert);
                 src.TrySetResult(response);
             });
 

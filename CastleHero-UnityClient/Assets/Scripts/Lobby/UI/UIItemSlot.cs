@@ -1,10 +1,8 @@
-using System;
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI;
 using RGLabs.Data;
 using RGLabs.Data.Model;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using TMPro;
 using UniRx;
@@ -25,7 +23,7 @@ namespace RGLabs.Lobby.UI
         [SerializeField] private GameObject _portraitRoot;
         
         public IItem Item { get; private set; }
-        public IItemEntity Entity { get; private set; }
+        public ItemEntity Entity { get; private set; }
 
         public ReactiveProperty<QuantityDisplay> quantityDisplay = new();
 
@@ -38,13 +36,13 @@ namespace RGLabs.Lobby.UI
 
         public UniTask Init(IItem item)
         {
-            if(!Storage.db.itemDBAccessor.TryLoad(item.ItemId, out var entity))
+            if(!Storage.db.items.TryFind(item.ItemId, out var entity))
                 return UniTask.CompletedTask;
 
             return Init(item, entity);
         }
         
-        public UniTask Init(IItem item, IItemEntity entity)
+        public UniTask Init(IItem item, ItemEntity entity)
         {
             Item = item;
             Entity = entity;
@@ -52,7 +50,7 @@ namespace RGLabs.Lobby.UI
             UpdateQuantity(quantityDisplay.Value);
             
             var portraitTask = UpdatePortrait();
-            var initTask = Init(entity.Icon, entity.Name);
+            var initTask = Init(entity.icon, entity.name);
 
             return UniTask.WhenAll(portraitTask, initTask);
         }

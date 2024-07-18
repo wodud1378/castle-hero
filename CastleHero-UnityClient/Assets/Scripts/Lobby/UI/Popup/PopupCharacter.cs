@@ -7,7 +7,7 @@ using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Lobby.UI.Inventory;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Unit;
 using RGLabs.Utility;
 using Spine.Unity;
@@ -116,7 +116,7 @@ namespace RGLabs.Lobby.UI.Popup
             EquipItem[] equipments)
         {
             var baseStatus = BaseStatus(lv, rate, unit, balance);
-            var equipStatus = EquipStatus(equipments);
+            var equipStatus = equipments.Total();
 
             foreach (var label in _statusTexts)
             {
@@ -143,30 +143,6 @@ namespace RGLabs.Lobby.UI.Popup
                 { Status.Type.AtkRange, unit.atkRange + additional.GetValueOrDefault(Status.Type.AtkRange) },
                 { Status.Type.MoveRange, unit.moveRange + additional.GetValueOrDefault(Status.Type.MoveRange) },
             };
-        }
-
-        private Dictionary<Status.Type, float> EquipStatus(EquipItem[] equipments)
-        {
-            var dic = new Dictionary<Status.Type, float>();
-            if (equipments != null)
-            {
-                foreach (var equipment in equipments)
-                {
-                    int index = 0;
-                    while (index.IsValidIndex(equipment.stats, equipment.values))
-                    {
-                        var type = (Status.Type)equipment.stats[index];
-                        var value = equipment.values[index];
-
-                        if (!dic.TryAdd(type, value))
-                            dic[type] += value;
-
-                        ++index;
-                    }
-                }
-            }
-
-            return dic;
         }
 
         private void OnLevelUp() => Context.popupManager.Open<PopupLevelUp>(_unit).Forget();

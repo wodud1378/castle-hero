@@ -22,7 +22,7 @@ namespace RGLabs.Title
     public class TitleBehaviour : MonoBehaviour, IBootServiceHandler
     {
         [SerializeField] private BootConfig _config;
-        [FormerlySerializedAs("_loginPopup")] [SerializeField] private PopupSelectLoginPlatform selectLoginPlatformPopupSelect;
+        [SerializeField] private PopupSelectLoginPlatform _selectPlatform;
         [SerializeField] private PopupPolicy _policyPopup;
 
         private void Awake()
@@ -56,16 +56,16 @@ namespace RGLabs.Title
 
         public async UniTask<ILoginService> ProvideLoginService()
         {
-            selectLoginPlatformPopupSelect.gameObject.SetActive(true);
+            _selectPlatform.gameObject.SetActive(true);
             
 #if UNITY_EDITOR
-            await selectLoginPlatformPopupSelect.Open(Platform.Guest);
+            await _selectPlatform.Open(Platform.Guest);
 #elif UNITY_ANDROID
             await _loginPopup.Open(Platform.PlayStore, Platform.Guest);
 #elif UNITY_iOS
             await _loginPopup.Open(Platform.AppStore, Platform.Guest);
 #endif
-            return await selectLoginPlatformPopupSelect.LoginTask;
+            return await _selectPlatform.LoginTask;
         }
 
         public void OnInitDone()

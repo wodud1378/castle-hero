@@ -1,5 +1,6 @@
+using System;
 using RGLabs.Data.Model;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using TMPro;
 using UniRx;
@@ -9,7 +10,7 @@ using UnityEngine.UI;
 namespace RGLabs.Lobby.UI.Inventory.Popup
 {
     [PrefabPath("Lobby/UI/Prefabs/Popup_Use.prefab")]
-    public class PopupUseItem : PopupItemBase<UIItemSlot, IItem, IItemEntity>
+    public class PopupUseItem : PopupItemBase<UIItemSlot, IItem>
     {
         [SerializeField] private Slider _slider;
         [SerializeField] private Button _use;
@@ -31,7 +32,8 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         protected override void OnDataInitialized()
         {
-            _description.text = Entity.Desc;
+            if(Entity.desc is { Length: > 0 })
+                _description.text = Entity.desc[0];
             
             SetActiveSlider();
 
@@ -51,34 +53,32 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         
         private void UpdateEffectText(int count)
         {
-            if (Entity is ConsumableEntity { option: ConsumeOption.Ap or ConsumeOption.Exp } consumable)
+            if(Entity.desc is { Length: > 0 })
             {
-                _effect.text = string.Format(consumable.consumeDesc, consumable.optionValue * count)
+                _effect.text = string.Format(Entity.desc[1], int.Parse(Entity.options[1]) * count)
                     .WithPositiveColor();
                 
                 _effect.gameObject.SetActive(true);
-                return;
             }
-            
-            _effect.gameObject.SetActive(false);
+            else
+                _effect.gameObject.SetActive(false);
         }
         
         private void SetActiveSlider()
         {
             bool isActive = false;
-            var type = Entity.Id.ItemType();
-            if (type == ItemTypeCode.Chest)
+            var type = Entity.type;
+            switch (type)
             {
-                isActive = true;
-            }
-            else if (type == ItemTypeCode.Ingredient)
-            {
-                isActive = true;
-            }
-            else if (Entity is ConsumableEntity consumableEntity)
-            {
-                var option = consumableEntity.option;
-                isActive = option is ConsumeOption.Ap;
+                case ItemType.Consumable:
+                    var option = (ConsumeType)int.Parse(Entity.options[0]);
+                    isActive = option is ConsumeType.Ap;
+                    break;
+                case ItemType.Ingredient:
+                case ItemType.Chest:
+                    isActive = true;
+
+                    break;
             }
 
             _useCount.gameObject.SetActive(isActive);
@@ -88,12 +88,12 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         private void OnUse()
         {
-            if (Entity is ConsumableEntity consumableEntity)
+            if (Entity.type == ItemType.Consumable)
             {
-                var option = consumableEntity.option;
+                var option = (ConsumeType)int.Parse(Entity.options[0]);
                 switch (option)
                 {
-                    case ConsumeOption.SummonTicket:
+                    case ConsumeType.SummonTicket:
                         MoveToDrawCharacter();
                         break;
                     default:
@@ -101,7 +101,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                         break;
                 }
             }
-            else if (Entity is IngredientEntity)
+            else if (Entity.type == ItemType.Ingredient)
                 Use();
         }
 

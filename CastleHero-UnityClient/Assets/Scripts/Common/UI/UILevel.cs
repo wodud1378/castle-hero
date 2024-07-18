@@ -1,6 +1,6 @@
 using DG.Tweening;
 using RGLabs.Data;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using TMPro;
 using UniRx;

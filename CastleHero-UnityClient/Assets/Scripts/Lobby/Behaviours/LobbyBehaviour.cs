@@ -8,6 +8,7 @@ using RGLabs.Unit.Factory;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace RGLabs.Lobby.Behaviours
 {
@@ -21,14 +22,14 @@ namespace RGLabs.Lobby.Behaviours
         [SerializeField] private UILobby _uiLobby;
         [SerializeField] private UIStage _uiStage;
 
-        [SerializeField] private Formation _formation;
+        [FormerlySerializedAs("_formation")] [SerializeField] private FormationField formationField;
         [SerializeField] private SpriteRenderer _map;
 
         protected override async void OnLoaded()
         {
             base.OnLoaded();
             
-            await _formation.Init();
+            await formationField.Init();
 
             _uiStage.Init();
             Context.Transition.StateObserver

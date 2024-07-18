@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clientAppID: 3c2f6560-3364-11ef-9121-97f8abb85a9d7861
   signatureKey: 3c2f8c70-3364-11ef-9121-97f8abb85a9d7861
-  functionAuthKey: 
+  functionAuthKey: AQICAHiT9pph8qngOxVNCJXRC0BZjtURNwhhts4F69FL8VO4dgFN7i9zyNBtQCVr8+ZNTcFvAAAAYjBgBgkqhkiG9w0BBwagUzBRAgEAMEwGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMIoQVfYCuwwI4IMcTAgEQgB8spp9/k96lumgrPkLfVOzxIdk47oFJ+2ARAnsfFvE1
   packageName: com.retgames.castlehero
   isAllPlatform: 1
   sendLogReport: 1

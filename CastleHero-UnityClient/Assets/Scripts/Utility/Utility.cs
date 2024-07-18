@@ -5,11 +5,13 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using LitJson;
+using Newtonsoft.Json;
 using RGLabs.Common.Behaviours;
 using RGLabs.Data.DB;
 using RGLabs.Data.Load;
 using RGLabs.Data.Model;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Unit;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Components;
@@ -151,19 +153,39 @@ namespace RGLabs.Utility
 
     public static class ItemHelder
     {
-        public static EquipmentGradeCode EquipmentGrade(this int id) => (EquipmentGradeCode)(id / 10000);
-
-        public static IngredientGradeCode IngredientGrade(this int id) => (IngredientGradeCode)(id % 10000 / 1000);
-
-        public static ChestTypeCode ChestType(this int id) => (ChestTypeCode)(id % 10000 / 1000);
-        
-        public static ItemTypeCode ItemType(this int id)
+        public static Dictionary<Status.Type, float> Total(this IEnumerable<EquipItem> equipments)
         {
-            int val = id / 10000;
-            if (val < (int)ItemTypeCode.Consumable)
-                return ItemTypeCode.Equipment;
+            var dic = new Dictionary<Status.Type, float>();
+            if (equipments != null)
+            {
+                foreach (var equipment in equipments)
+                {
+                    var main = equipment.main;
+                    var type = (Status.Type)main.type;
+                    var value = main.value;
+                    if (value != 0f)
+                    {
+                        if (!dic.TryAdd(type, value))
+                        {
+                            dic[type] += value;
+                        }   
+                    }
+                    
+                    foreach (var stat in equipment.sub)
+                    {
+                        type = (Status.Type)stat.type;
+                        value = stat.value;
+                        
+                        if (value == 0f)
+                            continue;
+                        
+                        if (!dic.TryAdd(type, value))
+                            dic[type] += value;
+                    }
+                }
+            }
 
-            return (ItemTypeCode)val;
+            return dic;
         }
     }
 
@@ -652,5 +674,21 @@ namespace RGLabs.Utility
 
             return index >= 0 && target.Count > index;
         }
+    }
+
+    public static class NetworkHelper
+    {
+        private static readonly JsonSerializerSettings DefaultSetting = new()
+        {
+            TypeNameHandling = TypeNameHandling.Auto
+        };
+        
+        public static string ToJson(this object obj) => JsonConvert.SerializeObject(obj, DefaultSetting);
+
+        public static T Cast<T>(this JsonData data) => JsonConvert.DeserializeObject<T>(data.ToString(), DefaultSetting);
+
+        public static int ToInt(this JsonData data) => ToInt(data.ToString());
+
+        public static float ToFloat(this JsonData data) => ToFloat(data.ToString());
     }
 }

@@ -3,11 +3,11 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data;
 using RGLabs.Data.Model;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 
 namespace RGLabs.Network.Service.Summon
 {
-    public class SummonService : ISummonService
+    public class SummonService
     {
         public SummonEntity Entity { get; }
 
@@ -18,11 +18,11 @@ namespace RGLabs.Network.Service.Summon
                 : default;
         }
         
-        public async UniTask<ISummonResult> SummonOnce() => (await Summon(1)).FirstOrDefault();
+        public async UniTask<SummonResult> SummonOnce() => (await Summon(1));
 
-        public async UniTask<List<ISummonResult>> SummonTenth() => await Summon(10);
+        public async UniTask<SummonResult> SummonTenth() => await Summon(10);
 
-        private async UniTask<List<ISummonResult>> Summon(int count)
+        private async UniTask<SummonResult> Summon(int count)
         {
             if (!Storage.db.summons.TryFindIndex(Entity.Id, out int index))
                 return default;

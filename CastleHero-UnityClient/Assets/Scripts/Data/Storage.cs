@@ -4,7 +4,7 @@ using RGLabs.Common.Flow;
 using RGLabs.Common.Pattern;
 using RGLabs.Data.Repositories;
 using RGLabs.Network.DB;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Unit.Factory;
 using UnityEngine.AddressableAssets;
 
@@ -27,9 +27,9 @@ namespace RGLabs.Data
         
         public static Entrance entranceData = new() { state = State.Lobby, };
 
-        public static void Init(UserInfo userInfo, DBCollections database)
+        public static void Init(UserData userData, DBCollections database)
         {
-            userRepository = new UserRepository(userInfo);
+            userRepository = new UserRepository(userData);
             db = database;
             
             poolContainer = new();

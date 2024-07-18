@@ -4,7 +4,7 @@ using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI;
 using RGLabs.Data.Model;
 using RGLabs.Lobby.UI.Popup;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Unit;
 using RGLabs.Utility;
 using UnityEngine;
@@ -14,8 +14,9 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 {
     [PrefabPath("Lobby/UI/Prefabs/Popup_Equipment.prefab")]
 
-    public class PopupEquipItem : PopupItemBase<UIEquipmentSlot, EquipItem, EquipmentEntity>
+    public class PopupEquipItem : PopupItemBase<UIEquipmentSlot, EquipItem>
     {
+        [SerializeField] private UIStatusText[] _mainStat; 
         [SerializeField] private UIStatusText[] _stats;
 
         [SerializeField] private Button _refine;
@@ -50,13 +51,29 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         protected override void OnDataInitialized()
         {
+            foreach (var label in _mainStat)
+            {
+                var main = Item.main;
+                bool matches = (int)label.type == main.type;
+                if (matches)
+                {
+                    label.SetText(main.value);
+                    label.gameObject.SetActive(true);
+                }
+                else
+                {
+                    label.gameObject.SetActive(false);
+                }
+            }
+            
             foreach (var label in _stats)
             {
                 var type = (int)label.type;
-                int index = Array.FindIndex(Item.stats, x => x == type);
-                if (index.IsValidIndex(Item.stats, Item.values))
+                
+                var stat = Item.sub.Find(x => x.type == type);
+                if(stat != null)
                 {
-                    label.SetText(Item.values[index]);
+                    label.SetText(stat.value);
                     label.gameObject.SetActive(true);
                 }
                 else 

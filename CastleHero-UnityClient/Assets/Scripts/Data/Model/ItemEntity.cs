@@ -1,53 +1,33 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using RGLabs.Data.DB;
+using RGLabs.Utility;
 
 namespace RGLabs.Data.Model
 {
-    public enum ItemTypeCode
-    {
-        Equipment = 0,
-        Consumable = 5,
-        Ingredient = 6,
-        Chest = 7,
-    }
-
-    public enum EquipmentGradeCode
+    public enum EquipmentGrade
     {
         Legend = 0,
         Epic = 1,
         Rare = 2,
         Common = 3
     }
-
-    public enum IngredientGradeCode
+    
+    public enum ConsumeType
     {
-        Legend = 1,
-        Epic = 2,
-        Rare = 3,
-        High = 4,
-        Middle = 5,
-        Low = 6,
-    }
-
-    public enum ChestTypeCode
-    {
-        Soul = 1,
-        Ap = 2,
-        Exp = 3,
-        ElementalStone = 4,
-        Equipment = 5,
-        Gold = 6,
-        General = 7,
-    }
-
-    public enum ConsumeOption
-    {
-        Soul = 0,
         Ap = 1,
         Exp = 2,
         PlayTicket = 3,
         SummonTicket = 4,
         ElementalStone = 5,
+    }
+
+    public enum IngredientType
+    {
+        Soul = 1,
+        ElementalPiece = 2,
+        EquipmentPiece = 3,
     }
 
     public enum EquipmentSlot
@@ -57,144 +37,6 @@ namespace RGLabs.Data.Model
         Ring = 2,
         Necklace = 3,
     }
-    
-    public interface IItemEntity : IEntity
-    {
-        public ItemTypeCode TypeCode { get; }
-        
-        public string Icon { get; }
-        public string Name { get; }
-        public string Desc { get; }
-        public int SellPrice { get; }
-    }
-
-    public struct EquipmentEntity : IItemEntity
-    {
-        public ItemTypeCode TypeCode => ItemTypeCode.Equipment;
-        
-        [DataField("Item_Equip_ID")]
-        public int Id { get; set; }
-        
-        public bool IsValid { get; set; }
-        
-        [DataField("Item_Equip_Icon")]
-        public string Icon { get; set; }
-
-        [DataField("Item_Equip_Name")]
-        public string Name { get; set; }
-
-        [DataField("Item_Equip_Subject")]
-        public string Desc { get; set; }
-        
-        [DataField("Item_Equip_Sell")]
-        public int SellPrice { get; set; }
-
-        [DataField("Item_Equip_Class")] 
-        public EquipmentGradeCode grade;
-
-        [DataField("Item_Equip_Slot")]
-        public EquipmentSlot slot;
-
-        [DataField("Item_Equip_Set")]
-        public string set;
-
-        [DataField("Item_Equip_Set_Type")] 
-        public int[] setOptionStats;
-
-        [DataField("Item_Equip_Set_Value")] 
-        public float[] setOptionValues;
-    }
-    
-    public struct ConsumableEntity : IItemEntity
-    {
-        public ItemTypeCode TypeCode => ItemTypeCode.Consumable;
-        
-        [DataField("Item_Use_ID")]
-        public int Id { get; set; }
-        
-        public bool IsValid { get; set; }
-        
-        [DataField("Item_Use_Icon")]
-        public string Icon { get; set; }
-
-        [DataField("Item_Use_Name")]
-        public string Name { get; set; }
-
-        [DataField("Item_Use_Subject")]
-        public string Desc { get; set; }
-        
-        public int SellPrice { get; set; }
-        
-        [DataField("Item_Use_Option")] 
-        public ConsumeOption option;
-
-        [DataField("Item_Use_Option_Value")]
-        public int optionValue;
-
-        [DataField("Item_Use_Effect_Subject")]
-        public string consumeDesc;
-    }
-
-    public struct IngredientEntity : IItemEntity
-    {
-        public ItemTypeCode TypeCode => ItemTypeCode.Ingredient;
-        
-        [DataField("Item_Parts_ID")]
-        public int Id { get; set; }
-        
-        public bool IsValid { get; set; }
-        
-        [DataField("Item_Parts_Icon")]
-        public string Icon { get; set; }
-
-        [DataField("Item_Parts_Name")]
-        public string Name { get; set; }
-
-        [DataField("Item_Parts_Subject")]
-        public string Desc { get; set; }
-        
-        [DataField("Item_Parts_Sell")]
-        public int SellPrice { get; set; }
-
-        [DataField("Item_Parts_Combine")]
-        public int forCombine;
-        
-        [DataField("Item_Parts_Gain")]
-        public int resultItemId;
-    }
-    
-    public struct ChestEntity : IItemEntity
-    {
-        public ItemTypeCode TypeCode => ItemTypeCode.Chest;
-        
-        [DataField("Item_Chest_ID")]
-        public int Id { get; set; }
-        
-        public bool IsValid { get; set; }
-        
-        [DataField("Item_Chest_Icon")]
-        public string Icon { get; set; }
-
-        [DataField("Item_Chest_Name")]
-        public string Name { get; set; }
-
-        [DataField("Item_Chest_Subject")]
-        public string Desc { get; set; }
-        
-        public int SellPrice { get; set; }
-
-        [DataField("Item_Chest_Type")]
-        public int type;
-        
-        [DataField("Item_Chest_Value_Min")]
-        public int minQty;
-        
-        [DataField("Item_Chest_Value_Max")]
-        public int maxQty;
-
-        [DataField("Item_Chest_Item_Value")]
-        public int resultItemId;
-    }
 
     public enum ItemType
     {
@@ -202,6 +44,28 @@ namespace RGLabs.Data.Model
         Consumable,
         Ingredient,
         Chest,
+    }
+
+    public struct EquipmentOption
+    {
+        public EquipmentGrade grade;
+        public EquipmentSlot slot;
+        public int set;
+        public int mainStat;
+        public List<KeyValuePair<int, float>> setOptions;
+    }
+
+    public struct ConsumableOption
+    {
+        public ConsumeType type;
+        public float value;
+    }
+
+    public struct IngredientOption
+    {
+        public IngredientType type;
+        public int targetId;
+        public int forCombine;
     }
 
     public struct ItemEntity : IEntity
@@ -228,5 +92,103 @@ namespace RGLabs.Data.Model
         
         [DataField("Item_Option")]
         public string[] options;
+
+        #region Equipment.
+
+        public enum EquipmentOptionIndex
+        {
+            SetStat = 0,
+            SetStatValue = 1,
+            Param,
+        }
+        
+        public enum EquipmentParam
+        {
+            Grade = 0,
+            Slot = 1,
+            Set = 2,
+            MainStat = 3,
+        }
+        
+        public EquipmentOption GetEquipmentOption()
+        {
+            var option = new EquipmentOption();
+            var parameters = options[(int)EquipmentOptionIndex.Param]
+                .Trim()
+                .Split(',');
+            
+            for (var param = EquipmentParam.Grade; param <= EquipmentParam.MainStat; ++param)
+            {
+                int index = (int)param;
+                int value = int.Parse(parameters[index]);
+
+                switch (param)
+                {
+                    case EquipmentParam.Grade: option.grade = (EquipmentGrade)value; break;
+                    case EquipmentParam.Slot: option.slot = (EquipmentSlot)value; break;
+                    case EquipmentParam.Set: option.set = value; break;
+                    case EquipmentParam.MainStat: option.mainStat = value; break;
+                }
+            }
+
+            option.setOptions = new();
+
+            var types = options[(int)EquipmentOptionIndex.SetStat]
+                .Trim()
+                .Split(',')
+                .Select(int.Parse)
+                .ToArray();
+            
+            var values = options[(int)EquipmentOptionIndex.SetStatValue]
+                .Trim()
+                .Split(',')
+                .Select(float.Parse)
+                .ToArray();
+
+            int i = 0;
+            while (i.IsValidIndex(types, values))
+            {
+                option.setOptions.Add(new KeyValuePair<int, float>(types[i], values[i]));
+                ++i;
+            }
+
+            return option;
+        }
+
+        #endregion
+
+        #region Consumable.
+        public enum ConsumableOptionIndex
+        {
+            ConsumeType = 0,
+            Value = 1,
+        }
+
+        public ConsumableOption GetConsumableOption() =>
+            new()
+            {
+                type = (ConsumeType)int.Parse(options[(int)ConsumableOptionIndex.ConsumeType]),
+                value = float.Parse(options[(int)ConsumableOptionIndex.Value])
+            };
+
+        #endregion
+
+        #region Ingredient
+
+        public enum IngredientOptionIndex
+        {
+            TargetId = 0,
+            ForCombine = 1,
+        }
+
+        public IngredientOption GetIngredientOption() =>
+            new()
+            {
+                type = (IngredientType)((Id - Id / 10000) / 1000),
+                targetId = int.Parse(options[(int)IngredientOptionIndex.TargetId]),
+                forCombine = int.Parse(options[(int)IngredientOptionIndex.ForCombine])
+            };
+
+        #endregion
     }
 }

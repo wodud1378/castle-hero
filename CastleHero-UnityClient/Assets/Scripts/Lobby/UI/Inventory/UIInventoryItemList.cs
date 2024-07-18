@@ -1,11 +1,7 @@
 using Cysharp.Threading.Tasks;
-using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI;
 using RGLabs.Data;
-using RGLabs.Data.Model;
-using RGLabs.Lobby.UI.Inventory.Popup;
-using RGLabs.Network.Model;
-using RGLabs.Utility;
+using RGLabs.Network.Shared;
 
 namespace RGLabs.Lobby.UI.Inventory
 {
@@ -13,8 +9,7 @@ namespace RGLabs.Lobby.UI.Inventory
     {
         protected override UniTask SetItem(UIItemSlot slot, IItem data)
         {
-            var accessor = Storage.db.itemDBAccessor;
-            if (!accessor.TryLoad(data.ItemId, out var entity))
+            if (!Storage.db.items.TryFind(data.ItemId, out var entity))
                 return UniTask.CompletedTask;
 
             return slot.Init(data, entity);
