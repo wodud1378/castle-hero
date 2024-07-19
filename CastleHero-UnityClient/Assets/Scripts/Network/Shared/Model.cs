@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace RGLabs.Network.Shared
@@ -8,31 +9,38 @@ namespace RGLabs.Network.Shared
         public string inDate;
     }
 
-    public class Info : Data
+    public class Info
     {
         public int stage;
         public int focusedStage;
         public int castleLv;
     }
 
-    public class Currency : Data
+    public class Act
+    {
+        public int point;
+        public int pointMax;
+        public DateTime lastUsage;
+    }
+
+    public class Currency
     {
         public int gold;
         public int freeDia;
         public int paidDia;
     }
 
-    public class Characters : Data
+    public class Characters
     {
         public List<UnitInfo> units;
     }
 
-    public class Formation : Data
+    public class Formation
     {
         public List<FieldUnit> fieldUnits;
     }
 
-    public class Inventory : Data
+    public class Inventory
     {
         public List<IItem> items;
     }
@@ -40,6 +48,7 @@ namespace RGLabs.Network.Shared
     public class UserData
     {
         public Info info;
+        public Act act;
         public Currency currency;
         public Characters characters;
         public Formation formation;

@@ -9,49 +9,49 @@ namespace RGLabs.Network
         private static List<TransactionValue> TransactionGet(params string[] tables)
         {
             var list = new List<TransactionValue>();
-            if (tables.Contains(InfoTable))
+            if (tables.Contains(INFO_TABLE))
                 list.Add(TransactionGetInfo());
 
-            if (tables.Contains(CurrencyTable))
-                list.Add(TransactionGetInfo());
+            if (tables.Contains(CURRENCY_TABLE))
+                list.Add(TransactionGetCurrency());
 
-            if (tables.Contains(CharactersTable))
-                list.Add(TransactionGetInfo());
+            if (tables.Contains(CHARACTERS_TABLE))
+                list.Add(TransactionGetCharacters());
 
-            if (tables.Contains(FormationTable))
-                list.Add(TransactionGetInfo());
+            if (tables.Contains(FORMATION_TABLE))
+                list.Add(TransactionGetFormation());
 
-            if (tables.Contains(InventoryTable))
-                list.Add(TransactionGetInfo());
+            if (tables.Contains(INVENTORY_TABLE))
+                list.Add(TransactionGetInventory());
 
             return list;
         }
 
         #region Get.
 
-        private static TransactionValue TransactionGetInventory()
+        public static TransactionValue TransactionGetInventory()
         {
-            return TransactionValue.SetGet(InventoryTable, new Where());
+            return TransactionValue.SetGet(INVENTORY_TABLE, new Where());
         }
 
-        private static TransactionValue TransactionGetCharacters()
+        public static TransactionValue TransactionGetCharacters()
         {
-            return TransactionValue.SetGet(CharactersTable, new Where());
+            return TransactionValue.SetGet(CHARACTERS_TABLE, new Where());
         }
 
-        private static TransactionValue TransactionGetFormation()
+        public static TransactionValue TransactionGetFormation()
         {
-            return TransactionValue.SetGet(FormationTable, new Where());
+            return TransactionValue.SetGet(FORMATION_TABLE, new Where());
         }
 
-        private static TransactionValue TransactionGetCurrency()
+        public static TransactionValue TransactionGetCurrency()
         {
-            return TransactionValue.SetGet(CurrencyTable, new Where());
+            return TransactionValue.SetGet(CURRENCY_TABLE, new Where());
         }
 
-        private static TransactionValue TransactionGetInfo()
+        public static TransactionValue TransactionGetInfo()
         {
-            return TransactionValue.SetGet(InfoTable, new Where());
+            return TransactionValue.SetGet(INFO_TABLE, new Where());
         }
         #endregion
     }

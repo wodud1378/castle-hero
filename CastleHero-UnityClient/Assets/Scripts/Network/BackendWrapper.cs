@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using BackEnd;
 using BackEnd.MultiSettings;
+using BackendFunction;
 using Cysharp.Threading.Tasks;
 using LitJson;
 using RGLabs.Data;
@@ -49,11 +50,14 @@ namespace RGLabs.Network
 
     public static partial class BackendWrapper
     {
-        private const string InfoTable = "info";
-        private const string CurrencyTable = "currency";
-        private const string CharactersTable = "characters";
-        private const string FormationTable = "formation";
-        private const string InventoryTable = "inventory";
+        public const string INFO_TABLE = "info";
+        public const string ACT_TABLE = "act";
+        public const string CURRENCY_TABLE = "currency";
+        public const string CHARACTERS_TABLE = "characters";
+        public const string FORMATION_TABLE = "formation";
+        public const string INVENTORY_TABLE = "inventory";
+
+        private static readonly BFunc _localFunc = new();
 
         public delegate void Api(Backend.BackendCallback onResult);
 
@@ -104,41 +108,36 @@ namespace RGLabs.Network
             return Call<SummonResult>(
                 onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke));
         }
+        
+        public static UniTask<Response<Inventory>> GetUserTable(params string[] tables)
+        {
+            var read = TransactionGet(INVENTORY_TABLE);
+            return Call(
+                onResult => Backend.GameData.TransactionReadV2(read, onResult.Invoke),
+                ConvertFunctionResponse<Inventory>());
+        }
 
         public static async UniTask<Response<UserData>> GetUserData()
         {
             var read = TransactionGet(
-                InfoTable,
-                CurrencyTable,
-                CharactersTable,
-                FormationTable,
-                InventoryTable
+                INFO_TABLE,
+                CURRENCY_TABLE,
+                CHARACTERS_TABLE,
+                FORMATION_TABLE,
+                INVENTORY_TABLE
             );
 
             return await Call(
                 onResult => Backend.GameData.TransactionReadV2(read, onResult.Invoke),
-                (raw) =>
-                {
-                    var json = raw.GetFlattenJSON();
-                    return new UserData
-                    {
-                        info = json[InfoTable].Cast<Info>(),
-                        currency = json[CurrencyTable].Cast<Currency>(),
-                        characters = json[CharactersTable].Cast<Characters>(),
-                        formation = json[FormationTable].Cast<Formation>(),
-                        inventory = json[InfoTable].Cast<Inventory>(),
-                    };
-                });
+                ConvertUserData());
         }
 
         public static UniTask<Response> GetChartContent(string id)
             => Call(onResult => Backend.Chart.GetChartContents(id, onResult.Invoke));
 
-        public static async UniTask<Response<UserData>> NewUser()
+        public static UniTask<Response<UserData>> NewUser()
         {
-            var response = await InvokeFunc("DefaultData");
-
-            return await GetUserData();
+            return InvokeFunc_Local("DefaultData", null, ConvertUserData_Local());
         }
 
         public static UniTask<Response<GrowthResult>> Growth(string method, int chartId, int unitId, int itemId,
@@ -153,7 +152,7 @@ namespace RGLabs.Network
                 new(nameof(itemQty), itemQty),
             };
 
-            return InvokeFunc<GrowthResult>(method, parameters);
+            return InvokeFunc(method, parameters, ConvertFunctionResponse<GrowthResult>());
         }
 
         public static UniTask<Response<Inventory>> TEST_AddItem(int[] itemIds, int[] quantities)
@@ -164,7 +163,7 @@ namespace RGLabs.Network
                 new(nameof(quantities), quantities),
             };
 
-            return InvokeFunc<Inventory>("AddItems", parameters);
+            return InvokeFunc("AddItems", parameters, ConvertFunctionResponse<Inventory>());
         }
 
         public static UniTask<Response<Currency>> TEST_AddCurrency(int paidDia, int freeDia, int gold)
@@ -176,32 +175,90 @@ namespace RGLabs.Network
                 new(nameof(gold), gold)
             };
 
-            return InvokeFunc<Currency>("AddCurrency", parameters);
+            return InvokeFunc("AddCurrency", parameters, ConvertFunctionResponse<Currency>());
         }
 
         private static UniTask<Response> InvokeFunc(string functionName,
-            List<KeyValuePair<string, object>> parameters = null)
+            List<KeyValuePair<string, object>> parameters)
         {
             var param = FunctionParam(functionName, parameters);
             return Call(onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke));
         }
 
         private static UniTask<Response<T>> InvokeFunc<T>(string functionName,
-            List<KeyValuePair<string, object>> parameters = null)
+            List<KeyValuePair<string, object>> parameters, Response<T>.ConvertFromBackend convert)
         {
             var param = FunctionParam(functionName, parameters);
-            return Call<T>(onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke));
+            return Call(onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke), convert);
         }
+        
+        private static Response<T>.ConvertFromBackend ConvertFunctionResponse<T>() => raw => NetworkHelper.Cast<T>(raw.GetFlattenJSON()["data"]);
+
+        private static Response<UserData>.ConvertFromBackend ConvertUserData() =>
+            raw =>
+            {
+                var json = raw.GetFlattenJSON()["data"];
+                return new UserData
+                {
+                    info = NetworkHelper.Cast<Info>(json[INFO_TABLE]),
+                    act = NetworkHelper.Cast<Act>(json[ACT_TABLE]),
+                    currency = NetworkHelper.Cast<Currency>(json[CURRENCY_TABLE]),
+                    characters = NetworkHelper.Cast<Characters>(json[CHARACTERS_TABLE]),
+                    formation = NetworkHelper.Cast<Formation>(json[FORMATION_TABLE]),
+                    inventory = NetworkHelper.Cast<Inventory>(json[INVENTORY_TABLE]),
+                };
+            };
+
+        private static UniTask<Response<T>> InvokeFunc_Local<T>(string functionName, List<KeyValuePair<string, object>> parameters,
+            Response<T>.ConvertFromLocal convert)
+        {
+            var param = FunctionParam_Local(functionName, parameters);
+            var json = _localFunc.Invoke(param);
+
+            return UniTask.FromResult(new Response<T>(json, convert));
+        }
+
+        private static Response<T>.ConvertFromLocal ConvertUserTable_Local<T>() => NetworkHelper.Cast<T>;
+        
+        private static Response<UserData>.ConvertFromLocal ConvertUserData_Local() =>
+            json => new UserData
+            {
+                info = NetworkHelper.Cast<Info>(json[INFO_TABLE]),
+                act = NetworkHelper.Cast<Act>(json[ACT_TABLE]),
+                currency = NetworkHelper.Cast<Currency>(json[CURRENCY_TABLE]),
+                characters = NetworkHelper.Cast<Characters>(json[CHARACTERS_TABLE]),
+                formation = NetworkHelper.Cast<Formation>(json[FORMATION_TABLE]),
+                inventory = NetworkHelper.Cast<Inventory>(json[INVENTORY_TABLE]),
+            };
 
         private static Param FunctionParam(string functionName, List<KeyValuePair<string, object>> parameters = null)
         {
             var param = new Param { { "functionName", functionName } };
-            if (parameters != null)
+            if (parameters == null) 
+                return param;
+            
+            foreach (var kvp in parameters)
             {
-                foreach (var kvp in parameters)
-                {
-                    param.Add(kvp.Key, kvp.Value);
-                }
+                param.Add(kvp.Key, kvp.Value);
+            }
+            
+            return param;
+        }
+
+        private static JsonData FunctionParam_Local(string functionName,
+            List<KeyValuePair<string, object>> parameters = null)
+        {
+            var param = new JsonData
+            {
+                ["functionName"] = functionName
+            };
+
+            if (parameters == null) 
+                return param;
+            
+            foreach (var kvp in parameters)
+            {
+                param[kvp.Key] = kvp.Value.ToString();
             }
 
             return param;
@@ -219,12 +276,12 @@ namespace RGLabs.Network
             return await src.Task;
         }
 
-        private static UniTask<Response<T>> Call<T>(Api api, Response<T>.Convert convert = null)
+        private static UniTask<Response<T>> Call<T>(Api api, Response<T>.ConvertFromBackend convertFromBackend = null)
         {
             var src = new UniTaskCompletionSource<Response<T>>();
             api.Invoke(result =>
             {
-                var response = new Response<T>(result, convert);
+                var response = new Response<T>(result, convertFromBackend);
                 src.TrySetResult(response);
             });
 

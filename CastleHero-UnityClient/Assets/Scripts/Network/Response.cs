@@ -12,7 +12,6 @@ namespace RGLabs.Network
         AuthenticationError,
         ServerError,
         UnknownError,
-        InitializationFailed,
         Maintenance
     }
 
@@ -30,6 +29,10 @@ namespace RGLabs.Network
         
         private ResultCode GetResult(BackendReturnObject obj)
         {
+            // 로컬에서 null을 넣을 경우 모두 Success.
+            if (obj == null)
+                return ResultCode.Success;
+            
             if (obj.IsSuccess())
                 return ResultCode.Success;
 
@@ -46,13 +49,20 @@ namespace RGLabs.Network
     
     public class Response<T> : Response
     {
-        public delegate T Convert(BackendReturnObject raw);
+        public delegate T ConvertFromBackend(BackendReturnObject raw);
+
+        public delegate T ConvertFromLocal(JsonData data);
         
         public readonly ResultCode result;
         public readonly BackendReturnObject raw;
         public readonly T data;
+
+        public Response(JsonData data, ConvertFromLocal convert) : base(null)
+        {
+            this.data = convert.Invoke(data);
+        }
         
-        public Response(BackendReturnObject raw, Convert convert = null) : base(raw)
+        public Response(BackendReturnObject raw, ConvertFromBackend convert = null) : base(raw)
         {
             if (result != ResultCode.Success)
                 return;

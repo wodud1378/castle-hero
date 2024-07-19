@@ -70,7 +70,7 @@ namespace RGLabs.Data.Model
 
     public struct ItemEntity : IEntity
     {
-        [DataField("id")]
+        [DataField("guid")]
         public int Id { get; set; }
         
         public bool IsValid { get; set; }

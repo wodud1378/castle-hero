@@ -685,7 +685,7 @@ namespace RGLabs.Utility
         
         public static string ToJson(this object obj) => JsonConvert.SerializeObject(obj, DefaultSetting);
 
-        public static T Cast<T>(this JsonData data) => JsonConvert.DeserializeObject<T>(data.ToString(), DefaultSetting);
+        public static T Cast<T>(this JsonData data) => JsonConvert.DeserializeObject<T>(data.ToJson(), DefaultSetting);
 
         public static int ToInt(this JsonData data) => ToInt(data.ToString());
 
