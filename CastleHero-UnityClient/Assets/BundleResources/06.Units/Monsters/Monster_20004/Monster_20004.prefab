@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 7154187406837400977}
   - component: {fileID: 1244821699734531410}
   m_Layer: 0
-  m_Name: Spine Mecanim GameObject (Monster_20004)
+  m_Name: Spine Mecanim GameObject (Monster_Bandit)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -99,7 +99,7 @@ Animator:
   m_GameObject: {fileID: 465181937184145386}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8865a4be697f1324ca03d55f4e425617, type: 2}
+  m_Controller: {fileID: 9100000, guid: aa0b32fb2e8b3084ba28a0d0e84ad7a9, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -123,7 +123,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skeletonDataAsset: {fileID: 11400000, guid: 699c44f5345319449a905c513002c881, type: 2}
-  initialSkinName: Thief
+  initialSkinName: Bandit_Mercenary
   fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
   initialFlipY: 0

@@ -1,0 +1,226 @@
+Monster_Spirit_Lesser.png
+	size: 512, 512
+	filter: Linear, Linear
+	scale: 0.5
+Body_01
+	bounds: 333, 144, 48, 52
+	offsets: 17, 11, 81, 81
+Body_02
+	bounds: 357, 287, 48, 50
+	offsets: 17, 12, 81, 81
+Body_03
+	bounds: 278, 53, 49, 59
+	offsets: 16, 13, 81, 81
+Body_04
+	bounds: 254, 193, 49, 59
+	offsets: 16, 12, 81, 81
+Body_05
+	bounds: 338, 26, 50, 49
+	offsets: 16, 12, 81, 81
+	rotate: 90
+Body_06
+	bounds: 308, 391, 50, 54
+	offsets: 16, 13, 81, 81
+Body_07
+	bounds: 291, 324, 48, 60
+	offsets: 17, 12, 81, 81
+Body_08
+	bounds: 278, 2, 49, 58
+	offsets: 17, 11, 81, 81
+	rotate: 90
+Body_09
+	bounds: 309, 449, 48, 56
+	offsets: 17, 12, 81, 81
+Body_10
+	bounds: 307, 263, 48, 59
+	offsets: 17, 12, 81, 81
+Body_11
+	bounds: 283, 131, 48, 60
+	offsets: 17, 11, 81, 81
+Elipse
+	bounds: 166, 278, 65, 65
+Glow
+	bounds: 82, 107, 74, 73
+	offsets: 6, 6, 85, 86
+	rotate: 90
+Spirit_Lesser_Earth/Eye
+	bounds: 427, 52, 20, 28
+	offsets: 10, 10, 40, 48
+Spirit_Lesser_Earth/HitWave_01
+	bounds: 407, 312, 30, 29
+	offsets: 29, 29, 91, 91
+Spirit_Lesser_Earth/HitWave_02
+	bounds: 189, 441, 62, 64
+	offsets: 12, 10, 91, 91
+Spirit_Lesser_Earth/HitWave_03
+	bounds: 191, 373, 60, 66
+	offsets: 15, 10, 91, 91
+Spirit_Lesser_Earth/HitWave_04
+	bounds: 157, 78, 61, 71
+	offsets: 14, 9, 91, 91
+Spirit_Lesser_Earth/Mask
+	bounds: 2, 415, 114, 90
+	offsets: 4, 0, 123, 90
+Spirit_Lesser_Earth/Mask_Back
+	bounds: 219, 360, 11, 11
+Spirit_Lesser_Fire/Effect_Hit_Fire_01
+	bounds: 338, 5, 22, 19
+	offsets: 32, 33, 86, 86
+Spirit_Lesser_Fire/Effect_Hit_Fire_02
+	bounds: 341, 339, 48, 50
+	offsets: 20, 18, 85, 86
+Spirit_Lesser_Fire/Effect_Hit_Fire_03
+	bounds: 220, 114, 62, 61
+	offsets: 13, 12, 86, 86
+	rotate: 90
+Spirit_Lesser_Fire/Effect_Hit_Fire_04
+	bounds: 157, 10, 66, 65
+	offsets: 10, 9, 86, 85
+	rotate: 90
+Spirit_Lesser_Fire/Effect_Hit_Fire_05
+	bounds: 122, 345, 67, 68
+	offsets: 9, 7, 85, 85
+Spirit_Lesser_Fire/Effect_Hit_Fire_06
+	bounds: 117, 415, 70, 71
+	offsets: 7, 5, 86, 85
+Spirit_Lesser_Fire/Effect_Hit_Fire_07
+	bounds: 81, 28, 74, 75
+	offsets: 5, 3, 86, 86
+Spirit_Lesser_Fire/Effect_Hit_Fire_08
+	bounds: 2, 28, 75, 77
+	offsets: 4, 2, 85, 86
+	rotate: 90
+Spirit_Lesser_Fire/Effect_Hit_Fire_09
+	bounds: 2, 105, 76, 78
+	offsets: 3, 1, 86, 86
+	rotate: 90
+Spirit_Lesser_Fire/Eye
+	bounds: 427, 82, 20, 28
+	offsets: 10, 10, 40, 48
+Spirit_Lesser_Fire/Mask
+	bounds: 2, 183, 108, 73
+	offsets: 7, 7, 123, 88
+Spirit_Lesser_Fire/Mask_Back
+	bounds: 148, 332, 11, 11
+Spirit_Lesser_Water/Effect_Hit_Water_01
+	bounds: 421, 112, 30, 27
+	offsets: 17, 8, 71, 71
+	rotate: 90
+Spirit_Lesser_Water/Effect_Hit_Water_02
+	bounds: 405, 239, 41, 46
+	offsets: 10, 8, 71, 71
+Spirit_Lesser_Water/Effect_Hit_Water_03
+	bounds: 359, 453, 44, 52
+	offsets: 9, 8, 71, 71
+Spirit_Lesser_Water/Effect_Hit_Water_04
+	bounds: 357, 233, 46, 52
+	offsets: 7, 9, 71, 71
+Spirit_Lesser_Water/Effect_Hit_Water_05
+	bounds: 305, 198, 50, 54
+	offsets: 9, 8, 71, 71
+Spirit_Lesser_Water/Effect_Hit_Water_06
+	bounds: 329, 78, 51, 49
+	offsets: 10, 8, 71, 71
+	rotate: 90
+Spirit_Lesser_Water/Effect_Hit_Water_07
+	bounds: 110, 183, 52, 44
+	offsets: 10, 8, 71, 71
+	rotate: 90
+Spirit_Lesser_Water/Effect_Hit_Water_08
+	bounds: 383, 179, 52, 41
+	offsets: 10, 8, 71, 71
+	rotate: 90
+Spirit_Lesser_Water/Effect_Hit_Water_09
+	bounds: 405, 455, 50, 36
+	offsets: 11, 8, 71, 71
+	rotate: 90
+Spirit_Lesser_Water/Effect_Hit_Water_10
+	bounds: 405, 407, 46, 30
+	offsets: 12, 8, 71, 71
+	rotate: 90
+Spirit_Lesser_Water/Effect_Hit_Water_11
+	bounds: 117, 488, 44, 16
+	offsets: 12, 8, 71, 71
+Spirit_Lesser_Water/Effect_Hit_Water_12
+	bounds: 307, 255, 44, 6
+	offsets: 10, 8, 71, 71
+Spirit_Lesser_Water/Effect_Hit_Water_13
+	bounds: 219, 348, 11, 4
+	offsets: 11, 8, 71, 71
+Spirit_Lesser_Water/Effect_Hit_Water_14
+	bounds: 219, 354, 11, 4
+	offsets: 11, 8, 71, 71
+Spirit_Lesser_Water/Eye
+	bounds: 426, 179, 20, 28
+	offsets: 10, 10, 40, 48
+Spirit_Lesser_Water/Mask
+	bounds: 2, 257, 108, 73
+	offsets: 7, 7, 123, 88
+Spirit_Lesser_Water/Mask_Back
+	bounds: 135, 332, 11, 11
+Spirit_Lesser_Wind/Eye
+	bounds: 426, 209, 20, 28
+	offsets: 10, 10, 40, 48
+Spirit_Lesser_Wind/Mask
+	bounds: 2, 332, 119, 82
+	offsets: 2, 3, 123, 85
+Spirit_Lesser_Wind/Mask_Back
+	bounds: 122, 332, 11, 11
+Spirit_Lesser_Wind/WindSlash_01
+	bounds: 163, 492, 13, 13
+	offsets: 23, 39, 71, 71
+Spirit_Lesser_Wind/WindSlash_02
+	bounds: 191, 347, 24, 26
+	offsets: 22, 29, 71, 71
+	rotate: 90
+Spirit_Lesser_Wind/WindSlash_03
+	bounds: 166, 244, 39, 32
+	offsets: 5, 34, 71, 71
+Spirit_Lesser_Wind/WindSlash_04
+	bounds: 360, 401, 50, 43
+	offsets: 6, 15, 71, 71
+	rotate: 90
+Spirit_Lesser_Wind/WindSlash_05
+	bounds: 253, 447, 58, 54
+	offsets: 7, 7, 71, 71
+	rotate: 90
+Spirit_Lesser_Wind/WindSlash_06
+	bounds: 233, 314, 56, 57
+	offsets: 9, 6, 71, 71
+Spirit_Lesser_Wind/WindSlash_07
+	bounds: 253, 386, 53, 59
+	offsets: 13, 5, 71, 71
+Spirit_Lesser_Wind/WindSlash_08
+	bounds: 389, 26, 36, 59
+	offsets: 29, 5, 71, 71
+Steam_01
+	bounds: 383, 144, 60, 26
+	offsets: 5, 39, 141, 141
+Steam_02
+	bounds: 212, 178, 98, 40
+	offsets: 7, 37, 141, 141
+	rotate: 90
+Steam_03
+	bounds: 110, 237, 93, 54
+	offsets: 37, 37, 141, 141
+	rotate: 90
+Steam_04
+	bounds: 157, 151, 84, 53
+	offsets: 50, 40, 141, 141
+	rotate: 90
+Steam_05
+	bounds: 224, 40, 72, 52
+	offsets: 63, 43, 141, 141
+	rotate: 90
+Steam_06
+	bounds: 254, 254, 58, 51
+	offsets: 76, 44, 141, 141
+	rotate: 90
+Steam_07
+	bounds: 380, 87, 55, 39
+	offsets: 78, 56, 141, 141
+	rotate: 90
+Steam_08
+	bounds: 391, 343, 56, 36
+	offsets: 78, 59, 141, 141
+	rotate: 90

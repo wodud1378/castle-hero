@@ -1,0 +1,147 @@
+Monster_Magician.png
+	size: 1024, 1024
+	filter: Linear, Linear
+	scale: 0.5
+Elipse
+	bounds: 114, 117, 65, 65
+Magician_Knights/Arm_L
+	bounds: 310, 856, 38, 57
+	offsets: 5, 5, 48, 67
+Magician_Knights/Arm_R
+	bounds: 229, 6, 43, 56
+	offsets: 5, 5, 53, 66
+	rotate: 90
+Magician_Knights/Cape_Back
+	bounds: 276, 169, 134, 58
+	offsets: 1, 3, 136, 63
+	rotate: 270
+Magician_Knights/Cape_Front
+	bounds: 314, 550, 76, 35
+	offsets: 1, 1, 77, 39
+	rotate: 90
+Magician_Knights/Circle_InnerFade
+	bounds: 2, 18, 51, 51
+Magician_Knights/Eyes
+	bounds: 286, 305, 72, 45
+	offsets: 0, 0, 72, 46
+	rotate: 90
+Magician_Knights/Glow
+	bounds: 245, 51, 52, 52
+	offsets: 2, 2, 56, 56
+Magician_Knights/Hair_Back
+	bounds: 195, 797, 113, 123
+	offsets: 5, 5, 123, 133
+Magician_Knights/Hair_Front_01
+	bounds: 118, 405, 142, 82
+	offsets: 5, 5, 152, 92
+Magician_Knights/Hair_Front_02
+	bounds: 182, 107, 110, 76
+	offsets: 5, 5, 120, 86
+Magician_Knights/Hand_L
+	bounds: 113, 7, 46, 56
+	offsets: 4, 9, 55, 72
+	rotate: 90
+Magician_Knights/Hand_R
+	bounds: 134, 55, 50, 55
+	offsets: 5, 9, 58, 72
+	rotate: 90
+Magician_Knights/Hand_R_Grip
+	bounds: 287, 2, 39, 40
+	offsets: 1, 1, 42, 42
+	rotate: 90
+Magician_Mercenary/Hand_R_Grip
+	bounds: 287, 2, 39, 40
+	offsets: 1, 1, 42, 42
+	rotate: 90
+Magician_Knights/Hat_Back
+	bounds: 243, 601, 194, 70
+	rotate: 90
+Magician_Knights/Hat_Front
+	bounds: 2, 797, 191, 96
+	offsets: 2, 0, 193, 96
+Magician_Knights/Head
+	bounds: 2, 679, 124, 116
+	offsets: 5, 5, 134, 126
+Magician_Mercenary/Head
+	bounds: 2, 679, 124, 116
+	offsets: 5, 5, 134, 126
+Magician_Knights/Leg
+	bounds: 2, 69, 48, 75
+	offsets: 2, 3, 53, 80
+	rotate: 90
+Magician_Knights/Mouth
+	bounds: 319, 379, 31, 20
+Magician_Knights/Particle
+	bounds: 329, 25, 16, 16
+	offsets: 1, 1, 18, 18
+Magician_Knights/RadialWave
+	bounds: 2, 488, 114, 110
+	offsets: 9, 10, 128, 128
+Magician_Knights/Robe
+	bounds: 128, 184, 91, 125
+	offsets: 2, 2, 95, 129
+	rotate: 270
+Magician_Knights/Weapon
+	bounds: 2, 289, 56, 198
+	rotate: 90
+Magician_Mercenary/Arm_L
+	bounds: 310, 797, 38, 57
+	offsets: 5, 5, 48, 67
+Magician_Mercenary/Arm_R
+	bounds: 171, 8, 43, 56
+	offsets: 5, 5, 53, 66
+	rotate: 90
+Magician_Mercenary/Cape_Back
+	bounds: 195, 922, 134, 58
+	offsets: 1, 3, 136, 63
+Magician_Mercenary/Cape_Front
+	bounds: 262, 452, 76, 35
+	offsets: 1, 1, 77, 39
+Magician_Mercenary/Circle_InnerFade
+	bounds: 299, 43, 51, 51
+Magician_Mercenary/Eyes
+	bounds: 262, 404, 72, 45
+	offsets: 0, 0, 72, 46
+Magician_Mercenary/Glow
+	bounds: 191, 53, 52, 52
+	offsets: 2, 2, 56, 56
+Magician_Mercenary/Hair_Back
+	bounds: 128, 672, 113, 123
+	offsets: 5, 5, 123, 133
+Magician_Mercenary/Hair_Front_01
+	bounds: 202, 273, 82, 130
+	offsets: 5, 5, 92, 140
+Magician_Mercenary/Hair_Front_02
+	bounds: 2, 119, 110, 76
+	offsets: 5, 5, 120, 86
+Magician_Mercenary/Hand_L
+	bounds: 55, 17, 46, 56
+	offsets: 4, 9, 55, 72
+	rotate: 90
+Magician_Mercenary/Hand_R
+	bounds: 77, 65, 50, 55
+	offsets: 5, 9, 58, 72
+	rotate: 90
+Magician_Mercenary/Hat_Back
+	bounds: 2, 600, 194, 70
+Magician_Mercenary/Hat_Front
+	bounds: 2, 895, 191, 96
+	offsets: 2, 0, 193, 96
+Magician_Mercenary/Leg
+	bounds: 294, 95, 48, 75
+	offsets: 2, 3, 53, 80
+Magician_Mercenary/Mouth
+	bounds: 286, 379, 31, 20
+Magician_Mercenary/Particle
+	bounds: 195, 975, 16, 16
+	offsets: 1, 1, 18, 18
+Magician_Mercenary/RadialWave
+	bounds: 198, 489, 114, 110
+	offsets: 9, 10, 128, 128
+Magician_Mercenary/Robe
+	bounds: 2, 196, 91, 125
+	offsets: 2, 2, 95, 129
+	rotate: 90
+Magician_Mercenary/Weapon
+	bounds: 2, 347, 56, 198
+	rotate: 90
