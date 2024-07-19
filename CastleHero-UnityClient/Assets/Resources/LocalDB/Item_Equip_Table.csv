@@ -1,65 +1,65 @@
-﻿Item_Equip_ID,Item_Equip_Icon,Item_Equip_Name,Item_Equip_Class,Item_Equip_Slot,Item_Equip_Set,Item_Equip_Set_Type_1,Item_Equip_Set_Value_1,Item_Equip_Set_Type_2,Item_Equip_Set_Value_2,Item_Equip_Set_Type_3,Item_Equip_Set_Value_3,Item_Equip_Sell,Item_Equip_Subject
-30001,Equipment/Icon_Weapon_Sword_Common.png,대검,3,0,,,,,,,,100,조잡ㅎ
-30002,Equipment/Icon_Armor_Plate_Common.png,판금갑옷,3,1,,,,,,,,100,
-30003,Equipment/Icon_Ring_Ruby_Common.png,루비 반지,3,2,,,,,,,,100,
-30004,Equipment/Icon_Necklace_Ruby_Common.png,루비 목걸이,3,3,,,,,,,,100,
-30005,Equipment/Icon_Weapon_Axe_Common.png,도끼,3,0,,,,,,,,100,
-30006,Equipment/Icon_Armor_Chain_Common.png,사슬조끼,3,1,,,,,,,,100,
-30007,Equipment/Icon_Ring_Sapphire_Common.png,사파이어 반지,3,2,,,,,,,,100,
-30008,Equipment/Icon_Necklace_Sapphire_Common.png,사파이어 목걸이,3,3,,,,,,,,100,
-30009,Equipment/Icon_Weapon_Dagger_Common.png,단검,3,0,,,,,,,,100,
-30010,Equipment/Icon_Armor_Leather_Common.png,가죽 갑옷,3,1,,,,,,,,100,
-30011,Equipment/Icon_Ring_Topaz_Common.png,토파즈 반지,3,2,,,,,,,,100,
-30012,Equipment/Icon_Necklace_Topaz_Common.png,토파즈 목걸이,3,3,,,,,,,,100,
-30013,Equipment/Icon_Weapon_Wand_Common.png,지팡이,3,0,,,,,,,,100,
-30014,Equipment/Icon_Armor_Cloth_Common.png,천 갑옷,3,1,,,,,,,,100,
-30015,Equipment/Icon_Ring_Emerald_Common.png,에메랄드 반지,3,2,,,,,,,,100,
-30016,Equipment/Icon_Necklace_Emerald_Common.png,에메랄드 목걸이,3,3,,,,,,,,100,
-20001,Equipment/Icon_Weapon_Sword_Rare.png,기사의 대검,2,0,0,2,0.1,,,,,1000,
-20002,Equipment/Icon_Armor_Plate_Rare.png,기사의 판금갑옷,2,1,0,2,0.1,,,,,1000,
-20003,Equipment/Icon_Ring_Ruby_Rare.png,기사의 반지,2,2,0,2,0.1,,,,,1000,
-20004,Equipment/Icon_Necklace_Ruby_Rare.png,기사의 목걸이,2,3,0,2,0.1,,,,,1000,
-20005,Equipment/Icon_Weapon_Axe_Rare.png,전사의 도끼,2,0,1,4,0.05,,,,,1000,
-20006,Equipment/Icon_Armor_Chain_Rare.png,전사의 사슬갑옷,2,1,1,4,0.05,,,,,1000,
-20007,Equipment/Icon_Ring_Sapphire_Rare.png,전사의 반지,2,2,1,4,0.05,,,,,1000,
-20008,Equipment/Icon_Necklace_Sapphire_Rare.png,전사의 목걸이,2,3,1,4,0.05,,,,,1000,
-20009,Equipment/Icon_Weapon_Dagger_Rare.png,암살자의 단검,2,0,2,0,0.1,,,,,1000,
-20010,Equipment/Icon_Armor_Leather_Rare.png,암살자의 가죽갑옷,2,1,2,0,0.1,,,,,1000,
-20011,Equipment/Icon_Ring_Topaz_Rare.png,암살자의 반지,2,2,2,0,0.1,,,,,1000,
-20012,Equipment/Icon_Necklace_Topaz_Rare.png,암살자의 목걸이,2,3,2,0,0.1,,,,,1000,
-20013,Equipment/Icon_Weapon_Wand_Rare.png,마법사의 지팡이,2,0,3,5,0.05,,,,,1000,
-20014,Equipment/Icon_Armor_Cloth_Rare.png,마법사의 로브,2,1,3,5,0.05,,,,,1000,
-20015,Equipment/Icon_Ring_Emerald_Rare.png,마법사의 반지,2,2,3,5,0.05,,,,,1000,
-20016,Equipment/Icon_Necklace_Emerald_Rare.png,마법사의 목걸이,2,3,3,5,0.05,,,,,1000,
-10001,Equipment/Icon_Weapon_Sword_Epic.png,집행자의 대검,1,0,0,2,0.1,6,0.5,,,10000,
-10002,Equipment/Icon_Armor_Plate_Epic.png,집행자의 판금갑옷,1,1,0,2,0.1,6,0.5,,,10000,
-10003,Equipment/Icon_Ring_Ruby_Epic.png,집행자의 반지,1,2,0,2,0.1,6,0.5,,,10000,
-10004,Equipment/Icon_Necklace_Ruby_Epic.png,집행자의 목걸이,1,3,0,2,0.1,6,0.5,,,10000,
-10005,Equipment/Icon_Weapon_Axe_Epic.png,도살자의 도끼,1,0,1,4,0.05,3,0.1,,,10000,
-10006,Equipment/Icon_Armor_Chain_Epic.png,도살자의 사슬갑옷,1,1,1,4,0.05,3,0.1,,,10000,
-10007,Equipment/Icon_Ring_Sapphire_Epic.png,도살자의 반지,1,2,1,4,0.05,3,0.1,,,10000,
-10008,Equipment/Icon_Necklace_Sapphire_Epic.png,도살자의 목걸이,1,3,1,4,0.05,3,0.1,,,10000,
-10009,Equipment/Icon_Weapon_Dagger_Epic.png,응징의 단검,1,0,2,0,0.1,7,0.1,,,10000,
-10010,Equipment/Icon_Armor_Leather_Epic.png,응징의 가죽갑옷,1,1,2,0,0.1,7,0.1,,,10000,
-10011,Equipment/Icon_Ring_Topaz_Epic.png,응징의 반지,1,2,2,0,0.1,7,0.1,,,10000,
-10012,Equipment/Icon_Necklace_Topaz_Epic.png,응징의 목걸이,1,3,2,0,0.1,7,0.1,,,10000,
-10013,Equipment/Icon_Weapon_Wand_Epic.png,초월자의 지팡이,1,0,3,5,0.05,4,0.1,,,10000,
-10014,Equipment/Icon_Armor_Cloth_Epic.png,초월자의 로브,1,1,3,5,0.05,4,0.1,,,10000,
-10015,Equipment/Icon_Ring_Emerald_Epic.png,초월자의 반지,1,2,3,5,0.05,4,0.1,,,10000,
-10016,Equipment/Icon_Necklace_Emerald_Epic.png,초월자의 목걸이,1,3,3,5,0.05,4,0.1,,,10000,
-1,Equipment/Icon_Weapon_Sword_Legendary.png,집행자의 대검+,0,0,0,2,0.1,6,0.5,4,0.1,100000,
-2,Equipment/Icon_Armor_Plate_Legendary.png,집행자의 판금갑옷+,0,1,0,2,0.1,6,0.5,4,0.1,100000,
-3,Equipment/Icon_Ring_Ruby_Legendary.png,집행자의 반지+,0,2,0,2,0.1,6,0.5,4,0.1,100000,
-4,Equipment/Icon_Necklace_Ruby_Legendary.png,집행자의 목걸이+,0,3,0,2,0.1,6,0.5,4,0.1,100000,
-5,Equipment/Icon_Weapon_Axe_Legendary.png,도살자의 도끼+,0,0,1,4,0.05,3,0.1,1,0.1,100000,
-6,Equipment/Icon_Armor_Chain_Legendary.png,도살자의 사슬갑옷+,0,1,1,4,0.05,3,0.1,1,0.1,100000,
-7,Equipment/Icon_Ring_Sapphire_Legendary.png,도살자의 반지+,0,2,1,4,0.05,3,0.1,1,0.1,100000,
-8,Equipment/Icon_Necklace_Sapphire_Legendary.png,도살자의 목걸이+,0,3,1,4,0.05,3,0.1,1,0.1,100000,
-9,Equipment/Icon_Weapon_Dagger_Legendary.png,응징의 단검+,0,0,2,0,0.1,7,0.1,5,0.1,100000,
-10,Equipment/Icon_Armor_Leather_Legendary.png,응징의 가죽갑옷+,0,1,2,0,0.1,7,0.1,5,0.1,100000,
-11,Equipment/Icon_Ring_Topaz_Legendary.png,응징의 반지+,0,2,2,0,0.1,7,0.1,5,0.1,100000,
-12,Equipment/Icon_Necklace_Topaz_Legendary.png,응징의 목걸이+,0,3,2,0,0.1,7,0.1,5,0.1,100000,
-13,Equipment/Icon_Weapon_Wand_Legendary.png,초월자의 지팡이+,0,0,3,5,0.05,4,0.1,3,0.1,100000,
-14,Equipment/Icon_Armor_Cloth_Legendary.png,초월자의 로브+,0,1,3,5,0.05,4,0.1,3,0.1,100000,
-15,Equipment/Icon_Ring_Emerald_Legendary.png,초월자의 반지+,0,2,3,5,0.05,4,0.1,3,0.1,100000,
-16,Equipment/Icon_Necklace_Emerald_Legendary.png,초월자의 목걸이+,0,3,3,5,0.05,4,0.1,3,0.1,100000,
+﻿Item_Equip_ID,Item_Equip_Icon,Item_Equip_Name,Item_Equip_Class,Item_Equip_Slot,Item_Equip_Set,Item_Equip_Set_Type_1,Item_Equip_Set_Value_1,Item_Equip_Set_Type_2,Item_Equip_Set_Value_2,Item_Equip_Set_Type_3,Item_Equip_Set_Value_3,Item_Equip_Sell,Item_Equip_Subject,Item_Equip_MainStatus
+41001,Equipment/Icon_Weapon_Sword_Common.png,대검,3,0,,,,,,,,100,조잡ㅎ,1
+41002,Equipment/Icon_Armor_Plate_Common.png,판금갑옷,3,1,,,,,,,,100,,0
+41003,Equipment/Icon_Ring_Ruby_Common.png,루비 반지,3,2,,,,,,,,100,,
+41004,Equipment/Icon_Necklace_Ruby_Common.png,루비 목걸이,3,3,,,,,,,,100,,
+42001,Equipment/Icon_Weapon_Axe_Common.png,도끼,3,0,,,,,,,,100,,1
+42002,Equipment/Icon_Armor_Chain_Common.png,사슬조끼,3,1,,,,,,,,100,,0
+42003,Equipment/Icon_Ring_Sapphire_Common.png,사파이어 반지,3,2,,,,,,,,100,,
+42004,Equipment/Icon_Necklace_Sapphire_Common.png,사파이어 목걸이,3,3,,,,,,,,100,,
+43001,Equipment/Icon_Weapon_Dagger_Common.png,단검,3,0,,,,,,,,100,,1
+43002,Equipment/Icon_Armor_Leather_Common.png,가죽 갑옷,3,1,,,,,,,,100,,0
+43003,Equipment/Icon_Ring_Topaz_Common.png,토파즈 반지,3,2,,,,,,,,100,,
+43004,Equipment/Icon_Necklace_Topaz_Common.png,토파즈 목걸이,3,3,,,,,,,,100,,
+44001,Equipment/Icon_Weapon_Wand_Common.png,지팡이,3,0,,,,,,,,100,,1
+44002,Equipment/Icon_Armor_Cloth_Common.png,천 갑옷,3,1,,,,,,,,100,,0
+44003,Equipment/Icon_Ring_Emerald_Common.png,에메랄드 반지,3,2,,,,,,,,100,,
+44004,Equipment/Icon_Necklace_Emerald_Common.png,에메랄드 목걸이,3,3,,,,,,,,100,,
+31001,Equipment/Icon_Weapon_Sword_Rare.png,기사의 대검,2,0,0,2,0.1,,,,,1000,,1
+31002,Equipment/Icon_Armor_Plate_Rare.png,기사의 판금갑옷,2,1,0,2,0.1,,,,,1000,,0
+31003,Equipment/Icon_Ring_Ruby_Rare.png,기사의 반지,2,2,0,2,0.1,,,,,1000,,
+31004,Equipment/Icon_Necklace_Ruby_Rare.png,기사의 목걸이,2,3,0,2,0.1,,,,,1000,,
+32001,Equipment/Icon_Weapon_Axe_Rare.png,전사의 도끼,2,0,1,4,0.05,,,,,1000,,1
+32002,Equipment/Icon_Armor_Chain_Rare.png,전사의 사슬갑옷,2,1,1,4,0.05,,,,,1000,,0
+32003,Equipment/Icon_Ring_Sapphire_Rare.png,전사의 반지,2,2,1,4,0.05,,,,,1000,,
+32004,Equipment/Icon_Necklace_Sapphire_Rare.png,전사의 목걸이,2,3,1,4,0.05,,,,,1000,,
+33001,Equipment/Icon_Weapon_Dagger_Rare.png,암살자의 단검,2,0,2,0,0.1,,,,,1000,,1
+33002,Equipment/Icon_Armor_Leather_Rare.png,암살자의 가죽갑옷,2,1,2,0,0.1,,,,,1000,,0
+33003,Equipment/Icon_Ring_Topaz_Rare.png,암살자의 반지,2,2,2,0,0.1,,,,,1000,,
+33004,Equipment/Icon_Necklace_Topaz_Rare.png,암살자의 목걸이,2,3,2,0,0.1,,,,,1000,,
+34001,Equipment/Icon_Weapon_Wand_Rare.png,마법사의 지팡이,2,0,3,5,0.05,,,,,1000,,1
+34002,Equipment/Icon_Armor_Cloth_Rare.png,마법사의 로브,2,1,3,5,0.05,,,,,1000,,0
+34003,Equipment/Icon_Ring_Emerald_Rare.png,마법사의 반지,2,2,3,5,0.05,,,,,1000,,
+34004,Equipment/Icon_Necklace_Emerald_Rare.png,마법사의 목걸이,2,3,3,5,0.05,,,,,1000,,
+21001,Equipment/Icon_Weapon_Sword_Epic.png,집행자의 대검,1,0,0,2,0.1,6,0.5,,,10000,,1
+21002,Equipment/Icon_Armor_Plate_Epic.png,집행자의 판금갑옷,1,1,0,2,0.1,6,0.5,,,10000,,0
+21003,Equipment/Icon_Ring_Ruby_Epic.png,집행자의 반지,1,2,0,2,0.1,6,0.5,,,10000,,
+21004,Equipment/Icon_Necklace_Ruby_Epic.png,집행자의 목걸이,1,3,0,2,0.1,6,0.5,,,10000,,
+22001,Equipment/Icon_Weapon_Axe_Epic.png,도살자의 도끼,1,0,1,4,0.05,3,0.1,,,10000,,1
+22002,Equipment/Icon_Armor_Chain_Epic.png,도살자의 사슬갑옷,1,1,1,4,0.05,3,0.1,,,10000,,0
+22003,Equipment/Icon_Ring_Sapphire_Epic.png,도살자의 반지,1,2,1,4,0.05,3,0.1,,,10000,,
+22004,Equipment/Icon_Necklace_Sapphire_Epic.png,도살자의 목걸이,1,3,1,4,0.05,3,0.1,,,10000,,
+23001,Equipment/Icon_Weapon_Dagger_Epic.png,응징의 단검,1,0,2,0,0.1,7,0.1,,,10000,,1
+23002,Equipment/Icon_Armor_Leather_Epic.png,응징의 가죽갑옷,1,1,2,0,0.1,7,0.1,,,10000,,0
+23003,Equipment/Icon_Ring_Topaz_Epic.png,응징의 반지,1,2,2,0,0.1,7,0.1,,,10000,,
+23004,Equipment/Icon_Necklace_Topaz_Epic.png,응징의 목걸이,1,3,2,0,0.1,7,0.1,,,10000,,
+24001,Equipment/Icon_Weapon_Wand_Epic.png,초월자의 지팡이,1,0,3,5,0.05,4,0.1,,,10000,,1
+24002,Equipment/Icon_Armor_Cloth_Epic.png,초월자의 로브,1,1,3,5,0.05,4,0.1,,,10000,,0
+24003,Equipment/Icon_Ring_Emerald_Epic.png,초월자의 반지,1,2,3,5,0.05,4,0.1,,,10000,,
+24004,Equipment/Icon_Necklace_Emerald_Epic.png,초월자의 목걸이,1,3,3,5,0.05,4,0.1,,,10000,,
+11001,Equipment/Icon_Weapon_Sword_Legendary.png,집행자의 대검+,0,0,0,2,0.1,6,0.5,4,0.1,100000,,1
+11002,Equipment/Icon_Armor_Plate_Legendary.png,집행자의 판금갑옷+,0,1,0,2,0.1,6,0.5,4,0.1,100000,,0
+11003,Equipment/Icon_Ring_Ruby_Legendary.png,집행자의 반지+,0,2,0,2,0.1,6,0.5,4,0.1,100000,,
+11004,Equipment/Icon_Necklace_Ruby_Legendary.png,집행자의 목걸이+,0,3,0,2,0.1,6,0.5,4,0.1,100000,,
+12001,Equipment/Icon_Weapon_Axe_Legendary.png,도살자의 도끼+,0,0,1,4,0.05,3,0.1,1,0.1,100000,,1
+12002,Equipment/Icon_Armor_Chain_Legendary.png,도살자의 사슬갑옷+,0,1,1,4,0.05,3,0.1,1,0.1,100000,,0
+12003,Equipment/Icon_Ring_Sapphire_Legendary.png,도살자의 반지+,0,2,1,4,0.05,3,0.1,1,0.1,100000,,
+12004,Equipment/Icon_Necklace_Sapphire_Legendary.png,도살자의 목걸이+,0,3,1,4,0.05,3,0.1,1,0.1,100000,,
+13001,Equipment/Icon_Weapon_Dagger_Legendary.png,응징의 단검+,0,0,2,0,0.1,7,0.1,5,0.1,100000,,1
+13002,Equipment/Icon_Armor_Leather_Legendary.png,응징의 가죽갑옷+,0,1,2,0,0.1,7,0.1,5,0.1,100000,,0
+13003,Equipment/Icon_Ring_Topaz_Legendary.png,응징의 반지+,0,2,2,0,0.1,7,0.1,5,0.1,100000,,
+13004,Equipment/Icon_Necklace_Topaz_Legendary.png,응징의 목걸이+,0,3,2,0,0.1,7,0.1,5,0.1,100000,,
+14001,Equipment/Icon_Weapon_Wand_Legendary.png,초월자의 지팡이+,0,0,3,5,0.05,4,0.1,3,0.1,100000,,1
+14002,Equipment/Icon_Armor_Cloth_Legendary.png,초월자의 로브+,0,1,3,5,0.05,4,0.1,3,0.1,100000,,0
+14003,Equipment/Icon_Ring_Emerald_Legendary.png,초월자의 반지+,0,2,3,5,0.05,4,0.1,3,0.1,100000,,
+14004,Equipment/Icon_Necklace_Emerald_Legendary.png,초월자의 목걸이+,0,3,3,5,0.05,4,0.1,3,0.1,100000,,
