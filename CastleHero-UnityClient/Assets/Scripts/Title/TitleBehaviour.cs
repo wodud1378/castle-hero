@@ -61,9 +61,9 @@ namespace RGLabs.Title
 #if UNITY_EDITOR
             await _selectPlatform.Open(Platform.Guest);
 #elif UNITY_ANDROID
-            await _loginPopup.Open(Platform.PlayStore, Platform.Guest);
+            await _selectPlatform.Open(Platform.PlayStore, Platform.Guest);
 #elif UNITY_iOS
-            await _loginPopup.Open(Platform.AppStore, Platform.Guest);
+            await _selectPlatform.Open(Platform.AppStore, Platform.Guest);
 #endif
             return await _selectPlatform.LoginTask;
         }
