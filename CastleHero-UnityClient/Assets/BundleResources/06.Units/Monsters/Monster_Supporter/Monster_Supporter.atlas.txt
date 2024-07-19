@@ -1,0 +1,61 @@
+Monster_Supporter.png
+	size: 512, 512
+	filter: Linear, Linear
+	scale: 0.5
+Elipse
+	bounds: 127, 323, 65, 65
+Priest_Knights/Arm_L
+	bounds: 183, 158, 38, 57
+	offsets: 5, 5, 48, 67
+Priest_Knights/Arm_R
+	bounds: 183, 217, 43, 56
+	offsets: 5, 5, 53, 66
+Priest_Knights/Cape
+	bounds: 172, 37, 100, 42
+	offsets: 2, 3, 103, 47
+	rotate: 90
+Priest_Knights/Eyes
+	bounds: 128, 434, 72, 45
+	offsets: 0, 0, 72, 46
+	rotate: 90
+Priest_Knights/Hair_Back
+	bounds: 2, 275, 113, 123
+	offsets: 5, 5, 123, 133
+	rotate: 90
+Priest_Knights/Hair_Front_01
+	bounds: 120, 178, 95, 61
+	rotate: 90
+Priest_Knights/Hair_Front_02
+	bounds: 2, 11, 107, 74
+Priest_Knights/Hand_L
+	bounds: 174, 446, 46, 60
+	offsets: 4, 9, 55, 72
+Priest_Knights/Hand_R
+	bounds: 128, 114, 49, 62
+	offsets: 5, 9, 58, 72
+Priest_Knights/Hand_R_Grip
+	bounds: 128, 393, 39, 40
+	offsets: 1, 1, 42, 42
+Priest_Knights/Hat
+	bounds: 2, 179, 109, 94
+	offsets: 5, 7, 119, 108
+Priest_Knights/Head
+	bounds: 2, 390, 124, 116
+	offsets: 5, 5, 134, 126
+Priest_Knights/Leg
+	bounds: 137, 273, 48, 75
+	offsets: 2, 3, 53, 80
+	rotate: 270
+Priest_Knights/Mouth
+	bounds: 172, 18, 31, 20
+Priest_Knights/Robe
+	bounds: 2, 87, 91, 125
+	offsets: 2, 2, 95, 129
+	rotate: 90
+Priest_Knights/Weapon
+	bounds: 111, 2, 59, 83
+Round_Half
+	bounds: 169, 394, 25, 39
+Symbol_Heal
+	bounds: 205, 20, 16, 16
+	offsets: 1, 1, 18, 18

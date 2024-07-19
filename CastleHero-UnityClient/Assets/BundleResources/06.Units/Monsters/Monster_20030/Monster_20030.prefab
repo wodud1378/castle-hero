@@ -12,9 +12,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Monster_20030
       objectReference: {fileID: 0}
+    - target: {fileID: 7174810689259680027, guid: bd09fec732dad8644be334c714f47f02, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 52efcdb7ca5c0e5488236619547d877d, type: 2}
     - target: {fileID: 7405764224175786417, guid: bd09fec732dad8644be334c714f47f02, type: 3}
       propertyPath: initialSkinName
-      value: _01
+      value: Fire
       objectReference: {fileID: 0}
     - target: {fileID: 8402756777875714999, guid: bd09fec732dad8644be334c714f47f02, type: 3}
       propertyPath: m_LocalPosition.x

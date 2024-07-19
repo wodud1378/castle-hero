@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 465181937184145386, guid: cad1920cbef678240bb989106a4dc0e8, type: 3}
       propertyPath: m_Name
-      value: Spine Mecanim GameObject (Monster_20002)
+      value: Spine Mecanim GameObject (Monster_Farmer)
       objectReference: {fileID: 0}
     - target: {fileID: 6391860083955039845, guid: cad1920cbef678240bb989106a4dc0e8, type: 3}
       propertyPath: m_Name
@@ -22,7 +22,7 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: d75de0c19719a6149bef1bf3c8fde890, type: 2}
     - target: {fileID: 7405764224175786417, guid: cad1920cbef678240bb989106a4dc0e8, type: 3}
       propertyPath: initialSkinName
-      value: _02
+      value: Farmer_Flail
       objectReference: {fileID: 0}
     - target: {fileID: 8402756777875714999, guid: cad1920cbef678240bb989106a4dc0e8, type: 3}
       propertyPath: m_LocalPosition.x
