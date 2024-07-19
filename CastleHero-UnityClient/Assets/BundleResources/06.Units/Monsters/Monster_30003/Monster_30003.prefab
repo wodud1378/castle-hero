@@ -447,7 +447,7 @@ GameObject:
   - component: {fileID: 4246205144746849534}
   - component: {fileID: 8240167209487654757}
   m_Layer: 8
-  m_Name: Spine Mecanim GameObject (Monster_30003)
+  m_Name: Spine Mecanim GameObject (Monster_Knight)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -498,7 +498,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 85ad670f26c0f8d428efb347bac03bd2, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -554,7 +554,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skeletonDataAsset: {fileID: 11400000, guid: 1f133cec5d0d8994f9b14ae0aed299af, type: 2}
-  initialSkinName: 
+  initialSkinName: Knight_Knights
   fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
   initialFlipY: 0

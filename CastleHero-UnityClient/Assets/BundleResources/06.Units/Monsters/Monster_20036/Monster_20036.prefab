@@ -12,9 +12,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Monster_20036
       objectReference: {fileID: 0}
+    - target: {fileID: 7174810689259680027, guid: bd09fec732dad8644be334c714f47f02, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 372b82200483b404aa742fa1b0da8a89, type: 2}
     - target: {fileID: 7405764224175786417, guid: bd09fec732dad8644be334c714f47f02, type: 3}
       propertyPath: initialSkinName
-      value: _02
+      value: Water
       objectReference: {fileID: 0}
     - target: {fileID: 8402756777875714999, guid: bd09fec732dad8644be334c714f47f02, type: 3}
       propertyPath: m_LocalPosition.x
