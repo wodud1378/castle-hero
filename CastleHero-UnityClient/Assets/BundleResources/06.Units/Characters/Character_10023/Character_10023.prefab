@@ -466,7 +466,7 @@ GameObject:
   - component: {fileID: 4697671263336751703}
   - component: {fileID: 4892121698718697599}
   m_Layer: 8
-  m_Name: Spine Mecanim GameObject (Character_10023)
+  m_Name: Spine Mecanim GameObject (Character_SlimeKing)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -549,7 +549,7 @@ Animator:
   m_GameObject: {fileID: 7919644939295012117}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 2c1748e39b0e30e4385b7aa53ef3ab2d, type: 2}
+  m_Controller: {fileID: 9100000, guid: bfe7c85562e6d3a40bac57f85bc90faa, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -573,7 +573,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skeletonDataAsset: {fileID: 11400000, guid: 5f35dff579c7e0e4ca76d114f885a3f5, type: 2}
-  initialSkinName: 
+  initialSkinName: SlimeKing
   fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
   initialFlipY: 0
