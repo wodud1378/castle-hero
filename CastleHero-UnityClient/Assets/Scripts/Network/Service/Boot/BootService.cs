@@ -42,16 +42,14 @@ namespace RGLabs.Network.Service.Boot
             {
                 var loginService = await _handler.ProvideLoginService();
                 var loginResponse = await loginService.Login();
-
-                newUser = loginResponse.raw.GetStatusCode() == "201";
+                var code = loginResponse.raw.GetStatusCode();
+                newUser = code == "201";
                 if (newUser)
                     await _handler.CheckPolicy();
             }
-            // var userData = newUser
-            //     ? (await BackendWrapper.NewUser()).data
-            //     : (await BackendWrapper.GetUserData()).data;
-
-            var userData = (await BackendWrapper.NewUser()).data;
+            var userData = newUser
+                ? (await BackendWrapper.NewUser()).data
+                : (await BackendWrapper.GetUserData()).data;
 
             await InitStorage(userData);
             
@@ -60,7 +58,7 @@ namespace RGLabs.Network.Service.Boot
 
         private async UniTask Init()
         {
-            var initResult = await BackendWrapper.Init("Dev");
+            var initResult = await BackendWrapper.Init("dev");
             if (initResult.result != ResultCode.Success)
                 await _handler.OnError(initResult);
             

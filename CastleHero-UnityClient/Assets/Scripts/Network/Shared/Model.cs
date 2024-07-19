@@ -9,7 +9,7 @@ namespace RGLabs.Network.Shared
         public string inDate;
     }
 
-    public class Info
+    public class Profile
     {
         public int stage;
         public int focusedStage;
@@ -47,7 +47,7 @@ namespace RGLabs.Network.Shared
 
     public class UserData
     {
-        public Info info;
+        public Profile profile;
         public Act act;
         public Currency currency;
         public Characters characters;

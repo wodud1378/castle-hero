@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using BackEnd;
 using BackEnd.MultiSettings;
-using BackendFunction;
 using Cysharp.Threading.Tasks;
 using LitJson;
 using RGLabs.Data;
@@ -50,14 +49,12 @@ namespace RGLabs.Network
 
     public static partial class BackendWrapper
     {
-        public const string INFO_TABLE = "info";
+        public const string PROFILE_TABLE = "profile";
         public const string ACT_TABLE = "act";
         public const string CURRENCY_TABLE = "currency";
         public const string CHARACTERS_TABLE = "characters";
         public const string FORMATION_TABLE = "formation";
         public const string INVENTORY_TABLE = "inventory";
-
-        private static readonly BFunc _localFunc = new();
 
         public delegate void Api(Backend.BackendCallback onResult);
 
@@ -120,7 +117,8 @@ namespace RGLabs.Network
         public static async UniTask<Response<UserData>> GetUserData()
         {
             var read = TransactionGet(
-                INFO_TABLE,
+                PROFILE_TABLE,
+                ACT_TABLE,
                 CURRENCY_TABLE,
                 CHARACTERS_TABLE,
                 FORMATION_TABLE,
@@ -129,7 +127,21 @@ namespace RGLabs.Network
 
             return await Call(
                 onResult => Backend.GameData.TransactionReadV2(read, onResult.Invoke),
-                ConvertUserData());
+                raw =>
+                {
+                    var data = raw.GetFlattenJSON();
+                    var userData = new UserData
+                    {
+                        profile = FromTransaction<Profile>(data, PROFILE_TABLE),
+                        act = FromTransaction<Act>(data, ACT_TABLE),
+                        currency = FromTransaction<Currency>(data,CURRENCY_TABLE),
+                        characters = FromTransaction<Characters>(data,CHARACTERS_TABLE),
+                        formation = FromTransaction<Formation>(data,FORMATION_TABLE),
+                        inventory = FromTransaction<Inventory>(data,INVENTORY_TABLE)
+                    };
+
+                    return userData;
+                });
         }
 
         public static UniTask<Response> GetChartContent(string id)
@@ -137,7 +149,19 @@ namespace RGLabs.Network
 
         public static UniTask<Response<UserData>> NewUser()
         {
-            return InvokeFunc_Local("DefaultData", null, ConvertUserData_Local());
+            return InvokeFunc("DefaultData", null, raw =>
+            {
+                var json = JsonMapper.ToObject(raw.GetFlattenJSON()["result"].ToString());
+                return new UserData
+                {
+                    profile = json[PROFILE_TABLE].Cast<Profile>(),
+                    act = json[ACT_TABLE].Cast<Act>(),
+                    currency = json[CURRENCY_TABLE].Cast<Currency>(),
+                    characters = json[CHARACTERS_TABLE].Cast<Characters>(),
+                    formation = json[FORMATION_TABLE].Cast<Formation>(),
+                    inventory = json[INVENTORY_TABLE].Cast<Inventory>(),
+                };
+            });
         }
 
         public static UniTask<Response<GrowthResult>> Growth(string method, int chartId, int unitId, int itemId,
@@ -178,6 +202,20 @@ namespace RGLabs.Network
             return InvokeFunc("AddCurrency", parameters, ConvertFunctionResponse<Currency>());
         }
 
+        private static T FromTransaction<T>(JsonData data, string tableName)
+        {
+            JsonData result = null;
+            var responses = data[0];
+            for (int i = 0, count = responses.Count; i < count && result == null; ++i)
+            {
+                var element = responses[i];
+                if (element.ContainsKey(tableName))
+                    result = element;
+            }
+
+            return result != null ? result.Cast<T>() : default;
+        }
+
         private static UniTask<Response> InvokeFunc(string functionName,
             List<KeyValuePair<string, object>> parameters)
         {
@@ -186,50 +224,13 @@ namespace RGLabs.Network
         }
 
         private static UniTask<Response<T>> InvokeFunc<T>(string functionName,
-            List<KeyValuePair<string, object>> parameters, Response<T>.ConvertFromBackend convert)
+            List<KeyValuePair<string, object>> parameters, Response<T>.Convert convert)
         {
             var param = FunctionParam(functionName, parameters);
             return Call(onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke), convert);
         }
         
-        private static Response<T>.ConvertFromBackend ConvertFunctionResponse<T>() => raw => NetworkHelper.Cast<T>(raw.GetFlattenJSON()["data"]);
-
-        private static Response<UserData>.ConvertFromBackend ConvertUserData() =>
-            raw =>
-            {
-                var json = raw.GetFlattenJSON()["data"];
-                return new UserData
-                {
-                    info = NetworkHelper.Cast<Info>(json[INFO_TABLE]),
-                    act = NetworkHelper.Cast<Act>(json[ACT_TABLE]),
-                    currency = NetworkHelper.Cast<Currency>(json[CURRENCY_TABLE]),
-                    characters = NetworkHelper.Cast<Characters>(json[CHARACTERS_TABLE]),
-                    formation = NetworkHelper.Cast<Formation>(json[FORMATION_TABLE]),
-                    inventory = NetworkHelper.Cast<Inventory>(json[INVENTORY_TABLE]),
-                };
-            };
-
-        private static UniTask<Response<T>> InvokeFunc_Local<T>(string functionName, List<KeyValuePair<string, object>> parameters,
-            Response<T>.ConvertFromLocal convert)
-        {
-            var param = FunctionParam_Local(functionName, parameters);
-            var json = _localFunc.Invoke(param);
-
-            return UniTask.FromResult(new Response<T>(json, convert));
-        }
-
-        private static Response<T>.ConvertFromLocal ConvertUserTable_Local<T>() => NetworkHelper.Cast<T>;
-        
-        private static Response<UserData>.ConvertFromLocal ConvertUserData_Local() =>
-            json => new UserData
-            {
-                info = NetworkHelper.Cast<Info>(json[INFO_TABLE]),
-                act = NetworkHelper.Cast<Act>(json[ACT_TABLE]),
-                currency = NetworkHelper.Cast<Currency>(json[CURRENCY_TABLE]),
-                characters = NetworkHelper.Cast<Characters>(json[CHARACTERS_TABLE]),
-                formation = NetworkHelper.Cast<Formation>(json[FORMATION_TABLE]),
-                inventory = NetworkHelper.Cast<Inventory>(json[INVENTORY_TABLE]),
-            };
+        private static Response<T>.Convert ConvertFunctionResponse<T>() => raw => raw.GetFlattenJSON()["data"].Cast<T>();
 
         private static Param FunctionParam(string functionName, List<KeyValuePair<string, object>> parameters = null)
         {
@@ -245,25 +246,6 @@ namespace RGLabs.Network
             return param;
         }
 
-        private static JsonData FunctionParam_Local(string functionName,
-            List<KeyValuePair<string, object>> parameters = null)
-        {
-            var param = new JsonData
-            {
-                ["functionName"] = functionName
-            };
-
-            if (parameters == null) 
-                return param;
-            
-            foreach (var kvp in parameters)
-            {
-                param[kvp.Key] = kvp.Value.ToString();
-            }
-
-            return param;
-        }
-
         private static async UniTask<Response> Call(Api api)
         {
             var src = new UniTaskCompletionSource<Response>();
@@ -276,12 +258,12 @@ namespace RGLabs.Network
             return await src.Task;
         }
 
-        private static UniTask<Response<T>> Call<T>(Api api, Response<T>.ConvertFromBackend convertFromBackend = null)
+        private static UniTask<Response<T>> Call<T>(Api api, Response<T>.Convert convert = null)
         {
             var src = new UniTaskCompletionSource<Response<T>>();
             api.Invoke(result =>
             {
-                var response = new Response<T>(result, convertFromBackend);
+                var response = new Response<T>(result, convert);
                 src.TrySetResult(response);
             });
 

@@ -9,8 +9,11 @@ namespace RGLabs.Network
         private static List<TransactionValue> TransactionGet(params string[] tables)
         {
             var list = new List<TransactionValue>();
-            if (tables.Contains(INFO_TABLE))
-                list.Add(TransactionGetInfo());
+            if (tables.Contains(PROFILE_TABLE))
+                list.Add(TransactionGetProfile());
+            
+            if (tables.Contains(ACT_TABLE))
+                list.Add(TransactionGetAct());
 
             if (tables.Contains(CURRENCY_TABLE))
                 list.Add(TransactionGetCurrency());
@@ -29,30 +32,18 @@ namespace RGLabs.Network
 
         #region Get.
 
-        public static TransactionValue TransactionGetInventory()
-        {
-            return TransactionValue.SetGet(INVENTORY_TABLE, new Where());
-        }
+        public static TransactionValue TransactionGetInventory() => TransactionValue.SetGet(INVENTORY_TABLE, new Where());
 
-        public static TransactionValue TransactionGetCharacters()
-        {
-            return TransactionValue.SetGet(CHARACTERS_TABLE, new Where());
-        }
+        public static TransactionValue TransactionGetCharacters() => TransactionValue.SetGet(CHARACTERS_TABLE, new Where());
 
-        public static TransactionValue TransactionGetFormation()
-        {
-            return TransactionValue.SetGet(FORMATION_TABLE, new Where());
-        }
+        public static TransactionValue TransactionGetFormation() => TransactionValue.SetGet(FORMATION_TABLE, new Where());
 
-        public static TransactionValue TransactionGetCurrency()
-        {
-            return TransactionValue.SetGet(CURRENCY_TABLE, new Where());
-        }
+        public static TransactionValue TransactionGetCurrency() => TransactionValue.SetGet(CURRENCY_TABLE, new Where());
 
-        public static TransactionValue TransactionGetInfo()
-        {
-            return TransactionValue.SetGet(INFO_TABLE, new Where());
-        }
+        public static TransactionValue TransactionGetAct() => TransactionValue.SetGet(ACT_TABLE, new Where());
+        
+        public static TransactionValue TransactionGetProfile() => TransactionValue.SetGet(PROFILE_TABLE, new Where());
+
         #endregion
     }
 }

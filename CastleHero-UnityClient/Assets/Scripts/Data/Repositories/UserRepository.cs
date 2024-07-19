@@ -26,7 +26,7 @@ namespace RGLabs.Data.Repositories
 
         public UserRepository(UserData userData)
         {
-            var info = userData.info;
+            var info = userData.profile;
             stage = new(info.stage);
             focusedStage = new(info.focusedStage);
             castleLv = new(info.castleLv);
