@@ -1,9 +1,0 @@
-Character_10000.png
-	size: 512, 512
-	filter: Linear, Linear
-	scale: 0.5
-Elipse
-	bounds: 244, 244, 65, 65
-Object_Palisade
-	bounds: 2, 90, 240, 219
-	offsets: 8, 19, 256, 256

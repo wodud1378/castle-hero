@@ -1,0 +1,227 @@
+Character_Assassin.png
+	size: 1024, 1024
+	filter: Linear, Linear
+	scale: 0.5
+Assassin/Arm_L
+	bounds: 187, 758, 42, 59
+	offsets: 5, 5, 52, 69
+Assassin/Arm_R
+	bounds: 194, 188, 40, 59
+	offsets: 5, 5, 50, 69
+Assassin/Belt
+	bounds: 180, 837, 71, 64
+	offsets: 3, 1, 76, 66
+	rotate: 90
+Assassin/Blusher
+	bounds: 253, 585, 73, 13
+	offsets: 4, 9, 81, 24
+	rotate: 90
+Assassin/Eyebrow_L
+	bounds: 246, 521, 16, 11
+Assassin/Eyebrow_R
+	bounds: 209, 1011, 12, 11
+Assassin/Eyes
+	bounds: 200, 93, 76, 31
+	offsets: 0, 3, 76, 36
+	rotate: 90
+Assassin/Foot_L
+	bounds: 230, 149, 46, 45
+	offsets: 3, 8, 52, 57
+	rotate: 90
+Assassin/Foot_R
+	bounds: 233, 859, 46, 45
+	offsets: 4, 8, 53, 55
+	rotate: 180
+Assassin/Hair_Back
+	bounds: 2, 624, 145, 127
+	offsets: 5, 5, 155, 137
+	rotate: 90
+Assassin/Hair_Front_1
+	bounds: 102, 813, 99, 92
+	offsets: 2, 1, 104, 95
+	rotate: 90
+Assassin/Hair_Front_2
+	bounds: 2, 368, 137, 106
+	offsets: 2, 0, 139, 106
+	rotate: 90
+Assassin/Hair_Side_Back
+	bounds: 131, 631, 43, 114
+	offsets: 3, 2, 49, 119
+Assassin/Hand_L
+	bounds: 131, 747, 54, 66
+	offsets: 4, 5, 64, 76
+Assassin/Hand_R
+	bounds: 174, 642, 50, 60
+	offsets: 5, 10, 60, 74
+Assassin/Hand_R_Back
+	bounds: 227, 6, 34, 40
+	offsets: 5, 5, 44, 51
+Assassin/Head
+	bounds: 2, 507, 123, 115
+	offsets: 12, 5, 136, 125
+Assassin/Hip
+	bounds: 109, 381, 79, 49
+	offsets: 5, 5, 88, 59
+Assassin/Horn_L
+	bounds: 152, 316, 50, 63
+	offsets: 5, 5, 60, 73
+Assassin/Horn_R
+	bounds: 204, 337, 36, 58
+	offsets: 5, 5, 46, 68
+Assassin/Leg_L
+	bounds: 180, 2, 45, 64
+	offsets: 5, 5, 56, 74
+Assassin/Leg_R
+	bounds: 159, 958, 48, 64
+	offsets: 5, 5, 60, 74
+Assassin/Mouth
+	bounds: 244, 845, 24, 13
+Assassin/Muffler
+	bounds: 202, 257, 57, 37
+	offsets: 5, 5, 70, 47
+	rotate: 90
+Assassin/Muffler_2
+	bounds: 59, 2, 105, 147
+	offsets: 2, 2, 109, 151
+Assassin/Muffler_3
+	bounds: 114, 2, 91, 133
+	offsets: 2, 3, 94, 138
+	rotate: 180
+Assassin/Nose
+	bounds: 194, 819, 26, 19
+	rotate: 90
+Assassin/Torso
+	bounds: 2, 57, 95, 91
+	offsets: 2, 0, 100, 95
+Assassin/Weapon
+	bounds: 2, 771, 98, 251
+	offsets: 0, 2, 98, 255
+Effect_Circle_Blur
+	bounds: 187, 709, 47, 47
+	offsets: 1, 1, 49, 49
+Effect_Slash
+	bounds: 185, 456, 50, 50
+Effect_Wave
+	bounds: 134, 167, 58, 55
+	offsets: 2, 2, 62, 59
+Elipse
+	bounds: 127, 557, 65, 65
+Explosion
+	bounds: 225, 581, 59, 26
+	rotate: 90
+Glow
+	bounds: 109, 432, 74, 73
+	offsets: 6, 6, 85, 86
+GroundShockWave_01
+	bounds: 152, 249, 65, 48
+	offsets: 3, 0, 68, 49
+	rotate: 90
+GroundShockWave_02
+	bounds: 236, 735, 52, 26
+	offsets: 3, 0, 68, 49
+	rotate: 90
+GroundShockWave_03
+	bounds: 192, 517, 52, 38
+	offsets: 3, 0, 68, 49
+GroundShockWave_04
+	bounds: 190, 397, 57, 43
+	offsets: 4, 0, 68, 49
+	rotate: 90
+GroundShockWave_05
+	bounds: 127, 508, 63, 47
+	offsets: 3, 0, 68, 49
+GroundSmoke_01
+	bounds: 209, 998, 11, 11
+	offsets: 25, 14, 65, 65
+GroundSmoke_02
+	bounds: 126, 815, 27, 22
+	offsets: 18, 14, 65, 65
+GroundSmoke_03
+	bounds: 236, 709, 41, 24
+	offsets: 11, 14, 65, 65
+GroundSmoke_04
+	bounds: 246, 534, 45, 26
+	offsets: 9, 14, 65, 65
+	rotate: 90
+GroundSmoke_05
+	bounds: 241, 288, 47, 28
+	offsets: 9, 14, 65, 65
+	rotate: 90
+GroundSmoke_06
+	bounds: 237, 468, 47, 28
+	offsets: 9, 14, 65, 65
+	rotate: 90
+GroundSmoke_07
+	bounds: 236, 207, 48, 28
+	offsets: 9, 14, 65, 65
+	rotate: 90
+GroundSmoke_08
+	bounds: 235, 406, 48, 29
+	offsets: 9, 14, 65, 65
+	rotate: 90
+GroundSmoke_09
+	bounds: 232, 99, 49, 29
+	offsets: 9, 14, 65, 65
+	rotate: 90
+GroundSmoke_10
+	bounds: 231, 789, 49, 29
+	offsets: 10, 14, 65, 65
+	rotate: 90
+GroundSmoke_11
+	bounds: 227, 48, 49, 29
+	offsets: 10, 14, 65, 65
+	rotate: 90
+GroundSmoke_12
+	bounds: 241, 258, 35, 28
+	offsets: 24, 14, 65, 65
+JumpingSmoke_01
+	bounds: 249, 960, 62, 19
+	offsets: 41, 4, 152, 85
+	rotate: 90
+JumpingSmoke_02
+	bounds: 102, 772, 82, 22
+	offsets: 30, 3, 152, 85
+	rotate: 90
+JumpingSmoke_03
+	bounds: 102, 914, 108, 55
+	offsets: 21, 2, 152, 85
+	rotate: 90
+JumpingSmoke_04
+	bounds: 2, 150, 130, 72
+	offsets: 10, 1, 152, 85
+JumpingSmoke_05
+	bounds: 2, 227, 140, 75
+	offsets: 2, 3, 152, 85
+	rotate: 90
+JumpingSmoke_06
+	bounds: 79, 224, 143, 71
+	offsets: 7, 2, 152, 85
+	rotate: 90
+Pierce_01
+	bounds: 226, 660, 47, 31
+	offsets: 0, 4, 83, 35
+	rotate: 90
+Pierce_02
+	bounds: 194, 557, 83, 29
+	offsets: 0, 0, 83, 35
+	rotate: 90
+Pierce_03
+	bounds: 242, 365, 39, 33
+	offsets: 0, 0, 83, 35
+	rotate: 90
+Pierce_04
+	bounds: 224, 899, 51, 31
+	offsets: 0, 1, 83, 35
+	rotate: 90
+Pierce_05
+	bounds: 224, 952, 70, 23
+	offsets: 0, 6, 83, 35
+	rotate: 90
+Smoke
+	bounds: 242, 341, 24, 22
+Sphere_Half
+	bounds: 159, 910, 46, 63
+	rotate: 90
+Stretch
+	bounds: 209, 972, 5, 24
+	offsets: 1, 1, 7, 26

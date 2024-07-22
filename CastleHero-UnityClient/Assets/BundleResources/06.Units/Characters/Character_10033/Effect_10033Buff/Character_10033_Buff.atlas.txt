@@ -1,7 +1,0 @@
-Character_10033_Buff.png
-	size: 256, 256
-	filter: Linear, Linear
-	scale: 0.5
-Character_10033_Projectile
-	bounds: 2, 106, 141, 37
-	offsets: 3, 6, 149, 49
