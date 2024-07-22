@@ -1,4 +1,4 @@
-﻿id,icon,name,type,sell,option_1,option_2,option_3,desc_1,desc_2
+﻿guid,icon,name,type,sell,option_1,option_2,option_3,desc_1,desc_2
 1,Common/Icon/Icon_Cash.png,유료 다이아,4,,,,,,
 2,Common/Icon/Icon_Diamond.png,다이아,4,,,,,,
 3,Common/Icon/Icon_Gold.png,골드,4,,,,,,
