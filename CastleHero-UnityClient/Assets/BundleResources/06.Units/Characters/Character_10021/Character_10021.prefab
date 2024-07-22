@@ -358,7 +358,7 @@ GameObject:
   - component: {fileID: 4697671263336751703}
   - component: {fileID: 4892121698718697599}
   m_Layer: 8
-  m_Name: Spine Mecanim GameObject (Character_10021)
+  m_Name: Spine Mecanim GameObject (Character_Assassin)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -441,7 +441,7 @@ Animator:
   m_GameObject: {fileID: 7919644939295012117}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: d8438e918b168d449be7a52ce77068cc, type: 2}
+  m_Controller: {fileID: 9100000, guid: cedd3f1edf2e27042b7aa39851501f0f, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -465,7 +465,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skeletonDataAsset: {fileID: 11400000, guid: 87303c7831e7a0544b3d9073d631f5c0, type: 2}
-  initialSkinName: 
+  initialSkinName: Assassin
   fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
   initialFlipY: 0

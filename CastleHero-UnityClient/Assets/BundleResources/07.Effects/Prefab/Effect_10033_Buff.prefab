@@ -111,7 +111,7 @@ GameObject:
   - component: {fileID: 2459006045800023039}
   - component: {fileID: 2260865328935212067}
   m_Layer: 0
-  m_Name: Spine Mecanim GameObject (Character_10033_Buff)
+  m_Name: Spine Mecanim GameObject (Effect_HarpyQueen_Buff)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
