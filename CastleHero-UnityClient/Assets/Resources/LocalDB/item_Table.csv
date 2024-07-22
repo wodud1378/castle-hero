@@ -1,4 +1,8 @@
 ﻿id,icon,name,type,sell,option_1,option_2,option_3,desc_1,desc_2
+1,Common/Icon/Icon_Cash.png,유료 다이아,4,,,,,,
+2,Common/Icon/Icon_Diamond.png,다이아,4,,,,,,
+3,Common/Icon/Icon_Gold.png,골드,4,,,,,,
+4,,국가별 화폐,4,,,,,,
 41001,Equipment/Icon_Weapon_Sword_Common.png,대검,0,100,,,"3,0,-1,1",조잡ㅎ,
 41002,Equipment/Icon_Armor_Plate_Common.png,판금갑옷,0,100,,,"3,1,-1,0",0,
 41003,Equipment/Icon_Ring_Ruby_Common.png,루비 반지,0,100,,,"3,2,-1,-1",0,
