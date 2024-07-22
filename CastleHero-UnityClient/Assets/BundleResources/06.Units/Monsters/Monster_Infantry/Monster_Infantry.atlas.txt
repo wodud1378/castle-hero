@@ -1,73 +1,132 @@
 Monster_Infantry.png
-	size: 512, 512
+	size: 1024, 1024
 	filter: Linear, Linear
 	scale: 0.5
 Effect_Slash
-	bounds: 187, 436, 50, 50
+	bounds: 310, 260, 50, 50
 Elipse
-	bounds: 139, 269, 65, 65
+	bounds: 229, 491, 65, 65
 Infantry_Knights/Arm_L
-	bounds: 139, 436, 46, 64
+	bounds: 277, 40, 46, 64
 	offsets: 5, 5, 56, 77
 Infantry_Knights/Arm_L2
-	bounds: 206, 279, 48, 36
+	bounds: 327, 534, 48, 36
 	offsets: 5, 6, 60, 47
 	rotate: 90
 Infantry_Knights/Arm_R
-	bounds: 139, 369, 44, 65
+	bounds: 296, 467, 44, 65
 	offsets: 5, 5, 54, 75
 Infantry_Knights/Arm_R2
-	bounds: 226, 232, 45, 33
+	bounds: 2, 3, 45, 33
 	offsets: 5, 5, 55, 43
-	rotate: 90
 Infantry_Knights/Finger_R
-	bounds: 222, 112, 40, 35
+	bounds: 279, 3, 40, 35
 	offsets: 2, 2, 44, 40
-Infantry_Knights/Foot_L
-	bounds: 219, 150, 51, 37
-	offsets: 0, 4, 51, 45
-	rotate: 270
 Infantry_Knights/Hand_L
-	bounds: 123, 3, 46, 41
+	bounds: 313, 157, 46, 41
 	offsets: 9, 5, 60, 51
 Infantry_Knights/Hand_R
-	bounds: 171, 2, 44, 42
+	bounds: 311, 200, 44, 42
 	offsets: 5, 5, 54, 52
 Infantry_Knights/Hand_R_Grip
-	bounds: 213, 68, 41, 42
+	bounds: 84, 5, 41, 42
 	offsets: 7, 5, 57, 51
+	rotate: 90
 Infantry_Knights/Head
-	bounds: 2, 22, 130, 136
+	bounds: 2, 121, 130, 136
 	offsets: 1, 2, 131, 138
 	rotate: 90
 Infantry_Knights/Hip
-	bounds: 135, 46, 76, 40
+	bounds: 271, 389, 76, 40
 	offsets: 4, 5, 80, 50
+	rotate: 90
 Infantry_Knights/Leg_L
-	bounds: 185, 374, 44, 60
-	offsets: 5, 5, 54, 70
+	bounds: 263, 298, 47, 89
+	offsets: 3, 5, 53, 97
 Infantry_Knights/Shield
-	bounds: 139, 176, 91, 89
+	bounds: 187, 38, 91, 89
 	offsets: 0, 2, 93, 93
 	rotate: 90
 Infantry_Knights/Shoulder_L
-	bounds: 206, 329, 43, 41
+	bounds: 325, 61, 43, 41
 	offsets: 2, 3, 48, 46
 	rotate: 90
 Infantry_Knights/Skirt_C
-	bounds: 231, 394, 35, 47
+	bounds: 338, 583, 35, 47
 	offsets: 3, 3, 42, 54
 Infantry_Knights/Skirt_L
-	bounds: 217, 20, 46, 36
+	bounds: 128, 7, 46, 36
 	offsets: 5, 5, 56, 46
-	rotate: 90
 Infantry_Knights/Skirt_R
-	bounds: 239, 467, 25, 33
+	bounds: 342, 438, 25, 33
 	offsets: 5, 5, 35, 43
 Infantry_Knights/Torso
-	bounds: 136, 87, 90, 85
+	bounds: 2, 37, 90, 85
 	offsets: 1, 3, 93, 91
-	rotate: 270
 Infantry_Knights/Weapon
-	bounds: 2, 154, 135, 346
+	bounds: 2, 377, 135, 346
 	offsets: 5, 5, 145, 356
+Infantry_Mercenary/Arm_L
+	bounds: 304, 626, 42, 64
+	offsets: 5, 5, 52, 74
+Infantry_Mercenary/Arm_L2
+	bounds: 176, 2, 45, 36
+	offsets: 5, 5, 55, 46
+Infantry_Mercenary/Arm_R
+	bounds: 281, 558, 44, 66
+	offsets: 5, 5, 54, 76
+Infantry_Mercenary/Arm_R2
+	bounds: 313, 354, 46, 39
+	offsets: 5, 5, 56, 49
+Infantry_Mercenary/Belt
+	bounds: 229, 692, 82, 24
+	offsets: 0, 0, 86, 26
+Infantry_Mercenary/Eyes
+	bounds: 229, 636, 73, 46
+Infantry_Mercenary/Finger_R
+	bounds: 237, 3, 40, 35
+	offsets: 2, 2, 44, 40
+Infantry_Mercenary/Hair_Back
+	bounds: 2, 253, 122, 133
+	offsets: 5, 5, 132, 143
+	rotate: 90
+Infantry_Mercenary/Hair_Front_01
+	bounds: 139, 353, 122, 136
+	offsets: 5, 5, 132, 146
+Infantry_Mercenary/Hair_Front_02
+	bounds: 139, 131, 110, 76
+	offsets: 5, 5, 120, 86
+Infantry_Mercenary/Hand_L
+	bounds: 311, 312, 46, 40
+	offsets: 9, 5, 60, 51
+Infantry_Mercenary/Hand_R
+	bounds: 314, 106, 44, 42
+	offsets: 5, 5, 54, 52
+Infantry_Mercenary/Hand_R_Grip
+	bounds: 325, 17, 41, 42
+	offsets: 7, 5, 57, 51
+Infantry_Mercenary/Head
+	bounds: 137, 235, 124, 116
+	offsets: 5, 5, 134, 126
+Infantry_Mercenary/Hip
+	bounds: 229, 558, 76, 50
+	offsets: 5, 5, 86, 60
+	rotate: 90
+Infantry_Mercenary/Leg_L
+	bounds: 263, 207, 47, 89
+	offsets: 3, 5, 53, 97
+Infantry_Mercenary/Mouth
+	bounds: 49, 19, 32, 16
+Infantry_Mercenary/Shoulder_L
+	bounds: 313, 395, 43, 41
+	offsets: 2, 3, 48, 46
+Infantry_Mercenary/Skirt
+	bounds: 249, 105, 103, 65
+	offsets: 2, 0, 106, 65
+	rotate: 90
+Infantry_Mercenary/Torso
+	bounds: 98, 44, 90, 85
+	offsets: 1, 3, 93, 91
+Infantry_Mercenary/Weapon
+	bounds: 139, 491, 88, 232
+	offsets: 5, 5, 98, 242
