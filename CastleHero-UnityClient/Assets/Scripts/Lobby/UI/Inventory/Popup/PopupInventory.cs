@@ -6,6 +6,7 @@ using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
+using RGLabs.Lobby.UI.Adapter;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using UniRx;
@@ -106,6 +107,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                     break;
                 case ItemType.Consumable:
                 case ItemType.Ingredient:
+                case ItemType.Chest:
                     Context.popupManager.Open<PopupUseItem>(item).Forget();
                     break;
             }

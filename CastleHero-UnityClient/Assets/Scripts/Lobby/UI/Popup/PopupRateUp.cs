@@ -124,9 +124,9 @@ namespace RGLabs.Lobby.UI.Popup
             _soulSlot.Init(result.leftItem);
 
             var repository = Storage.userRepository;
-            repository.UpdateCharacter(result.unit);
-            repository.UpdateCurrency(result.leftCurrency);
-            repository.UpdateItem(result.leftItem);
+            repository.Update(result.unit);
+            repository.Update(result.leftCurrency);
+            repository.Update(result.leftItem);
         }
     }
 }

@@ -3,7 +3,7 @@ using RGLabs.Common.UI;
 using RGLabs.Data;
 using RGLabs.Network.Shared;
 
-namespace RGLabs.Lobby.UI.Inventory
+namespace RGLabs.Lobby.UI.Adapter
 {
     public class UIInventoryItemList : UIListAdapter<UIItemSlot, IItem>
     {

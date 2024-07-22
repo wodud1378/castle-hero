@@ -1,5 +1,9 @@
-using System;
+using Cysharp.Threading.Tasks;
+using RGLabs.Common.Behaviours;
+using RGLabs.Data;
 using RGLabs.Data.Model;
+using RGLabs.Lobby.UI.Popup;
+using RGLabs.Network.Service.Item;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using TMPro;
@@ -18,6 +22,8 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         [SerializeField] private TMP_Text _useCount;
         [SerializeField] private TMP_Text _effect;
 
+        private readonly ItemService _service = new();
+        
         protected override void OnAwake()
         {
             base.OnAwake();
@@ -77,7 +83,6 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 case ItemType.Ingredient:
                 case ItemType.Chest:
                     isActive = true;
-
                     break;
             }
 
@@ -103,11 +108,25 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             }
             else if (Entity.type == ItemType.Ingredient)
                 Use();
+            else if (Entity.type == ItemType.Chest)
+                OpenBox();
         }
 
         private void Use()
         {
             // TODO 사용 로직.
+        }
+
+        private async void OpenBox()
+        {
+            var result = await _service.OpenBox(Item.ItemId, (int)_slider.value);
+
+            var currency = result.currency;
+            var items = result.items;
+            
+            Storage.userRepository.Add(currency);
+            Storage.userRepository.Add(items);
+            Context.popupManager.Open<PopupReceivedItems>(currency, items).Forget();
         }
 
         private void MoveToDrawCharacter()

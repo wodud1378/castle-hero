@@ -7,6 +7,7 @@ using LitJson;
 using RGLabs.Data;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
+using UnityEngine;
 
 namespace RGLabs.Network
 {
@@ -179,11 +180,24 @@ namespace RGLabs.Network
             return InvokeFunc(method, parameters, ConvertFunctionResponse<GrowthResult>());
         }
 
-        public static UniTask<Response<Inventory>> TEST_AddItem(int[] itemIds, int[] quantities)
+        public static UniTask<Response<OpenBoxResult>> OpenBox(int itemChartId, int statChartId, int boxItemId, int itemQty)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new(nameof(itemIds), itemIds),
+                new(nameof(itemChartId), itemChartId),
+                new(nameof(statChartId), statChartId),
+                new(nameof(boxItemId), boxItemId),
+                new(nameof(itemQty), itemQty),
+            };
+
+            return InvokeFunc("OpenBox", parameters, ConvertFunctionResponse<OpenBoxResult>());
+        }
+
+        public static UniTask<Response<Inventory>> TEST_AddItems(int[] ids, int[] quantities)
+        {
+            var parameters = new List<KeyValuePair<string, object>>
+            {
+                new(nameof(ids), ids),
                 new(nameof(quantities), quantities),
             };
 
@@ -210,7 +224,7 @@ namespace RGLabs.Network
             {
                 var element = responses[i];
                 if (element.ContainsKey(tableName))
-                    result = element;
+                    result = element[tableName];
             }
 
             return result != null ? result.Cast<T>() : default;
@@ -230,7 +244,7 @@ namespace RGLabs.Network
             return Call(onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke), convert);
         }
         
-        private static Response<T>.Convert ConvertFunctionResponse<T>() => raw => raw.GetFlattenJSON()["data"].Cast<T>();
+        private static Response<T>.Convert ConvertFunctionResponse<T>() => raw => raw.GetFlattenJSON()["result"].Cast<T>();
 
         private static Param FunctionParam(string functionName, List<KeyValuePair<string, object>> parameters = null)
         {

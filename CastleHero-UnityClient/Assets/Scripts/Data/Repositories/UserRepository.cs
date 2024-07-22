@@ -41,17 +41,53 @@ namespace RGLabs.Data.Repositories
             gold = new(currency.gold);
         }
 
-
-        public void UpdateCurrency(Currency currency)
+        public void Add(Currency currency)
+        {
+            paidDia.Value += currency.paidDia;
+            freeDia.Value += currency.freeDia;
+            gold.Value += currency.gold;
+        }
+        
+        public void Update(Currency currency)
         {
             paidDia.Value = currency.paidDia;
             freeDia.Value = currency.freeDia;
             gold.Value = currency.gold;
         }
 
-        public void UpdateCharacter(UnitInfo unit) => UpdateElement(unit, x => x.id == unit.id, characters);
-        public void UpdateItem(IItem item) => UpdateElement(item, x => x.ItemId == item.ItemId, items);
+        public void Update(UnitInfo unit) => UpdateElement(unit, x => x.id == unit.id, characters);
+        
+        public void Update(IItem item) => UpdateElement(item, x => x.ItemId == item.ItemId, items);
 
+        public void Add(IEnumerable<IItem> items)
+        {
+            foreach (var item in items)
+            {
+                Add(item);
+            }
+        }
+        
+        public void Add(IItem item)
+        {
+            var exist = items.FirstOrDefault(x => x.ItemId == item.ItemId);
+            if (exist != null)
+            {
+                item.Quantity += exist.Quantity;
+                int index = items.IndexOf(exist);
+                items.Insert(index, item);
+                items.Remove(exist);
+            }
+            else
+                items.Add(item);
+        }
+        
+        public void Update(Inventory inventory)
+        {
+            items.Clear();
+            
+            inventory.items.ForEach(x=> items.Add(x));
+        }
+        
         private void UpdateElement<T>(T value, Predicate<T> predicate, ReactiveCollection<T> collection)
         {
             var exist = collection.FirstOrDefault(predicate.Invoke);
@@ -59,8 +95,8 @@ namespace RGLabs.Data.Repositories
                 return;
 
             int index = collection.IndexOf(exist);
-            collection.Remove(exist);
             collection.Insert(index, value);
+            collection.Remove(exist);
         }
         
         public void ApplyFieldCharacters(IEnumerable<UnitBehaviour> units)

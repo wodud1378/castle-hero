@@ -1,19 +1,14 @@
 using System;
 using System.Collections.Generic;
+using RGLabs.Common;
 
 namespace RGLabs.Network.Shared
 {
-    public abstract class Data
-    {
-        public string owner_inDate;
-        public string inDate;
-    }
-
     public class Profile
     {
-        public int stage;
-        public int focusedStage;
-        public int castleLv;
+        public int stage { get; set; }
+        public int focusedStage { get; set; }
+        public int castleLv { get; set; }
     }
 
     public class Act
@@ -28,6 +23,36 @@ namespace RGLabs.Network.Shared
         public int gold;
         public int freeDia;
         public int paidDia;
+
+        public static Currency operator +(Currency a, Currency b)
+        {
+            return new Currency
+            {
+                gold = a.gold + b.gold,
+                freeDia = a.freeDia + b.freeDia,
+                paidDia = a.paidDia + b.paidDia
+            };
+        }
+        
+        public static Currency operator -(Currency a, Currency b)
+        {
+            return new Currency
+            {
+                gold = a.gold - b.gold,
+                freeDia = a.freeDia - b.freeDia,
+                paidDia = a.paidDia - b.paidDia
+            };
+        }
+
+        public List<Item> ToItems()
+        {
+            return new List<Item>
+            {
+                new() { ItemId = Constants.PaidDiaId, Quantity = paidDia },
+                new() { ItemId = Constants.FreeDiaId, Quantity = freeDia },
+                new() { ItemId = Constants.GoldId, Quantity = gold },
+            };
+        }
     }
 
     public class Characters
