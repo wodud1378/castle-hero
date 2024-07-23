@@ -123,7 +123,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skeletonDataAsset: {fileID: 11400000, guid: 0091a4695cbde5b4387bbeffa229157f, type: 2}
-  initialSkinName: Infantry_Paladin
+  initialSkinName: Infantry_Sacred
   fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
   initialFlipY: 0
