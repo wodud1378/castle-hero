@@ -88,7 +88,7 @@ namespace RGLabs.Title.UI.Popup
 
             _completionSource.TrySetResult(agreement);
             
-            Close().Forget();
+            CloseAsync().Forget();
         }
 
         private void ShowNeedEssential()

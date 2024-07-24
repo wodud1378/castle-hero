@@ -3799,7 +3799,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3248215c1ab54f7092b025f4edf27983, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fromManager: 0
+  fromManager: 1
   _animator: {fileID: 0}
   _close: {fileID: 2229213631922384869}
   _name: {fileID: 6292473550160390637}

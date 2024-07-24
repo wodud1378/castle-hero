@@ -36,13 +36,13 @@ namespace RGLabs.Common.UI.Popup
             this.SubscribeButton(_confirm, () =>
             {
                 _confirmAction?.Invoke();
-                Close().Forget();
+                CloseAsync().Forget();
             });
             
             this.SubscribeButton(_cancel, () =>
             {
                 _cancelAction?.Invoke();
-                Close().Forget();
+                CloseAsync().Forget();
             });
         }
 

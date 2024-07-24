@@ -25,7 +25,7 @@ namespace RGLabs.Lobby.UI
         public Color QuantityLabelColor
         {
             get => _quantity.color;
-            set => _quantity.text = label.text.WithColor(value);
+            set => _quantity.text = _quantity.text.WithColor(value);
         }
         
         public IItem Item { get; private set; }

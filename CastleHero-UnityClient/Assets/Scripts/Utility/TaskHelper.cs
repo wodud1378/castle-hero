@@ -7,10 +7,10 @@ namespace RGLabs.Utility
 {
     public static class TaskHelper
     {
-        public static UniTask OnAnimationEnd(Animator animator, int hash, Action onEnd)
+        public static UniTask OnAnimationEnd(Animator animator, int hash)
         {
             animator.SetTrigger(hash);
-            
+
             return Observable
                 .EveryUpdate()
                 .Where(_ =>
@@ -19,8 +19,7 @@ namespace RGLabs.Utility
                     return state.shortNameHash == hash && state.normalizedTime >= 1f;
                 })
                 .First()
-                .ToUniTask()
-                .ContinueWith(_ => onEnd?.Invoke());
+                .ToUniTask();
         }
     }
 }

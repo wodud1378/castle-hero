@@ -12,7 +12,8 @@ namespace RGLabs.Network
         AuthenticationError,
         ServerError,
         UnknownError,
-        Maintenance
+        Maintenance,
+        InvalidRequest
     }
 
     public class Response

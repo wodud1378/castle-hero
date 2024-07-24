@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI;
 using RGLabs.Data;
@@ -10,16 +11,15 @@ namespace RGLabs.Lobby.UI
 {
     public class UISummonSlot : UISlot
     {
+        [SerializeField] private List<GameObject> _itemObjects;
         [SerializeField] private RectTransform _prefabRoot;
-        [SerializeField] private SkeletonGraphic _skeleton;
 
         public UniTask Init(ISummoned summoned)
         {
             switch (summoned)
             {
                 case SummonedUnit unit :
-                    _skeleton.gameObject.SetActive(true);
-                    icon.gameObject.SetActive(false);
+                    _itemObjects.ForEach(x => x.gameObject.SetActive(false));
                     label.text = string.Empty;
                     if (Storage.db.units.TryFind(unit.Id, out var uEntity))
                     {
@@ -27,8 +27,7 @@ namespace RGLabs.Lobby.UI
                     }
                     break;
                 case SummonedSoul soul :
-                    _skeleton.gameObject.SetActive(false);
-                    icon.gameObject.SetActive(true);
+                    _itemObjects.ForEach(x => x.gameObject.SetActive(true));
                     if (Storage.db.items.TryFind(soul.Id, out var iEntity))
                     {
                         return base.Init(iEntity.icon, $"x{soul.quantity}");

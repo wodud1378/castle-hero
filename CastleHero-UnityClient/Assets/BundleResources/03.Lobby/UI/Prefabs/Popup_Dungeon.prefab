@@ -3754,7 +3754,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21363ccc084b434fbb99f5936dafeb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fromManager: 0
+  fromManager: 1
   _animator: {fileID: 2456301924949075645}
   _close: {fileID: 1404528693190576430}
 --- !u!95 &2456301924949075645

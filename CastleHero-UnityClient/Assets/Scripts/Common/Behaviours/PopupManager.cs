@@ -76,14 +76,14 @@ namespace RGLabs.Common.Behaviours
         }
 
         public async UniTask Close<T>(T popup) where T : PopupBase
-            => await popup.Close();
+            => await popup.CloseAsync();
 
         public async UniTask CloseAll()
         {
             var list = new List<UniTask>();
             foreach (var popup in _popups)
             {
-                list.Add(popup.Close());
+                list.Add(popup.CloseAsync());
             }
 
             await UniTask.WhenAll(list);

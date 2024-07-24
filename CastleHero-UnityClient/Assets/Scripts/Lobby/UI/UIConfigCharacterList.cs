@@ -95,8 +95,8 @@ namespace RGLabs.Lobby.UI
             
             _animator.SetTrigger(Fold);
 
-            TaskHelper.OnAnimationEnd(_animator, Fold, Dispose)
-                .Forget();
+            TaskHelper.OnAnimationEnd(_animator, Fold)
+                .ContinueWith(Dispose);
         }
         
         public void OnPointerDown(PointerEventData eventData)

@@ -56,6 +56,8 @@ namespace RGLabs.Network
         public const string CHARACTERS_TABLE = "characters";
         public const string FORMATION_TABLE = "formation";
         public const string INVENTORY_TABLE = "inventory";
+        
+        public static int LeftRequestCount { get; private set; }
 
         public delegate void Api(Backend.BackendCallback onResult);
 
@@ -263,9 +265,13 @@ namespace RGLabs.Network
             var src = new UniTaskCompletionSource<Response>();
             api.Invoke(result =>
             {
+                --LeftRequestCount;
+                
                 var response = new Response(result);
                 src.TrySetResult(response);
             });
+
+            ++LeftRequestCount;
 
             return await src.Task;
         }
@@ -275,10 +281,14 @@ namespace RGLabs.Network
             var src = new UniTaskCompletionSource<Response<T>>();
             api.Invoke(result =>
             {
+                --LeftRequestCount;
+                
                 var response = new Response<T>(result, convert);
                 src.TrySetResult(response);
             });
 
+            ++LeftRequestCount;
+            
             return src.Task;
         }
     }

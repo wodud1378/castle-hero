@@ -85,7 +85,7 @@ namespace RGLabs.Network.DB
             if (!map.TryGetValue(att.ChartName, out var data))
                 return;
 
-            var obj = _jsonToDB.Convert<T>(data.json, type == typeof(SkillDB));
+            var obj = _jsonToDB.Convert<T>(data.json, type == typeof(SkillDB) || type == typeof(ItemDB));
             obj.Id = data.id;
             onResult.Invoke(obj);
         }

@@ -45,7 +45,7 @@ namespace RGLabs.Title.UI.Popup
                     
                     _completionSource.TrySetResult(service);
                     
-                    Close().Forget();
+                    CloseAsync().Forget();
                 }
 
                 this.SubscribeButton(current, OnClick);
