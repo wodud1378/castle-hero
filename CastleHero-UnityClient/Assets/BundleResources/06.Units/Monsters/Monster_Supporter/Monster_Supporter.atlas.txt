@@ -3,59 +3,123 @@ Monster_Supporter.png
 	filter: Linear, Linear
 	scale: 0.5
 Elipse
-	bounds: 127, 323, 65, 65
+	bounds: 2, 234, 65, 65
 Priest_Knights/Arm_L
-	bounds: 183, 158, 38, 57
+	bounds: 2, 194, 38, 57
 	offsets: 5, 5, 48, 67
+	rotate: 90
+Priest_Sacred/Arm_L
+	bounds: 2, 194, 38, 57
+	offsets: 5, 5, 48, 67
+	rotate: 90
+Priest_Knights/Arm_L2
+	bounds: 301, 165, 44, 34
+	offsets: 5, 5, 54, 44
 Priest_Knights/Arm_R
-	bounds: 183, 217, 43, 56
-	offsets: 5, 5, 53, 66
+	bounds: 408, 201, 41, 56
+	offsets: 7, 5, 53, 66
+	rotate: 90
+Priest_Sacred/Arm_R
+	bounds: 408, 201, 41, 56
+	offsets: 7, 5, 53, 66
+	rotate: 90
+Priest_Knights/Arm_R2
+	bounds: 61, 193, 47, 39
+	offsets: 5, 5, 57, 49
 Priest_Knights/Cape
-	bounds: 172, 37, 100, 42
+	bounds: 231, 215, 100, 42
 	offsets: 2, 3, 103, 47
-	rotate: 90
+	rotate: 180
+Priest_Sacred/Cape
+	bounds: 231, 215, 100, 42
+	offsets: 2, 3, 103, 47
+	rotate: 180
 Priest_Knights/Eyes
-	bounds: 128, 434, 72, 45
+	bounds: 69, 233, 72, 45
 	offsets: 0, 0, 72, 46
-	rotate: 90
 Priest_Knights/Hair_Back
-	bounds: 2, 275, 113, 123
+	bounds: 262, 383, 113, 123
 	offsets: 5, 5, 123, 133
-	rotate: 90
 Priest_Knights/Hair_Front_01
-	bounds: 120, 178, 95, 61
+	bounds: 111, 280, 95, 61
 	rotate: 90
 Priest_Knights/Hair_Front_02
-	bounds: 2, 11, 107, 74
+	bounds: 2, 301, 107, 74
 Priest_Knights/Hand_L
-	bounds: 174, 446, 46, 60
-	offsets: 4, 9, 55, 72
+	bounds: 216, 175, 40, 41
+	rotate: 90
+Priest_Sacred/Hand_L
+	bounds: 216, 175, 40, 41
+	rotate: 90
 Priest_Knights/Hand_R
-	bounds: 128, 114, 49, 62
-	offsets: 5, 9, 58, 72
+	bounds: 466, 201, 40, 41
+	offsets: 5, 5, 50, 51
+Priest_Sacred/Hand_R
+	bounds: 466, 201, 40, 41
+	offsets: 5, 5, 50, 51
 Priest_Knights/Hand_R_Grip
-	bounds: 128, 393, 39, 40
-	offsets: 1, 1, 42, 42
+	bounds: 259, 175, 39, 40
+	offsets: 6, 6, 52, 52
+	rotate: 90
+Priest_Sacred/Hand_R_Grip
+	bounds: 259, 175, 39, 40
+	offsets: 6, 6, 52, 52
+	rotate: 90
 Priest_Knights/Hat
-	bounds: 2, 179, 109, 94
+	bounds: 377, 397, 109, 94
 	offsets: 5, 7, 119, 108
+	rotate: 90
 Priest_Knights/Head
-	bounds: 2, 390, 124, 116
+	bounds: 144, 382, 124, 116
 	offsets: 5, 5, 134, 126
+	rotate: 90
+Priest_Sacred/Head
+	bounds: 144, 382, 124, 116
+	offsets: 5, 5, 134, 126
+	rotate: 90
 Priest_Knights/Leg
-	bounds: 137, 273, 48, 75
+	bounds: 333, 198, 48, 75
 	offsets: 2, 3, 53, 80
-	rotate: 270
+	rotate: 90
 Priest_Knights/Mouth
-	bounds: 172, 18, 31, 20
+	bounds: 43, 171, 31, 20
 Priest_Knights/Robe
-	bounds: 2, 87, 91, 125
+	bounds: 190, 290, 91, 125
 	offsets: 2, 2, 95, 129
 	rotate: 90
 Priest_Knights/Weapon
-	bounds: 111, 2, 59, 83
+	bounds: 399, 244, 59, 83
+	rotate: 90
+Priest_Sacred/Arm_L2
+	bounds: 110, 166, 45, 34
+	offsets: 5, 5, 54, 44
+Priest_Sacred/Arm_R2
+	bounds: 157, 167, 47, 31
+	offsets: 5, 5, 57, 49
+Priest_Sacred/Eyes
+	bounds: 174, 247, 72, 45
+	offsets: 0, 0, 72, 46
+Priest_Sacred/Hood_Back
+	bounds: 174, 347, 15, 15
+Priest_Sacred/Hood_Front
+	bounds: 2, 377, 140, 129
+	offsets: 5, 5, 150, 139
+Priest_Sacred/Leg
+	bounds: 142, 199, 48, 75
+	offsets: 2, 3, 53, 80
+	rotate: 90
+Priest_Sacred/Mouth
+	bounds: 69, 282, 31, 17
+Priest_Sacred/Robe
+	bounds: 354, 305, 91, 125
+	offsets: 2, 2, 95, 129
+	rotate: 90
+Priest_Sacred/Weapon
+	bounds: 314, 248, 59, 83
+	rotate: 90
 Round_Half
-	bounds: 169, 394, 25, 39
+	bounds: 2, 167, 25, 39
+	rotate: 90
 Symbol_Heal
-	bounds: 205, 20, 16, 16
+	bounds: 174, 364, 16, 16
 	offsets: 1, 1, 18, 18
