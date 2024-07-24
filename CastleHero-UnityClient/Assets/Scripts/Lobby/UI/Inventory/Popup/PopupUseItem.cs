@@ -126,7 +126,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             
             Storage.userRepository.Add(currency);
             Storage.userRepository.Add(items);
-            Context.popupManager.Open<PopupReceivedItems>(currency, items).Forget();
+            Context.popupManager.OpenAsync<PopupReceivedItems>(currency, items).Forget();
         }
 
         private void MoveToDrawCharacter()

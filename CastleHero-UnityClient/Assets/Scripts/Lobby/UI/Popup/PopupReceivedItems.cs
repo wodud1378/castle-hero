@@ -4,10 +4,12 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Lobby.UI.Adapter;
 using RGLabs.Network.Shared;
+using RGLabs.Utility;
 using UnityEngine;
 
 namespace RGLabs.Lobby.UI.Popup
 {
+    [PrefabPath("Lobby/UI/Prefabs/ReceiveResult.prefab")]
     public class PopupReceivedItems : PopupBase
     {
         [SerializeField] private UIItemList _itemList;

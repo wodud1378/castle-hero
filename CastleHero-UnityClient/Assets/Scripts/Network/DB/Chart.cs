@@ -42,6 +42,7 @@ namespace RGLabs.Network.DB
             LoadInstance<SummonDB>(map, x => collections.summons = x);
             LoadInstance<SummonGroupDB>(map, x => collections.summonGroups = x);
             LoadInstance<ItemDB>(map, x => collections.items = x);
+            LoadInstance<EquipItemStatDB>(map, x => collections.stats = x);
             
             collections.units.CacheUnitSizes();
 

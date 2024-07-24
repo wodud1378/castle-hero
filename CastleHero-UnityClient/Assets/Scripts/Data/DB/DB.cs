@@ -116,16 +116,16 @@ namespace RGLabs.Data.DB
             return array;
         }
         
-        public T[] Map(int[] ids)
+        public IEnumerable<T> Map(IEnumerable<int> ids)
         {
-            int length = ids.Length;
-            var array = new T[length];
-            for (int i = 0; i < length; ++i)
+            var result = new List<T>();
+            foreach (var id in ids)
             {
-                TryFind(ids[i], out array[i]);
+                if(TryFind(id, out var entity))
+                    result.Add(entity);
             }
 
-            return array;
+            return result.ToArray();
         }
 
         public void Load(object[] data)

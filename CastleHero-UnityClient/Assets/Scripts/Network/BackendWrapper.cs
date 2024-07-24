@@ -91,21 +91,6 @@ namespace RGLabs.Network
 
         public static UniTask<Response<ChartInfo[]>> GetChartList()
             => Call<ChartInfo[]>(Backend.Chart.GetChartListV2);
-
-        public static UniTask<Response<SummonResult>> Summon(int count, int eventIndex, int eventChartId,
-            int listChartId)
-        {
-            var param = new Param
-            {
-                { "functionName", $"SummonX{count}" },
-                { "eventIndex", eventIndex },
-                { "eventChartId", eventChartId },
-                { "listChartId", listChartId },
-            };
-
-            return Call<SummonResult>(
-                onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke));
-        }
         
         public static UniTask<Response<Inventory>> GetUserTable(params string[] tables)
         {
@@ -191,6 +176,19 @@ namespace RGLabs.Network
             };
 
             return InvokeFunc("OpenBox", parameters, ConvertFunctionResponse<OpenBoxResult>());
+        }
+        
+        public static UniTask<Response<SummonResult>> Summon(int eventId, int coastId, int count, int eventChartId, int listChartId)
+        {
+            var parameters = new List<KeyValuePair<string, object>>()
+            {
+                new(nameof(eventId), eventId),
+                new(nameof(coastId), coastId),
+                new(nameof(eventChartId), eventChartId),
+                new(nameof(listChartId), listChartId)
+            };
+
+            return InvokeFunc($"SummonX{count}", parameters, ConvertFunctionResponse<SummonResult>());
         }
 
         public static UniTask<Response<Inventory>> TEST_AddItems(int[] ids, int[] quantities)

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data;
 using RGLabs.Data.Model;
@@ -9,27 +7,15 @@ namespace RGLabs.Network.Service.Summon
 {
     public class SummonService
     {
-        public SummonEntity Entity { get; }
+        public async UniTask<SummonResult> SummonOnce(int eventId, int coastId) => (await Summon(eventId, coastId, 1));
 
-        public SummonService(int summonEventId)
+        public async UniTask<SummonResult> SummonTenth(int eventId, int coastId) => await Summon(eventId, coastId, 10);
+
+        private async UniTask<SummonResult> Summon(int eventId, int coastId, int count)
         {
-            Entity = Storage.db.summons.TryFind(summonEventId, out var entity)
-                ? entity
-                : default;
-        }
-        
-        public async UniTask<SummonResult> SummonOnce() => (await Summon(1));
-
-        public async UniTask<SummonResult> SummonTenth() => await Summon(10);
-
-        private async UniTask<SummonResult> Summon(int count)
-        {
-            if (!Storage.db.summons.TryFindIndex(Entity.Id, out int index))
-                return default;
-
-            var eventChartId = Entity.Id;
+            var eventChartId = Storage.db.summons.Id;
             var listChartId = Storage.db.summonGroups.Id;
-            var response = await BackendWrapper.Summon(count, index, eventChartId, listChartId);
+            var response = await BackendWrapper.Summon(eventId, coastId, count, eventChartId, listChartId);
 
             return response.data;
         }

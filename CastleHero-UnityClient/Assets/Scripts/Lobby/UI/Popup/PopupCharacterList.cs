@@ -148,7 +148,7 @@ namespace RGLabs.Lobby.UI.Popup
             switch (clickMethod)
             {
                 case ClickMethod.Select:
-                    Context.popupManager.Open<PopupCharacter>(slot.Info).Forget();
+                    Context.popupManager.OpenAsync<PopupCharacter>(slot.Info).Forget();
                     break;
                 case ClickMethod.Equip:
                     OpenEquipmentCompare(slot.Info);
@@ -173,7 +173,7 @@ namespace RGLabs.Lobby.UI.Popup
             else
                 left = null;
             
-            Context.popupManager.Open<PopupCompareEquipment>(left, right).Forget();
+            Context.popupManager.OpenAsync<PopupCompareEquipment>(left, right).Forget();
         }
     }
 }

@@ -24,7 +24,7 @@ namespace RGLabs.Common.Behaviours
                 .AddTo(this);
         }
 
-        public async UniTask<T> Open<T>(params object[] parameters) where T : PopupBase
+        public async UniTask<T> OpenAsync<T>(params object[] parameters) where T : PopupBase
         {
             var popup = await LoadPopup<T>();
             if (popup == null)
@@ -44,7 +44,7 @@ namespace RGLabs.Common.Behaviours
             return popup;
         }
         
-        public async UniTask<T> Open<T>() where T : PopupBase
+        public async UniTask<T> OpenAsync<T>() where T : PopupBase
         {
             var popup = await LoadPopup<T>();
             if (popup == null)

@@ -24,6 +24,7 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private TMP_Text _name;
         [SerializeField] private TMP_Text _lv;
         [SerializeField] private GameObject[] _stars;
+        [SerializeField] private RectTransform _prefabRoot;
         [SerializeField] private SkeletonGraphic _skeleton;
         [SerializeField] private UILevel _level;
         [SerializeField] private UIStatusText[] _statusTexts;
@@ -66,7 +67,7 @@ namespace RGLabs.Lobby.UI.Popup
             int lv = _unit.lv;
             int rate = _unit.rate;
 
-            SetSkeleton(unitEntity.skeletonData).Forget();
+            SetCharacter(unitEntity.uiPrefab).Forget();
             UpdateRate(rate);
 
             var equipments = Storage.userRepository.EquipItems(info.equipments).ToArray();
@@ -75,20 +76,14 @@ namespace RGLabs.Lobby.UI.Popup
             UpdateEquipmentSlots(equipments);
         }
 
-        private async UniTask SetSkeleton(string dataPath)
+        private async UniTask SetCharacter(string dataPath)
         {
-            _skeleton.gameObject.SetActive(false);
-
-            var data = await Addressables.LoadAssetAsync<SkeletonDataAsset>(dataPath);
-            if (data == null)
-                return;
-
-            _skeleton.skeletonDataAsset = data;
-            _skeleton.Initialize(true);
-
+            _prefabRoot.gameObject.SetActive(false);
+            
+            await Addressables.InstantiateAsync(dataPath, _prefabRoot);
             await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
-
-            _skeleton.gameObject.SetActive(true);
+            
+            _prefabRoot.gameObject.SetActive(true);
         }
 
         private void UpdateRate(int rate)
@@ -145,8 +140,8 @@ namespace RGLabs.Lobby.UI.Popup
             };
         }
 
-        private void OnLevelUp() => Context.popupManager.Open<PopupLevelUp>(_unit).Forget();
+        private void OnLevelUp() => Context.popupManager.OpenAsync<PopupLevelUp>(_unit).Forget();
 
-        private void OnUpgrade()=> Context.popupManager.Open<PopupRateUp>(_unit).Forget();
+        private void OnUpgrade()=> Context.popupManager.OpenAsync<PopupRateUp>(_unit).Forget();
     }
 }
