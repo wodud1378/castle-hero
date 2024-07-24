@@ -11,6 +11,9 @@ namespace RGLabs.Data.Model
         [DataField("Summon_Bg")] 
         public string bg;
 
+        [DataField("Summon_Name")]
+        public string name;
+
         [DataField("Summon_Comment")]
         public string comment;
 

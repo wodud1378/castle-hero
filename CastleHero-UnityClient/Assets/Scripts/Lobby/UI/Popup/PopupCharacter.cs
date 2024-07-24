@@ -25,7 +25,6 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private TMP_Text _lv;
         [SerializeField] private GameObject[] _stars;
         [SerializeField] private RectTransform _prefabRoot;
-        [SerializeField] private SkeletonGraphic _skeleton;
         [SerializeField] private UILevel _level;
         [SerializeField] private UIStatusText[] _statusTexts;
         [SerializeField] private UIEquipmentSlot[] _equipments;

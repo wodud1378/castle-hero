@@ -22,6 +22,12 @@ namespace RGLabs.Lobby.UI
         [SerializeField] private TMP_Text _quantity;
         [SerializeField] private GameObject _portraitRoot;
         
+        public Color QuantityLabelColor
+        {
+            get => _quantity.color;
+            set => _quantity.text = label.text.WithColor(value);
+        }
+        
         public IItem Item { get; private set; }
         public ItemEntity Entity { get; private set; }
 
@@ -82,14 +88,15 @@ namespace RGLabs.Lobby.UI
         {
             if (Item == null || _quantity == null)
                 return;
-            
+
+            var quantity = $"{Item.Quantity:N0}";
             switch (mode)
             {
                 case QuantityDisplay.Default:
-                    _quantity.text = $"{Item.Quantity} / 9999";
+                    _quantity.text = $"{quantity} / {9999:N0}";
                     break;
                 case QuantityDisplay.ValueOnly:
-                    _quantity.text = $"{Item.Quantity}";
+                    _quantity.text = $"{quantity}";
                     break;
             }
         }

@@ -24,9 +24,10 @@ namespace RGLabs.Lobby.UI.Popup
     public class PopupSummon : PopupBase
     {
         [SerializeField] private TMP_Text _title;
+        [SerializeField] private TMP_Text _desc;
         [SerializeField] private Button _info;
-        [SerializeField] private Button _next;
         [SerializeField] private Button _prev;
+        [SerializeField] private Button _next;
         [SerializeField] private Button _x1;
         [SerializeField] private UIItemSlot _itemForX1;
         [SerializeField] private Button _x10;
@@ -38,12 +39,7 @@ namespace RGLabs.Lobby.UI.Popup
         private readonly Dictionary<int, Cache> _propCache = new();
         private readonly ReactiveProperty<SummonEntity> _entity = new();
         private readonly SummonService _service = new();
-
-        protected override void OnAwake()
-        {
-            base.OnAwake();
-        }
-
+        
         public override UniTask Open(params object[] parameters)
         {
             int index = (int)parameters[0];
@@ -73,10 +69,14 @@ namespace RGLabs.Lobby.UI.Popup
 
         private void OnEntityChanged(SummonEntity data)
         {
-            _title.text = data.comment;
+            _title.text = data.name;
+            //_desc.text = data.comment;
+            //_desc.gameObject.SetActive(!string.IsNullOrEmpty(_desc.text));
+            
             bool TryAssign(int index, int coastId, int coast, Button button, UIItemSlot slot, Action<int, int, int> onClick)
             {
-                if (CheckInventory(coastId, coast, false) ||
+                bool isEnough = CheckInventory(coastId, coast, false);
+                if (isEnough ||
                     index == 0)
                 {
                     button.onClick.RemoveAllListeners();
@@ -85,6 +85,8 @@ namespace RGLabs.Lobby.UI.Popup
                     var item = Storage.userRepository.items.FirstOrDefault(x => x.ItemId == coastId);
                     slot.Init(item)
                         .Forget();
+
+                    slot.QuantityLabelColor = isEnough ? Color.white : Color.red;
                     
                     return true;
                 }

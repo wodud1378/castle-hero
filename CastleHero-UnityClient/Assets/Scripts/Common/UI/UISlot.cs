@@ -17,6 +17,12 @@ namespace RGLabs.Common.UI
         public Image icon;
         public TMP_Text label;
 
+        public Color LabelColor
+        {
+            get => label.color;
+            set => label.text = label.text.WithColor(value);
+        }
+
         private CancellationTokenSource _ctSource;
 
         public bool Clickable

@@ -25676,6 +25676,7 @@ GameObject:
   - component: {fileID: 5407433898665871}
   - component: {fileID: 2380424826977878242}
   - component: {fileID: 5975500520798702586}
+  - component: {fileID: 991724470540564115}
   m_Layer: 5
   m_Name: GachaResult
   m_TagString: Untagged
@@ -25822,6 +25823,24 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &991724470540564115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7909854143177558875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7474fef2f724cb18bac7d7586570b99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemRoot: {fileID: 666328629580666674}
+  _itemPrefab:
+    m_AssetGUID: e8709493927a3cb458b869bada3f7c19
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!1 &8424155950270402986
 GameObject:
   m_ObjectHideFlags: 0
