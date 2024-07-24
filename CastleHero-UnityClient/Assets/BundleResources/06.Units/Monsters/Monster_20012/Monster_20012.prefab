@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6391860083955039845, guid: a1a723246b262b640ad3090719ba89bf, type: 3}
       propertyPath: m_Name
-      value: Monster_20009
+      value: Monster_20012
       objectReference: {fileID: 0}
     - target: {fileID: 7174810689259680027, guid: a1a723246b262b640ad3090719ba89bf, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: b5e398dc6bd5a9242b5b2539e0780fba, type: 2}
+      objectReference: {fileID: 9100000, guid: 50aa0bacd8604124e945878f71ff6903, type: 2}
     - target: {fileID: 7405764224175786417, guid: a1a723246b262b640ad3090719ba89bf, type: 3}
       propertyPath: initialSkinName
-      value: Priest_Knights_Bible
+      value: Priest_HighPriest_Bible
       objectReference: {fileID: 0}
     - target: {fileID: 8402756777875714999, guid: a1a723246b262b640ad3090719ba89bf, type: 3}
       propertyPath: m_LocalPosition.x

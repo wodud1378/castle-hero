@@ -2,43 +2,43 @@ Monster_Bandit.png
 	size: 512, 512
 	filter: Linear, Linear
 	scale: 0.5
-Bandit_Mercenary/Arm_L
+Bandit_Mercenary_Dagger/Arm_L
 	bounds: 172, 136, 38, 57
 	offsets: 5, 5, 48, 67
-Bandit_Mercenary/Arm_R
+Bandit_Mercenary_Dagger/Arm_R
 	bounds: 157, 361, 43, 56
 	offsets: 5, 5, 53, 66
-Bandit_Mercenary/Eyes
+Bandit_Mercenary_Dagger/Eyes
 	bounds: 126, 121, 72, 45
 	offsets: 0, 0, 72, 46
 	rotate: 90
-Bandit_Mercenary/Hair_Back
+Bandit_Mercenary_Dagger/Hair_Back
 	bounds: 2, 340, 122, 133
 	offsets: 5, 5, 132, 143
-Bandit_Mercenary/Hair_Front
+Bandit_Mercenary_Dagger/Hair_Front
 	bounds: 2, 121, 122, 99
-Bandit_Mercenary/Hand_L
+Bandit_Mercenary_Dagger/Hand_L
 	bounds: 157, 419, 45, 54
 	offsets: 5, 9, 55, 72
-Bandit_Mercenary/Hand_R
+Bandit_Mercenary_Dagger/Hand_R
 	bounds: 128, 195, 49, 57
 	offsets: 5, 9, 58, 72
-Bandit_Mercenary/Hand_R_Grip
+Bandit_Mercenary_Dagger/Hand_R_Grip
 	bounds: 170, 319, 39, 40
 	offsets: 1, 1, 42, 42
-Bandit_Mercenary/Head
+Bandit_Mercenary_Dagger/Head
 	bounds: 2, 222, 124, 116
 	offsets: 5, 5, 134, 126
-Bandit_Mercenary/Leg
+Bandit_Mercenary_Dagger/Leg
 	bounds: 128, 252, 48, 75
 	offsets: 2, 3, 53, 80
-Bandit_Mercenary/Mouth
+Bandit_Mercenary_Dagger/Mouth
 	bounds: 128, 334, 31, 20
-Bandit_Mercenary/Torso
+Bandit_Mercenary_Dagger/Torso
 	bounds: 2, 15, 104, 121
 	offsets: 1, 3, 106, 126
 	rotate: 90
-Bandit_Mercenary/Weapon
+Bandit_Mercenary_Dagger/Weapon
 	bounds: 126, 356, 29, 117
 	offsets: 5, 5, 39, 127
 Effect_Slash
