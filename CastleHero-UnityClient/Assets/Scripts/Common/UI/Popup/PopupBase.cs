@@ -53,7 +53,7 @@ namespace RGLabs.Common.UI.Popup
         {
         }
 
-        private UniTask CloseAnimationTask() => TaskHelper.OnAnimationEnd(_animator, CloseTrigger, null);
+        private UniTask CloseAnimationTask() => TaskHelper.OnAnimationEnd(_animator, CloseTrigger);
 
         public bool OnProcessBack()
         {
