@@ -2,143 +2,209 @@ Monster_Archer.png
 	size: 512, 512
 	filter: Linear, Linear
 	scale: 0.5
-Archer_Knights_WoodenBow/Arm_L
-	bounds: 322, 157, 34, 52
+Archer_Gladiator_WoodenBow/Arm_L
+	bounds: 254, 72, 34, 52
 	offsets: 15, 15, 61, 81
 	rotate: 90
-Archer_Knights_WoodenBow/Arm_L2
-	bounds: 318, 121, 43, 34
-	offsets: 5, 5, 53, 44
-Archer_Knights_WoodenBow/Arm_R2
-	bounds: 208, 125, 44, 29
-	offsets: 5, 5, 54, 39
+Archer_Gladiator_WoodenBow/Arm_L2
+	bounds: 75, 38, 41, 33
+	offsets: 5, 5, 51, 43
+	rotate: 90
+Archer_Gladiator_WoodenBow/Arm_R2
+	bounds: 439, 431, 42, 35
+	offsets: 5, 5, 53, 45
+Archer_Gladiator_WoodenBow/Arrow
+	bounds: 22, 288, 38, 205
+	rotate: 90
 Archer_Knights_WoodenBow/Arrow
-	bounds: 232, 342, 38, 205
+	bounds: 22, 288, 38, 205
 	rotate: 90
 Archer_Mercenary_WoodenBow/Arrow
-	bounds: 232, 342, 38, 205
+	bounds: 22, 288, 38, 205
 	rotate: 90
-Archer_Knights_WoodenBow/Belt
-	bounds: 376, 150, 76, 31
-	offsets: 3, 2, 86, 36
-Archer_Mercenary_WoodenBow/Belt
-	bounds: 376, 150, 76, 31
-	offsets: 3, 2, 86, 36
-Archer_Knights_WoodenBow/Chain
-	bounds: 248, 184, 87, 47
-	offsets: 2, 3, 91, 53
-Archer_Knights_WoodenBow/Eyes
-	bounds: 446, 217, 65, 39
-	rotate: 90
-Archer_Knights_WoodenBow/Feather
-	bounds: 2, 96, 50, 48
-	offsets: 3, 3, 56, 54
-Archer_Knights_WoodenBow/Finger_R
-	bounds: 443, 99, 32, 32
+Archer_Gladiator_WoodenBow/Beard
+	bounds: 417, 115, 67, 32
+Archer_Gladiator_WoodenBow/Belt
+	bounds: 337, 84, 78, 37
+	offsets: 3, 2, 88, 42
+Archer_Gladiator_WoodenBow/Bottom
+	bounds: 154, 163, 95, 58
+	offsets: 2, 4, 99, 65
+Archer_Gladiator_WoodenBow/Eyes
+	bounds: 81, 122, 65, 39
+Archer_Gladiator_WoodenBow/Finger_R
+	bounds: 75, 4, 32, 32
 	offsets: 5, 5, 42, 42
-Archer_Mercenary_WoodenBow/Finger_R
-	bounds: 443, 99, 32, 32
-	offsets: 5, 5, 42, 42
-Archer_Knights_WoodenBow/Foot
-	bounds: 2, 363, 54, 35
+Archer_Gladiator_WoodenBow/Foot
+	bounds: 430, 36, 54, 35
 	offsets: 1, 4, 55, 43
 	rotate: 180
-Archer_Knights_WoodenBow/Hair_Back
-	bounds: 103, 263, 99, 56
-	offsets: 5, 5, 109, 66
-Archer_Knights_WoodenBow/Hair_Front_L
-	bounds: 353, 183, 85, 92
-	offsets: 2, 2, 90, 97
-	rotate: 90
-Archer_Knights_WoodenBow/Hair_Front_R
-	bounds: 90, 121, 32, 72
-	offsets: 3, 2, 39, 77
-	rotate: 90
-Archer_Knights_WoodenBow/Hand_L
-	bounds: 453, 133, 39, 41
+Archer_Gladiator_WoodenBow/Hair_Back
+	bounds: 250, 320, 122, 67
+	offsets: 5, 5, 132, 77
+Archer_Gladiator_WoodenBow/Hair_Front
+	bounds: 284, 227, 125, 102
+	offsets: 2, 0, 130, 105
+Archer_Gladiator_WoodenBow/Hand_L
+	bounds: 439, 468, 39, 41
 	offsets: 5, 5, 49, 51
-	rotate: 90
-Archer_Knights_WoodenBow/Hand_R
-	bounds: 279, 115, 33, 37
+Archer_Gladiator_WoodenBow/Hand_R
+	bounds: 110, 8, 33, 37
 	offsets: 5, 5, 43, 47
 	rotate: 90
-Archer_Knights_WoodenBow/Hat
-	bounds: 2, 400, 165, 102
-	offsets: 5, 5, 175, 112
-Archer_Knights_WoodenBow/Head
-	bounds: 304, 382, 133, 120
+Archer_Gladiator_WoodenBow/Head
+	bounds: 304, 389, 133, 120
 	offsets: 5, 5, 143, 130
-Archer_Knights_WoodenBow/Leg
-	bounds: 133, 155, 41, 56
+Archer_Mercenary_WoodenBow/Head
+	bounds: 304, 389, 133, 120
+	offsets: 5, 5, 143, 130
+Archer_Gladiator_WoodenBow/Leg
+	bounds: 2, 107, 41, 56
 	offsets: 9, 9, 58, 72
 	rotate: 90
+Archer_Gladiator_WoodenBow/Mouth
+	bounds: 56, 388, 24, 15
 Archer_Knights_WoodenBow/Mouth
-	bounds: 56, 381, 24, 15
+	bounds: 56, 388, 24, 15
 Archer_Mercenary_WoodenBow/Mouth
-	bounds: 56, 381, 24, 15
-Archer_Knights_WoodenBow/Muffler
-	bounds: 63, 156, 69, 41
-	offsets: 1, 2, 73, 46
-Archer_Knights_WoodenBow/Muffler_Back
-	bounds: 245, 148, 72, 37
-	offsets: 2, 3, 76, 43
-Archer_Knights_WoodenBow/Skirt
-	bounds: 265, 301, 40, 49
-	offsets: 4, 4, 47, 57
-	rotate: 270
-Archer_Knights_WoodenBow/Torso
-	bounds: 162, 191, 80, 85
+	bounds: 56, 388, 24, 15
+Archer_Gladiator_WoodenBow/Torso
+	bounds: 2, 148, 80, 85
 	offsets: 3, 3, 86, 90
 	rotate: 90
+Archer_Gladiator_WoodenBow/Weapon
+	bounds: 2, 317, 76, 247
+	offsets: 2, 1, 80, 251
+	rotate: 90
 Archer_Knights_WoodenBow/Weapon
-	bounds: 2, 310, 76, 247
+	bounds: 2, 317, 76, 247
 	offsets: 2, 1, 80, 251
 	rotate: 90
 Archer_Mercenary_WoodenBow/Weapon
-	bounds: 2, 310, 76, 247
+	bounds: 2, 317, 76, 247
 	offsets: 2, 1, 80, 251
 	rotate: 90
+Archer_Knights_WoodenBow/Arm_L
+	bounds: 200, 76, 34, 52
+	offsets: 15, 15, 61, 81
+	rotate: 90
+Archer_Knights_WoodenBow/Arm_L2
+	bounds: 385, 43, 43, 34
+	offsets: 5, 5, 53, 44
+Archer_Knights_WoodenBow/Arm_R2
+	bounds: 317, 28, 44, 29
+	offsets: 5, 5, 54, 39
+Archer_Knights_WoodenBow/Belt
+	bounds: 308, 59, 76, 31
+	offsets: 3, 2, 86, 36
+	rotate: 180
+Archer_Mercenary_WoodenBow/Belt
+	bounds: 308, 59, 76, 31
+	offsets: 3, 2, 86, 36
+	rotate: 180
+Archer_Knights_WoodenBow/Chain
+	bounds: 426, 148, 87, 47
+	offsets: 2, 3, 91, 53
+	rotate: 270
+Archer_Knights_WoodenBow/Eyes
+	bounds: 154, 123, 65, 39
+Archer_Knights_WoodenBow/Feather
+	bounds: 452, 381, 50, 48
+	offsets: 3, 3, 56, 54
+	rotate: 180
+Archer_Knights_WoodenBow/Finger_R
+	bounds: 2, 23, 32, 32
+	offsets: 5, 5, 42, 42
+Archer_Mercenary_WoodenBow/Finger_R
+	bounds: 2, 23, 32, 32
+	offsets: 5, 5, 42, 42
+Archer_Knights_WoodenBow/Foot
+	bounds: 198, 39, 54, 35
+	offsets: 1, 4, 55, 43
+	rotate: 180
+Archer_Knights_WoodenBow/Hair_Back
+	bounds: 103, 230, 99, 56
+	offsets: 5, 5, 109, 66
+Archer_Knights_WoodenBow/Hair_Front_L
+	bounds: 204, 201, 85, 92
+	offsets: 2, 2, 90, 97
+	rotate: 270
+Archer_Knights_WoodenBow/Hair_Front_R
+	bounds: 244, 38, 32, 72
+	offsets: 3, 2, 39, 77
+	rotate: 90
+Archer_Knights_WoodenBow/Hand_L
+	bounds: 110, 43, 39, 41
+	offsets: 5, 5, 49, 51
+	rotate: 90
+Archer_Knights_WoodenBow/Hand_R
+	bounds: 153, 11, 33, 37
+	offsets: 5, 5, 43, 47
+	rotate: 90
+Archer_Knights_WoodenBow/Hat
+	bounds: 2, 407, 165, 102
+	offsets: 5, 5, 175, 112
+Archer_Knights_WoodenBow/Head
+	bounds: 169, 389, 133, 120
+	offsets: 5, 5, 143, 130
+Archer_Knights_WoodenBow/Leg
+	bounds: 279, 108, 41, 56
+	offsets: 9, 9, 58, 72
+	rotate: 90
+Archer_Knights_WoodenBow/Muffler
+	bounds: 130, 80, 69, 41
+	offsets: 1, 2, 73, 46
+Archer_Knights_WoodenBow/Muffler_Back
+	bounds: 2, 56, 72, 37
+	offsets: 2, 3, 76, 43
+Archer_Knights_WoodenBow/Skirt
+	bounds: 60, 80, 40, 49
+	offsets: 4, 4, 47, 57
+	rotate: 90
+Archer_Knights_WoodenBow/Torso
+	bounds: 340, 163, 80, 85
+	offsets: 3, 3, 86, 90
+	rotate: 90
 Archer_Mercenary_WoodenBow/Arm_L
-	bounds: 191, 156, 34, 52
+	bounds: 416, 79, 34, 52
 	offsets: 15, 15, 61, 81
 	rotate: 90
 Archer_Mercenary_WoodenBow/Arm_L2
-	bounds: 45, 123, 43, 34
+	bounds: 153, 46, 43, 34
 	offsets: 5, 5, 53, 44
 Archer_Mercenary_WoodenBow/Arm_R2
-	bounds: 162, 124, 44, 29
+	bounds: 303, 289, 44, 29
 	offsets: 5, 5, 54, 39
-Archer_Mercenary_WoodenBow/Chain
-	bounds: 69, 194, 91, 58
+Archer_Mercenary_WoodenBow/Bottom
+	bounds: 258, 150, 91, 58
 	offsets: 0, 2, 91, 60
+	rotate: 180
 Archer_Mercenary_WoodenBow/Eyes
-	bounds: 439, 382, 65, 39
-	rotate: 90
+	bounds: 350, 123, 65, 39
 Archer_Mercenary_WoodenBow/Foot
-	bounds: 388, 121, 54, 35
+	bounds: 2, 370, 54, 35
 	offsets: 1, 4, 55, 43
+	rotate: 180
 Archer_Mercenary_WoodenBow/Hair_Back
-	bounds: 2, 254, 99, 56
+	bounds: 2, 230, 99, 56
 	offsets: 5, 5, 109, 66
 Archer_Mercenary_WoodenBow/Hair_Front
-	bounds: 248, 239, 125, 102
+	bounds: 374, 301, 125, 102
 	offsets: 2, 0, 130, 105
 Archer_Mercenary_WoodenBow/Hand_L
-	bounds: 2, 146, 39, 41
+	bounds: 470, 72, 39, 41
 	offsets: 5, 5, 49, 51
-	rotate: 90
 Archer_Mercenary_WoodenBow/Hand_R
-	bounds: 204, 275, 33, 37
+	bounds: 36, 22, 33, 37
 	offsets: 5, 5, 43, 47
-Archer_Mercenary_WoodenBow/Head
-	bounds: 169, 382, 133, 120
-	offsets: 5, 5, 143, 130
+	rotate: 90
 Archer_Mercenary_WoodenBow/Leg
-	bounds: 446, 174, 41, 56
+	bounds: 221, 112, 41, 56
 	offsets: 9, 9, 58, 72
 	rotate: 90
 Archer_Mercenary_WoodenBow/Torso
-	bounds: 370, 247, 80, 94
+	bounds: 407, 229, 80, 96
 	offsets: 3, 4, 86, 100
+	rotate: 90
 Elipse
-	bounds: 2, 187, 65, 65
+	bounds: 87, 163, 65, 65
