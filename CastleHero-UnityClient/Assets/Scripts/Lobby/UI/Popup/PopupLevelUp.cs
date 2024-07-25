@@ -163,8 +163,14 @@ namespace RGLabs.Lobby.UI.Popup
                 return;
             
             var result = await _service.LevelUp(_unit.Value.id, item.ItemId, (int)_slider.value);
-            _unit.Value = result.unit;
+            var unit = result.transition.unit;
+            _unit.Value = unit;
             _selected.Value.Init(result.leftItem);
+            
+            var repository = Storage.userRepository;
+            repository.Update(unit);
+            repository.Update(result.leftCurrency);
+            repository.Update(result.leftItem);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace RGLabs.Lobby.UI
             Field
         }
         
-        [FormerlySerializedAs("_formation")] [SerializeField] private FormationField formationField;
+        [SerializeField] private FormationField _formation;
         [SerializeField] private PolygonDrawer _validationCircle;
         [SerializeField] private Color _validColor;
         [SerializeField] private Color _invalidColor;
@@ -90,7 +90,7 @@ namespace RGLabs.Lobby.UI
             _onDrag = true;
 
             var position = eventData.position.ScreenToWorld();
-            if (!formationField.InArea(position))
+            if (!_formation.InArea(position))
                 return;
 
             SetUnit(UnitFrom.Field, FindFromRay(position));
@@ -103,7 +103,7 @@ namespace RGLabs.Lobby.UI
 
             _unit.Value.transform.position = eventData.position.ScreenToWorld();
             _validationCircle.Color =
-                formationField.IsValid(_unit.Value.Collider, _originLayer) ? _validColor : _invalidColor;
+                _formation.IsValid(_unit.Value.Collider, _originLayer) ? _validColor : _invalidColor;
         }
 
         public void OnEndDrag(PointerEventData eventData)
@@ -114,7 +114,7 @@ namespace RGLabs.Lobby.UI
             if (hold == null)
                 return;
 
-            if (!formationField.TryRegister(hold, _originLayer, _unitFrom == UnitFrom.Field))
+            if (!_formation.TryRegister(hold, _originLayer, _unitFrom == UnitFrom.Field))
             {
                 hold.DestroySelf();
                 _unit.Value = null;
@@ -146,7 +146,7 @@ namespace RGLabs.Lobby.UI
             {
                 var selected = FindFromRay(eventData.position.ScreenToWorld());
                 if (selected != null)
-                    formationField.Remove(selected);
+                    _formation.Remove(selected);
             }
 
             _onDrag = false;

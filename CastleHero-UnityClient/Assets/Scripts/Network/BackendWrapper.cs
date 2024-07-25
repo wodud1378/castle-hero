@@ -56,7 +56,7 @@ namespace RGLabs.Network
         public const string CHARACTERS_TABLE = "characters";
         public const string FORMATION_TABLE = "formation";
         public const string INVENTORY_TABLE = "inventory";
-        
+
         public static int LeftRequestCount { get; private set; }
 
         public delegate void Api(Backend.BackendCallback onResult);
@@ -93,13 +93,18 @@ namespace RGLabs.Network
 
         public static UniTask<Response<ChartInfo[]>> GetChartList()
             => Call<ChartInfo[]>(Backend.Chart.GetChartListV2);
-        
-        public static UniTask<Response<Inventory>> GetUserTable(params string[] tables)
+
+        public static UniTask SaveFormation(Formation formation) => Save(FORMATION_TABLE, formation);
+
+        private static UniTask Save(string tableName, object obj)
         {
-            var read = TransactionGet(INVENTORY_TABLE);
-            return Call(
-                onResult => Backend.GameData.TransactionReadV2(read, onResult.Invoke),
-                ConvertFunctionResponse<Inventory>());
+            var param = new Param { { tableName, obj.ToJson() } };
+            var api = new Api(onResult =>
+            {
+                Backend.GameData.Update(tableName, new Where(), param, onResult.Invoke);
+            });
+
+            return Call(api);
         }
 
         public static async UniTask<Response<UserData>> GetUserData()
@@ -122,10 +127,10 @@ namespace RGLabs.Network
                     {
                         profile = FromTransaction<Profile>(data, PROFILE_TABLE),
                         act = FromTransaction<Act>(data, ACT_TABLE),
-                        currency = FromTransaction<Currency>(data,CURRENCY_TABLE),
-                        characters = FromTransaction<Characters>(data,CHARACTERS_TABLE),
-                        formation = FromTransaction<Formation>(data,FORMATION_TABLE),
-                        inventory = FromTransaction<Inventory>(data,INVENTORY_TABLE)
+                        currency = FromTransaction<Currency>(data, CURRENCY_TABLE),
+                        characters = FromTransaction<Characters>(data, CHARACTERS_TABLE),
+                        formation = FromTransaction<Formation>(data, FORMATION_TABLE),
+                        inventory = FromTransaction<Inventory>(data, INVENTORY_TABLE)
                     };
 
                     return userData;
@@ -167,7 +172,8 @@ namespace RGLabs.Network
             return InvokeFunc(method, parameters, ConvertFunctionResponse<GrowthResult>());
         }
 
-        public static UniTask<Response<OpenBoxResult>> OpenBox(int itemChartId, int statChartId, int boxItemId, int itemQty)
+        public static UniTask<Response<OpenBoxResult>> OpenBox(int itemChartId, int statChartId, int boxItemId,
+            int itemQty)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
@@ -179,8 +185,9 @@ namespace RGLabs.Network
 
             return InvokeFunc("OpenBox", parameters, ConvertFunctionResponse<OpenBoxResult>());
         }
-        
-        public static UniTask<Response<SummonResult>> Summon(int eventId, int coastId, int count, int eventChartId, int listChartId)
+
+        public static UniTask<Response<SummonResult>> Summon(int eventId, int coastId, int count, int eventChartId,
+            int listChartId)
         {
             var parameters = new List<KeyValuePair<string, object>>()
             {
@@ -191,6 +198,21 @@ namespace RGLabs.Network
             };
 
             return InvokeFunc($"SummonX{count}", parameters, ConvertFunctionResponse<SummonResult>());
+        }
+
+        public static UniTask<Response<StageCleared>> SetStageClear(int stageChartId, int levelChartId, int itemChartId,
+            int statusChartId, int stage)
+        {
+            var parameters = new List<KeyValuePair<string, object>>
+            {
+                new(nameof(stageChartId), stageChartId),
+                new(nameof(levelChartId), levelChartId),
+                new(nameof(itemChartId), itemChartId),
+                new(nameof(statusChartId), statusChartId),
+                new(nameof(stage), stage),
+            };
+
+            return InvokeFunc("StageClear", parameters, ConvertFunctionResponse<StageCleared>());
         }
 
         public static UniTask<Response<Inventory>> TEST_AddItems(int[] ids, int[] quantities)
@@ -243,20 +265,21 @@ namespace RGLabs.Network
             var param = FunctionParam(functionName, parameters);
             return Call(onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke), convert);
         }
-        
-        private static Response<T>.Convert ConvertFunctionResponse<T>() => raw => raw.GetFlattenJSON()["result"].Cast<T>();
+
+        private static Response<T>.Convert ConvertFunctionResponse<T>() =>
+            raw => raw.GetFlattenJSON()["result"].Cast<T>();
 
         private static Param FunctionParam(string functionName, List<KeyValuePair<string, object>> parameters = null)
         {
             var param = new Param { { "functionName", functionName } };
-            if (parameters == null) 
+            if (parameters == null)
                 return param;
-            
+
             foreach (var kvp in parameters)
             {
                 param.Add(kvp.Key, kvp.Value);
             }
-            
+
             return param;
         }
 
@@ -266,7 +289,7 @@ namespace RGLabs.Network
             api.Invoke(result =>
             {
                 --LeftRequestCount;
-                
+
                 var response = new Response(result);
                 src.TrySetResult(response);
             });
@@ -282,13 +305,13 @@ namespace RGLabs.Network
             api.Invoke(result =>
             {
                 --LeftRequestCount;
-                
+
                 var response = new Response<T>(result, convert);
                 src.TrySetResult(response);
             });
 
             ++LeftRequestCount;
-            
+
             return src.Task;
         }
     }

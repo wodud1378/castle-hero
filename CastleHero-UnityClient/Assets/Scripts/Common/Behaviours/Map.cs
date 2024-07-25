@@ -18,7 +18,7 @@ namespace RGLabs.Common.Behaviours
 
         private void Init()
         {
-           Storage.userRepository.stage
+           Storage.userRepository.focusedStage
                .Subscribe(OnStageChanged)
                .AddTo(this);
         }

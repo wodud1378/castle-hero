@@ -9,6 +9,8 @@ using RGLabs.Data;
 using RGLabs.InGame.System;
 using RGLabs.InGame.UI;
 using RGLabs.Lobby.Behaviours;
+using RGLabs.Network.Service.Stage;
+using RGLabs.Network.Shared;
 using RGLabs.Unit.Components;
 using RGLabs.Unit.Skill.Global;
 using RGLabs.Utility;
@@ -24,9 +26,10 @@ namespace RGLabs.InGame.Behaviours
         Next,
     }
 
-    public struct Result
+    public struct GameResult
     {
         public bool isCleared;
+        public StageCleared data;
     }
 
     public class InGameBehaviour : SceneBehaviour
@@ -34,6 +37,7 @@ namespace RGLabs.InGame.Behaviours
         [SerializeField] private UIInGame _uiInGame;
         [SerializeField] private WaveRunner _waveRunner;
 
+        private readonly StageService _service = new();
         private UnitProcessor _unitProcessor;
         
         protected override void OnAwake()
@@ -101,7 +105,7 @@ namespace RGLabs.InGame.Behaviours
         private void RunWave()
         {
             var db = Storage.db;
-            var stage = Storage.userRepository.stage.Value;
+            var stage = Storage.userRepository.focusedStage.Value;
             if (!db.stages.TryFind(stage, out var entity))
                 return;
 
@@ -112,15 +116,23 @@ namespace RGLabs.InGame.Behaviours
                 .Subscribe(_ => OnWaveComplete());
         }
 
-        private void OnCastleDestroy() => SetResult(false);
-
-        private void OnWaveComplete() => SetResult(true);
-
-        private void SetResult(bool isCleared)
+        private void OnCastleDestroy()
         {
-            _waveRunner.isRunning = false;
+            new GameResult
+            {
+                isCleared =  false
+            }.Publish();
+        }
 
-            new Result { isCleared = isCleared }.Publish();
+        private async void OnWaveComplete()
+        {
+            var result = await _service.SetClear(Storage.userRepository.focusedStage.Value);
+            
+            new GameResult
+            {
+                isCleared = true,
+                data = result
+            }.Publish();
         }
 
         private void RunUnits()
@@ -140,7 +152,7 @@ namespace RGLabs.InGame.Behaviours
             if (exitCode != ExitCode.Exit)
             {
                 state = State.InGame;
-                int currentStage = Storage.userRepository.stage.Value;
+                int currentStage = Storage.userRepository.focusedStage.Value;
                 if (exitCode == ExitCode.Retry)
                 {
                     stage = currentStage;

@@ -67,7 +67,7 @@ namespace RGLabs.Common.UI
             var next = data.next;
 
             bool hasOverride = data.hasOverride;
-            _lvText.text = hasOverride
+            _lvText.text = hasOverride && current.lv != next.lv
                 ? $"{ToLvText(current.lv).WithColor(_lvColor)} -> {ToLvText(next.lv).WithPositiveColor()}"
                 : $"{ToLvText(current.lv).WithColor(_lvColor)}"; 
             

@@ -43,7 +43,7 @@ namespace RGLabs.Stage.UI
             this.SubscribeButton(_prev, OnPrevStage);
             this.SubscribeButton(_next, OnNextStage);
 
-            _subscriptions.Add(_repository.stage.Subscribe(OnStageSelected));
+            _subscriptions.Add(_repository.focusedStage.Subscribe(OnStageSelected));
             _subscriptions.Add(_stageData
                 .Subscribe(x =>
                 {
@@ -52,7 +52,7 @@ namespace RGLabs.Stage.UI
                     UpdateButtonsActive(x);
                 }));
 
-            OnStageSelected(_repository.stage.Value);
+            OnStageSelected(_repository.focusedStage.Value);
         }
 
         public void SetMoveStageEnable(bool enabled)
@@ -143,7 +143,7 @@ namespace RGLabs.Stage.UI
             if (!stages.TryIndexOf(index, out var entity))
                 return;
 
-            _repository.stage.Value = entity.Id;
+            _repository.focusedStage.Value = entity.Id;
         }
 
         public void Dispose()

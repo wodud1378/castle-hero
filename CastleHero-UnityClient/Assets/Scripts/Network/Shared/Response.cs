@@ -3,18 +3,23 @@ using System.Collections.Generic;
 namespace RGLabs.Network.Shared
 {
     #region Character
-
-    public class UnitResult
+    /// <summary>
+    /// 각 int[] 필드의 인덱스 0 : 이전 값, 인덱스 1: 갱신된 값
+    /// </summary>
+    public class UnitTransition
     {
+        public int[] rateTransition;
+        public int[] lvTransition;
+        public int[] expTransition;
         public UnitInfo unit;
     }
 
-    public class GrowthResult : UnitResult
+    public class GrowthResult
     {
+        public UnitTransition transition;
         public Currency leftCurrency;
         public IItem leftItem;
     }
-
     #endregion
 
     #region Stage.
@@ -26,7 +31,7 @@ namespace RGLabs.Network.Shared
         public bool isFirstClear;
         public Currency currency;
         public List<IItem> items;
-        public List<UnitInfo> updated;
+        public List<UnitTransition> transitions;
     }
 
     #endregion

@@ -5,6 +5,7 @@ using PolyNav;
 using RGLabs.Common;
 using RGLabs.Data;
 using RGLabs.Data.Repositories;
+using RGLabs.Network;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Factory;
 using RGLabs.Utility;
@@ -93,6 +94,8 @@ namespace RGLabs.Lobby.Behaviours
             await UniTask.WhenAll(tasks);
             
             _userRepo.ApplyFieldCharacters(_gameRepo.characters);
+
+            Save();
         }
 
         public void Clear()
@@ -122,6 +125,8 @@ namespace RGLabs.Lobby.Behaviours
             unit.DestroySelf();
             
             _userRepo.ApplyFieldCharacters(_gameRepo.characters);
+            
+            Save();
         }
 
         public bool TryRegister(UnitBehaviour unit, int layer, bool isExist)
@@ -153,7 +158,9 @@ namespace RGLabs.Lobby.Behaviours
             
             if(isBarricade)
                 _map.AddObstacle(unit);
-            
+
+            Save();
+
             return true;
         }
 
@@ -244,7 +251,9 @@ namespace RGLabs.Lobby.Behaviours
             
             _gameRepo.characters.Add(unit);
         }
-        
+
+        private void Save() => BackendWrapper.SaveFormation(new Formation { fieldUnits = _userRepo.fieldCharacters.ToList() });
+
         private void OnDrawGizmosSelected()
         {
             Gizmos.DrawWireSphere(transform.position, Radius);
