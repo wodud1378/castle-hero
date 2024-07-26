@@ -13,9 +13,7 @@ namespace RGLabs.Network.Service.Summon
 
         private async UniTask<SummonResult> Summon(int eventId, int coastId, int count)
         {
-            var eventChartId = Storage.db.summons.Id;
-            var listChartId = Storage.db.summonGroups.Id;
-            var response = await BackendWrapper.Summon(eventId, coastId, count, eventChartId, listChartId);
+            var response = await BackendWrapper.Summon(eventId, coastId, count);
 
             return response.data;
         }

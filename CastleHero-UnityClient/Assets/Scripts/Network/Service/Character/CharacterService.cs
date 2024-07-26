@@ -10,12 +10,12 @@ namespace RGLabs.Network.Service.Character
         private const string UpgradeMethod = "Upgrade";
         
         public async UniTask<GrowthResult> LevelUp(int unitId, int itemId, int itemQty) 
-            => await CallGrowth(LevelUpMethod, Storage.db.levels.Id, unitId, itemId, itemQty);
+            => await CallGrowth(LevelUpMethod, unitId, itemId, itemQty);
 
         public async UniTask<GrowthResult> Upgrade(int unitId, int itemId, int itemQty) 
-            => await CallGrowth(UpgradeMethod, Storage.db.rates.Id, unitId, itemId, itemQty);
+            => await CallGrowth(UpgradeMethod, unitId, itemId, itemQty);
 
-        private async UniTask<GrowthResult> CallGrowth(string method, int chartId, int unitId, int itemId, int itemQty) 
-            => (await BackendWrapper.Growth(method, chartId, unitId, itemId, itemQty)).data;
+        private async UniTask<GrowthResult> CallGrowth(string method, int unitId, int itemId, int itemQty) 
+            => (await BackendWrapper.Growth(method, unitId, itemId, itemQty)).data;
     }
 }

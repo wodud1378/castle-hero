@@ -157,13 +157,11 @@ namespace RGLabs.Network
             });
         }
 
-        public static UniTask<Response<GrowthResult>> Growth(string method, int chartId, int unitId, int itemId,
+        public static UniTask<Response<GrowthResult>> Growth(string method, int unitId, int itemId,
             int itemQty)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
-                new("chartId", chartId),
-                new("itemChartId", Storage.db.items.Id),
                 new(nameof(unitId), unitId),
                 new(nameof(itemId), itemId),
                 new(nameof(itemQty), itemQty),
@@ -186,31 +184,20 @@ namespace RGLabs.Network
             return InvokeFunc("OpenBox", parameters, ConvertFunctionResponse<OpenBoxResult>());
         }
 
-        public static UniTask<Response<SummonResult>> Summon(int eventId, int coastId, int count, int eventChartId,
-            int listChartId)
+        public static UniTask<Response<SummonResult>> Summon(int eventId, int coastId, int count)
         {
             var parameters = new List<KeyValuePair<string, object>>()
             {
                 new(nameof(eventId), eventId),
                 new(nameof(coastId), coastId),
-                new(nameof(eventChartId), eventChartId),
-                new(nameof(listChartId), listChartId)
             };
 
             return InvokeFunc($"SummonX{count}", parameters, ConvertFunctionResponse<SummonResult>());
         }
 
-        public static UniTask<Response<StageCleared>> SetStageClear(int stageChartId, int levelChartId, int itemChartId,
-            int statusChartId, int stage)
+        public static UniTask<Response<StageCleared>> SetStageClear(int stage)
         {
-            var parameters = new List<KeyValuePair<string, object>>
-            {
-                new(nameof(stageChartId), stageChartId),
-                new(nameof(levelChartId), levelChartId),
-                new(nameof(itemChartId), itemChartId),
-                new(nameof(statusChartId), statusChartId),
-                new(nameof(stage), stage),
-            };
+            var parameters = new List<KeyValuePair<string, object>> { new(nameof(stage), stage), };
 
             return InvokeFunc("StageClear", parameters, ConvertFunctionResponse<StageCleared>());
         }
