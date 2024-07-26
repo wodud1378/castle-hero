@@ -81,16 +81,16 @@ namespace RGLabs.Data.Model
         [DataField("icon")]
         public string icon;
         
-        [DataField("Item_Name")] 
+        [DataField("name")] 
         public string name;
         
-        [DataField("Item_Desc")]
+        [DataField("desc")]
         public string[] desc;
         
-        [DataField("Item_Sell")]
+        [DataField("sell")]
         public int sellPrice;
         
-        [DataField("Item_Option")]
+        [DataField("option")]
         public string[] options;
 
         #region Equipment.

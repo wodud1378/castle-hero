@@ -41,6 +41,8 @@ namespace RGLabs.Lobby.UI.Popup
         private readonly ReactiveProperty<SummonEntity> _entity = new();
         private readonly SummonService _service = new();
 
+        private SummonResult _result;
+        
         protected override void OnAwake()
         {
             base.OnAwake();
@@ -171,15 +173,16 @@ namespace RGLabs.Lobby.UI.Popup
         {
             if (!CheckInventory(coastId, coast))
                 return;
-
-            var networkTask = method.Invoke(eventId, coastId);
+            
+            var networkTask = SetResult(()=> method.Invoke(eventId, coastId));
             var uiTask = TaskHelper.OnAnimationEnd(_animator, animationHash);
 
             await UniTask.WhenAll(networkTask, uiTask);
-            var result = await networkTask;
 
-            OnSummoned(result).Forget();
+            OnSummoned(_result).Forget();
         }
+
+        private async UniTask SetResult(Func<UniTask<SummonResult>> method) => _result = await method.Invoke();
 
         private async UniTaskVoid OnSummoned(SummonResult result)
         {
