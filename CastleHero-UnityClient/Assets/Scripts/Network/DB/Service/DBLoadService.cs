@@ -6,16 +6,14 @@ using Cysharp.Threading.Tasks;
 using LitJson;
 using RGLabs.Data.DB;
 using RGLabs.Data.Load;
-using RGLabs.Data.Repositories;
 
-namespace RGLabs.Network.DB
+namespace RGLabs.Network.DB.Service
 {
-    public class Chart
+    public class DBLoadService : IDBLoadService
     {
-        private readonly CsvToDatabase _csvToDB = new();
-        private readonly JsonToDatabase _jsonToDB = new();
-
-        public async UniTask<DBCollections> LoadFromServer()
+        private readonly JsonToDatabase _converter = new();
+        
+        public async UniTask<DBCollections> Load()
         {
             DBCollections collections = new();
             
@@ -48,33 +46,17 @@ namespace RGLabs.Network.DB
 
             return collections;
         }
-
-        private async UniTask<(string chartName, int id, Response response)> GetChartContent(string chartName, int id) => (chartName, id, await BackendWrapper.GetChartContent(id.ToString()));
-
-        public async UniTask<DBCollections> LoadFromLocal()
+        
+        private async UniTask<ChartInfo[]> GetChartList()
         {
-            DBCollections collections = new();
+            var response = await BackendWrapper.GetChartList();
             
-            var tasks = new List<UniTask>
-            {
-                _csvToDB.Load<StageDB>(x => collections.stages = x),
-                _csvToDB.Load<WaveDB>(x => collections.waves = x),
-                _csvToDB.Load<UnitDB>(x => collections.units = x),
-                _csvToDB.Load<UnitLevelDB>(x => collections.levels = x),
-                _csvToDB.Load<UnitRateDB>(x => collections.rates = x),
-                _csvToDB.Load<UnitBalanceDB>(x => collections.balances = x),
-                _csvToDB.Load<SkillDB>(x => collections.skills = x, true),
-                _csvToDB.Load<CastleDB>(x => collections.castles = x),
-                _csvToDB.Load<SummonDB>(x => collections.summons = x),
-                _csvToDB.Load<SummonGroupDB>(x => collections.summonGroups = x), 
-                _csvToDB.Load<ItemDB>(x => collections.items = x),
-            };
-
-            collections.units.CacheUnitSizes();
-
-            return collections;
+            return response.data;
         }
-
+        
+        private async UniTask<(string chartName, int id, Response response)> GetChartContent(string chartName, int id)
+            => (chartName, id, await BackendWrapper.GetChartContent(id.ToString()));
+        
         private void LoadInstance<T>(Dictionary<string, (int id, JsonData json)> map, Action<T> onResult) where T : class, IDataBase
         {
             var type = typeof(T);
@@ -85,15 +67,9 @@ namespace RGLabs.Network.DB
             if (!map.TryGetValue(att.ChartName, out var data))
                 return;
 
-            var obj = _jsonToDB.Convert<T>(data.json, type == typeof(SkillDB) || type == typeof(ItemDB));
+            var obj = _converter.Convert<T>(data.json, type == typeof(SkillDB) || type == typeof(ItemDB));
             obj.Id = data.id;
             onResult.Invoke(obj);
-        }
-
-        private async UniTask<ChartInfo[]> GetChartList()
-        {
-            var response = await BackendWrapper.GetChartList();
-            return response.data;
         }
     }
 }

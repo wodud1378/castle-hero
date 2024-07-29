@@ -122,7 +122,7 @@ namespace RGLabs.Lobby.UI.Popup
             var result = await _service.Upgrade(_unit.Value.id, item.ItemId, rateEntity.soul);
             var unit = result.transition.unit;
             _unit.Value = unit;
-            _soulSlot.Init(result.leftItem);
+            _soulSlot.Init(result.leftItem).Forget();
 
             var repository = Storage.userRepository;
             repository.Update(unit);

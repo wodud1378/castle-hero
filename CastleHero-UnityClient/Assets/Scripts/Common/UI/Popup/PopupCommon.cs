@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.UI.Utility;
 using RGLabs.Utility;
 using TMPro;
 using UnityEngine;
@@ -8,6 +9,7 @@ using UnityEngine.UI;
 
 namespace RGLabs.Common.UI.Popup
 {
+    [PrefabPath("Common/Prefabs/Popup_Common.prefab")]
     public class PopupCommon : PopupBase
     {
         public struct ButtonParam
@@ -32,6 +34,9 @@ namespace RGLabs.Common.UI.Popup
         protected override void OnAwake()
         {
             base.OnAwake();
+            
+            _confirm.gameObject.SetActive(false);
+            _cancel.gameObject.SetActive(false);
 
             this.SubscribeButton(_confirm, () =>
             {
@@ -51,17 +56,20 @@ namespace RGLabs.Common.UI.Popup
             try
             {
                _text.text = (string)parameters[0];
-
-               if (parameters[1] is IEnumerable<ButtonParam> buttonParams)
+               
+               if (parameters.Length > 1)
                {
-                   foreach (var param in buttonParams)
+                   if (parameters[1] is IEnumerable<ButtonParam> buttonParams)
+                   {
+                       foreach (var param in buttonParams)
+                       {
+                           ApplyButtonParam(param);
+                       }    
+                   }
+                   else if (parameters[1] is ButtonParam param)
                    {
                        ApplyButtonParam(param);
-                   }    
-               }
-               else if (parameters[1] is ButtonParam param)
-               {
-                   ApplyButtonParam(param);
+                   }
                }
 
                if (_confirmAction == null && _cancelAction == null)
@@ -73,7 +81,7 @@ namespace RGLabs.Common.UI.Popup
                    _confirm.gameObject.SetActive(_confirmAction != null);
                    _cancel.gameObject.SetActive(_cancelAction != null);
                }
-               
+
                return UniTask.CompletedTask;
             }
             catch (Exception e)

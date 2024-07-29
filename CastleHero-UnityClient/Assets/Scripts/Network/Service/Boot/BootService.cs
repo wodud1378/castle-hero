@@ -6,6 +6,7 @@ using LitJson;
 using RGLabs.Data;
 using RGLabs.Data.Repositories;
 using RGLabs.Network.DB;
+using RGLabs.Network.DB.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Network.Service.Login;
 using UnityEngine.AddressableAssets;
@@ -18,8 +19,6 @@ namespace RGLabs.Network.Service.Boot
         private readonly IBackendErrorHandler _errorHandler;
         private readonly ILoginService _autoLoginService;
         private readonly BootConfig _config;
-        
-        private readonly Chart _chart = new();
 
         public BootService(BootConfig config, IBootServiceHandler handler, IBackendErrorHandler errorHandler = null)
         {
@@ -87,11 +86,11 @@ namespace RGLabs.Network.Service.Boot
         }
         private async UniTask InitStorage(UserData userData)
         {
-            DBCollections collections;
-            if (_config.useLocalDatabase)
-                collections = await _chart.LoadFromLocal();
-            else
-                collections = await _chart.LoadFromServer();
+            IDBLoadService service = _config.useLocalDatabase
+                ? new LocalDBLoadService()
+                : new DBLoadService();
+
+            var collections = await service.Load();
             
             Storage.Init(userData, collections);
         }

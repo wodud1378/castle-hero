@@ -165,7 +165,7 @@ namespace RGLabs.Lobby.UI.Popup
             var result = await _service.LevelUp(_unit.Value.id, item.ItemId, (int)_slider.value);
             var unit = result.transition.unit;
             _unit.Value = unit;
-            _selected.Value.Init(result.leftItem);
+            _selected.Value.Init(result.leftItem).Forget();
             
             var repository = Storage.userRepository;
             repository.Update(unit);

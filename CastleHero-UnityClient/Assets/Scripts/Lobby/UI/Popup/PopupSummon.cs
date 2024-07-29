@@ -47,7 +47,7 @@ namespace RGLabs.Lobby.UI.Popup
         {
             base.OnAwake();
 
-            this.SubscribeButton(_info, OpenInfo);
+            this.SubscribeButton(_info, ()=> OpenInfo().Forget());
             this.SubscribeButton(_prev, OnPrev);
             this.SubscribeButton(_next, OnNext);
         }
@@ -69,14 +69,18 @@ namespace RGLabs.Lobby.UI.Popup
             return UniTask.CompletedTask;
         }
 
-        private void OpenInfo()
+        private async UniTaskVoid OpenInfo()
         {
             var data = GetOrCreateFromCache(_entity.Value.groupId);
             var infoString = BuildInfoString(data);
 
-            Context.popupManager
-                .OpenAsync<PopupCommon>(infoString)
-                .Forget();
+            var popup = await Context.popupManager
+                .OpenAsync<PopupCommon>(infoString);
+
+            var buttonRect = (_info.transform as RectTransform)!;
+            var popupRect = (popup.transform as RectTransform)!;
+            
+            popupRect.AttachThrough(buttonRect, 0f, 1f);
         }
 
         private void AddDataIndex(int value)
@@ -262,7 +266,7 @@ namespace RGLabs.Lobby.UI.Popup
                     sb.AppendLine();
 
                 var current = itr.Current.Value;
-                sb.Append($"{current.name} {current.weight:F3}");
+                sb.Append($"{current.name} {current.weight:F3}%");
             }
 
             return sb.ToString();

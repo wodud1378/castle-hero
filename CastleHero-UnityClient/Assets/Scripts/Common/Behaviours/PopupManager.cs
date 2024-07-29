@@ -6,6 +6,7 @@ using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.UI;
 
 namespace RGLabs.Common.Behaviours
 {
@@ -23,7 +24,7 @@ namespace RGLabs.Common.Behaviours
                 .Subscribe(OnPopupCollectionChanged)
                 .AddTo(this);
         }
-
+        
         public async UniTask<T> OpenAsync<T>(params object[] parameters) where T : PopupBase
         {
             var popup = await LoadPopup<T>();
@@ -61,7 +62,7 @@ namespace RGLabs.Common.Behaviours
             var path = PrefabPathCache.Load(typeof(T));
             if (string.IsNullOrEmpty(path))
                 return null;
-
+            
             var obj = await Addressables.InstantiateAsync(path, transform);
             if (!obj.TryGetComponent(out T popup))
             {

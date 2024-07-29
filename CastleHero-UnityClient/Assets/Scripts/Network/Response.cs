@@ -52,8 +52,6 @@ namespace RGLabs.Network
     {
         public delegate T Convert(BackendReturnObject raw);
         
-        public readonly ResultCode result;
-        public readonly BackendReturnObject raw;
         public readonly T data;
         
         public Response(BackendReturnObject raw, Convert convert = null) : base(raw)
