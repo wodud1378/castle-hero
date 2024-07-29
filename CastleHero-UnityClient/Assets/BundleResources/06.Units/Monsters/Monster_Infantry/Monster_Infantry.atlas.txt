@@ -3,273 +3,325 @@ Monster_Infantry.png
 	filter: Linear, Linear
 	scale: 0.5
 Effect_Slash
-	bounds: 212, 82, 50, 50
+	bounds: 950, 581, 50, 50
 Elipse
-	bounds: 369, 136, 65, 65
+	bounds: 236, 465, 65, 65
+Infantry_DarkKnight_Sword/Arm_L
+	bounds: 222, 421, 42, 64
+	offsets: 5, 5, 52, 74
+	rotate: 90
+Infantry_DarkKnight_Sword/Arm_L2
+	bounds: 76, 402, 45, 44
+	offsets: 5, 5, 55, 54
+Infantry_DarkKnight_Sword/Arm_R
+	bounds: 2, 442, 46, 72
+	offsets: 5, 5, 56, 82
+	rotate: 90
+Infantry_DarkKnight_Sword/Arm_R2
+	bounds: 682, 400, 46, 46
+	offsets: 5, 5, 56, 56
+Infantry_DarkKnight_Sword/Finger_R
+	bounds: 690, 358, 40, 35
+	offsets: 2, 2, 44, 40
+	rotate: 90
+Infantry_DarkKnight_Sword/Hand_L
+	bounds: 288, 392, 46, 40
+	offsets: 9, 5, 60, 51
+Infantry_DarkKnight_Sword/Hand_R
+	bounds: 462, 399, 44, 42
+	offsets: 5, 5, 54, 52
+Infantry_DarkKnight_Sword/Hand_R_Grip
+	bounds: 604, 360, 41, 42
+	offsets: 7, 5, 57, 51
+	rotate: 90
+Infantry_DarkKnight_Sword/Head
+	bounds: 50, 578, 150, 189
+	offsets: 0, 1, 150, 190
+	rotate: 270
+Infantry_DarkKnight_Sword/Hip
+	bounds: 2, 651, 76, 50
+	offsets: 5, 5, 86, 60
+	rotate: 90
+Infantry_DarkKnight_Sword/Leg_L
+	bounds: 467, 442, 47, 89
+	offsets: 3, 5, 53, 97
+	rotate: 90
+Infantry_DarkKnight_Sword/Shoulder_L
+	bounds: 957, 487, 51, 48
+	offsets: 5, 5, 61, 58
+	rotate: 90
+Infantry_DarkKnight_Sword/Skirt
+	bounds: 890, 599, 81, 58
+	offsets: 5, 5, 91, 68
+	rotate: 90
+Infantry_DarkKnight_Sword/Skirt_C
+	bounds: 963, 417, 40, 68
+	offsets: 4, 1, 48, 72
+Infantry_DarkKnight_Sword/Skirt_L
+	bounds: 488, 689, 45, 50
+	offsets: 5, 5, 55, 60
+	rotate: 90
+Infantry_DarkKnight_Sword/Skirt_R
+	bounds: 173, 372, 25, 44
+	offsets: 5, 5, 35, 54
+Infantry_DarkKnight_Sword/Torso
+	bounds: 752, 914, 90, 93
+	offsets: 1, 3, 93, 98
+	rotate: 90
+Infantry_DarkKnight_Sword/Weapon
+	bounds: 377, 685, 109, 320
+	offsets: 5, 5, 119, 330
 Infantry_Gladiator_Sword/Arm_L
-	bounds: 370, 82, 42, 64
+	bounds: 776, 431, 42, 64
 	offsets: 5, 5, 52, 74
 	rotate: 90
 Infantry_Gladiator_Sword/Arm_L2
-	bounds: 2, 6, 41, 33
+	bounds: 336, 360, 41, 33
 	offsets: 8, 5, 55, 46
 Infantry_Gladiator_Sword/Arm_R
-	bounds: 77, 92, 44, 66
+	bounds: 303, 434, 44, 66
 	offsets: 5, 5, 54, 76
 	rotate: 90
 Infantry_Gladiator_Sword/Arm_R2
-	bounds: 142, 6, 42, 38
+	bounds: 413, 360, 42, 38
 	offsets: 5, 5, 56, 49
 Infantry_Gladiator_Sword/Finger_R
-	bounds: 302, 4, 40, 35
+	bounds: 648, 363, 40, 35
 	offsets: 2, 2, 44, 40
 Infantry_Gladiator_Sword/Hand_L
-	bounds: 162, 46, 46, 40
+	bounds: 371, 395, 46, 40
 	offsets: 9, 5, 60, 51
+	rotate: 90
 Infantry_Gladiator_Sword/Hand_R
-	bounds: 68, 48, 44, 42
+	bounds: 558, 399, 44, 42
 	offsets: 5, 5, 54, 52
 Infantry_Gladiator_Sword/Hand_R_Grip
-	bounds: 407, 6, 41, 42
+	bounds: 957, 376, 41, 42
 	offsets: 7, 5, 57, 51
 	rotate: 90
 Infantry_Gladiator_Sword/Head
-	bounds: 377, 701, 143, 185
+	bounds: 488, 685, 143, 185
 	offsets: 2, 1, 145, 189
 Infantry_Gladiator_Sword/Hip
-	bounds: 179, 591, 76, 50
+	bounds: 785, 475, 76, 50
 	offsets: 5, 5, 86, 60
-	rotate: 90
 Infantry_Gladiator_Sword/Leg_L
-	bounds: 511, 563, 47, 89
+	bounds: 377, 443, 47, 89
 	offsets: 3, 5, 53, 97
+	rotate: 90
 Infantry_Gladiator_Sword/Shield
-	bounds: 2, 127, 91, 89
+	bounds: 870, 506, 91, 89
 	offsets: 0, 2, 93, 93
+	rotate: 90
 Infantry_Gladiator_Sword/Shoulder_L
-	bounds: 210, 39, 43, 41
+	bounds: 824, 377, 43, 41
 	offsets: 2, 3, 48, 46
 Infantry_Gladiator_Sword/Skirt
-	bounds: 92, 137, 100, 57
+	bounds: 905, 779, 100, 57
 	offsets: 3, 3, 106, 65
+	rotate: 270
 Infantry_Gladiator_Sword/Torso
-	bounds: 281, 177, 90, 85
+	bounds: 833, 711, 90, 85
 	offsets: 1, 3, 93, 91
-	rotate: 180
+	rotate: 90
 Infantry_Gladiator_Sword/Weapon
-	bounds: 2, 286, 54, 232
+	bounds: 416, 491, 54, 232
 	offsets: 22, 5, 98, 242
 	rotate: 90
 Infantry_Knights_Halberd/Arm_L
-	bounds: 505, 96, 46, 64
+	bounds: 2, 585, 46, 64
 	offsets: 5, 5, 56, 77
-	rotate: 90
 Infantry_Paladin_Flail/Arm_L
-	bounds: 505, 96, 46, 64
+	bounds: 2, 585, 46, 64
 	offsets: 5, 5, 56, 77
-	rotate: 90
 Infantry_Knights_Halberd/Arm_L2
-	bounds: 357, 44, 48, 36
+	bounds: 123, 380, 48, 36
 	offsets: 5, 6, 60, 47
 Infantry_Paladin_Flail/Arm_L2
-	bounds: 357, 44, 48, 36
+	bounds: 123, 380, 48, 36
 	offsets: 5, 6, 60, 47
 Infantry_Knights_Halberd/Arm_R
-	bounds: 145, 88, 44, 65
+	bounds: 730, 429, 44, 65
 	offsets: 5, 5, 54, 75
-	rotate: 90
 Infantry_Paladin_Flail/Arm_R
-	bounds: 145, 88, 44, 65
+	bounds: 730, 429, 44, 65
 	offsets: 5, 5, 54, 75
-	rotate: 90
 Infantry_Knights_Halberd/Arm_R2
-	bounds: 255, 8, 45, 33
+	bounds: 457, 364, 45, 33
 	offsets: 5, 5, 55, 43
 Infantry_Paladin_Flail/Arm_R2
-	bounds: 255, 8, 45, 33
+	bounds: 457, 364, 45, 33
 	offsets: 5, 5, 55, 43
 Infantry_Knights_Halberd/Finger_R
-	bounds: 202, 669, 40, 35
+	bounds: 546, 362, 40, 35
 	offsets: 2, 2, 44, 40
-	rotate: 90
 Infantry_Paladin_Flail/Finger_R
-	bounds: 202, 669, 40, 35
+	bounds: 546, 362, 40, 35
 	offsets: 2, 2, 44, 40
-	rotate: 90
 Infantry_Knights_Halberd/Hand_L
-	bounds: 377, 710, 46, 41
+	bounds: 414, 400, 46, 41
 	offsets: 9, 5, 60, 51
 Infantry_Paladin_Flail/Hand_L
-	bounds: 377, 710, 46, 41
+	bounds: 414, 400, 46, 41
 	offsets: 9, 5, 60, 51
 Infantry_Knights_Halberd/Hand_R
-	bounds: 436, 49, 44, 42
+	bounds: 512, 400, 44, 42
 	offsets: 5, 5, 54, 52
 Infantry_Paladin_Flail/Hand_R
-	bounds: 436, 49, 44, 42
+	bounds: 512, 400, 44, 42
 	offsets: 5, 5, 54, 52
 Infantry_Knights_Halberd/Hand_R_Grip
-	bounds: 526, 9, 41, 42
+	bounds: 913, 377, 41, 42
 	offsets: 7, 5, 57, 51
 	rotate: 90
 Infantry_Paladin_Flail/Hand_R_Grip
-	bounds: 526, 9, 41, 42
+	bounds: 913, 377, 41, 42
 	offsets: 7, 5, 57, 51
 	rotate: 90
 Infantry_Knights_Halberd/Head
-	bounds: 405, 307, 130, 136
+	bounds: 673, 573, 130, 136
 	offsets: 1, 2, 131, 138
-	rotate: 90
 Infantry_Knights_Halberd/Hip
-	bounds: 528, 147, 76, 40
+	bounds: 76, 448, 76, 40
 	offsets: 4, 5, 80, 50
-	rotate: 90
 Infantry_Paladin_Flail/Hip
-	bounds: 528, 147, 76, 40
+	bounds: 76, 448, 76, 40
 	offsets: 4, 5, 80, 50
-	rotate: 90
 Infantry_Knights_Halberd/Leg_L
-	bounds: 467, 862, 47, 89
+	bounds: 640, 447, 47, 89
 	offsets: 3, 5, 53, 97
 	rotate: 90
 Infantry_Paladin_Flail/Leg_L
-	bounds: 467, 862, 47, 89
+	bounds: 640, 447, 47, 89
 	offsets: 3, 5, 53, 97
 	rotate: 90
 Infantry_Knights_Halberd/Shield
-	bounds: 436, 138, 91, 89
+	bounds: 843, 892, 91, 89
 	offsets: 0, 2, 93, 93
-	rotate: 180
+	rotate: 90
 Infantry_Knights_Halberd/Shoulder_L
-	bounds: 2, 41, 43, 41
+	bounds: 207, 378, 43, 41
 	offsets: 2, 3, 48, 46
 Infantry_Paladin_Flail/Shoulder_L
-	bounds: 2, 41, 43, 41
+	bounds: 207, 378, 43, 41
 	offsets: 2, 3, 48, 46
 Infantry_Knights_Halberd/Skirt_C
-	bounds: 185, 2, 35, 47
+	bounds: 287, 355, 35, 47
 	offsets: 3, 3, 42, 54
 	rotate: 90
 Infantry_Knights_Halberd/Skirt_L
-	bounds: 47, 10, 46, 36
+	bounds: 2, 362, 46, 36
 	offsets: 5, 5, 56, 46
 Infantry_Paladin_Flail/Skirt_L
-	bounds: 47, 10, 46, 36
+	bounds: 2, 362, 46, 36
 	offsets: 5, 5, 56, 46
 Infantry_Knights_Halberd/Skirt_R
-	bounds: 137, 466, 25, 33
+	bounds: 211, 792, 25, 33
 	offsets: 5, 5, 35, 43
 Infantry_Paladin_Flail/Skirt_R
-	bounds: 137, 466, 25, 33
+	bounds: 211, 792, 25, 33
 	offsets: 5, 5, 35, 43
 Infantry_Knights_Halberd/Torso
-	bounds: 192, 186, 90, 85
+	bounds: 820, 804, 90, 85
 	offsets: 1, 3, 93, 91
-	rotate: 180
+	rotate: 90
 Infantry_Knights_Halberd/Weapon
-	bounds: 240, 563, 135, 346
+	bounds: 240, 659, 135, 346
 	offsets: 5, 5, 145, 356
 Infantry_Mercenary_BastardSword/Arm_L
-	bounds: 2, 84, 42, 64
+	bounds: 194, 726, 42, 64
 	offsets: 5, 5, 52, 74
-	rotate: 90
 Infantry_Mercenary_BastardSword/Arm_L2
-	bounds: 95, 8, 45, 36
+	bounds: 50, 364, 45, 36
 	offsets: 5, 5, 55, 46
 Infantry_Mercenary_BastardSword/Arm_R
-	bounds: 436, 93, 44, 66
+	bounds: 154, 444, 44, 66
 	offsets: 5, 5, 54, 76
 	rotate: 90
 Infantry_Mercenary_BastardSword/Arm_R2
-	bounds: 264, 43, 46, 39
+	bounds: 776, 390, 46, 39
 	offsets: 5, 5, 56, 49
 Infantry_Mercenary_BastardSword/Belt
-	bounds: 264, 84, 82, 24
+	bounds: 123, 418, 82, 24
 	offsets: 0, 0, 86, 26
 Infantry_Mercenary_BastardSword/Eyes
-	bounds: 521, 780, 73, 46
-	rotate: 90
+	bounds: 558, 443, 73, 46
 Infantry_Mercenary_BastardSword/Finger_R
-	bounds: 357, 7, 40, 35
+	bounds: 504, 362, 40, 35
 	offsets: 2, 2, 44, 40
 Infantry_Mercenary_BastardSword/Hair_Back
-	bounds: 2, 377, 122, 133
+	bounds: 549, 551, 122, 133
 	offsets: 5, 5, 132, 143
-	rotate: 90
 Infantry_Mercenary_BastardSword/Hair_Front_01
-	bounds: 413, 439, 122, 136
+	bounds: 488, 872, 122, 136
 	offsets: 5, 5, 132, 146
 	rotate: 90
 Infantry_Mercenary_BastardSword/Hair_Front_02
-	bounds: 253, 269, 110, 76
+	bounds: 673, 496, 110, 76
 	offsets: 5, 5, 120, 86
 Infantry_Mercenary_BastardSword/Hand_L
-	bounds: 114, 46, 46, 40
+	bounds: 2, 400, 46, 40
 	offsets: 9, 5, 60, 51
 Infantry_Mercenary_BastardSword/Hand_R
-	bounds: 504, 52, 44, 42
+	bounds: 633, 403, 44, 42
 	offsets: 5, 5, 54, 52
 Infantry_Mercenary_BastardSword/Hand_R_Grip
-	bounds: 482, 9, 41, 42
+	bounds: 869, 377, 41, 42
 	offsets: 7, 5, 57, 51
 	rotate: 90
 Infantry_Mercenary_BastardSword/Head
-	bounds: 287, 347, 124, 116
+	bounds: 626, 857, 124, 116
 	offsets: 5, 5, 134, 126
-	rotate: 90
 Infantry_Mercenary_BastardSword/Hip
-	bounds: 192, 134, 76, 50
+	bounds: 303, 480, 76, 50
 	offsets: 5, 5, 86, 60
 Infantry_Mercenary_BastardSword/Leg_L
-	bounds: 508, 689, 47, 89
+	bounds: 916, 681, 47, 89
 	offsets: 3, 5, 53, 97
 Infantry_Mercenary_BastardSword/Mouth
-	bounds: 73, 893, 32, 16
+	bounds: 73, 989, 32, 16
 Infantry_Mercenary_BastardSword/Shoulder_L
-	bounds: 312, 41, 43, 41
+	bounds: 730, 386, 43, 41
 	offsets: 2, 3, 48, 46
 Infantry_Mercenary_BastardSword/Skirt
-	bounds: 267, 110, 103, 65
+	bounds: 859, 448, 103, 65
 	offsets: 2, 0, 106, 65
 	rotate: 180
 Infantry_Mercenary_BastardSword/Torso
-	bounds: 106, 199, 90, 85
+	bounds: 803, 623, 90, 85
 	offsets: 1, 3, 93, 91
+	rotate: 90
 Infantry_Mercenary_BastardSword/Weapon
-	bounds: 179, 473, 88, 232
+	bounds: 2, 490, 88, 232
 	offsets: 5, 5, 98, 242
 	rotate: 90
 Infantry_Paladin_Flail/Cloak
-	bounds: 2, 627, 238, 282
+	bounds: 2, 723, 238, 282
 	offsets: 1, 0, 239, 282
 Infantry_Paladin_Flail/Flail_Chain
-	bounds: 542, 310, 26, 116
+	bounds: 933, 878, 26, 116
 Infantry_Paladin_Flail/Flail_Grip
-	bounds: 2, 349, 26, 103
+	bounds: 842, 420, 26, 103
 	offsets: 5, 5, 36, 113
 	rotate: 90
 Infantry_Paladin_Flail/Flail_Head
-	bounds: 377, 563, 136, 132
-	offsets: 5, 5, 146, 142
+	bounds: 416, 547, 136, 131
+	offsets: 7, 14, 150, 150
 	rotate: 90
 Infantry_Paladin_Flail/Head
-	bounds: 137, 341, 130, 150
+	bounds: 621, 705, 130, 150
 	offsets: 9, 2, 147, 155
-	rotate: 90
 Infantry_Paladin_Flail/Horn_L
-	bounds: 365, 227, 79, 104
-	rotate: 90
+	bounds: 752, 706, 79, 104
 Infantry_Paladin_Flail/Horn_R
-	bounds: 2, 218, 66, 102
-	rotate: 90
+	bounds: 752, 812, 66, 102
 Infantry_Paladin_Flail/Shield
-	bounds: 2, 501, 125, 175
+	bounds: 239, 532, 125, 175
 	rotate: 90
 Infantry_Paladin_Flail/Skirt_C
-	bounds: 511, 652, 35, 47
+	bounds: 252, 372, 35, 47
 	offsets: 3, 3, 42, 54
-	rotate: 270
 Infantry_Paladin_Flail/Torso
-	bounds: 471, 223, 90, 85
+	bounds: 785, 526, 90, 85
 	offsets: 1, 3, 93, 91
 	rotate: 90
