@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6391860083955039845, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
       propertyPath: m_Name
-      value: Monster_20008
+      value: Monster_20048
       objectReference: {fileID: 0}
     - target: {fileID: 7174810689259680027, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: be4c8b51ec9876c4ea4aa8f95d2abb68, type: 2}
+      objectReference: {fileID: 9100000, guid: 3595799200bac6f48b0087ea5a86cfb5, type: 2}
     - target: {fileID: 7405764224175786417, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
       propertyPath: initialSkinName
-      value: Archer_Knights_Bow
+      value: Archer_DarkKnight_Bow
       objectReference: {fileID: 0}
     - target: {fileID: 8402756777875714999, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
       propertyPath: m_LocalPosition.x

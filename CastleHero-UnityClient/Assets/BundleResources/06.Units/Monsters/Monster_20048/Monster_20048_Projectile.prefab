@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1945986309882382763}
   - component: {fileID: 3661671557754406903}
   m_Layer: 0
-  m_Name: Monster_20044_Projectile
+  m_Name: Monster_20048_Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -134,7 +134,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 2f3259a808438674dbed42a472e50d1f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b23db8aa73394dc4e9b411d583691083, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
