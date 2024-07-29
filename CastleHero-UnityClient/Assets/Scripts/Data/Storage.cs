@@ -3,8 +3,8 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Common.Flow;
 using RGLabs.Common.Pattern;
 using RGLabs.Data.Repositories;
-using RGLabs.Lobby.UI;
-using RGLabs.Network.Service;
+using RGLabs.Network.DB;
+using RGLabs.Network.Shared;
 using RGLabs.Unit.Factory;
 using UnityEngine.AddressableAssets;
 
@@ -18,20 +18,28 @@ namespace RGLabs.Data
     
     public static class Storage
     {
-        public static readonly UserRepository userRepository = new();
-        public static readonly InGameRepository inGameRepository = new();
+        public static UserRepository userRepository;
+        public static InGameRepository inGameRepository = new();
         public static DBCollections db;
         public static PoolContainer poolContainer;
         public static UnitFactory unitFactory;
         public static CastleFactory castleFactory;
         
         public static Entrance entranceData = new() { state = State.Lobby, };
+
+        public static void Init(UserData userData, DBCollections database)
+        {
+            userRepository = new UserRepository(userData);
+            db = database;
+            
+            poolContainer = new();
+            unitFactory = new UnitFactory();
+            castleFactory = new CastleFactory();
+        }
         
         public static async UniTask InitAsync()
         {
             await InitAddressable();
-            
-            db = await DBCollections.Load();
 
             poolContainer = new();
             unitFactory = new UnitFactory();

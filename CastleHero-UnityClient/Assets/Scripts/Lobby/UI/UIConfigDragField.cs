@@ -8,6 +8,7 @@ using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace RGLabs.Lobby.UI
 {
@@ -20,7 +21,7 @@ namespace RGLabs.Lobby.UI
             Field
         }
         
-        [SerializeField] private Formation _formation;
+        [SerializeField] private FormationField _formation;
         [SerializeField] private PolygonDrawer _validationCircle;
         [SerializeField] private Color _validColor;
         [SerializeField] private Color _invalidColor;

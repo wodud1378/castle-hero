@@ -2291,7 +2291,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf094505e6ec4f2490a14c36063db6df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fromManager: 0
+  fromManager: 1
   _animator: {fileID: 759961974045793985}
   _close: {fileID: 805691974223758956}
   all: {fileID: 1003802721485926888}

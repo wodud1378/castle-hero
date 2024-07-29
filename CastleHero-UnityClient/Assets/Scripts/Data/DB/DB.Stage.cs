@@ -3,10 +3,10 @@ using RGLabs.Data.Model;
 
 namespace RGLabs.Data.DB
 {
-    [DB("Stage_Table")]
+    [DB("Stage_Table", "stage")]
     public class StageDB : DB<StageEntity> { }
     
-    [DB("Mob_Wave_Table")]
+    [DB("Mob_Wave_Table", "wave")]
     public class WaveDB : DB<WaveEntity>
     {
         public WaveEntity[] Map(int groupId) => Array.FindAll(entities, (x) => x.groupId == groupId);

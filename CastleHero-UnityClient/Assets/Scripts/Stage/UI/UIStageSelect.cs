@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common;
 using RGLabs.Common.UI;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Data.Repositories;
+using RGLabs.Network.DB;
 using RGLabs.Utility;
 using TMPro;
 using UniRx;
@@ -43,7 +43,7 @@ namespace RGLabs.Stage.UI
             this.SubscribeButton(_prev, OnPrevStage);
             this.SubscribeButton(_next, OnNextStage);
 
-            _subscriptions.Add(_repository.stage.Subscribe(OnStageSelected));
+            _subscriptions.Add(_repository.focusedStage.Subscribe(OnStageSelected));
             _subscriptions.Add(_stageData
                 .Subscribe(x =>
                 {
@@ -52,7 +52,7 @@ namespace RGLabs.Stage.UI
                     UpdateButtonsActive(x);
                 }));
 
-            OnStageSelected(_repository.stage.Value);
+            OnStageSelected(_repository.focusedStage.Value);
         }
 
         public void SetMoveStageEnable(bool enabled)
@@ -78,8 +78,8 @@ namespace RGLabs.Stage.UI
             if (stageData.exp > 0)
                 AddRewardUI(Constants.ExpIcon);
 
-            if (_db.itemDBAccessor.TryLoad(stageData.propItemId, out var entity))
-                AddRewardUI(entity.Icon);
+            if (_db.items.TryFind(stageData.propItemId, out var entity))
+                AddRewardUI(entity.icon);
         }
 
         private async void AddRewardUI(string icon)
@@ -143,7 +143,7 @@ namespace RGLabs.Stage.UI
             if (!stages.TryIndexOf(index, out var entity))
                 return;
 
-            _repository.stage.Value = entity.Id;
+            _repository.focusedStage.Value = entity.Id;
         }
 
         public void Dispose()

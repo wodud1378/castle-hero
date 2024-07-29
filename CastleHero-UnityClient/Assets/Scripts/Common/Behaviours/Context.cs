@@ -58,7 +58,7 @@ namespace RGLabs.Common.Behaviours
         {
             if (Storage.entranceData.state == State.InGame)
             {
-                Storage.userRepository.stage.Value = Storage.entranceData.stage;
+                Storage.userRepository.focusedStage.Value = Storage.entranceData.stage;
                 return;
             }
 

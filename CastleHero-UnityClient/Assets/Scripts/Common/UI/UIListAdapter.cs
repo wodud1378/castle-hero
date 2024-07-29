@@ -14,7 +14,6 @@ namespace RGLabs.Common.UI
         public event Action<TSlot> OnSlotClickEvent;
         
         [SerializeField] protected RectTransform itemRoot;
-
         [SerializeField] private AssetReference _itemPrefab;
         
         protected readonly List<TSlot> _items = new();

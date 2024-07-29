@@ -9,6 +9,17 @@ namespace RGLabs.Network.Service.Login
     {
         public async UniTask<Response> Login()
         {
+            var config = new PlayGamesClientConfiguration.Builder()
+                .RequestServerAuthCode(false)
+                .RequestEmail()
+                .RequestIdToken()
+                .Build();
+            
+            PlayGamesPlatform.InitializeInstance(config);
+            PlayGamesPlatform.DebugLogEnabled = true;
+
+            PlayGamesPlatform.Activate();
+            
             var result = await GetToken();
             return await BackendWrapper.FederationLogin(result.token, FederationType.Google);
         }
@@ -17,17 +28,16 @@ namespace RGLabs.Network.Service.Login
         {
             var src = new UniTaskCompletionSource<(bool success, string token)>();
             var gpgs = PlayGamesPlatform.Instance;
-            gpgs.Authenticate(res =>
+            
+            if(gpgs.IsAuthenticated())
+                gpgs.SignOut();
+            
+            gpgs.Authenticate(SignInInteractivity.CanPromptAlways, result =>
             {
-                if (res == SignInStatus.Success)
-                {
-                    gpgs.RequestServerSideAccess(false,
-                        token => src.TrySetResult((true, token)));
-                }
-                else
-                {
-                    src.TrySetResult((false, string.Empty));
-                }
+                src.TrySetResult(
+                    result == SignInStatus.Success 
+                        ? (true, gpgs.GetIdToken()) 
+                        : (false, string.Empty));
             });
 
             return src.Task;

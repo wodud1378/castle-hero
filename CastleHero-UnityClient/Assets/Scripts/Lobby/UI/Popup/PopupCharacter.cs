@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI;
@@ -6,7 +7,7 @@ using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Lobby.UI.Inventory;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Unit;
 using RGLabs.Utility;
 using Spine.Unity;
@@ -23,7 +24,7 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private TMP_Text _name;
         [SerializeField] private TMP_Text _lv;
         [SerializeField] private GameObject[] _stars;
-        [SerializeField] private SkeletonGraphic _skeleton;
+        [SerializeField] private RectTransform _prefabRoot;
         [SerializeField] private UILevel _level;
         [SerializeField] private UIStatusText[] _statusTexts;
         [SerializeField] private UIEquipmentSlot[] _equipments;
@@ -65,26 +66,23 @@ namespace RGLabs.Lobby.UI.Popup
             int lv = _unit.lv;
             int rate = _unit.rate;
 
-            SetSkeleton(unitEntity.skeletonData).Forget();
+            SetCharacter(unitEntity.uiPrefab).Forget();
             UpdateRate(rate);
-            UpdateStatusTexts(lv, rate, unitEntity, balanceEntity, _unit.equipments);
-            UpdateEquipmentSlots(_unit.equipments);
+
+            var equipments = Storage.userRepository.EquipItems(info.equipments).ToArray();
+            
+            UpdateStatusTexts(lv, rate, unitEntity, balanceEntity, equipments);
+            UpdateEquipmentSlots(equipments);
         }
 
-        private async UniTask SetSkeleton(string dataPath)
+        private async UniTask SetCharacter(string dataPath)
         {
-            _skeleton.gameObject.SetActive(false);
-
-            var data = await Addressables.LoadAssetAsync<SkeletonDataAsset>(dataPath);
-            if (data == null)
-                return;
-
-            _skeleton.skeletonDataAsset = data;
-            _skeleton.Initialize(true);
-
+            _prefabRoot.gameObject.SetActive(false);
+            
+            await Addressables.InstantiateAsync(dataPath, _prefabRoot);
             await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
-
-            _skeleton.gameObject.SetActive(true);
+            
+            _prefabRoot.gameObject.SetActive(true);
         }
 
         private void UpdateRate(int rate)
@@ -112,7 +110,7 @@ namespace RGLabs.Lobby.UI.Popup
             EquipItem[] equipments)
         {
             var baseStatus = BaseStatus(lv, rate, unit, balance);
-            var equipStatus = EquipStatus(equipments);
+            var equipStatus = equipments.Total();
 
             foreach (var label in _statusTexts)
             {
@@ -141,32 +139,8 @@ namespace RGLabs.Lobby.UI.Popup
             };
         }
 
-        private Dictionary<Status.Type, float> EquipStatus(EquipItem[] equipments)
-        {
-            var dic = new Dictionary<Status.Type, float>();
-            if (equipments != null)
-            {
-                foreach (var equipment in equipments)
-                {
-                    int index = 0;
-                    while (index.IsValidIndex(equipment.stats, equipment.values))
-                    {
-                        var type = (Status.Type)equipment.stats[index];
-                        var value = equipment.values[index];
+        private void OnLevelUp() => Context.popupManager.OpenAsync<PopupLevelUp>(_unit).Forget();
 
-                        if (!dic.TryAdd(type, value))
-                            dic[type] += value;
-
-                        ++index;
-                    }
-                }
-            }
-
-            return dic;
-        }
-
-        private void OnLevelUp() => Context.popupManager.Open<PopupLevelUp>(_unit).Forget();
-
-        private void OnUpgrade()=> Context.popupManager.Open<PopupRateUp>(_unit).Forget();
+        private void OnUpgrade()=> Context.popupManager.OpenAsync<PopupRateUp>(_unit).Forget();
     }
 }

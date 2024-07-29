@@ -18,8 +18,8 @@ namespace RGLabs.Data.Model
         [DataField("Character_Prefab")]
         public string prefab;
 
-        [DataField("Character_SkeletonData")] 
-        public string skeletonData;
+        [DataField("Character_Prefab_UI")] 
+        public string uiPrefab;
         
         [DataField("Character_Skin")]
         public string skinName;

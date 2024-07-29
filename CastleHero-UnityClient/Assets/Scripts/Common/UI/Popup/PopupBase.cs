@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Flow;
 using RGLabs.Utility;
@@ -12,25 +13,25 @@ namespace RGLabs.Common.UI.Popup
     {
         public event Action<PopupBase> OnCloseEvent;
 
-        public bool fromManager;
+        public bool fromManager = true;
 
         private static readonly int OpenTrigger = Animator.StringToHash("Open");
         private static readonly int CloseTrigger = Animator.StringToHash("Close");
 
-        [SerializeField] private Animator _animator;
-        [SerializeField] private Button _close;
+        [SerializeField] protected Animator _animator;
+        [SerializeField] protected Button _close;
 
         private void Awake() => OnAwake();
 
         protected virtual void OnAwake()
         {
             if(_close != null)
-                this.SubscribeButton(_close, () => Close().Forget());
+                this.SubscribeButton(_close, () => CloseAsync().Forget());
             
             if (_animator == null)
                 _animator = GetComponent<Animator>();
             
-            if(_animator != null)
+            if(HasTrigger(OpenTrigger))
                 _animator.SetTrigger(OpenTrigger);
         }
 
@@ -38,30 +39,34 @@ namespace RGLabs.Common.UI.Popup
 
         public virtual UniTask Open() => UniTask.CompletedTask;
 
-        public UniTask Close()
+        public async UniTask CloseAsync()
         {
             OnClose();
 
-            return _animator == null ? DirectCloseTask() : CloseAnimationTask();
+            if (HasTrigger(CloseTrigger))
+                await CloseAnimationTask();
+            
+            Closed();
         }
 
         protected virtual void OnClose()
         {
         }
 
-        private UniTask CloseAnimationTask() => TaskHelper.OnAnimationEnd(_animator, CloseTrigger, Closed);
-
-        private UniTask DirectCloseTask()
-        {
-            Closed();
-            return UniTask.CompletedTask;
-        }
+        private UniTask CloseAnimationTask() => TaskHelper.OnAnimationEnd(_animator, CloseTrigger);
 
         public bool OnProcessBack()
         {
-            Close().Forget();
+            CloseAsync().Forget();
 
             return true;
+        }
+
+        private bool HasTrigger(int hash)
+        {
+            return _animator != null && _animator.parameters
+                .Where(x => x.type == AnimatorControllerParameterType.Trigger)
+                .Any(x => x.nameHash == hash);
         }
 
         private void Closed()

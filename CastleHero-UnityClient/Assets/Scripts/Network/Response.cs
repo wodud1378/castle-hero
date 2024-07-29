@@ -1,4 +1,5 @@
 using BackEnd;
+using LitJson;
 using Newtonsoft.Json;
 using RGLabs.Network.Parse;
 
@@ -11,24 +12,28 @@ namespace RGLabs.Network
         AuthenticationError,
         ServerError,
         UnknownError,
-        InitializationFailed,
-        Maintenance
+        Maintenance,
+        InvalidRequest
     }
 
     public class Response
     {
         public readonly ResultCode result;
-        public readonly BackendReturnObject row;
+        public readonly BackendReturnObject raw;
 
-        public Response(BackendReturnObject row)
+        public Response(BackendReturnObject raw)
         {
-            this.row = row;
+            this.raw = raw;
 
-            result = GetResult(row);
+            result = GetResult(raw);
         }
         
         private ResultCode GetResult(BackendReturnObject obj)
         {
+            // 로컬에서 null을 넣을 경우 모두 Success.
+            if (obj == null)
+                return ResultCode.Success;
+            
             if (obj.IsSuccess())
                 return ResultCode.Success;
 
@@ -45,20 +50,25 @@ namespace RGLabs.Network
     
     public class Response<T> : Response
     {
-        public readonly ResultCode result;
-        public readonly BackendReturnObject row;
+        public delegate T Convert(BackendReturnObject raw);
+        
         public readonly T data;
         
-        private readonly IParser<T> _parser;
-        
-        public Response(BackendReturnObject row, IParser<T> parser = null) : base(row)
+        public Response(BackendReturnObject raw, Convert convert = null) : base(raw)
         {
             if (result != ResultCode.Success)
                 return;
             
-            _parser = parser;
-            var json = row.GetReturnValue();
-            data = JsonConvert.DeserializeObject<T>(json);
+            if (convert == null)
+            {
+                var json = raw.FlattenRows();
+                var str = JsonMapper.ToJson(json);
+                data = JsonMapper.ToObject<T>(str);   
+            }
+            else
+            {
+                data = convert.Invoke(raw);
+            }
         }
     }
 }

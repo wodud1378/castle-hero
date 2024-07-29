@@ -1,5 +1,4 @@
 using System;
-using Cysharp.Threading.Tasks;
 using PolyNav;
 using RGLabs.Common;
 using RGLabs.Common.Behaviours;
@@ -8,10 +7,10 @@ using RGLabs.Data.Model;
 using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.Unit.Components;
 using RGLabs.Utility;
+using RGLabs.Network.Shared;
 using UniRx;
 using UnityEditor;
 using UnityEngine;
-using UnitInfo = RGLabs.Network.Model.UnitInfo;
 
 namespace RGLabs.Unit.Behaviours
 {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LitJson;
 using RGLabs.Data.Model;
 using RGLabs.Utility;
 using UnityEngine;
@@ -9,6 +10,7 @@ namespace RGLabs.Data.DB
 {
     public interface IDataBase
     {
+        public int Id { get; set; }
         public void Load(object[] data);
     }
     
@@ -27,19 +29,20 @@ namespace RGLabs.Data.DB
     public class DBAttribute : Attribute
     {
         public string LocalFile { get; }
-        public string Api { get; }
-
+        public string ChartName { get; }
         public string Path => $"LocalDB/{LocalFile}";
 
-        public DBAttribute(string localFile, string api = "")
+        public DBAttribute(string localFile, string chartName = "")
         {
             LocalFile = localFile;
-            Api = api;
+            ChartName = chartName;
         }
     }
     
     public abstract class DB<T> : IDataBase where T : IEntity, new()
     {
+        public int Id { get; set; }
+        
         protected T[] entities;
 
         private readonly Dictionary<int, int> _resultCache = new();
@@ -113,16 +116,16 @@ namespace RGLabs.Data.DB
             return array;
         }
         
-        public T[] Map(int[] ids)
+        public IEnumerable<T> Map(IEnumerable<int> ids)
         {
-            int length = ids.Length;
-            var array = new T[length];
-            for (int i = 0; i < length; ++i)
+            var result = new List<T>();
+            foreach (var id in ids)
             {
-                TryFind(ids[i], out array[i]);
+                if(TryFind(id, out var entity))
+                    result.Add(entity);
             }
 
-            return array;
+            return result.ToArray();
         }
 
         public void Load(object[] data)
@@ -140,7 +143,7 @@ namespace RGLabs.Data.DB
         {
             return new() { IsValid = true };
         }
-
+        
         protected virtual void Convert(object from, ref T to)
         {
             to = (T)from;
