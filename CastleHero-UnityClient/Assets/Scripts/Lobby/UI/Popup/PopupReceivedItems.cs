@@ -34,7 +34,7 @@ namespace RGLabs.Lobby.UI.Popup
             var currencyItems = currency.ToItems();
             items.AddRange(currencyItems.Where(x=> x.Quantity > 0));
             items.Sort((a, b)=> a.ItemId.CompareTo(b.ItemId));
-
+            
             return _itemList.Init(items);
         }
     }

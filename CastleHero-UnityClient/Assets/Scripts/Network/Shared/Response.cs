@@ -67,6 +67,7 @@ namespace RGLabs.Network.Shared
     {
         public Currency currency;
         public List<IItem> items;
+        public IItem leftItem;
     }
 
     #endregion

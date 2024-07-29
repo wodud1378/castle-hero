@@ -57,7 +57,17 @@ namespace RGLabs.Data.Repositories
 
         public void Update(UnitInfo unit) => UpdateElement(unit, x => x.id == unit.id, characters);
         
-        public void Update(IItem item) => UpdateElement(item, x => x.ItemId == item.ItemId, items);
+        public void Update(IItem item)
+        {
+            if(item.Quantity > 0)
+                UpdateElement(item, x => x.ItemId == item.ItemId, items);
+            else
+            {
+                var exist = items.FirstOrDefault(x => x.ItemId == item.ItemId);
+                if (exist != null)
+                    items.Remove(exist);
+            }
+        }
 
         public void Add(IEnumerable<IItem> items)
         {

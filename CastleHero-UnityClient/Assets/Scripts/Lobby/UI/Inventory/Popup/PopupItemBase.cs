@@ -6,6 +6,7 @@ using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,14 +14,17 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 {
     public abstract class PopupItemBase<TSlot, TItem> : PopupBase
         where TSlot : UIItemSlot
-        where TItem : IItem
+        where TItem : class, IItem
     {
         [SerializeField] private TSlot _itemSlot;
         [SerializeField] private Button _sell;
 
-        public TItem Item { get; private set; }
         public ItemEntity Entity { get; private set; }
 
+        public readonly ReactiveProperty<TItem> item = new();
+
+        private UniTask _updateTask;
+        
         public override UniTask Open(params object[] parameters)
         {
             if (parameters == null || parameters.Length < 1)
@@ -29,35 +33,44 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 return UniTask.FromException(exception);
             }
             
-            if (parameters[0] is not TItem item)
+            if (parameters[0] is not TItem data)
             {
                 var exception = new InvalidCastException("첫 번째 인자를 아이템 데이터로 변환하지 못했습니다.");
                 return UniTask.FromException(exception);
             }
 
-            if (!Storage.db.items.TryFind(item.ItemId, out var entity))
-            {
-                var exception = new Exception($"아이템을 찾을 수 없습니다. id={item.ItemId}");
-                return UniTask.FromException(exception);
-            }
-
-            Item = item;
-            Entity = entity;
+            item.Value = data;
             
-            _sell.gameObject.SetActive(Entity.sellPrice > 0);
-            
-            OnDataInitialized();
-            
-            return InitSlot(_itemSlot);
+            return _updateTask;
         }
 
-        protected virtual UniTask InitSlot(TSlot slot) => slot.Init(Item, Entity);
+        private void OnDataInitializedInternal(TItem data)
+        {
+            if (data == null)
+                return;
 
-        protected abstract void OnDataInitialized();
+            if (!Storage.db.items.TryFind(data.ItemId, out var entity))
+            {
+                var exception = new Exception($"아이템을 찾을 수 없습니다. id={data.ItemId}");
+                throw exception;
+            }
+
+            Entity = entity;
+            _sell.gameObject.SetActive(Entity.sellPrice > 0);
+            _updateTask = InitSlot(_itemSlot);
+            OnDataInitialized(data);
+        }
+
+        protected virtual UniTask InitSlot(TSlot slot) => slot.Init(item.Value, Entity);
+
+        protected abstract void OnDataInitialized(TItem data);
         
         protected override void OnAwake()
         {
             base.OnAwake();
+
+            item.Subscribe(OnDataInitializedInternal)
+                .AddTo(this);
             
             this.SubscribeButton(_sell, Sell);
         }

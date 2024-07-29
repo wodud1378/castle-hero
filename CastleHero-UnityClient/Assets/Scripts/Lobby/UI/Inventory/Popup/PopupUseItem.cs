@@ -23,30 +23,31 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         [SerializeField] private TMP_Text _effect;
 
         private readonly ItemService _service = new();
-        
+
         protected override void OnAwake()
         {
             base.OnAwake();
 
             this.SubscribeButton(_use, OnUse);
-            
+
             _slider.onValueChanged
                 .AsObservable()
                 .Subscribe(UpdateWithQuantity)
                 .AddTo(this);
+            
+            _slider.value = 0f;
         }
 
-        protected override void OnDataInitialized()
+        protected override void OnDataInitialized(IItem data)
         {
-            if(Entity.desc is { Length: > 0 })
-                _description.text = Entity.desc[0];
-            
+            _description.text = Entity.desc[0];
+
             SetActiveSlider();
 
             if (_slider.gameObject.activeSelf)
             {
-                _slider.value = 0;
-                UpdateWithQuantity(0);
+                var last = _slider.value;
+                _slider.value = Mathf.Clamp(last, 0, _slider.maxValue);
             }
         }
 
@@ -56,20 +57,20 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             _useCount.text = (toInt).ToString();
             UpdateEffectText(toInt);
         }
-        
+
         private void UpdateEffectText(int count)
         {
-            if(Entity.desc is { Length: > 0 })
+            if (!string.IsNullOrEmpty(Entity.desc[1]))
             {
                 _effect.text = string.Format(Entity.desc[1], int.Parse(Entity.options[1]) * count)
                     .WithPositiveColor();
-                
+
                 _effect.gameObject.SetActive(true);
             }
             else
                 _effect.gameObject.SetActive(false);
         }
-        
+
         private void SetActiveSlider()
         {
             bool isActive = false;
@@ -88,7 +89,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
             _useCount.gameObject.SetActive(isActive);
             _slider.gameObject.SetActive(isActive);
-            _slider.maxValue = Item.Quantity;
+            _slider.maxValue = item.Value.Quantity;
         }
 
         private void OnUse()
@@ -119,14 +120,28 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         private async void OpenBox()
         {
-            var result = await _service.OpenBox(Item.ItemId, (int)_slider.value);
+            var result = await _service.OpenBox(item.Value.ItemId, (int)_slider.value);
 
             var currency = result.currency;
             var items = result.items;
+            var leftItem = result.leftItem;
+
+            var repository = Storage.userRepository;
+            repository.Add(currency);
+            repository.Add(items);
+            repository.Update(leftItem);
             
-            Storage.userRepository.Add(currency);
-            Storage.userRepository.Add(items);
-            Context.popupManager.OpenAsync<PopupReceivedItems>(currency, items).Forget();
+            Context.popupManager
+                .OpenAsync<PopupReceivedItems>(currency, items)
+                .Forget();
+
+            if (leftItem.Quantity == 0)
+            {
+                CloseAsync().Forget();
+                return;
+            }
+
+            item.Value = leftItem;
         }
 
         private void MoveToDrawCharacter()

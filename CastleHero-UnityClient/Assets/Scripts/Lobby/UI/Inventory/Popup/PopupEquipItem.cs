@@ -32,8 +32,6 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             this.SubscribeButton(_release, Release);
         }
 
-        protected override UniTask InitSlot(UIEquipmentSlot slot) => slot.Init(Item, Entity);
-
         private void OpenElementalStoneList()
         {
         }
@@ -42,18 +40,18 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         {
             var popup = await Context.popupManager.OpenAsync<PopupCharacterList>();
             popup.clickMethod = PopupCharacterList.ClickMethod.Equip;
-            popup.equipmentId = Item.ItemId;
+            popup.equipmentId = item.Value.ItemId;
         }
 
         private void Release()
         {
         }
 
-        protected override void OnDataInitialized()
+        protected override void OnDataInitialized(EquipItem data)
         {
             foreach (var label in _mainStat)
             {
-                var main = Item.main;
+                var main = data.main;
                 bool matches = (int)label.type == main.type;
                 if (matches)
                 {
@@ -70,7 +68,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             {
                 var type = (int)label.type;
                 
-                var stat = Item.sub.Find(x => x.type == type);
+                var stat = data.sub.Find(x => x.type == type);
                 if(stat != null)
                 {
                     label.SetText(stat.value);

@@ -91,7 +91,10 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
             tab.AsObservable()
                 .Select(_ => UniRx.Unit.Default)
-                .Merge(filter.ChangeAsObservable().Select(_ => UniRx.Unit.Default))
+                .Merge(
+                    filter.ChangeAsObservable().Select(_ => UniRx.Unit.Default), 
+                    Storage.userRepository.items.ChangeAsObservable().Select(_=> UniRx.Unit.Default))
+                .ThrottleFrame(1)
                 .Subscribe(_ => UpdateList())
                 .AddTo(this);
         }
