@@ -85100,6 +85100,7 @@ GameObject:
   - component: {fileID: 1849119047447316096}
   - component: {fileID: 552956140073961252}
   - component: {fileID: 6025466941754702647}
+  - component: {fileID: 5728876016399399732}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -89931,6 +89932,20 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!114 &5728876016399399732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7506832826304092438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb599800c14e4075a7e604dc5d337601, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  referenceWidth: 9
+  referenceHeight: 18.5
 --- !u!1 &7555853865158087293
 GameObject:
   m_ObjectHideFlags: 0

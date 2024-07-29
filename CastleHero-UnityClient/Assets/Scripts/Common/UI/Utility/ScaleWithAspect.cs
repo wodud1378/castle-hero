@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RGLabs.Common.UI
+namespace RGLabs.Common.UI.Utility
 {
     public class ScaleWithAspect : MonoBehaviour
     {
