@@ -18,7 +18,7 @@ namespace RGLabs.Data.Load
             FieldValue
         }
 
-        private readonly CsvProvider _csvProvider;
+        private readonly CsvProvider _csvProvider = new();
         
         public async UniTask Load<T>(Action<T> onResult, bool valueFallback = false) where T : class, IDataBase
         {
