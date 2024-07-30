@@ -18,7 +18,7 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: be4c8b51ec9876c4ea4aa8f95d2abb68, type: 2}
     - target: {fileID: 7405764224175786417, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
       propertyPath: initialSkinName
-      value: Archer_Knights
+      value: Archer_Knights_Bow
       objectReference: {fileID: 0}
     - target: {fileID: 8402756777875714999, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
       propertyPath: m_LocalPosition.x

@@ -37,89 +37,89 @@ Effect_Stomp_09
 	rotate: 90
 Elipse
 	bounds: 411, 146, 65, 65
-Knight_Knights/Arm_L_1
+Knight_Commander_Lance/Arm_L_1
 	bounds: 180, 392, 109, 128
 	offsets: 5, 5, 119, 138
 	rotate: 90
-Knight_Knights/Arm_L_2
+Knight_Commander_Lance/Arm_L_2
 	bounds: 2, 171, 83, 91
 	offsets: 5, 5, 93, 101
-Knight_Knights/Arm_R_1
+Knight_Commander_Lance/Arm_R_1
 	bounds: 95, 218, 84, 116
 	offsets: 5, 5, 94, 126
 	rotate: 90
-Knight_Knights/Arm_R_2
+Knight_Commander_Lance/Arm_R_2
 	bounds: 379, 706, 84, 71
 	offsets: 5, 5, 94, 81
 	rotate: 90
-Knight_Knights/Body
+Knight_Commander_Lance/Body
 	bounds: 2, 443, 169, 177
 	offsets: 1, 2, 171, 180
 	rotate: 90
-Knight_Knights/Cloak
+Knight_Commander_Lance/Cloak
 	bounds: 172, 694, 238, 282
 	offsets: 1, 0, 239, 282
-Knight_Knights/Crista
+Knight_Commander_Lance/Crista
 	bounds: 71, 304, 154, 176
 	offsets: 1, 1, 158, 179
 	rotate: 90
-Knight_Knights/Foot_L
+Knight_Commander_Lance/Foot_L
 	bounds: 366, 281, 65, 93
 	offsets: 5, 5, 75, 103
-Knight_Knights/Foot_R
+Knight_Commander_Lance/Foot_R
 	bounds: 338, 2, 87, 99
 	offsets: 2, 3, 91, 103
 	rotate: 90
-Knight_Knights/Hand_L
+Knight_Commander_Lance/Hand_L
 	bounds: 421, 484, 61, 69
 	offsets: 5, 5, 71, 79
-Knight_Knights/Hand_R
+Knight_Commander_Lance/Hand_R
 	bounds: 433, 354, 57, 65
 	offsets: 5, 5, 67, 75
-Knight_Knights/Head
+Knight_Commander_Lance/Head
 	bounds: 220, 247, 134, 144
 	offsets: 1, 0, 135, 144
 	rotate: 270
-Knight_Knights/Hip
+Knight_Commander_Lance/Hip
 	bounds: 344, 158, 121, 65
 	offsets: 5, 5, 131, 75
 	rotate: 90
-Knight_Knights/HipGuard
+Knight_Commander_Lance/HipGuard
 	bounds: 404, 554, 51, 99
 	offsets: 4, 4, 58, 103
-Knight_Knights/Hip_Back
+Knight_Commander_Lance/Hip_Back
 	bounds: 87, 155, 119, 61
 	offsets: 5, 5, 129, 71
-Knight_Knights/Leg_L
+Knight_Commander_Lance/Leg_L
 	bounds: 319, 78, 78, 82
 	offsets: 5, 5, 88, 92
 	rotate: 90
-Knight_Knights/Leg_R
+Knight_Commander_Lance/Leg_R
 	bounds: 169, 77, 75, 84
 	offsets: 4, 4, 83, 89
 	rotate: 90
-Knight_Knights/Shield
+Knight_Commander_Lance/Shield
 	bounds: 170, 499, 205, 246
 	offsets: 3, 0, 209, 247
 	rotate: 270
-Knight_Knights/Shoulder_L
+Knight_Commander_Lance/Shoulder_L
 	bounds: 310, 379, 119, 109
 	offsets: 5, 5, 129, 119
 	rotate: 90
-Knight_Knights/Shoulder_R_Back
+Knight_Commander_Lance/Shoulder_R_Back
 	bounds: 213, 154, 92, 104
 	offsets: 5, 5, 102, 114
 	rotate: 90
-Knight_Knights/Shoulder_R_Front
+Knight_Commander_Lance/Shoulder_R_Front
 	bounds: 2, 264, 91, 108
 	offsets: 5, 5, 101, 118
-Knight_Knights/Toe_L
+Knight_Commander_Lance/Toe_L
 	bounds: 160, 44, 44, 31
 	offsets: 7, 5, 56, 41
-Knight_Knights/Weapon
+Knight_Commander_Lance/Weapon
 	bounds: 2, 614, 168, 362
 	offsets: 5, 6, 178, 373
-Knight_Knights/Weapon_Grip
+Knight_Commander_Lance/Weapon_Grip
 	bounds: 2, 110, 43, 165
 	offsets: 7, 5, 57, 176
 	rotate: 90
