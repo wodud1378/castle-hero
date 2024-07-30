@@ -6,5 +6,9 @@ namespace RGLabs.Network.Service.Boot
     public class BootConfig : ScriptableObject
     {
         public bool useLocalDatabase;
+        
+#if UNITY_EDITOR
+        public bool deleteGuestId;
+#endif
     }
 }
