@@ -9,6 +9,7 @@ using RGLabs.Network.DB;
 using RGLabs.Network.DB.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Network.Service.Login;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 namespace RGLabs.Network.Service.Boot
@@ -26,15 +27,23 @@ namespace RGLabs.Network.Service.Boot
             _autoLoginService = new AutoLoginService();
             _errorHandler = errorHandler;
             _config = config;
-            
+
             _errorHandler?.Attach();
         }
-        
+
         public async UniTask Start()
         {
             await Init();
             await CheckVersion();
-            
+
+#if UNITY_EDITOR
+            if (_config.deleteGuestId)
+            {
+                Backend.BMember.DeleteGuestInfo();
+                PlayerPrefs.DeleteAll();
+            }
+#endif
+
             bool newUser = false;
             var autoLogin = await _autoLoginService.Login();
             if (autoLogin.result != ResultCode.Success)
@@ -46,12 +55,13 @@ namespace RGLabs.Network.Service.Boot
                 if (newUser)
                     await _handler.CheckPolicy();
             }
+
             var userData = newUser
                 ? (await BackendWrapper.NewUser()).data
                 : (await BackendWrapper.GetUserData()).data;
 
             await InitStorage(userData);
-            
+
             _handler.OnInitDone();
         }
 
@@ -60,7 +70,7 @@ namespace RGLabs.Network.Service.Boot
             var initResult = await BackendWrapper.Init("dev");
             if (initResult.result != ResultCode.Success)
                 await _handler.OnError(initResult);
-            
+
             await Addressables.InitializeAsync();
             var catalogs = await Addressables.CheckForCatalogUpdates();
             var tasks = new List<UniTask>();
@@ -84,6 +94,7 @@ namespace RGLabs.Network.Service.Boot
                 await _handler.OnForceUpdate();
 #endif
         }
+
         private async UniTask InitStorage(UserData userData)
         {
             IDBLoadService service = _config.useLocalDatabase
@@ -91,7 +102,7 @@ namespace RGLabs.Network.Service.Boot
                 : new DBLoadService();
 
             var collections = await service.Load();
-            
+
             Storage.Init(userData, collections);
         }
 
