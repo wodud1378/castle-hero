@@ -43,13 +43,13 @@ namespace RGLabs.Lobby.UI.Popup
 
                 Done = true;
                 _defaultObj.SetActive(false);
+                _slot.gameObject.SetActive(true);
                 _openEffect.gameObject.SetActive(true);
                 _openEffect.Play();
 
                 await UniTask.Delay(TimeSpan.FromSeconds(_duration));
 
                 _openEffect.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-                _slot.gameObject.SetActive(true);
             }
         }
 
