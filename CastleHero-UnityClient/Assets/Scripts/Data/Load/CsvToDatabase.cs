@@ -28,22 +28,18 @@ namespace RGLabs.Data.Load
             if (entityType == null)
                 return;
 
-            await UniTask.SwitchToThreadPool();
-
             var dataMap = Map(source);
             int rowCount = dataMap.Length;
             int fieldNameRow = (int)Row.FieldName;
             int fieldValueRow = (int)Row.FieldValue;
             if (rowCount <= fieldNameRow)
             {
-                UniTask.ReturnToMainThread();
                 return;
             }
 
             var dataFields = entityType.GetDataFields();
             if (dataFields.Count == 0)
             {
-                UniTask.ReturnToMainThread();
                 return;
             }
 
@@ -113,8 +109,6 @@ namespace RGLabs.Data.Load
             var instance = Activator.CreateInstance(type);
             if (instance is IDataBase db)
                 db.Load(entities.ToArray());
-
-            UniTask.ReturnToMainThread();
 
             foreach (var fail in fails)
             {
