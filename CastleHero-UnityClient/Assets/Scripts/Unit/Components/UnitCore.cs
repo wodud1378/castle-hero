@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using PolyNav;
 using RGLabs.Common;
+using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.InGame.System;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Components.Move;
 using RGLabs.Unit.Finding;
@@ -14,7 +16,6 @@ using Spine.Unity;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
-using UnitInfo = RGLabs.Network.Model.UnitInfo;
 
 namespace RGLabs.Unit.Components
 {
@@ -183,7 +184,13 @@ namespace RGLabs.Unit.Components
             ApplyBalance(info.lv, info.rate, balance, out int skillLv);
 
             if (info.equipments != null)
-                ApplyEquipmentBonus(info.equipments);
+            {
+                var equipments = Storage.userRepository.items
+                    .OfType<EquipItem>()
+                    .Where(x => info.equipments.Contains(x.Guid));
+                
+                ApplyEquipmentBonus(equipments);
+            }
 
             if (data.skill != 0)
             {
@@ -200,23 +207,16 @@ namespace RGLabs.Unit.Components
 
         private void ApplyEquipmentBonus(IEnumerable<EquipItem> equipments)
         {
-            foreach (var equipment in equipments)
+            var dic = equipments.Total();
+            foreach (var kvp in dic)
             {
-                int index = 0;
-                while (index.IsValidIndex(equipment.stats, equipment.values))
-                {
-                    var stat = (Status.Type)equipment.stats[index];
-                    var value = equipment.values[index];
-
-                    var adjustValue = status[stat].multiplyAdjust;
-                    if (value < 0f)
-                        adjustValue.Decrease(Mathf.Abs(value));
-                    else
-                        adjustValue.Increase(value);
-
-                    status[stat].multiplyAdjust.Increase(value);
-                    ++index;
-                }
+                var type = kvp.Key;
+                var value = kvp.Value;
+                var adjustValue = status[type].fixedAdjust;
+                if(value > 0f)
+                    adjustValue.Increase(value);
+                else
+                    adjustValue.Decrease(Mathf.Abs(value));
             }
         }
 

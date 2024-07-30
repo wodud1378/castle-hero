@@ -11,16 +11,19 @@ namespace RGLabs.Data.Model
         [DataField("Summon_Bg")] 
         public string bg;
 
+        [DataField("Summon_Name")]
+        public string name;
+
         [DataField("Summon_Comment")]
         public string comment;
 
-        [DataField("Summon_Cost_Type")]
+        [DataField("Summon_Coast_Type")]
         public int[] item;
 
-        [DataField("Summon_Cost_Once")]
+        [DataField("Summon_Coast_Once")]
         public int[] valuePerOnce;
 
-        [DataField("Summon_Cost_Tenth")]
+        [DataField("Summon_Coast_Tenth")]
         public int[] valuePerTenth;
 
         [DataField("Summon_Grp_ID")] 

@@ -1,16 +1,22 @@
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data.DB;
 using UnityEngine;
 
 namespace RGLabs.Data.Load
 {
-    public interface ICsvProvider
+    public class CsvProvider
     {
-        public UniTask<string> LoadCsvText(DBAttribute attribute);
-    }
+        public async UniTask<string> LoadCsvText<T>()
+        {
+            var type = typeof(T);
+            var att = type.GetCustomAttribute<DBAttribute>();
 
-    public class LocalCsvProvider: ICsvProvider
-    {
+            return await LoadCsvText(att);
+        }
+        
         public async UniTask<string> LoadCsvText(DBAttribute attribute)
         {
             var asset = await Resources.LoadAsync<TextAsset>(attribute.Path);

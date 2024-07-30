@@ -4,7 +4,7 @@ using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI;
 using RGLabs.Data.Model;
 using RGLabs.Lobby.UI.Popup;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Unit;
 using RGLabs.Utility;
 using UnityEngine;
@@ -14,8 +14,9 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 {
     [PrefabPath("Lobby/UI/Prefabs/Popup_Equipment.prefab")]
 
-    public class PopupEquipItem : PopupItemBase<UIEquipmentSlot, EquipItem, EquipmentEntity>
+    public class PopupEquipItem : PopupItemBase<UIEquipmentSlot, EquipItem>
     {
+        [SerializeField] private UIStatusText[] _mainStat; 
         [SerializeField] private UIStatusText[] _stats;
 
         [SerializeField] private Button _refine;
@@ -31,32 +32,46 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             this.SubscribeButton(_release, Release);
         }
 
-        protected override UniTask InitSlot(UIEquipmentSlot slot) => slot.Init(Item, Entity);
-
         private void OpenElementalStoneList()
         {
         }
         
         private async void OpenCharacterList()
         {
-            var popup = await Context.popupManager.Open<PopupCharacterList>();
+            var popup = await Context.popupManager.OpenAsync<PopupCharacterList>();
             popup.clickMethod = PopupCharacterList.ClickMethod.Equip;
-            popup.equipmentId = Item.Id;
+            popup.equipmentId = item.Value.ItemId;
         }
 
         private void Release()
         {
         }
 
-        protected override void OnDataInitialized()
+        protected override void OnDataInitialized(EquipItem data)
         {
+            foreach (var label in _mainStat)
+            {
+                var main = data.main;
+                bool matches = (int)label.type == main.type;
+                if (matches)
+                {
+                    label.SetText(main.value);
+                    label.gameObject.SetActive(true);
+                }
+                else
+                {
+                    label.gameObject.SetActive(false);
+                }
+            }
+            
             foreach (var label in _stats)
             {
                 var type = (int)label.type;
-                int index = Array.FindIndex(Item.stats, x => x == type);
-                if (index.IsValidIndex(Item.stats, Item.values))
+                
+                var stat = data.sub.Find(x => x.type == type);
+                if(stat != null)
                 {
-                    label.SetText(Item.values[index]);
+                    label.SetText(stat.value);
                     label.gameObject.SetActive(true);
                 }
                 else 

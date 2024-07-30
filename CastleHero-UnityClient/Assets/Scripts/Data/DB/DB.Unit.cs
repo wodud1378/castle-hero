@@ -3,10 +3,10 @@ using RGLabs.Data.Model;
 
 namespace RGLabs.Data.DB
 {
-    [DB("Castle_Table")]
+    [DB("Castle_Table", "castle")]
     public class CastleDB : DB<CastleEntity> { }
     
-    [DB("Character_Table")]
+    [DB("Character_Table", "unit")]
     public class UnitDB : DB<UnitEntity>
     {
         public readonly Dictionary<int, float> sizeCache = new();
@@ -20,7 +20,7 @@ namespace RGLabs.Data.DB
         }
     }
 
-    [DB("Character_Upgrade_Table")]
+    [DB("Character_Upgrade_Table", "balance")]
     public class UnitBalanceDB : DB<UnitBalanceEntity>
     {
         protected override void Convert(object from, ref UnitBalanceEntity to)
@@ -46,13 +46,13 @@ namespace RGLabs.Data.DB
         }
     }
     
-    [DB("Rate_Table")]
+    [DB("Rate_Table", "rate")]
     public class UnitRateDB : DB<UnitRateEntity> { }
     
-    [DB("Level_Table")]
+    [DB("Level_Table", "level")]
     public class UnitLevelDB : DB<UnitLevelEntity> { }
 
     
-    [DB("Skill_Table")]
+    [DB("Skill_Table", "skill")]
     public class SkillDB : DB<SkillEntity> { }
 }

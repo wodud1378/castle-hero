@@ -32,6 +32,6 @@ namespace RGLabs.Lobby.UI
             this.SubscribeButton(_summon, OpenPopup<PopupSummon>);
         }
 
-        private void OpenPopup<T>() where T : PopupBase => Context.popupManager.Open<T>().Forget();
+        private void OpenPopup<T>() where T : PopupBase => Context.popupManager.OpenAsync<T>().Forget();
     }
 }

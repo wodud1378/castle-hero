@@ -6,7 +6,7 @@ using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Network.Service.Character;
 using RGLabs.Utility;
 using TMPro;
@@ -28,7 +28,7 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private Button _confirm;
 
         private readonly ReactiveProperty<UnitInfo> _unit = new();
-        private readonly ICharacterService _service = new LocalCharacterService();
+        private readonly CharacterService _service = new ();
 
         private UniTask _updateTask;
 
@@ -76,10 +76,9 @@ namespace RGLabs.Lobby.UI.Popup
             }
 
             int soulItemId = unitEntity.soulItemId;
-            var item = Storage.userRepository.items.FirstOrDefault(x => x.ItemId == soulItemId) ?? new ConsumableItem
+            var item = Storage.userRepository.items.FirstOrDefault(x => x.ItemId == soulItemId) ?? new Item
             {
                 ItemId = soulItemId,
-                consumeOption = (int)ConsumeOption.Soul
             };
 
             for (int i = 0; i < _stars.Length; ++i)
@@ -114,15 +113,21 @@ namespace RGLabs.Lobby.UI.Popup
 
         private async UniTaskVoid Confirm()
         {
-            if (_soulSlot.Item is not ConsumableItem item)
+            if (_soulSlot.Item is not Item item)
                 return;
 
             if (!Storage.db.rates.TryFind(_unit.Value.rate, out var rateEntity))
                 return;
 
-            var result = await _service.Upgrade(_unit.Value, item, rateEntity.soul);
-            _unit.Value = result.Info;
-            _soulSlot.Init(result.ItemResult);
+            var result = await _service.Upgrade(_unit.Value.id, item.ItemId, rateEntity.soul);
+            var unit = result.transition.unit;
+            _unit.Value = unit;
+            _soulSlot.Init(result.leftItem).Forget();
+
+            var repository = Storage.userRepository;
+            repository.Update(unit);
+            repository.Update(result.leftCurrency);
+            repository.Update(result.leftItem);
         }
     }
 }

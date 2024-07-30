@@ -3,7 +3,8 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
+using RGLabs.Unit;
 using RGLabs.Utility;
 using UnityEngine;
 
@@ -53,15 +54,16 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         private void UpdateText(EquipItem leftItem, EquipItem rightItem)
         {
-            if (leftItem.stats == null || leftItem.values == null)
-            {
-                leftItem.stats = Array.Empty<int>();
-                leftItem.values = Array.Empty<float>();
-            }
-            
             // 타입, 값을 묶은 튜플 배열 l, r
-            var l = leftItem.stats.Zip(leftItem.values, (type, value) => (type, value)).ToArray();
-            var r = rightItem.stats.Zip(rightItem.values, (type, value) => (type, value)).ToArray();
+            var l = leftItem.sub
+                .Append(leftItem.main)
+                .Select(x => (x.type, x.value))
+                .ToArray();
+            
+            var r = rightItem.sub
+                .Append(leftItem.main)
+                .Select(x => (x.type, x.value))
+                .ToArray();
             
             // 교집합
             var intersection = l

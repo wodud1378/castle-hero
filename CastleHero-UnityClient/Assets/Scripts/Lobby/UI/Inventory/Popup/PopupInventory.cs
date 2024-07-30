@@ -6,7 +6,8 @@ using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
-using RGLabs.Network.Model;
+using RGLabs.Lobby.UI.Adapter;
+using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
@@ -90,7 +91,10 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
             tab.AsObservable()
                 .Select(_ => UniRx.Unit.Default)
-                .Merge(filter.ChangeAsObservable().Select(_ => UniRx.Unit.Default))
+                .Merge(
+                    filter.ChangeAsObservable().Select(_ => UniRx.Unit.Default), 
+                    Storage.userRepository.items.ChangeAsObservable().Select(_=> UniRx.Unit.Default))
+                .ThrottleFrame(1)
                 .Subscribe(_ => UpdateList())
                 .AddTo(this);
         }
@@ -98,15 +102,16 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         private void OnClickItemSlot(UIItemSlot slot)
         {
             var item = slot.Item;
-            var type = item.ItemId.ItemType();
+            var type = slot.Entity.type;
             switch (type)
             {
-                case ItemTypeCode.Equipment:
-                    Context.popupManager.Open<PopupEquipItem>(item).Forget();
+                case ItemType.Equipment:
+                    Context.popupManager.OpenAsync<PopupEquipItem>(item).Forget();
                     break;
-                case ItemTypeCode.Consumable:
-                case ItemTypeCode.Ingredient:
-                    Context.popupManager.Open<PopupUseItem>(item).Forget();
+                case ItemType.Consumable:
+                case ItemType.Ingredient:
+                case ItemType.Chest:
+                    Context.popupManager.OpenAsync<PopupUseItem>(item).Forget();
                     break;
             }
         }
@@ -269,8 +274,13 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         private bool Filter(IItem item)
         {
-            var type = item.ItemId.ItemType();
-            if (type == ItemTypeCode.Equipment)
+            if (!Storage.db.items.TryFind(item.ItemId, out var entity))
+            {
+                return false;
+            }
+
+            var type = entity.type;
+            if (type == ItemType.Equipment)
             {
                 if (item is EquipItem equipItem)
                 {
@@ -291,15 +301,15 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                     return false;
             }
 
-            switch (item.ItemId.ItemType())
+            switch (type)
             {
-                case ItemTypeCode.Consumable:
+                case ItemType.Consumable:
                     return filter.Contains(Category.Consumable);
 
-                case ItemTypeCode.Ingredient:
+                case ItemType.Ingredient:
                     return filter.Contains(Category.Ingredient);
 
-                case ItemTypeCode.Chest:
+                case ItemType.Chest:
                     return filter.Contains(Category.Chest);
             }
 
@@ -311,8 +321,8 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             return tabValue switch
             {
                 Tab.All => _ => true,
-                Tab.Equipment => x => x.ItemId.ItemType() == ItemTypeCode.Equipment,
-                Tab.Other => x => x.ItemId.ItemType() != ItemTypeCode.Equipment,
+                Tab.Equipment => x=> Storage.db.items.TryFind(x.ItemId, out var entity) && entity.type == ItemType.Equipment,
+                Tab.Other => x => Storage.db.items.TryFind(x.ItemId, out var entity) && entity.type != ItemType.Equipment,
                 _ => null
             };
         }

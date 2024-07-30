@@ -4,8 +4,8 @@ using RGLabs.Data;
 using RGLabs.Data.DB;
 using RGLabs.Data.Model;
 using RGLabs.Unit.Behaviours;
+using RGLabs.Network.Shared;
 using UnityEngine;
-using UnitInfo = RGLabs.Network.Model.UnitInfo;
 
 namespace RGLabs.Unit.Factory
 {

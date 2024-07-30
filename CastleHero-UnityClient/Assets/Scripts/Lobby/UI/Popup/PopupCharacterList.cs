@@ -8,7 +8,7 @@ using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Lobby.UI.Inventory.Popup;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using TMPro;
 using UniRx;
@@ -148,7 +148,7 @@ namespace RGLabs.Lobby.UI.Popup
             switch (clickMethod)
             {
                 case ClickMethod.Select:
-                    Context.popupManager.Open<PopupCharacter>(slot.Info).Forget();
+                    Context.popupManager.OpenAsync<PopupCharacter>(slot.Info).Forget();
                     break;
                 case ClickMethod.Equip:
                     OpenEquipmentCompare(slot.Info);
@@ -158,8 +158,8 @@ namespace RGLabs.Lobby.UI.Popup
 
         private void OpenEquipmentCompare(UnitInfo unit)
         {
-            var item = Storage.userRepository.items
-                .FirstOrDefault(x => x.Id == equipmentId);
+            var items = Storage.userRepository.items;
+            var item = items.FirstOrDefault(x => x.ItemId == equipmentId);
 
             if (item is not EquipItem right)
                 return;
@@ -167,13 +167,13 @@ namespace RGLabs.Lobby.UI.Popup
             EquipItem left;
             if (unit.equipments != null)
             {
-                int index = Array.FindIndex(unit.equipments, x => x.slot == right.slot);
-                left = index.IsValidIndex(unit.equipments) ? unit.equipments[index] : default;
+                var equipments = Storage.userRepository.EquipItems(unit.equipments).ToList();
+                left = equipments.Find(x => x.slot == right.slot);
             }
             else
-                left = default;
+                left = null;
             
-            Context.popupManager.Open<PopupCompareEquipment>(left, right).Forget();
+            Context.popupManager.OpenAsync<PopupCompareEquipment>(left, right).Forget();
         }
     }
 }

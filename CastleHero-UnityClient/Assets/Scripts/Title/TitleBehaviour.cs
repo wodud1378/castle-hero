@@ -1,22 +1,33 @@
 using System;
 using BackEnd;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Behaviours;
 using RGLabs.Network;
 using RGLabs.Network.Service.Boot;
 using RGLabs.Network.Service.Login;
 using RGLabs.Title.UI.Popup;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace RGLabs.Title
 {
+    public struct PolicyAgreement
+    {
+        public bool terms;
+        public bool privacy;
+        public bool push;
+        public bool nightPush;
+    }
+    
     public class TitleBehaviour : MonoBehaviour, IBootServiceHandler
     {
-        [SerializeField] private PopupLogin _loginPopup;
+        [SerializeField] private BootConfig _config;
+        [SerializeField] private PopupSelectLoginPlatform _selectPlatform;
         [SerializeField] private PopupPolicy _policyPopup;
 
         private void Awake()
         {
-            var service = new BootService(this);
+            var service = new BootService(_config, this);
             service.Start().Forget();
 
             Backend.ErrorHandler.InitializePoll(true);
@@ -43,31 +54,26 @@ namespace RGLabs.Title
             throw new NotImplementedException();
         }
 
-        public async UniTask OnNeedLogin()
+        public async UniTask<ILoginService> ProvideLoginService()
         {
-            _loginPopup.gameObject.SetActive(true);
+            _selectPlatform.gameObject.SetActive(true);
             
 #if UNITY_EDITOR
-            await _loginPopup.Open(Platform.Guest);
+            await _selectPlatform.Open(Platform.Guest);
 #elif UNITY_ANDROID
             await _selectPlatform.Open(Platform.PlayStore, Platform.Guest);
 #elif UNITY_iOS
             await _selectPlatform.Open(Platform.AppStore, Platform.Guest);
 #endif
-
-            var response = await _loginPopup.LoginTask;
-            if (response.result != ResultCode.Success)
-            {
-                // TODO 로그인 실패 에러 처리.
-                return;
-            }
-
-            // 신규 유저 약관 동의,
-            if (response.row.GetStatusCode() == "201")
-                await CheckPolicy();
+            return await _selectPlatform.LoginTask;
         }
 
-        private async UniTask CheckPolicy()
+        public void OnInitDone()
+        {
+            Loading.NextScene = "Main";
+        }
+
+        public async UniTask<PolicyAgreement> CheckPolicy()
         {
             _policyPopup.gameObject.SetActive(true);
 
@@ -76,6 +82,8 @@ namespace RGLabs.Title
 
             PlayerPrefs.SetInt("push", agreement.push ? 1 : 0);
             PlayerPrefs.SetInt("push-night", agreement.nightPush ? 1 : 0);
+
+            return agreement;
         }
     }
 }

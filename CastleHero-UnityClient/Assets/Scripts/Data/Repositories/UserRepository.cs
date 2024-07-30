@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using UniRx;
@@ -12,100 +12,123 @@ namespace RGLabs.Data.Repositories
 {
     public class UserRepository
     {
-        private const string SavedStageKey = "saved-stage";
-        private const string CharactersKey = "characters";
-        private const string FieldCharactersKey = "characters-field";
-        private const string CastleKey = "saved-castle";
-        private const string InventoryKey = "inventory";
-        private const string GoldKey = "gold";
-        private const string FreeDiaKey = "diamond-free";
-        private const string PaidDiaKey = "diamond-paid";
-
         public readonly ReactiveProperty<int> stage;
         public readonly ReactiveProperty<int> focusedStage;
         public readonly ReactiveProperty<int> castleLv;
 
-        public readonly ReactiveCollection<FieldCharacter> fieldCharacters;
+        public readonly ReactiveCollection<FieldUnit> fieldCharacters;
         public readonly ReactiveCollection<UnitInfo> characters;
         
-        public readonly ReactiveProperty<int> gold;
-        public readonly ReactiveProperty<int> freeDia;
         public readonly ReactiveProperty<int> paidDia;
+        public readonly ReactiveProperty<int> freeDia;
+        public readonly ReactiveProperty<int> gold;
         public readonly ReactiveCollection<IItem> items;
 
-        public UserRepository(UserInfo userInfo)
+        public UserRepository(UserData userData)
         {
-            stage = new(userInfo.stage);
-            castleLv = new(userInfo.castleLv);
+            var info = userData.profile;
+            stage = new(info.stage);
+            focusedStage = new(info.focusedStage);
+            castleLv = new(info.castleLv);
 
-            fieldCharacters = new(userInfo.fieldCharacters);
-            characters = new(userInfo.characters);
-            items = new(userInfo.items);
+            fieldCharacters = new(userData.formation.fieldUnits);
+            characters = new(userData.characters.units);
+            items = new(userData.inventory.items);
+
+            var currency = userData.currency;
+            paidDia = new(currency.paidDia);
+            freeDia = new(currency.freeDia);
+            gold = new(currency.gold);
         }
 
-        public UserRepository()
+        public void Add(Currency currency)
         {
-            stage = new(Load(SavedStageKey, 1));
-            stage
-                .ThrottleFrame(1)
-                .Subscribe(x => Save(SavedStageKey, x));
-
-            castleLv = new(Load(CastleKey, 1));
-            castleLv
-                .ThrottleFrame(1)
-                .Subscribe(x => Save(CastleKey, x));
-
-            characters = new(LoadAsArray<UnitInfo>(CharactersKey, TestCharacter()));
-            characters
-                .ChangeAsObservable()
-                .ThrottleFrame(1)
-                .Subscribe(x => SaveAsArray(CharactersKey, x));
-
-            fieldCharacters = new(LoadAsArray<FieldCharacter>(FieldCharactersKey));
-            fieldCharacters
-                .ChangeAsObservable()
-                .ThrottleFrame(1)
-                .Subscribe(x => SaveAsArray(FieldCharactersKey, x));
-            
-            items = new(LoadAsArray<IItem>(InventoryKey, TestItem()));
-            items
-                .ChangeAsObservable()
-                .ThrottleFrame(1)
-                .Subscribe(x => SaveAsArray(InventoryKey, x));
-
-            gold = new(Load(GoldKey, 0));
-            gold
-                .ThrottleFrame(1)
-                .Subscribe(x => Save(GoldKey, x));
-            
-            freeDia = new(Load(FreeDiaKey, 0));
-            freeDia
-                .ThrottleFrame(1)
-                .Subscribe(x => Save(FreeDiaKey, x));
-            
-            paidDia = new(Load(PaidDiaKey, 0));
-            paidDia
-                .ThrottleFrame(1)
-                .Subscribe(x => Save(PaidDiaKey, x));
+            paidDia.Value += currency.paidDia;
+            freeDia.Value += currency.freeDia;
+            gold.Value += currency.gold;
+        }
+        
+        public void Update(Currency currency)
+        {
+            paidDia.Value = currency.paidDia;
+            freeDia.Value = currency.freeDia;
+            gold.Value = currency.gold;
         }
 
+        public void Update(UnitInfo unit) => UpdateElement(unit, x => x.id == unit.id, characters);
+        
+        public void Update(IItem item)
+        {
+            if(item.Quantity > 0)
+                UpdateElement(item, x => x.ItemId == item.ItemId, items);
+            else
+            {
+                var exist = items.FirstOrDefault(x => x.ItemId == item.ItemId);
+                if (exist != null)
+                    items.Remove(exist);
+            }
+        }
+
+        public void Add(IEnumerable<IItem> items)
+        {
+            foreach (var item in items)
+            {
+                Add(item);
+            }
+        }
+        
+        public void Add(IItem item)
+        {
+            var exist = items.FirstOrDefault(x => x.ItemId == item.ItemId);
+            if (exist != null)
+            {
+                item.Quantity += exist.Quantity;
+                int index = items.IndexOf(exist);
+                items.Insert(index, item);
+                items.Remove(exist);
+            }
+            else
+                items.Add(item);
+        }
+        
+        public void Update(Inventory inventory)
+        {
+            items.Clear();
+            
+            inventory.items.ForEach(x=> items.Add(x));
+        }
+        
+        private void UpdateElement<T>(T value, Predicate<T> predicate, ReactiveCollection<T> collection)
+        {
+            var exist = collection.FirstOrDefault(predicate.Invoke);
+            if (exist == null)
+                return;
+
+            int index = collection.IndexOf(exist);
+            collection.Insert(index, value);
+            collection.Remove(exist);
+        }
+        
         public void ApplyFieldCharacters(IEnumerable<UnitBehaviour> units)
         {
             fieldCharacters.Clear();
             foreach (var unit in units)
             {
-                int index = characters.IndexOf(unit.Info);
-                if (!index.IsValidIndex())
-                    continue;
-
                 var position = unit.position;
-                fieldCharacters.Add(new FieldCharacter
+                fieldCharacters.Add(new FieldUnit
                 {
-                    index = index,
+                    id = unit.Id,
                     x = position.x,
                     y = position.y,
                 });
             }
+        }
+
+        public IEnumerable<EquipItem> EquipItems(IList<string> guids)
+        {
+            return items
+                .OfType<EquipItem>()
+                .Where(x => guids.Contains(x.Guid));
         }
 
         private static int Load(string key, int defaultVal = -1) => PlayerPrefs.GetInt(key, defaultVal);
@@ -132,90 +155,6 @@ namespace RGLabs.Data.Repositories
 
             Debug.Log(json);
             PlayerPrefs.SetString(key, json);
-        }
-
-        private static string TestItem()
-        {
-            var array = new IItem[]
-            {
-                new EquipItem
-                {
-                    Id = 1,
-                    ItemId = 30001,
-                    Quantity = 1,
-                    character = 0,
-                    slot = 0,
-                    stats = new[] { 1, 2, 3 },
-                    values = new[] { 150, 0.3f, 0.3f }
-                },
-                new EquipItem
-                {
-                    Id = 2,
-                    ItemId = 30002,
-                    Quantity = 1,
-                    character = 0,
-                    slot = 1,
-                    stats = new[] { 0 },
-                    values = new[] { 100f }
-                },
-                new EquipItem
-                {
-                    Id = 3,
-                    ItemId = 30002,
-                    Quantity = 1,
-                    character = 0,
-                    slot = 2,
-                    stats = new[] { 4 },
-                    values = new[] { 0.1f }
-                },
-                new EquipItem
-                {
-                    Id = 4,
-                    ItemId = 30002,
-                    Quantity = 1,
-                    character = 0,
-                    slot = 3,
-                    stats = new[] { 5 },
-                    values = new[] { 0.1f }
-                },
-                new ConsumableItem
-                {
-                    Id = 5,
-                    ItemId = 51001,
-                    Quantity = 3,
-                    consumeOption = 1
-                },
-                new ConsumableItem
-                {
-                    Id = 6,
-                    ItemId = 52001,
-                    Quantity = 5,
-                    consumeOption = 2
-                },
-                new ConsumableItem
-                {
-                    Id = 7,
-                    ItemId = 53001,
-                    Quantity = 10,
-                    consumeOption = 3
-                },
-                new ConsumableItem
-                {
-                    Id = 8,
-                    ItemId = 54001,
-                    Quantity = 5,
-                    consumeOption = 4
-                },
-                new Item
-                {
-                    Id = 9,
-                    ItemId = 60001,
-                    Quantity = 150,
-                }
-            };
-
-            return JsonConvert.SerializeObject(array, Formatting.None,
-                new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
         }
 
         private static string TestCharacter()

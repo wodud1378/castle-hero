@@ -6,6 +6,7 @@ using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.UI;
 
 namespace RGLabs.Common.Behaviours
 {
@@ -23,8 +24,8 @@ namespace RGLabs.Common.Behaviours
                 .Subscribe(OnPopupCollectionChanged)
                 .AddTo(this);
         }
-
-        public async UniTask<T> Open<T>(params object[] parameters) where T : PopupBase
+        
+        public async UniTask<T> OpenAsync<T>(params object[] parameters) where T : PopupBase
         {
             var popup = await LoadPopup<T>();
             if (popup == null)
@@ -44,7 +45,7 @@ namespace RGLabs.Common.Behaviours
             return popup;
         }
         
-        public async UniTask<T> Open<T>() where T : PopupBase
+        public async UniTask<T> OpenAsync<T>() where T : PopupBase
         {
             var popup = await LoadPopup<T>();
             if (popup == null)
@@ -61,7 +62,7 @@ namespace RGLabs.Common.Behaviours
             var path = PrefabPathCache.Load(typeof(T));
             if (string.IsNullOrEmpty(path))
                 return null;
-
+            
             var obj = await Addressables.InstantiateAsync(path, transform);
             if (!obj.TryGetComponent(out T popup))
             {
@@ -76,14 +77,14 @@ namespace RGLabs.Common.Behaviours
         }
 
         public async UniTask Close<T>(T popup) where T : PopupBase
-            => await popup.Close();
+            => await popup.CloseAsync();
 
         public async UniTask CloseAll()
         {
             var list = new List<UniTask>();
             foreach (var popup in _popups)
             {
-                list.Add(popup.Close());
+                list.Add(popup.CloseAsync());
             }
 
             await UniTask.WhenAll(list);

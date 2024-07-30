@@ -1,6 +1,6 @@
 using DG.Tweening;
 using RGLabs.Data;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using TMPro;
 using UniRx;
@@ -67,7 +67,7 @@ namespace RGLabs.Common.UI
             var next = data.next;
 
             bool hasOverride = data.hasOverride;
-            _lvText.text = hasOverride
+            _lvText.text = hasOverride && current.lv != next.lv
                 ? $"{ToLvText(current.lv).WithColor(_lvColor)} -> {ToLvText(next.lv).WithPositiveColor()}"
                 : $"{ToLvText(current.lv).WithColor(_lvColor)}"; 
             

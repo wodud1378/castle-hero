@@ -6,7 +6,7 @@ using RGLabs.Common;
 using RGLabs.Common.UI;
 using RGLabs.Data;
 using RGLabs.Lobby.Behaviours;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Factory;
 using RGLabs.Utility;
@@ -25,7 +25,7 @@ namespace RGLabs.Lobby.UI
 
         [SerializeField] private UIConfigDragField _dragField;
         [SerializeField] private Animator _animator;
-        [SerializeField] private Formation _formation;
+        [SerializeField] private FormationField _formation;
         [SerializeField] private Button _close;
         [SerializeField] private Button _reset;
         [SerializeField] private Button _auto;
@@ -95,8 +95,8 @@ namespace RGLabs.Lobby.UI
             
             _animator.SetTrigger(Fold);
 
-            TaskHelper.OnAnimationEnd(_animator, Fold, Dispose)
-                .Forget();
+            TaskHelper.OnAnimationEnd(_animator, Fold)
+                .ContinueWith(Dispose);
         }
         
         public void OnPointerDown(PointerEventData eventData)

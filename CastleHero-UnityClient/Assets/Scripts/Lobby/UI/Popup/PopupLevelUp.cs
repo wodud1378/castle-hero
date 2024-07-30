@@ -1,11 +1,10 @@
-using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using RGLabs.Network.Service.Character;
 using RGLabs.Utility;
 using TMPro;
@@ -37,8 +36,7 @@ namespace RGLabs.Lobby.UI.Popup
         private readonly ReactiveProperty<UnitInfo> _unit = new();
         private readonly ReactiveProperty<UIItemSlot> _selected = new();
 
-        private readonly ICharacterService _service = new LocalCharacterService();
-        
+        private readonly CharacterService _service = new();
 
         protected override void OnAwake()
         {
@@ -95,11 +93,7 @@ namespace RGLabs.Lobby.UI.Popup
         private IItem GetExpItem(int id)
         {
             return Storage.userRepository.items.FirstOrDefault(x => x.ItemId == id)
-                   ?? new ConsumableItem
-                   {
-                       ItemId = id,
-                       consumeOption = (int)ConsumeOption.Exp,
-                   };
+                   ?? new Item { ItemId = id, };
         }
 
         private void OnUnitChanged(UnitInfo unit)
@@ -139,10 +133,9 @@ namespace RGLabs.Lobby.UI.Popup
             maxExp = 0;
             requireGold = 0;
 
-            if (_selected.Value.Entity is not ConsumableEntity itemEntity)
-                return;
+            var option = _selected.Value.Entity.GetConsumableOption();
 
-            endExp = (int)_slider.value * itemEntity.optionValue;
+            endExp = (int)(_slider.value * option.value);
             var db = Storage.db.levels;
             int lv = startLv;
             while (db.TryFind(lv++, out var entity) && endExp - entity.exp > 0)
@@ -166,12 +159,18 @@ namespace RGLabs.Lobby.UI.Popup
 
         private async UniTaskVoid Confirm()
         {
-            if (_selected.Value.Item is not ConsumableItem item)
+            if (_selected.Value.Item is not Item item)
                 return;
             
-            var result = await _service.LevelUp(_unit.Value, item, (int)_slider.value);
-            _unit.Value = result.Info;
-            _selected.Value.Init(result.ItemResult);
+            var result = await _service.LevelUp(_unit.Value.id, item.ItemId, (int)_slider.value);
+            var unit = result.transition.unit;
+            _unit.Value = unit;
+            _selected.Value.Init(result.leftItem).Forget();
+            
+            var repository = Storage.userRepository;
+            repository.Update(unit);
+            repository.Update(result.leftCurrency);
+            repository.Update(result.leftItem);
         }
     }
 }

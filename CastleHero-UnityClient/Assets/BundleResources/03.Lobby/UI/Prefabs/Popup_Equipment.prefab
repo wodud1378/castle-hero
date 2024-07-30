@@ -2142,10 +2142,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ca7c3506a3a4a489781e27e1d6ccdfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fromManager: 1
   _animator: {fileID: 0}
   _close: {fileID: 2229213631922384869}
   _itemSlot: {fileID: 838956192692126875}
   _sell: {fileID: 6867661985450409182}
+  _mainStat: []
   _stats:
   - {fileID: 7560672824474942293}
   - {fileID: 3409693710259565240}

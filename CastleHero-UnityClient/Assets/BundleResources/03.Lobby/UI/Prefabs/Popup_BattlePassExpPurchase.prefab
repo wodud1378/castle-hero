@@ -1938,6 +1938,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6d27066837d43e9b4c1c229ad13389b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fromManager: 0
   _animator: {fileID: 0}
   _close: {fileID: 2229213631922384869}
   _expSlotS: {fileID: 0}

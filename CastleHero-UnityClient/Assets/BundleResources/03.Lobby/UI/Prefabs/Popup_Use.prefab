@@ -1535,6 +1535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 548db5aaaafd412784898cf95ea8bcbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fromManager: 1
   _animator: {fileID: 0}
   _close: {fileID: 8144971611892554914}
   _itemSlot: {fileID: 4680012207144982475}

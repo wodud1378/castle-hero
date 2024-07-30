@@ -2,7 +2,7 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI;
 using RGLabs.Data;
 using RGLabs.Data.Model;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 using UnityEngine;
 
 namespace RGLabs.Lobby.UI.Inventory
@@ -13,17 +13,18 @@ namespace RGLabs.Lobby.UI.Inventory
         
         public UniTask Init(EquipItem item)
         {
-            if (!Storage.db.itemDBAccessor.TryLoad(item.ItemId, out var entity) ||
-                entity is not EquipmentEntity equipmentEntity)
+            if (!Storage.db.items.TryFind(item.ItemId, out var entity))
                 return UniTask.CompletedTask;
             
-            return Init(item, equipmentEntity);
+            return Init(item, entity);
         }
 
-        public UniTask Init(EquipItem item, EquipmentEntity entity)
+        public UniTask Init(EquipItem item, ItemEntity entity)
         {
+            var option = entity.GetEquipmentOption();
+            
             if(_grade != null)
-                _grade.Set(entity.grade);
+                _grade.Set(option.grade);
             
             return base.Init(item, entity);
         }

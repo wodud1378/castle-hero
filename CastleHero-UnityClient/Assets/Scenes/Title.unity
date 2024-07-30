@@ -626,7 +626,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acc40917fbad45ef8a2d212b0d8f61ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _loginPopup: {fileID: 38469675}
+  _config: {fileID: 11400000, guid: 8ebdaeacfc346da49b35223cd0f0d05c, type: 2}
+  _selectPlatform: {fileID: 38469675}
   _policyPopup: {fileID: 56080771}
 --- !u!1 &2023450886
 GameObject:

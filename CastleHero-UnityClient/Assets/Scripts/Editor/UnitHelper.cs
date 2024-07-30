@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using RGLabs.Unit.Behaviours;
@@ -10,6 +9,12 @@ namespace RGLabs.Editor
 {
     public static class UnitHelper
     {
+        [MenuItem("Tools/RGLabs/Animation Events Correction All")]
+        public static void UpdateUnits()
+        {
+            RGLabsEditor.ModifyAllPrefabsWithComponent<UnitBehaviour>(AnimationEventsCorrection);
+        }
+        
         [MenuItem("GameObject/RGLabs/Animation Events Correction")]
         public static void AnimationEventsCorrection()
         {
@@ -17,6 +22,11 @@ namespace RGLabs.Editor
             if (!selection.TryGetComponent(out UnitBehaviour unit))
                 return;
             
+            AnimationEventsCorrection(unit);
+        }
+        
+        private static void AnimationEventsCorrection(UnitBehaviour unit)
+        {
             var spine = unit.GetComponentInChildren<SkeletonMecanim>();
             if (spine == null)
                 return;
@@ -28,7 +38,7 @@ namespace RGLabs.Editor
             var animator = spine.GetComponent<Animator>();
             var controller = animator.runtimeAnimatorController;
             var clips = controller.animationClips;
-
+            const float tolerance = 0.001f;
             foreach (var clip in clips)
             { 
                 string begin;
@@ -48,15 +58,16 @@ namespace RGLabs.Editor
 
                 var clipEvents = AnimationUtility
                     .GetAnimationEvents(clip)
-                    .GroupBy(ev => ev.time)
+                    .GroupBy(ev => Mathf.Round(ev.time / tolerance) * tolerance)
                     .Select(group => group.First())
                     .ToArray();
 
                 if (clipEvents.Length != 2)
                 {
-                    Debug.LogError($"{clip.length} 클립의 이벤트 개수가 잘못되었습니다.");
+                    Debug.LogError($"[{unit.name}]{clip.name} 클립의 이벤트 개수가 잘못되었습니다.");
                     continue;
                 }
+                
 
                 clipEvents[0].functionName = begin;
                 clipEvents[1].functionName = end;

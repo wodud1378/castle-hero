@@ -1,7 +1,7 @@
 using Cysharp.Threading.Tasks;
 using RGLabs.Data;
 using RGLabs.Data.Model;
-using RGLabs.Network.Model;
+using RGLabs.Network.Shared;
 
 namespace RGLabs.Common.UI
 {

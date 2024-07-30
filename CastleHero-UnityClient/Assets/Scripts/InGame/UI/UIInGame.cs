@@ -38,7 +38,7 @@ namespace RGLabs.InGame.UI
         private void Awake()
         {
             this.SubscribeButton(_pause, ()=> SetPause(true));
-            this.SubscribeMessage<Result>(OnResult);
+            this.SubscribeMessage<GameResult>(OnResult);
             this.SubscribeMessage<AtkResult>(OnAtkResult);
             this.SubscribeMessage<HealResult>(OnHealResult);
             this.SubscribeMessage<ShieldResult>(OnShieldResult);
@@ -148,11 +148,11 @@ namespace RGLabs.InGame.UI
                 Pause.Close();
         }
 
-        private async void OnResult(Result result)
+        private async void OnResult(GameResult result)
         {
             await UniTask.Delay(TimeSpan.FromSeconds(1f));
             
-            Result.Open(result.isCleared);
+            Result.Open(result);
         }
 
         public override void Dispose()
