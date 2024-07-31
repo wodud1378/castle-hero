@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Monster_20046
       objectReference: {fileID: 0}
+    - target: {fileID: 7174810689259680027, guid: 8a738b3168be04e47b67328f79825327, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 645ed37927d905f4d9c39b6e9937d60d, type: 2}
     - target: {fileID: 7405764224175786417, guid: 8a738b3168be04e47b67328f79825327, type: 3}
       propertyPath: initialSkinName
       value: HeavyInfantry_DarkKnight_Flail
