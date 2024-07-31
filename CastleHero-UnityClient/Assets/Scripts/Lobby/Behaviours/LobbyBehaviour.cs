@@ -2,6 +2,7 @@ using System;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Common.Pattern;
+using RGLabs.Data;
 using RGLabs.Lobby.UI;
 using RGLabs.Stage.UI;
 using RGLabs.Unit.Factory;
@@ -93,6 +94,9 @@ namespace RGLabs.Lobby.Behaviours
 
         private void StartGame()
         {
+            Storage.inGameRepository.stage 
+                = Storage.userRepository.focusedStage.Value;
+            
             _uiLobby.Dispose();
             _uiStage.Dispose();
 

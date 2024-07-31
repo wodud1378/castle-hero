@@ -150,7 +150,10 @@ namespace RGLabs.InGame.UI
 
         private async void OnResult(GameResult result)
         {
-            await UniTask.Delay(TimeSpan.FromSeconds(1f));
+            if (!result.isCleared)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(1f));
+            }
             
             Result
                 .Open(result)

@@ -18,7 +18,7 @@ namespace RGLabs.Common.UI
         
         protected readonly List<TSlot> _items = new();
 
-        public virtual async UniTask Init(IEnumerable<TData> collection, Action<UISlot> onClick = null)
+        public virtual UniTask Init(IEnumerable<TData> collection, Action<UISlot> onClick = null)
         {
             Clear();
 
@@ -28,7 +28,7 @@ namespace RGLabs.Common.UI
                 tasks.Add(Add(data));
             }
 
-            await UniTask.WhenAll(tasks);
+            return UniTask.WhenAll(tasks);
         }
 
         public TSlot GetItem(PointerEventData eventData)

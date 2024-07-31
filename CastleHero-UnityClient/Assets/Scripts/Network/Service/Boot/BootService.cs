@@ -47,8 +47,8 @@ namespace RGLabs.Network.Service.Boot
             {
                 var loginService = await _handler.ProvideLoginService();
                 var loginResponse = await loginService.Login();
-                var code = loginResponse.raw.GetStatusCode();
-                newUser = code == "201";
+                var code = loginResponse.statusCode;
+                newUser = code == 201;
                 if (newUser)
                     await _handler.CheckPolicy();
             }
@@ -65,7 +65,7 @@ namespace RGLabs.Network.Service.Boot
 
         private async UniTask Init()
         {
-            var initResult = await BackendWrapper.Init("dev");
+            var initResult = BackendWrapper.Init("dev");
             if (initResult.result != ResultCode.Success)
                 await _handler.OnError(initResult);
 

@@ -9,7 +9,7 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace RGLabs.Lobby.UI
+namespace RGLabs.Stage.UI
 {
     public class UIConfigDragField : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler,
         IPointerClickHandler
