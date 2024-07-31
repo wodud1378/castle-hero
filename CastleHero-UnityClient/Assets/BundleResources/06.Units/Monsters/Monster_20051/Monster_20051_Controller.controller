@@ -45,7 +45,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -6794140867967781450, guid: 87ec353005b038041b8db999a2e35d0d, type: 2}
+  m_Motion: {fileID: -6794140867967781450, guid: 96af77229a59fa94eae803256d43d1d6, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -71,7 +71,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -6526314417661551479, guid: 87ec353005b038041b8db999a2e35d0d, type: 2}
+  m_Motion: {fileID: -6526314417661551479, guid: 96af77229a59fa94eae803256d43d1d6, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -148,7 +148,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -7474969359216146840, guid: 87ec353005b038041b8db999a2e35d0d, type: 2}
+  m_Motion: {fileID: -7474969359216146840, guid: 96af77229a59fa94eae803256d43d1d6, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -160,7 +160,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Monster_20046_Controller
+  m_Name: Monster_20051_Controller
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: Idle
