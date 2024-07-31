@@ -91,6 +91,9 @@ namespace RGLabs.Network
         public static UniTask<Response<Policy>> GetPolicy()
             => Call<Policy>(Backend.Policy.GetPolicyV2);
 
+        public static UniTask<Response> UpdateNickname(string nickname) 
+            => Call(onResult => Backend.BMember.UpdateNickname(nickname, onResult.Invoke));
+
         public static UniTask<Response<ChartInfo[]>> GetChartList()
             => Call<ChartInfo[]>(Backend.Chart.GetChartListV2);
 
@@ -120,17 +123,16 @@ namespace RGLabs.Network
 
             return await Call(
                 onResult => Backend.GameData.TransactionReadV2(read, onResult.Invoke),
-                raw =>
+                jsonData =>
                 {
-                    var data = raw.GetFlattenJSON();
                     var userData = new UserData
                     {
-                        profile = FromTransaction<Profile>(data, PROFILE_TABLE),
-                        act = FromTransaction<Act>(data, ACT_TABLE),
-                        currency = FromTransaction<Currency>(data, CURRENCY_TABLE),
-                        characters = FromTransaction<Characters>(data, CHARACTERS_TABLE),
-                        formation = FromTransaction<Formation>(data, FORMATION_TABLE),
-                        inventory = FromTransaction<Inventory>(data, INVENTORY_TABLE)
+                        profile = FromTransaction<Profile>(jsonData, PROFILE_TABLE),
+                        act = FromTransaction<Act>(jsonData, ACT_TABLE),
+                        currency = FromTransaction<Currency>(jsonData, CURRENCY_TABLE),
+                        characters = FromTransaction<Characters>(jsonData, CHARACTERS_TABLE),
+                        formation = FromTransaction<Formation>(jsonData, FORMATION_TABLE),
+                        inventory = FromTransaction<Inventory>(jsonData, INVENTORY_TABLE)
                     };
 
                     return userData;
@@ -142,9 +144,9 @@ namespace RGLabs.Network
 
         public static UniTask<Response<UserData>> NewUser()
         {
-            return InvokeFunc("DefaultData", null, raw =>
+            return InvokeFunc("DefaultData", null, jsonData =>
             {
-                var json = JsonMapper.ToObject(raw.GetFlattenJSON()["result"].ToString());
+                var json = JsonMapper.ToObject(jsonData["result"].ToString());
                 return new UserData
                 {
                     profile = json[PROFILE_TABLE].Cast<Profile>(),
@@ -254,7 +256,7 @@ namespace RGLabs.Network
         }
 
         private static Response<T>.Convert ConvertFunctionResponse<T>() =>
-            raw => raw.GetFlattenJSON()["result"].Cast<T>();
+            raw => raw["result"].Cast<T>();
 
         private static Param FunctionParam(string functionName, List<KeyValuePair<string, object>> parameters = null)
         {

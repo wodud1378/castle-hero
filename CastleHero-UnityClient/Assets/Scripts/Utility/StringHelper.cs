@@ -6,13 +6,13 @@ namespace RGLabs.Utility
     {
         private const string ColoredStringTag = "<color={0}>{1}</color>";
         
-        private static readonly Color Positive = Color.green;
-        private static readonly Color Negative = Color.red;
+        public static readonly Color PositiveColor = Color.green;
+        public static readonly Color NegativeColor = Color.red;
 
         public static string CurrencyText(this int value) => value.ToString("N0");
         
-        public static string WithPositiveColor(this string text) => text.WithColor(Positive);
-        public static string WithNegativeColor(this string text) => text.WithColor(Negative);
+        public static string WithPositiveColor(this string text) => text.WithColor(PositiveColor);
+        public static string WithNegativeColor(this string text) => text.WithColor(NegativeColor);
         
         public static string WithColor(this string text, Color color) => string.Format(ColoredStringTag, color.Hex(), text);
 

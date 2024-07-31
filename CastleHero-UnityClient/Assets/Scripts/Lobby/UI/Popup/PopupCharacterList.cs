@@ -111,6 +111,11 @@ namespace RGLabs.Lobby.UI.Popup
                 .ThrottleFrame(1)
                 .Subscribe(_ => UpdateUI())
                 .AddTo(this);
+            
+            Storage.userRepository.characters
+                .ChangeAsObservable()
+                .Subscribe(_=> UpdateUI())
+                .AddTo(this);
 
             _characterList.OnSlotClickEvent -= OnClickSlot;
             _characterList.OnSlotClickEvent += OnClickSlot;

@@ -152,7 +152,9 @@ namespace RGLabs.InGame.UI
         {
             await UniTask.Delay(TimeSpan.FromSeconds(1f));
             
-            Result.Open(result);
+            Result
+                .Open(result)
+                .Forget();
         }
 
         public override void Dispose()

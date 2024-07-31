@@ -2114,6 +2114,7 @@ MonoBehaviour:
   fromManager: 1
   _animator: {fileID: 0}
   _close: {fileID: 2229213631922384869}
+  _name: {fileID: 9166723723846829836}
   _stars:
   - {fileID: 2482025810242073629}
   - {fileID: 8573583174738274766}
@@ -2124,6 +2125,7 @@ MonoBehaviour:
   _soulSlot: {fileID: 5890389502189836478}
   _requireSoul: {fileID: 2662308221677747859}
   _requireGold: {fileID: 935001383701076851}
+  _goldSlot: {fileID: 5370796634781784631}
   _confirm: {fileID: 8836847270182427559}
 --- !u!1 &6293950933180312253
 GameObject:
@@ -2627,6 +2629,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2773317727502593425}
+  - component: {fileID: 5370796634781784631}
   m_Layer: 5
   m_Name: Gold
   m_TagString: Untagged
@@ -2655,6 +2658,25 @@ RectTransform:
   m_AnchoredPosition: {x: 9, y: 25}
   m_SizeDelta: {x: 200, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5370796634781784631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7946103748426197840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34b6d78b90a642199ae25092911e0803, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rayTarget: {fileID: 0}
+  icon: {fileID: 8650584393374820404}
+  label: {fileID: 0}
+  _quantity: {fileID: 9131962316363330592}
+  _portraitRoot: {fileID: 0}
+  quantityDisplay:
+    value: 1
 --- !u!1 &9059682922122987027
 GameObject:
   m_ObjectHideFlags: 0

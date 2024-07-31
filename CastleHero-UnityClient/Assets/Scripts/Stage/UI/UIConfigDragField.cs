@@ -8,7 +8,6 @@ using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 
 namespace RGLabs.Lobby.UI
 {

@@ -7,6 +7,7 @@ using RGLabs.Common.UI;
 using RGLabs.Data;
 using RGLabs.Lobby.Behaviours;
 using RGLabs.Network.Shared;
+using RGLabs.Stage.UI;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Factory;
 using RGLabs.Utility;

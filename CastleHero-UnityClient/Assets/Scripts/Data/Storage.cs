@@ -27,9 +27,9 @@ namespace RGLabs.Data
         
         public static Entrance entranceData = new() { state = State.Lobby, };
 
-        public static void Init(UserData userData, DBCollections database)
+        public static void Init(string nickname, UserData userData, DBCollections database)
         {
-            userRepository = new UserRepository(userData);
+            userRepository = new UserRepository(nickname, userData);
             db = database;
             
             poolContainer = new();

@@ -2,6 +2,7 @@ using System;
 using BackEnd;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
+using RGLabs.Common.UI.Popup;
 using RGLabs.Network;
 using RGLabs.Network.Service.Boot;
 using RGLabs.Network.Service.Login;
@@ -24,6 +25,7 @@ namespace RGLabs.Title
         [SerializeField] private BootConfig _config;
         [SerializeField] private PopupSelectLoginPlatform _selectPlatform;
         [SerializeField] private PopupPolicy _policyPopup;
+        [SerializeField] private PopupSetNickname _setNickname;
 
         private void Awake()
         {
@@ -66,6 +68,15 @@ namespace RGLabs.Title
             await _selectPlatform.Open(Platform.AppStore, Platform.Guest);
 #endif
             return await _selectPlatform.LoginTask;
+        }
+
+        public async UniTask<string> SetNickName()
+        {
+            _setNickname.gameObject.SetActive(true);
+            
+            await _setNickname.Open();
+
+            return await _setNickname.SetNicknameTask;
         }
 
         public void OnInitDone()

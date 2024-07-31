@@ -40,7 +40,7 @@ namespace RGLabs.Unit.Components
         {
             if (!enableAnimation || !_hasAnimator)
                 return;
-
+            
             animator.SetTrigger(hash);
         }
 

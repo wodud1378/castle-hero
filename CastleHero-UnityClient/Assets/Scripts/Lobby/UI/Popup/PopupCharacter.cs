@@ -12,12 +12,18 @@ using RGLabs.Unit;
 using RGLabs.Utility;
 using Spine.Unity;
 using TMPro;
+using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
 namespace RGLabs.Lobby.UI.Popup
 {
+    public interface IGrowthTask
+    {
+        public UniTask<GrowthResult> GrowthTask { get; }
+    }
+
     [PrefabPath("Lobby/UI/Prefabs/Popup_CharInfo.prefab")]
     public class PopupCharacter : PopupBase
     {
@@ -32,56 +38,65 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private Button _levelUp;
         [SerializeField] private Button _upgrade;
 
-        private UnitInfo _unit;
+        private readonly ReactiveProperty<UnitInfo> _unit = new();
+        private GameObject _character;
 
         protected override void OnAwake()
         {
             base.OnAwake();
-            
-            this.SubscribeButton(_levelUp, OnLevelUp);
-            this.SubscribeButton(_upgrade, OnUpgrade);
+
+            this.SubscribeButton(_levelUp, () => OnLevelUp().Forget());
+            this.SubscribeButton(_upgrade, () => OnUpgrade().Forget());
+
+            _unit
+                .Subscribe(OnUnitChanged)
+                .AddTo(this);
         }
 
         public override UniTask Open(params object[] parameters)
         {
             if (parameters.Length > 0 && parameters[0] is UnitInfo unit)
-                Init(unit);
+                _unit.Value = unit;
 
             return UniTask.CompletedTask;
         }
 
-        private void Init(UnitInfo info)
+        private void OnUnitChanged(UnitInfo info)
         {
-            _unit = info;
-            
-            if (!Storage.db.units.TryFind(_unit.id, out var unitEntity))
+            if (info == null)
                 return;
 
-            if (!Storage.db.balances.TryFind(_unit.id, out var balanceEntity))
+            if (!Storage.db.units.TryFind(_unit.Value.id, out var unitEntity))
+                return;
+
+            if (!Storage.db.balances.TryFind(_unit.Value.id, out var balanceEntity))
                 return;
 
             _name.text = unitEntity.name;
-            _level.Set(_unit);
+            _level.Set(_unit.Value);
 
-            int lv = _unit.lv;
-            int rate = _unit.rate;
+            int lv = _unit.Value.lv;
+            int rate = _unit.Value.rate;
 
             SetCharacter(unitEntity.uiPrefab).Forget();
             UpdateRate(rate);
 
             var equipments = Storage.userRepository.EquipItems(info.equipments).ToArray();
-            
+
             UpdateStatusTexts(lv, rate, unitEntity, balanceEntity, equipments);
             UpdateEquipmentSlots(equipments);
         }
 
         private async UniTask SetCharacter(string dataPath)
         {
+            if (_character != null)
+                Addressables.ReleaseInstance(_character);
+            
             _prefabRoot.gameObject.SetActive(false);
-            
-            await Addressables.InstantiateAsync(dataPath, _prefabRoot);
+
+            _character = await Addressables.InstantiateAsync(dataPath, _prefabRoot);
             await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
-            
+
             _prefabRoot.gameObject.SetActive(true);
         }
 
@@ -97,7 +112,7 @@ namespace RGLabs.Lobby.UI.Popup
         {
             if (equipments == null)
                 return;
-            
+
             int index = 0;
             while (index.IsValidIndex(equipments, _equipments))
             {
@@ -139,8 +154,28 @@ namespace RGLabs.Lobby.UI.Popup
             };
         }
 
-        private void OnLevelUp() => Context.popupManager.OpenAsync<PopupLevelUp>(_unit).Forget();
+        private async UniTaskVoid OnLevelUp()
+        {
+            var popup = await Context.popupManager.OpenAsync<PopupLevelUp>(_unit.Value);
 
-        private void OnUpgrade()=> Context.popupManager.OpenAsync<PopupRateUp>(_unit).Forget();
+            HandleGrowthTask(popup).Forget();
+        }
+
+        private async UniTaskVoid OnUpgrade()
+        {
+            var popup = await Context.popupManager.OpenAsync<PopupRateUp>(_unit.Value);
+
+            HandleGrowthTask(popup).Forget();
+        }
+
+        private async UniTaskVoid HandleGrowthTask(IGrowthTask task)
+        {
+            var growth = await task.GrowthTask;
+
+            if (growth == null)
+                return;
+
+            _unit.Value = growth.transition.unit;
+        }
     }
 }
