@@ -3,265 +3,309 @@ Monster_Archer.png
 	filter: Linear, Linear
 	scale: 0.5
 Archer_DarkKnight_Bow/Arm_L
-	bounds: 304, 378, 39, 61
+	bounds: 173, 700, 39, 61
 	offsets: 10, 15, 61, 81
-Archer_DarkKnight_Bow/Arm_L2
-	bounds: 105, 2, 42, 36
-	offsets: 5, 5, 52, 46
 	rotate: 90
+Archer_DarkKnight_Bow/Arm_L2
+	bounds: 456, 633, 42, 36
+	offsets: 5, 5, 52, 46
 Archer_DarkKnight_Bow/Arm_R2
-	bounds: 61, 10, 42, 36
+	bounds: 123, 630, 42, 36
 	offsets: 5, 5, 52, 46
 Archer_DarkKnight_Bow/Arrow
-	bounds: 2, 368, 38, 205
-	rotate: 90
+	bounds: 870, 815, 38, 205
 Archer_DarkKnight_Bow/Belt
-	bounds: 78, 46, 76, 31
+	bounds: 908, 651, 76, 31
 	offsets: 3, 2, 86, 36
 	rotate: 180
 Archer_DarkKnight_Bow/Bottom
-	bounds: 30, 163, 98, 60
+	bounds: 822, 736, 98, 60
 	offsets: 0, 2, 99, 64
+	rotate: 180
 Archer_DarkKnight_Bow/Finger_R
-	bounds: 345, 383, 32, 32
+	bounds: 285, 600, 32, 32
 	offsets: 5, 5, 42, 42
 Archer_DarkKnight_Bow/Foot
-	bounds: 265, 8, 50, 41
+	bounds: 405, 629, 50, 41
 	offsets: 1, 4, 51, 49
+	rotate: 180
 Archer_DarkKnight_Bow/Hand_L
-	bounds: 146, 10, 39, 41
+	bounds: 242, 633, 39, 41
 	offsets: 5, 5, 49, 51
 	rotate: 90
 Archer_DarkKnight_Bow/Hand_R
-	bounds: 341, 664, 33, 37
+	bounds: 579, 605, 33, 37
 	offsets: 5, 5, 43, 47
 	rotate: 90
 Archer_DarkKnight_Bow/Head
-	bounds: 2, 755, 157, 147
+	bounds: 154, 873, 157, 147
+	rotate: 180
 Archer_DarkKnight_Bow/Leg
-	bounds: 238, 120, 41, 56
+	bounds: 471, 672, 41, 56
 	offsets: 9, 9, 58, 72
 	rotate: 90
 Archer_DarkKnight_Bow/Muffler
-	bounds: 182, 89, 69, 41
+	bounds: 900, 677, 69, 41
 	offsets: 1, 2, 73, 46
 Archer_DarkKnight_Bow/Muffler_Back
-	bounds: 274, 46, 72, 37
+	bounds: 627, 656, 72, 37
 	offsets: 2, 3, 76, 43
-	rotate: 180
 Archer_DarkKnight_Bow/Torso
-	bounds: 187, 223, 80, 94
+	bounds: 736, 758, 80, 94
 	offsets: 3, 4, 86, 100
 	rotate: 90
 Archer_DarkKnight_Bow/Weapon
-	bounds: 175, 655, 76, 247
+	bounds: 581, 809, 76, 247
 	offsets: 2, 1, 80, 251
-Archer_Gladiator_Bow/Arm_L
-	bounds: 106, 78, 34, 52
+	rotate: 270
+Archer_DesertWarrior_Bow/Arm_L
+	bounds: 69, 665, 34, 52
 	offsets: 15, 15, 61, 81
 	rotate: 90
-Archer_Gladiator_Bow/Arm_L2
-	bounds: 340, 861, 41, 33
-	offsets: 5, 5, 51, 43
+Archer_Gladiator_Bow/Arm_L
+	bounds: 69, 665, 34, 52
+	offsets: 15, 15, 61, 81
 	rotate: 90
-Archer_Gladiator_Bow/Arm_R2
-	bounds: 316, 3, 42, 35
-	offsets: 5, 5, 53, 45
-	rotate: 90
+Archer_DesertWarrior_Bow/Arm_L2
+	bounds: 269, 843, 42, 34
+	offsets: 5, 5, 52, 46
+Archer_DesertWarrior_Bow/Arm_R2
+	bounds: 285, 634, 41, 38
+	offsets: 5, 4, 52, 46
+Archer_DesertWarrior_Bow/Arrow
+	bounds: 830, 815, 38, 205
 Archer_Gladiator_Bow/Arrow
-	bounds: 242, 676, 38, 205
+	bounds: 830, 815, 38, 205
 Archer_Knights_Bow/Arrow
-	bounds: 242, 676, 38, 205
+	bounds: 830, 815, 38, 205
 Archer_Mercenary_Bow/Arrow
-	bounds: 242, 676, 38, 205
-Archer_Gladiator_Bow/Beard
-	bounds: 118, 114, 67, 32
-Archer_Gladiator_Bow/Belt
-	bounds: 154, 822, 78, 37
-	offsets: 3, 2, 88, 42
-	rotate: 90
-Archer_Gladiator_Bow/Bottom
-	bounds: 282, 628, 95, 58
+	bounds: 830, 815, 38, 205
+Archer_DesertWarrior_Bow/Belt
+	bounds: 123, 668, 76, 32
+	offsets: 3, 2, 86, 36
+Archer_DesertWarrior_Bow/Bottom
+	bounds: 915, 714, 95, 58
 	offsets: 2, 4, 99, 65
-	rotate: 90
-Archer_Gladiator_Bow/Eyes
-	bounds: 302, 311, 65, 39
-	rotate: 90
-Archer_Gladiator_Bow/Finger_R
-	bounds: 345, 349, 32, 32
+	rotate: 180
+Archer_DesertWarrior_Bow/Finger_R
+	bounds: 618, 606, 32, 32
 	offsets: 5, 5, 42, 42
-Archer_Gladiator_Bow/Foot
-	bounds: 336, 699, 54, 35
-	offsets: 1, 4, 55, 43
-	rotate: 270
-Archer_Gladiator_Bow/Hair_Back
-	bounds: 203, 532, 122, 67
-	offsets: 5, 5, 132, 77
-	rotate: 90
-Archer_Gladiator_Bow/Hair_Front
-	bounds: 119, 280, 125, 102
-	offsets: 2, 0, 130, 105
-Archer_Gladiator_Bow/Hand_L
-	bounds: 18, 15, 39, 41
+Archer_Gladiator_Bow/Finger_R
+	bounds: 618, 606, 32, 32
+	offsets: 5, 5, 42, 42
+Archer_DesertWarrior_Bow/Foot
+	bounds: 697, 632, 50, 41
+	offsets: 1, 4, 51, 49
+	rotate: 180
+Archer_DesertWarrior_Bow/Hand_L
+	bounds: 199, 633, 39, 41
 	offsets: 5, 5, 49, 51
 	rotate: 90
-Archer_Gladiator_Bow/Hand_R
-	bounds: 343, 310, 33, 37
+Archer_DesertWarrior_Bow/Hand_R
+	bounds: 883, 613, 33, 37
 	offsets: 5, 5, 43, 47
-Archer_Gladiator_Bow/Head
-	bounds: 2, 408, 133, 120
-	offsets: 5, 5, 143, 130
-Archer_Mercenary_Bow/Head
-	bounds: 2, 408, 133, 120
-	offsets: 5, 5, 143, 130
-Archer_Gladiator_Bow/Leg
-	bounds: 60, 121, 41, 56
+Archer_Gladiator_Bow/Hand_R
+	bounds: 883, 613, 33, 37
+	offsets: 5, 5, 43, 47
+Archer_DesertWarrior_Bow/Head
+	bounds: 2, 873, 157, 147
+Archer_DesertWarrior_Bow/Leg
+	bounds: 588, 681, 41, 56
 	offsets: 9, 9, 58, 72
+Archer_Gladiator_Bow/Leg
+	bounds: 588, 681, 41, 56
+	offsets: 9, 9, 58, 72
+Archer_DesertWarrior_Bow/Muffler
+	bounds: 510, 705, 77, 56
+	offsets: 1, 2, 80, 59
+Archer_DesertWarrior_Bow/Torso
+	bounds: 619, 736, 80, 85
+	offsets: 3, 3, 86, 90
+	rotate: 270
+Archer_DesertWarrior_Bow/Weapon
+	bounds: 36, 809, 76, 247
+	offsets: 2, 1, 80, 251
+	rotate: 90
+Archer_Gladiator_Bow/Arm_L2
+	bounds: 791, 627, 41, 33
+	offsets: 5, 5, 51, 43
+Archer_Gladiator_Bow/Arm_R2
+	bounds: 500, 633, 42, 35
+	offsets: 5, 5, 53, 45
+Archer_Gladiator_Bow/Beard
+	bounds: 236, 674, 67, 32
+Archer_Gladiator_Bow/Belt
+	bounds: 329, 673, 78, 37
+	offsets: 3, 2, 88, 42
+Archer_Gladiator_Bow/Bottom
+	bounds: 686, 712, 95, 58
+	offsets: 2, 4, 99, 65
+Archer_Gladiator_Bow/Eyes
+	bounds: 778, 701, 65, 39
+Archer_Gladiator_Bow/Foot
+	bounds: 657, 621, 54, 35
+	offsets: 1, 4, 55, 43
+Archer_Gladiator_Bow/Hair_Back
+	bounds: 701, 886, 122, 67
+	offsets: 5, 5, 132, 77
+Archer_Gladiator_Bow/Hair_Front
+	bounds: 909, 772, 125, 102
+	offsets: 2, 0, 130, 105
+	rotate: 270
+Archer_Gladiator_Bow/Hand_L
+	bounds: 362, 634, 39, 41
+	offsets: 5, 5, 49, 51
+	rotate: 90
+Archer_Gladiator_Bow/Head
+	bounds: 539, 887, 133, 120
+	offsets: 5, 5, 143, 130
+	rotate: 90
+Archer_Mercenary_Bow/Head
+	bounds: 539, 887, 133, 120
+	offsets: 5, 5, 143, 130
 	rotate: 90
 Archer_Gladiator_Bow/Mouth
-	bounds: 2, 768, 24, 15
+	bounds: 2, 886, 24, 15
 Archer_Knights_Bow/Mouth
-	bounds: 2, 768, 24, 15
+	bounds: 2, 886, 24, 15
 Archer_Mercenary_Bow/Mouth
-	bounds: 2, 768, 24, 15
+	bounds: 2, 886, 24, 15
 Archer_Gladiator_Bow/Torso
-	bounds: 238, 162, 80, 85
+	bounds: 104, 738, 80, 85
 	offsets: 3, 3, 86, 90
 	rotate: 90
 Archer_Gladiator_Bow/Weapon
-	bounds: 137, 436, 76, 247
+	bounds: 384, 809, 76, 247
 	offsets: 2, 1, 80, 251
+	rotate: 90
 Archer_Knights_Bow/Weapon
-	bounds: 137, 436, 76, 247
+	bounds: 384, 809, 76, 247
 	offsets: 2, 1, 80, 251
+	rotate: 90
 Archer_Mercenary_Bow/Weapon
-	bounds: 137, 436, 76, 247
+	bounds: 384, 809, 76, 247
 	offsets: 2, 1, 80, 251
+	rotate: 90
 Archer_Knights_Bow/Arm_L
-	bounds: 252, 84, 34, 52
+	bounds: 529, 670, 34, 52
 	offsets: 15, 15, 61, 81
 	rotate: 90
 Archer_Knights_Bow/Arm_L2
-	bounds: 330, 528, 43, 34
+	bounds: 838, 630, 43, 34
 	offsets: 5, 5, 53, 44
-	rotate: 90
 Archer_Knights_Bow/Arm_R2
-	bounds: 343, 225, 44, 29
+	bounds: 328, 628, 44, 29
 	offsets: 5, 5, 54, 39
 	rotate: 90
 Archer_Knights_Bow/Belt
-	bounds: 2, 50, 76, 31
+	bounds: 831, 661, 76, 31
 	offsets: 3, 2, 86, 36
 Archer_Mercenary_Bow/Belt
-	bounds: 2, 50, 76, 31
+	bounds: 831, 661, 76, 31
 	offsets: 3, 2, 86, 36
 Archer_Knights_Bow/Bottom
-	bounds: 292, 815, 87, 47
+	bounds: 426, 714, 87, 47
 	offsets: 2, 3, 91, 53
-	rotate: 90
 Archer_Knights_Bow/Eyes
-	bounds: 302, 244, 65, 39
-	rotate: 90
+	bounds: 2, 701, 65, 39
 Archer_Knights_Bow/Feather
-	bounds: 327, 420, 50, 48
+	bounds: 966, 605, 50, 48
 	offsets: 3, 3, 56, 54
-	rotate: 180
+	rotate: 270
 Archer_Knights_Bow/Finger_R
-	bounds: 140, 756, 32, 32
+	bounds: 88, 631, 32, 32
 	offsets: 5, 5, 42, 42
 Archer_Mercenary_Bow/Finger_R
-	bounds: 140, 756, 32, 32
+	bounds: 88, 631, 32, 32
 	offsets: 5, 5, 42, 42
 Archer_Knights_Bow/Foot
-	bounds: 333, 67, 54, 35
+	bounds: 985, 660, 54, 35
 	offsets: 1, 4, 55, 43
-	rotate: 270
-Archer_Knights_Bow/Hair_Back
-	bounds: 272, 528, 99, 56
-	offsets: 5, 5, 109, 66
 	rotate: 90
+Archer_Knights_Bow/Hair_Back
+	bounds: 408, 763, 99, 56
+	offsets: 5, 5, 109, 66
 Archer_Knights_Bow/Hair_Front_L
-	bounds: 95, 215, 85, 92
+	bounds: 2, 741, 85, 92
 	offsets: 2, 2, 90, 97
 	rotate: 90
 Archer_Knights_Bow/Hair_Front_R
-	bounds: 336, 768, 32, 72
+	bounds: 918, 623, 32, 72
 	offsets: 3, 2, 39, 77
+	rotate: 270
 Archer_Knights_Bow/Hand_L
-	bounds: 189, 17, 39, 41
+	bounds: 583, 640, 39, 41
 	offsets: 5, 5, 49, 51
 	rotate: 90
 Archer_Knights_Bow/Hand_R
-	bounds: 343, 271, 33, 37
+	bounds: 2, 623, 33, 37
 	offsets: 5, 5, 43, 47
+	rotate: 90
 Archer_Knights_Bow/Hat
-	bounds: 2, 652, 165, 102
+	bounds: 313, 855, 165, 102
 	offsets: 5, 5, 175, 112
+	rotate: 90
 Archer_Knights_Bow/Head
-	bounds: 2, 530, 133, 120
+	bounds: 417, 887, 133, 120
 	offsets: 5, 5, 143, 130
+	rotate: 90
 Archer_Knights_Bow/Leg
-	bounds: 2, 124, 41, 56
+	bounds: 845, 694, 41, 56
 	offsets: 9, 9, 58, 72
 	rotate: 90
 Archer_Knights_Bow/Muffler
-	bounds: 300, 109, 69, 41
+	bounds: 689, 672, 69, 41
 	offsets: 1, 2, 73, 46
-	rotate: 270
 Archer_Knights_Bow/Muffler_Back
-	bounds: 159, 57, 72, 37
+	bounds: 758, 662, 72, 37
 	offsets: 2, 3, 76, 43
 Archer_Knights_Bow/Skirt
-	bounds: 2, 82, 40, 49
+	bounds: 2, 834, 40, 49
 	offsets: 4, 4, 47, 57
-	rotate: 90
 Archer_Knights_Bow/Torso
-	bounds: 2, 211, 80, 85
+	bounds: 190, 738, 80, 85
 	offsets: 3, 3, 86, 90
-	rotate: 270
+	rotate: 90
 Archer_Mercenary_Bow/Arm_L
-	bounds: 52, 82, 34, 52
+	bounds: 407, 672, 34, 52
 	offsets: 15, 15, 61, 81
 	rotate: 90
 Archer_Mercenary_Bow/Arm_L2
-	bounds: 324, 180, 43, 34
+	bounds: 43, 629, 43, 34
 	offsets: 5, 5, 53, 44
-	rotate: 90
 Archer_Mercenary_Bow/Arm_R2
-	bounds: 341, 123, 44, 29
+	bounds: 167, 624, 44, 29
 	offsets: 5, 5, 54, 39
 	rotate: 90
 Archer_Mercenary_Bow/Bottom
-	bounds: 282, 723, 91, 58
+	bounds: 343, 705, 91, 58
 	offsets: 0, 2, 91, 60
-	rotate: 90
+	rotate: 180
 Archer_Mercenary_Bow/Eyes
-	bounds: 129, 148, 65, 39
-	rotate: 90
+	bounds: 78, 701, 65, 39
 Archer_Mercenary_Bow/Foot
-	bounds: 330, 571, 54, 35
+	bounds: 736, 627, 54, 35
 	offsets: 1, 4, 55, 43
-	rotate: 90
 Archer_Mercenary_Bow/Hair_Back
-	bounds: 244, 305, 99, 56
+	bounds: 509, 763, 99, 56
 	offsets: 5, 5, 109, 66
-	rotate: 90
 Archer_Mercenary_Bow/Hair_Front
-	bounds: 203, 405, 125, 102
+	bounds: 909, 895, 125, 102
 	offsets: 2, 0, 130, 105
-	rotate: 270
+	rotate: 90
 Archer_Mercenary_Bow/Hand_L
-	bounds: 232, 41, 39, 41
+	bounds: 2, 658, 39, 41
 	offsets: 5, 5, 49, 51
 Archer_Mercenary_Bow/Hand_R
-	bounds: 340, 625, 33, 37
+	bounds: 544, 631, 33, 37
 	offsets: 5, 5, 43, 47
 Archer_Mercenary_Bow/Leg
-	bounds: 306, 470, 41, 56
+	bounds: 634, 695, 41, 56
 	offsets: 9, 9, 58, 72
+	rotate: 90
 Archer_Mercenary_Bow/Torso
-	bounds: 2, 286, 80, 96
+	bounds: 284, 773, 80, 96
 	offsets: 3, 4, 86, 100
 	rotate: 90
 Elipse
-	bounds: 171, 149, 65, 65
+	bounds: 276, 708, 65, 65
