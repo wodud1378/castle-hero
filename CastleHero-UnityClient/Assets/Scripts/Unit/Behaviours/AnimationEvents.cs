@@ -24,6 +24,5 @@ namespace RGLabs.Unit.Behaviours
         public void OnReleaseSkill() => OnReleaseSkillEvent?.Invoke();
 
         #endregion
-        
     }
 }

@@ -42,12 +42,12 @@ namespace RGLabs.Lobby.UI.Popup
         private readonly SummonService _service = new();
 
         private SummonResult _result;
-        
+
         protected override void OnAwake()
         {
             base.OnAwake();
 
-            this.SubscribeButton(_info, ()=> OpenInfo().Forget());
+            this.SubscribeButton(_info, () => OpenInfo().Forget());
             this.SubscribeButton(_prev, OnPrev);
             this.SubscribeButton(_next, OnNext);
         }
@@ -79,7 +79,7 @@ namespace RGLabs.Lobby.UI.Popup
 
             var buttonRect = (_info.transform as RectTransform)!;
             var popupRect = (popup.transform as RectTransform)!;
-            
+
             popupRect.AttachThrough(buttonRect, 0f, 1f);
         }
 
@@ -177,8 +177,8 @@ namespace RGLabs.Lobby.UI.Popup
         {
             if (!CheckInventory(coastId, coast))
                 return;
-            
-            var networkTask = SetResult(()=> method.Invoke(eventId, coastId));
+
+            var networkTask = SetResult(() => method.Invoke(eventId, coastId));
             var uiTask = TaskHelper.OnAnimationEnd(_animator, animationHash);
 
             await UniTask.WhenAll(networkTask, uiTask);
@@ -190,6 +190,20 @@ namespace RGLabs.Lobby.UI.Popup
 
         private async UniTaskVoid OnSummoned(SummonResult result)
         {
+            var repository = Storage.userRepository;
+            foreach (var summoned in result.summoneds)
+            {
+                switch (summoned)
+                {
+                    case SummonedSoul soul:
+                        repository.Add(new Item { ItemId = soul.Id, Quantity = soul.quantity });
+                        break;
+                    case SummonedUnit unit:
+                        repository.Add(new UnitInfo { id = unit.Id, lv = unit.lv, rate = unit.rate });
+                        break;
+                }
+            }
+
             if (result.summoneds.Count > 1)
             {
                 var direction = await Context.popupManager

@@ -17,6 +17,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 9100000, guid: 374daa4d43cadb64996388179eed0d92, type: 2}
     - target: {fileID: 7405764224175786417, guid: 6cce19fdbbd510440ae9bfd977a1cd18, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7405764224175786417, guid: 6cce19fdbbd510440ae9bfd977a1cd18, type: 3}
       propertyPath: initialSkinName
       value: Infantry_Mercenary_BastardSword
       objectReference: {fileID: 0}

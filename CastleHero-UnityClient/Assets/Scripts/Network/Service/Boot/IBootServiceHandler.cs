@@ -15,6 +15,8 @@ namespace RGLabs.Network.Service.Boot
 
         public UniTask<PolicyAgreement> CheckPolicy();
 
+        public UniTask<string> SetNickName();
+
         public void OnInitDone();
     }
 }

@@ -46,6 +46,8 @@ namespace RGLabs.Network.Shared
     public class SummonedUnit : ISummoned
     {
         public int Id { get; set; }
+        public int lv;
+        public int rate;
     }
 
     public class SummonedSoul : ISummoned

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using BackEnd;
+using RGLabs.Data;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using TMPro;
@@ -67,7 +68,9 @@ namespace RGLabs.Network.Service.Test
             
             _addItemLog.text = "요청 진행 중".WithColor(Color.gray);
 
-            await _service.AddItems(idList.ToArray(), quantityList.ToArray());
+            var result = await _service.AddItems(idList.ToArray(), quantityList.ToArray());
+            
+            Storage.userRepository.Update(result);
             
             _addItemLog.text = "요청 성공".WithPositiveColor();
         }
@@ -76,8 +79,8 @@ namespace RGLabs.Network.Service.Test
         {
             int temp;
             int paidDia = int.TryParse(_paidDia.text, out  temp) ? temp : 0;
-            int freeDia = int.TryParse(_paidDia.text, out  temp) ? temp : 0;
-            int gold = int.TryParse(_paidDia.text, out  temp) ? temp : 0;
+            int freeDia = int.TryParse(_freeDia.text, out  temp) ? temp : 0;
+            int gold = int.TryParse(_gold.text, out  temp) ? temp : 0;
             
             if (paidDia == 0 && freeDia == 0 && gold == 0)
             {
@@ -88,7 +91,9 @@ namespace RGLabs.Network.Service.Test
                 _addCurrencyLog.text = "요청 진행 중".WithColor(Color.gray);
                 var currency = new Currency { paidDia = paidDia, freeDia = freeDia, gold = gold, };
 
-                await _service.AddCurrency(currency);
+                var result = await _service.AddCurrency(currency);
+                
+                Storage.userRepository.Update(result);
 
                 _addCurrencyLog.text = "요청 성공".WithPositiveColor();
             }

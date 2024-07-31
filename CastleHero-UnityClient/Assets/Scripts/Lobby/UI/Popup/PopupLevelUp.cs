@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common;
 using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
-using RGLabs.Data.Model;
 using RGLabs.Network.Shared;
 using RGLabs.Network.Service.Character;
 using RGLabs.Utility;
@@ -15,7 +16,7 @@ using UnityEngine.UI;
 namespace RGLabs.Lobby.UI.Popup
 {
     [PrefabPath("Lobby/UI/Prefabs/Popup_LevelUp.prefab")]
-    public class PopupLevelUp : PopupBase
+    public class PopupLevelUp : PopupBase, IGrowthTask
     {
         private const int ExpSmallId = 52001;
         private const int ExpMediumId = 52002;
@@ -31,7 +32,13 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private TMP_Text _maxCount;
         [SerializeField] private TMP_Text _gold;
 
+        [SerializeField] private UIItemSlot _goldSlot;
         [SerializeField] private Button _confirm;
+        
+        public UniTask<GrowthResult> GrowthTask => _completionSource.Task;
+        
+        private UniTaskCompletionSource<GrowthResult> _completionSource;
+        private GrowthResult _result;
 
         private readonly ReactiveProperty<UnitInfo> _unit = new();
         private readonly ReactiveProperty<UIItemSlot> _selected = new();
@@ -41,6 +48,10 @@ namespace RGLabs.Lobby.UI.Popup
         protected override void OnAwake()
         {
             base.OnAwake();
+            
+            Storage.userRepository.gold
+                .Subscribe(UpdateGoldSlot)
+                .AddTo(this);
 
             _slider.onValueChanged
                 .AsObservable()
@@ -64,12 +75,29 @@ namespace RGLabs.Lobby.UI.Popup
 
         public override async UniTask Open(params object[] parameters)
         {
+            _completionSource = new();
             await InitItemSlots();
 
             if (parameters.Length > 0 && parameters[0] is UnitInfo unit)
                 _unit.Value = unit;
 
             _gold.text = "0";
+        }
+
+        protected override void OnClose()
+        {
+            base.OnClose();
+
+            _completionSource.TrySetResult(_result);
+        }
+
+        private void UpdateGoldSlot(int gold)
+        {
+            _goldSlot.Init(new Item
+            {
+                ItemId = Constants.GoldId,
+                Quantity = gold
+            });
         }
 
         private UniTask InitItemSlots()
@@ -121,8 +149,11 @@ namespace RGLabs.Lobby.UI.Popup
 
             Calculate(_unit.Value.lv, out int lv, out int exp, out int maxExp, out int gold);
 
+            _goldSlot.QuantityLabelColor = gold > Storage.userRepository.gold.Value
+                ? StringHelper.NegativeColor
+                : Color.white;
+            
             _gold.text = gold.CurrencyText();
-            _maxCount.text = count.ToString();
             _level.SetOverride(lv, exp);
         }
 
@@ -155,6 +186,8 @@ namespace RGLabs.Lobby.UI.Popup
 
             _slider.value = 0;
             _slider.maxValue = slot.Item.Quantity;
+
+            _maxCount.text = _slider.maxValue.ToString();
         }
 
         private async UniTaskVoid Confirm()
@@ -164,13 +197,25 @@ namespace RGLabs.Lobby.UI.Popup
             
             var result = await _service.LevelUp(_unit.Value.id, item.ItemId, (int)_slider.value);
             var unit = result.transition.unit;
-            _unit.Value = unit;
-            _selected.Value.Init(result.leftItem).Forget();
+
+            var slot = new List<UIItemSlot>
+            {
+                _expSlotS,
+                _expSlotM,
+                _expSlotL
+            }.FirstOrDefault(x => x.Item.ItemId == result.leftItem.ItemId)!;
+            
+            slot.Init(result.leftItem)
+                .Forget();
             
             var repository = Storage.userRepository;
             repository.Update(unit);
             repository.Update(result.leftCurrency);
             repository.Update(result.leftItem);
+            
+            _unit.Value = unit;
+            _selected.Value = slot;
+            _result = result;
         }
     }
 }

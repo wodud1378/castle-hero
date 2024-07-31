@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using RGLabs.Common;
 using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
@@ -17,19 +18,26 @@ using UnityEngine.UI;
 namespace RGLabs.Lobby.UI.Popup
 {
     [PrefabPath("Lobby/UI/Prefabs/Popup_Upgrade.prefab")]
-    public class PopupRateUp : PopupBase
+    public class PopupRateUp : PopupBase, IGrowthTask
     {
+        [SerializeField] private TMP_Text _name;
         [SerializeField] private Image[] _stars;
         [SerializeField] private UICharacterSlot _unitSlot;
         [SerializeField] private UIItemSlot _soulSlot;
         [SerializeField] private TMP_Text _requireSoul;
         [SerializeField] private TMP_Text _requireGold;
 
+        [SerializeField] private UIItemSlot _goldSlot;
         [SerializeField] private Button _confirm;
 
+        public UniTask<GrowthResult> GrowthTask => _completionSource.Task;
+        
+        private UniTaskCompletionSource<GrowthResult> _completionSource;
+        private GrowthResult _result;
+        
         private readonly ReactiveProperty<UnitInfo> _unit = new();
         private readonly CharacterService _service = new ();
-
+        
         private UniTask _updateTask;
 
         protected override void OnAwake()
@@ -38,6 +46,10 @@ namespace RGLabs.Lobby.UI.Popup
 
             this.SubscribeButton(_confirm, () => Confirm().Forget());
 
+            Storage.userRepository.gold
+                .Subscribe(UpdateGoldSlot)
+                .AddTo(this);
+            
             _unit
                 .Subscribe(UpdateUI)
                 .AddTo(this);
@@ -51,8 +63,25 @@ namespace RGLabs.Lobby.UI.Popup
                 return UniTask.FromException(exception);
             }
 
+            _completionSource = new();
             _unit.Value = unitInfo;
             return _updateTask;
+        }
+
+        protected override void OnClose()
+        {
+            base.OnClose();
+
+            _completionSource.TrySetResult(_result);
+        }
+
+        private void UpdateGoldSlot(int gold)
+        {
+            _goldSlot.Init(new Item
+            {
+                ItemId = Constants.GoldId,
+                Quantity = gold
+            });
         }
 
         private void UpdateUI(UnitInfo unitInfo)
@@ -74,6 +103,8 @@ namespace RGLabs.Lobby.UI.Popup
                 Debug.LogError(exception);
                 return;
             }
+
+            _name.text = unitEntity.name;
 
             int soulItemId = unitEntity.soulItemId;
             var item = Storage.userRepository.items.FirstOrDefault(x => x.ItemId == soulItemId) ?? new Item
@@ -103,7 +134,16 @@ namespace RGLabs.Lobby.UI.Popup
                 ? text.WithColor(Color.white)
                 : text.WithNegativeColor();
 
-            _requireGold.text = rateEntity.gold.CurrencyText();
+            int requireGold = rateEntity.gold;
+            bool isGoldEnough = requireGold <= Storage.userRepository.gold.Value;
+            var goldText = requireGold.CurrencyText();
+            _requireGold.text = isGoldEnough
+                ? goldText.WithColor(Color.white)
+                : goldText.WithNegativeColor();
+
+            _goldSlot.QuantityLabelColor = isGoldEnough
+                ? Color.white
+                : StringHelper.NegativeColor;
 
             var unitTask = _unitSlot.Init(unitInfo, unitEntity);
             var soulTask = _soulSlot.Init(item);
@@ -121,13 +161,13 @@ namespace RGLabs.Lobby.UI.Popup
 
             var result = await _service.Upgrade(_unit.Value.id, item.ItemId, rateEntity.soul);
             var unit = result.transition.unit;
-            _unit.Value = unit;
-            _soulSlot.Init(result.leftItem).Forget();
-
             var repository = Storage.userRepository;
-            repository.Update(unit);
             repository.Update(result.leftCurrency);
             repository.Update(result.leftItem);
+            repository.Update(unit);
+            
+            _unit.Value = unit;
+            _result = result;
         }
     }
 }

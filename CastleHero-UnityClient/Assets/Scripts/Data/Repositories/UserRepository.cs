@@ -12,6 +12,9 @@ namespace RGLabs.Data.Repositories
 {
     public class UserRepository
     {
+        public readonly string nickname;
+        public readonly int profileCharacter;
+        
         public readonly ReactiveProperty<int> stage;
         public readonly ReactiveProperty<int> focusedStage;
         public readonly ReactiveProperty<int> castleLv;
@@ -24,9 +27,11 @@ namespace RGLabs.Data.Repositories
         public readonly ReactiveProperty<int> gold;
         public readonly ReactiveCollection<IItem> items;
 
-        public UserRepository(UserData userData)
+        public UserRepository(string nickname, UserData userData)
         {
             var info = userData.profile;
+            this.nickname = nickname;
+            
             stage = new(info.stage);
             focusedStage = new(info.focusedStage);
             castleLv = new(info.castleLv);
@@ -39,6 +44,14 @@ namespace RGLabs.Data.Repositories
             paidDia = new(currency.paidDia);
             freeDia = new(currency.freeDia);
             gold = new(currency.gold);
+        }
+
+        public void Add(UnitInfo unit)
+        {
+            if (characters.FirstOrDefault(x => x.id == unit.id) != null)
+                return;
+            
+            characters.Add(unit);
         }
 
         public void Add(Currency currency)

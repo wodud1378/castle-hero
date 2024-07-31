@@ -36,7 +36,7 @@ namespace RGLabs.InGame.UI
             this.SubscribeButton(_nextButton, Next);
         }
 
-        public void Open(GameResult result)
+        public async UniTaskVoid Open(GameResult result)
         {
             UpdateUI(result.isCleared);
 
@@ -45,11 +45,9 @@ namespace RGLabs.InGame.UI
                 var data = result.data;
                 var initTask = _growthList.Init(data.transitions);
                 var entranceTask = TaskHelper.OnAnimationEnd(_animtor, EntranceHash);
-                var combined = UniTask.WhenAll(initTask, entranceTask);
+                await UniTask.WhenAll(initTask, entranceTask);
 
-                combined
-                    .ContinueWith(_growthList.PlayDirection)
-                    .Forget();
+                _growthList.PlayDirection();
             }
 
             gameObject.SetActive(true);

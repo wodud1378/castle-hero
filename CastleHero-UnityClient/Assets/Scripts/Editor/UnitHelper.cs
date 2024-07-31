@@ -50,6 +50,15 @@ namespace RGLabs.Editor
                 }
                 else if (clip.name.Contains("Skill"))
                 {
+                    var so = new SerializedObject(clip);
+                    var settings = so.FindProperty("m_AnimationClipSettings");
+                    if (settings != null)
+                    {
+                        settings.FindPropertyRelative("m_LoopTime").boolValue = false;
+                        so.ApplyModifiedProperties();
+                        Debug.Log($"[{unit.name}] 스킬 루프 해제");
+                    }
+                    
                     begin = nameof(events.OnExecuteSkill);
                     end = nameof(events.OnReleaseSkill);
                 }

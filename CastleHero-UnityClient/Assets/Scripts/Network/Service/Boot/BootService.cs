@@ -2,10 +2,7 @@ using System;
 using System.Collections.Generic;
 using BackEnd;
 using Cysharp.Threading.Tasks;
-using LitJson;
 using RGLabs.Data;
-using RGLabs.Data.Repositories;
-using RGLabs.Network.DB;
 using RGLabs.Network.DB.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Network.Service.Login;
@@ -46,7 +43,7 @@ namespace RGLabs.Network.Service.Boot
 
             bool newUser = false;
             var autoLogin = await _autoLoginService.Login();
-            if (autoLogin.result != ResultCode.Success)
+            if (!autoLogin.IsSuccess)
             {
                 var loginService = await _handler.ProvideLoginService();
                 var loginResponse = await loginService.Login();
@@ -56,11 +53,12 @@ namespace RGLabs.Network.Service.Boot
                     await _handler.CheckPolicy();
             }
 
+            var nickname = await GetNickname();
             var userData = newUser
                 ? (await BackendWrapper.NewUser()).data
                 : (await BackendWrapper.GetUserData()).data;
 
-            await InitStorage(userData);
+            await InitStorage(nickname, userData);
 
             _handler.OnInitDone();
         }
@@ -95,7 +93,25 @@ namespace RGLabs.Network.Service.Boot
 #endif
         }
 
-        private async UniTask InitStorage(UserData userData)
+        private async UniTask<string> GetNickname()
+        {
+            var nickname = Backend.UserNickName;
+            if (string.IsNullOrEmpty(nickname))
+            {
+                bool isSuccess = false;
+                while (!isSuccess)
+                {
+                    nickname = await _handler.SetNickName();
+                    var response = await BackendWrapper.UpdateNickname(nickname);
+                    
+                    isSuccess = response.IsSuccess;
+                }
+            }
+
+            return nickname;
+        }
+
+        private async UniTask InitStorage(string nickname, UserData userData)
         {
             IDBLoadService service = _config.useLocalDatabase
                 ? new LocalDBLoadService()
@@ -103,7 +119,7 @@ namespace RGLabs.Network.Service.Boot
 
             var collections = await service.Load();
 
-            Storage.Init(userData, collections);
+            Storage.Init(nickname, userData, collections);
         }
 
         public void Dispose() => _errorHandler?.Detach();
