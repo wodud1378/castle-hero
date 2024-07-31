@@ -27,7 +27,7 @@ namespace RGLabs.Network.DB.Service
             
             var results = await UniTask.WhenAll(tasks);
             var map = results
-                .ToDictionary(x => x.chartName, y => (y.id, y.response.raw.GetFlattenJSON()));
+                .ToDictionary(x => x.chartName, y => (y.id, y.response.rawData));
             
             LoadInstance<StageDB>(map, x => collections.stages = x);
             LoadInstance<WaveDB>(map, x => collections.waves = x);

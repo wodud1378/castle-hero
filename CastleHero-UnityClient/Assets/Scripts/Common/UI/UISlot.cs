@@ -79,7 +79,7 @@ namespace RGLabs.Common.UI
 
         public void OnPointerClick(PointerEventData eventData) => OnClick?.Invoke(this);
 
-        private void OnValidate()
+        protected virtual void OnValidate()
         {
             if(rayTarget == null)
                 rayTarget = GetComponent<Graphic>();

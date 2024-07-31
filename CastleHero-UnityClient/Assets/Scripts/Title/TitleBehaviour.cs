@@ -31,14 +31,6 @@ namespace RGLabs.Title
         {
             var service = new BootService(_config, this);
             service.Start().Forget();
-
-            Backend.ErrorHandler.InitializePoll(true);
-        }
-
-        private void Update()
-        {
-            Backend.AsyncPoll();
-            Backend.ErrorHandler.Poll();
         }
 
         public UniTask OnError(Response response)

@@ -38,26 +38,29 @@ namespace RGLabs.InGame.UI
 
         public async UniTaskVoid Open(GameResult result)
         {
+            await UniTask.WhenAll(
+                _growthList.Init(result.data.transitions),
+                _rewardList.Init(result.data.items));
+
+            gameObject.SetActive(true);
+
             UpdateUI(result.isCleared);
 
             if (result.isCleared)
             {
-                var data = result.data;
-                var initTask = _growthList.Init(data.transitions);
-                var entranceTask = TaskHelper.OnAnimationEnd(_animtor, EntranceHash);
-                await UniTask.WhenAll(initTask, entranceTask);
+                _animtor.SetTrigger(EntranceHash);
+                await UniTask.Delay(TimeSpan.FromSeconds(1f));
 
                 _growthList.PlayDirection();
             }
-
-            gameObject.SetActive(true);
 
             Context.Back.Add(this);
         }
 
         private async void CloseWith(Action onClose)
         {
-            await TaskHelper.OnAnimationEnd(_animtor, ExitHash);
+            _animtor.SetTrigger(ExitHash);
+            await UniTask.Delay(TimeSpan.FromSeconds(1f));
 
             gameObject.SetActive(false);
             onClose.Invoke();

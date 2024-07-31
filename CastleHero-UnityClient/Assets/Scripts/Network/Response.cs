@@ -23,42 +23,53 @@ namespace RGLabs.Network
     {
         public bool IsSuccess => result == ResultCode.Success;
 
-        public ResultCode result { get; protected set; }
-        public readonly BackendReturnObject raw;
+        public int statusCode;
+        public ResultCode result;
+        public JsonData rawData;
 
         public Response(BackendReturnObject raw)
         {
-            this.raw = raw;
-
             result = GetResult(raw);
+            statusCode = int.Parse(raw.GetStatusCode());
+            rawData = raw.HasReturnValue()
+                ? raw.FlattenRows()
+                : null;
+
+#if UNITY_EDITOR
+            Debug.Log(raw.HasReturnValue()
+                ? raw.GetReturnValuetoJSON().ToJson()
+                : raw.GetMessage());
+#endif
         }
 
         private ResultCode GetResult(BackendReturnObject obj)
         {
-            // 로컬에서 null을 넣을 경우 모두 Success.
-            if (obj == null)
-                return ResultCode.Success;
-
-            if (obj.IsSuccess())
-                return ResultCode.Success;
-
-            switch (obj.GetErrorCode())
-            {
-                case "NetworkError": return ResultCode.NetworkError;
-                case "UnauthorizedException": return ResultCode.AuthenticationError;
-                case "ServerException": return ResultCode.ServerError;
-                case "Maintenance": return ResultCode.Maintenance;
-                default: return ResultCode.UnknownError;
-            }
+            return obj.IsSuccess()
+                ? ResultCode.Success
+                : obj.GetErrorCode() switch
+                {
+                    "NetworkError" => ResultCode.NetworkError,
+                    "UnauthorizedException" => ResultCode.AuthenticationError,
+                    "ServerException" => ResultCode.ServerError,
+                    "Maintenance" => ResultCode.Maintenance,
+                    _ => ResultCode.UnknownError
+                };
         }
+    }
+
+    public class ResponseDto<T>
+    {
+        public T data;
+        public string error;
+        public string errorDetail;
     }
 
     public class Response<T> : Response
     {
-        public delegate T Convert(JsonData jsonData);
+        public delegate T Convert(BackendReturnObject jsonData);
 
         public readonly T data;
-
+        
         public Response(BackendReturnObject raw, Convert convert = null) : base(raw)
         {
             if (result != ResultCode.Success)
@@ -66,26 +77,13 @@ namespace RGLabs.Network
 
             if (convert == null)
             {
-                var json = raw.FlattenRows();
-                var str = JsonMapper.ToJson(json);
+                var str = JsonMapper.ToJson(rawData);
                 data = JsonMapper.ToObject<T>(str);
             }
             else
             {
-                var jsonData = raw.GetFlattenJSON();
-                if (jsonData.ContainsKey("result"))
-                {
-                    string error = jsonData["result"].ContainsKey("error")
-                        ? jsonData["result"]["error"].ToString()
-                        : string.Empty;
-
-                    result = string.IsNullOrEmpty(error)
-                        ? ResultCode.Success
-                        : Enum.Parse<ResultCode>(error);
-                }
-
                 data = IsSuccess
-                    ? convert.Invoke(jsonData)
+                    ? convert.Invoke(raw)
                     : default;
             }
 

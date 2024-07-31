@@ -61,16 +61,12 @@ namespace RGLabs.Network
 
         public delegate void Api(Backend.BackendCallback onResult);
 
-        public static UniTask<Response> Init(string serverName)
+        public static Response Init(string serverName)
         {
             var project = MultiSettingManager.FindByProjectName(serverName);
-            var api = new Api(onResult =>
-            {
-                Backend.InitializeByMultiProjectAsync(project, true, true,
-                    onResult.Invoke);
-            });
+            var bro = Backend.InitializeByMultiProject(project);
 
-            return Call(api);
+            return new Response(bro);
         }
 
         public static UniTask<Response<VersionInfo>> CheckVersion()
@@ -123,8 +119,9 @@ namespace RGLabs.Network
 
             return await Call(
                 onResult => Backend.GameData.TransactionReadV2(read, onResult.Invoke),
-                jsonData =>
+                raw =>
                 {
+                    var jsonData = raw.GetFlattenJSON();
                     var userData = new UserData
                     {
                         profile = FromTransaction<Profile>(jsonData, PROFILE_TABLE),
@@ -142,22 +139,8 @@ namespace RGLabs.Network
         public static UniTask<Response> GetChartContent(string id)
             => Call(onResult => Backend.Chart.GetChartContents(id, onResult.Invoke));
 
-        public static UniTask<Response<UserData>> NewUser()
-        {
-            return InvokeFunc("DefaultData", null, jsonData =>
-            {
-                var json = JsonMapper.ToObject(jsonData["result"].ToString());
-                return new UserData
-                {
-                    profile = json[PROFILE_TABLE].Cast<Profile>(),
-                    act = json[ACT_TABLE].Cast<Act>(),
-                    currency = json[CURRENCY_TABLE].Cast<Currency>(),
-                    characters = json[CHARACTERS_TABLE].Cast<Characters>(),
-                    formation = json[FORMATION_TABLE].Cast<Formation>(),
-                    inventory = json[INVENTORY_TABLE].Cast<Inventory>(),
-                };
-            });
-        }
+        public static UniTask<Response<UserData>> NewUser() 
+            => InvokeFunc("DefaultData", null, ConvertFunctionResponse<UserData>());
 
         public static UniTask<Response<GrowthResult>> Growth(string method, int unitId, int itemId,
             int itemQty)
@@ -256,7 +239,18 @@ namespace RGLabs.Network
         }
 
         private static Response<T>.Convert ConvertFunctionResponse<T>() =>
-            raw => raw["result"].Cast<T>();
+            raw =>
+            {
+                var dto = raw.GetFlattenJSON()["result"].Cast<ResponseDto<T>>();
+                var error = dto.error;
+                if (!string.IsNullOrEmpty(error))
+                {
+                    Debug.LogError($"{error}, detail={dto.errorDetail}");
+                    return default;
+                }
+
+                return dto.data;
+            };
 
         private static Param FunctionParam(string functionName, List<KeyValuePair<string, object>> parameters = null)
         {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using RGLabs.Common;
@@ -120,8 +121,41 @@ namespace RGLabs.InGame.Behaviours
         {
             new GameResult
             {
-                isCleared =  false
+                isCleared = false,
+                data = FailedData()
             }.Publish();
+        }
+
+        private StageCleared FailedData()
+        {
+            var transitions = new List<UnitTransition>();
+            var repository = Storage.userRepository;
+            var units = repository.characters
+                .Where(unit => repository.fieldCharacters.FirstOrDefault(x => x.id == unit.id) != null);
+
+            foreach (var unit in units)
+            {
+                int rate = unit.rate;
+                int lv = unit.lv;
+                int exp = unit.exp;
+                transitions.Add(new UnitTransition
+                {
+                    rateTransition = new[] { rate, rate },
+                    lvTransition = new[] { lv, lv },
+                    expTransition = new[] { exp, exp },
+                    unit = unit
+                });
+            }
+
+            return new StageCleared
+            {
+                stage = Storage.inGameRepository.stage,
+                exp = 0,
+                isFirstClear = false,
+                currency = null,
+                items = new List<IItem>(),
+                transitions = transitions
+            };
         }
 
         private async void OnWaveComplete()

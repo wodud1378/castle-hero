@@ -110,9 +110,6 @@ namespace RGLabs.Network.Service.Test
             {
                 Open();
             }
-            
-            Backend.AsyncPoll();
-            Backend.ErrorHandler.Poll();
         }
 
         private void Open() => _root.SetActive(true);
