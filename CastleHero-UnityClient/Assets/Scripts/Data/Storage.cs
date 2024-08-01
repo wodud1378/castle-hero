@@ -36,30 +36,5 @@ namespace RGLabs.Data
             unitFactory = new UnitFactory();
             castleFactory = new CastleFactory();
         }
-        
-        public static async UniTask InitAsync()
-        {
-            await InitAddressable();
-
-            poolContainer = new();
-            unitFactory = new UnitFactory();
-            castleFactory = new CastleFactory();
-        }
-        
-        private static async UniTask InitAddressable()
-        {
-            await Addressables.InitializeAsync();
-            var catalogs = await Addressables.CheckForCatalogUpdates();
-            var tasks = new List<UniTask>();
-            foreach (var catalog in catalogs)
-            {
-                var handle = Addressables.DownloadDependenciesAsync(catalog);
-                tasks.Add(handle.ToUniTask());
-            }
-
-            await UniTask.WhenAll(tasks);
-            
-            tasks.Clear();
-        }
     }
 }

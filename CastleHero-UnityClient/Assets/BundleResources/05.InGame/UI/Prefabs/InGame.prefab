@@ -1553,6 +1553,7 @@ MonoBehaviour:
   <Pause>k__BackingField: {fileID: 4420886906921359635}
   <GlobalSkill>k__BackingField: {fileID: 2548831782899979793}
   _pause: {fileID: 5986724365978457604}
+  _speedUp: {fileID: 3065841938506350996}
   _damageRoot: {fileID: 8797528834993109522}
   _damagePrefabs:
     normal: UI/Prefabs/UIDamage_Normal.prefab

@@ -51,6 +51,10 @@ namespace RGLabs.InGame.Behaviours
 
         private void Run(StartGame startGame)
         {
+            Time.timeScale = Storage.inGameRepository.speedUp
+                ? 2f
+                : 1f;
+            
             var cam = Camera.main;
             cam.DOOrthoSize(20f, 0.4f);
             

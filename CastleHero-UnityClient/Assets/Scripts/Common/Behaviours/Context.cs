@@ -26,10 +26,10 @@ namespace RGLabs.Common.Behaviours
         [SerializeField] private StartButton _startButton;
         [SerializeField] private PopupManager _popupManager;
 
-        private async void Load()
+        private void Load()
         {
-            await Storage.InitAsync();
-
+            Time.timeScale = 1f;
+            
             uiLock = _uiLock;
             startButton = _startButton;
             startButton.StageSelect.Init();

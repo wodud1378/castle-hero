@@ -8,6 +8,7 @@ namespace RGLabs.Data.Repositories
     public class InGameRepository : IDisposable
     {
         public int stage;
+        public bool speedUp;
         
         public readonly ReactiveProperty<int> mana = new(0);
         public readonly ReactiveProperty<UnitBehaviour> castle = new(null);

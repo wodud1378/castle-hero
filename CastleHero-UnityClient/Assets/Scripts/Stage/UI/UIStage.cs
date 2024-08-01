@@ -12,7 +12,8 @@ namespace RGLabs.Stage.UI
     {
         [SerializeField] private UIConfigCharacterList _characterList;
         [SerializeField] private UIConfigDragField _dragField;
-        
+
+        [SerializeField] private Button _speedUp;
         [SerializeField] private Button _startConfig;
         [SerializeField] private Button _back;
         
@@ -20,6 +21,11 @@ namespace RGLabs.Stage.UI
         {
             this.SubscribeButton(_startConfig, StartConfig);
             this.SubscribeButton(_back, BackToLobby);
+            this.SubscribeButton(_speedUp, () =>
+            {
+                var repository = Storage.inGameRepository;
+                repository.speedUp = !repository.speedUp;
+            });
 
             _characterList.isOpened
                 .Subscribe(x => _dragField.gameObject.SetActive(x))
