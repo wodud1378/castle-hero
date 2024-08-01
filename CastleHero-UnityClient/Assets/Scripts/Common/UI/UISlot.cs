@@ -12,6 +12,7 @@ namespace RGLabs.Common.UI
     public class UISlot : MonoBehaviour, IDisposable, IPointerClickHandler
     {
         public event Action<UISlot> OnClick;
+        public GameObject highlight;
         public Image icon;
         public TMP_Text label;
 
@@ -22,6 +23,14 @@ namespace RGLabs.Common.UI
         }
 
         private CancellationTokenSource _ctSource;
+
+        public void SetHighlight(bool on)
+        {
+            if (highlight == null)
+                return;
+            
+            highlight.SetActive(on);
+        }
 
         public async UniTask Init(string spritePath, string text = "")
         {

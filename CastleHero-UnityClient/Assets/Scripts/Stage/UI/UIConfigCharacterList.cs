@@ -44,6 +44,14 @@ namespace RGLabs.Stage.UI
                 .ThrottleFrame(1)
                 .Subscribe(x=> _placedUnit.text = $"{x.current}/{x.max}")
                 .AddTo(this);
+
+            selected
+                .Subscribe(x =>
+                {
+                    foreach (var item in _items) 
+                        item.SetHighlight(item == x);
+                })
+                .AddTo(this);
             
             this.SubscribeButton(_close, Close);
             this.SubscribeButton(_reset, _formation.Clear);
