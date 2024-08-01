@@ -34,9 +34,9 @@ namespace RGLabs.Lobby.UI.Popup
 
         [SerializeField] private UIItemSlot _goldSlot;
         [SerializeField] private Button _confirm;
-        
+
         public UniTask<GrowthResult> GrowthTask => _completionSource.Task;
-        
+
         private UniTaskCompletionSource<GrowthResult> _completionSource;
         private GrowthResult _result;
 
@@ -48,7 +48,7 @@ namespace RGLabs.Lobby.UI.Popup
         protected override void OnAwake()
         {
             base.OnAwake();
-            
+
             Storage.userRepository.gold
                 .Subscribe(UpdateGoldSlot)
                 .AddTo(this);
@@ -70,7 +70,7 @@ namespace RGLabs.Lobby.UI.Popup
             _expSlotM.OnClick += (x) => _selected.Value = (UIItemSlot)x;
             _expSlotL.OnClick += (x) => _selected.Value = (UIItemSlot)x;
 
-            this.SubscribeButton(_confirm, ()=> Confirm().Forget());
+            this.SubscribeButton(_confirm, () => Confirm().Forget());
         }
 
         public override async UniTask Open(params object[] parameters)
@@ -147,21 +147,23 @@ namespace RGLabs.Lobby.UI.Popup
                 return;
             }
 
-            Calculate(_unit.Value.lv, out int lv, out int exp, out int maxExp, out int gold);
+            var unit = _unit.Value;
+            Calculate(unit.lv, unit.exp, out int lv, out int exp, out int gold);
 
-            _goldSlot.QuantityLabelColor = gold > Storage.userRepository.gold.Value
-                ? StringHelper.NegativeColor
-                : Color.white;
-            
+            bool hasEnoughGold = gold <= Storage.userRepository.gold.Value;
+            _goldSlot.QuantityLabelColor = hasEnoughGold 
+                ? Color.white
+                : StringHelper.NegativeColor;
+
             _gold.text = gold.CurrencyText();
             _level.SetOverride(lv, exp);
+            _confirm.interactable = hasEnoughGold;
         }
 
-        private void Calculate(int startLv, out int endLv, out int endExp, out int maxExp, out int requireGold)
+        private void Calculate(int startLv, int startExp, out int endLv, out int endExp, out int requireGold)
         {
-            endLv = 0;
-            endExp = 0;
-            maxExp = 0;
+            endLv = startLv;
+            endExp = startExp;
             requireGold = 0;
 
             var option = _selected.Value.Entity.GetConsumableOption();
@@ -172,7 +174,6 @@ namespace RGLabs.Lobby.UI.Popup
             while (db.TryFind(lv++, out var entity) && endExp - entity.exp > 0)
             {
                 endLv = entity.Id + 1;
-                maxExp = entity.exp;
                 requireGold += entity.gold;
 
                 endExp -= entity.exp;
@@ -194,7 +195,7 @@ namespace RGLabs.Lobby.UI.Popup
         {
             if (_selected.Value.Item is not Item item)
                 return;
-            
+
             var result = await _service.LevelUp(_unit.Value.id, item.ItemId, (int)_slider.value);
             var unit = result.transition.unit;
 
@@ -204,15 +205,15 @@ namespace RGLabs.Lobby.UI.Popup
                 _expSlotM,
                 _expSlotL
             }.FirstOrDefault(x => x.Item.ItemId == result.leftItem.ItemId)!;
-            
+
             slot.Init(result.leftItem)
                 .Forget();
-            
+
             var repository = Storage.userRepository;
             repository.Update(unit);
             repository.Update(result.leftCurrency);
             repository.Update(result.leftItem);
-            
+
             _unit.Value = unit;
             _selected.Value = slot;
             _result = result;

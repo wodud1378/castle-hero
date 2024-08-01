@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace RGLabs.Utility
@@ -14,7 +15,12 @@ namespace RGLabs.Utility
         public static string WithPositiveColor(this string text) => text.WithColor(PositiveColor);
         public static string WithNegativeColor(this string text) => text.WithColor(NegativeColor);
         
-        public static string WithColor(this string text, Color color) => string.Format(ColoredStringTag, color.Hex(), text);
+        public static string WithColor(this string text, Color color)
+        {
+            var stripped = Regex.Replace(text, @"<color=.*?>|</color>", string.Empty); 
+            
+            return string.Format(ColoredStringTag, color.Hex(), stripped);
+        }
 
         private static string Hex(this Color color)
         {

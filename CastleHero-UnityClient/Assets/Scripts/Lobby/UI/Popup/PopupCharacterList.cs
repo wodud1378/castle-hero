@@ -35,7 +35,7 @@ namespace RGLabs.Lobby.UI.Popup
 
         public enum SortOption
         {
-            Id,
+            Id = -1,
             HigherLevel,
             LowerLevel,
             HigherRate,
@@ -106,6 +106,11 @@ namespace RGLabs.Lobby.UI.Popup
                 .Select(toggle => Enum.Parse<Tab>(toggle.gameObject.name))
                 .Subscribe(selected => tab.Value = selected)
                 .AddTo(this);
+
+            _sortOptions.onValueChanged
+                .AsObservable()
+                .Subscribe(x => sortOption.Value = (SortOption)x)
+                .AddTo(this);
             
             tab.CombineLatest(sortOption, (t, s) => (t, s))
                 .ThrottleFrame(1)
@@ -114,6 +119,7 @@ namespace RGLabs.Lobby.UI.Popup
             
             Storage.userRepository.characters
                 .ChangeAsObservable()
+                .ThrottleFrame(1)
                 .Subscribe(_=> UpdateUI())
                 .AddTo(this);
 

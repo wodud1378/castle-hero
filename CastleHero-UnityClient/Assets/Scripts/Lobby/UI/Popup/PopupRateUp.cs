@@ -135,15 +135,17 @@ namespace RGLabs.Lobby.UI.Popup
                 : text.WithNegativeColor();
 
             int requireGold = rateEntity.gold;
-            bool isGoldEnough = requireGold <= Storage.userRepository.gold.Value;
+            bool hasEnoughGold = requireGold <= Storage.userRepository.gold.Value;
             var goldText = requireGold.CurrencyText();
-            _requireGold.text = isGoldEnough
+            _requireGold.text = hasEnoughGold
                 ? goldText.WithColor(Color.white)
                 : goldText.WithNegativeColor();
 
-            _goldSlot.QuantityLabelColor = isGoldEnough
+            _goldSlot.QuantityLabelColor = hasEnoughGold
                 ? Color.white
                 : StringHelper.NegativeColor;
+
+            _confirm.interactable = hasEnoughGold;
 
             var unitTask = _unitSlot.Init(unitInfo, unitEntity);
             var soulTask = _soulSlot.Init(item);
