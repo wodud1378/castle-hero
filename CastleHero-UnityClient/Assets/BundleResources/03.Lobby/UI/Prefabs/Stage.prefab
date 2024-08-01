@@ -1297,7 +1297,6 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  _dragField: {fileID: 6733889618417199781}
   _animator: {fileID: 5350016506180162215}
   _formation: {fileID: 0}
   _close: {fileID: 6897863499587620446}
@@ -2238,6 +2237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _formation: {fileID: 0}
+  _characterList: {fileID: 2519900625815743659}
   _validationCircle: {fileID: 0}
   _validColor: {r: 0, g: 1, b: 0, a: 0.33333334}
   _invalidColor: {r: 1, g: 0, b: 0, a: 0.33333334}
@@ -2762,6 +2762,7 @@ MonoBehaviour:
   _spriteCollection: {fileID: 4859838879178708124}
   _animator: {fileID: 1332606653677324598}
   _characterList: {fileID: 2519900625815743659}
+  _dragField: {fileID: 6733889618417199781}
   _startConfig: {fileID: 4012403386394649557}
   _back: {fileID: 884576646772199329}
 --- !u!95 &1332606653677324598

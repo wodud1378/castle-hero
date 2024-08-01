@@ -39,7 +39,6 @@ namespace RGLabs.Common.UI
                     _hasOverride,
                     (l, e, nL, nE, b)
                         => ((l, e), (nL, nE), b))
-                .ThrottleFrame(1)
                 .Subscribe(OnDataChanged)
                 .AddTo(this);
         }
