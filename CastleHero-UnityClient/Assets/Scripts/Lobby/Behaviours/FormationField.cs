@@ -131,7 +131,7 @@ namespace RGLabs.Lobby.Behaviours
 
         public bool TryRegister(UnitBehaviour unit, int layer, bool isExist)
         {
-            if (!unit.IsValid())
+            if (unit == null)
                 return false;
             
             if (!IsValid(unit.Collider, layer))

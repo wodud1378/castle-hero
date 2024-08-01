@@ -1,29 +1,22 @@
-using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using RGLabs.Common;
 using RGLabs.Common.UI;
-using RGLabs.Data;
 using RGLabs.Lobby.Behaviours;
 using RGLabs.Network.Shared;
-using RGLabs.Unit.Behaviours;
-using RGLabs.Unit.Factory;
 using RGLabs.Utility;
 using TMPro;
 using UniRx;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace RGLabs.Stage.UI
 {
-    public class UIConfigCharacterList : UICharacterList, IPointerDownHandler, IDragHandler, IPointerUpHandler
+    public class UIConfigCharacterList : UICharacterList
     {
         private static readonly int UnFold = Animator.StringToHash("UnFold");
         private static readonly int Fold = Animator.StringToHash("Fold");
 
-        [SerializeField] private UIConfigDragField _dragField;
         [SerializeField] private Animator _animator;
         [SerializeField] private FormationField _formation;
         [SerializeField] private Button _close;
@@ -32,13 +25,14 @@ namespace RGLabs.Stage.UI
         [SerializeField] private TMP_Text _placedUnit;
         [SerializeField] private float _dragThreshold = 0.3f;
 
+        public readonly BoolReactiveProperty isOpened = new(false);
+        public readonly ReactiveProperty<UICharacterSlot> selected = new(null);
+        
         private Vector2 _startAt;
         private Vector2 _current;
 
         private float _holdTime;
         private bool _onHold;
-
-        private UnitFactory _factory;
 
         private CancellationTokenSource _ctSource;
         private int _originLayer;
@@ -56,14 +50,7 @@ namespace RGLabs.Stage.UI
             this.SubscribeButton(_auto, _formation.AutoPlacement);
         }
 
-        public void Open()
-        {
-            _dragField.gameObject.SetActive(true);
-            
-            _factory = Storage.unitFactory;
-            
-            Entrance();
-        }
+        public void Open() => Entrance();
 
         private void Entrance()
         {
@@ -73,16 +60,12 @@ namespace RGLabs.Stage.UI
                 cam.transform.DOMoveY(-3.75f, 0.25f);
                 cam.DOOrthoSize(12.5f, 0.25f);  
             }
-            
+
             _animator.SetTrigger(UnFold);
+            isOpened.Value = true;
         }
 
-        private void Close()
-        {
-            _dragField.gameObject.SetActive(false);
-
-            Exit();
-        }
+        private void Close() => Exit();
 
         private void Exit()
         {
@@ -94,68 +77,25 @@ namespace RGLabs.Stage.UI
             }
             
             _animator.SetTrigger(Fold);
+            isOpened.Value = false;
 
             TaskHelper.OnAnimationEnd(_animator, Fold)
                 .ContinueWith(Dispose);
         }
-        
-        public void OnPointerDown(PointerEventData eventData)
-        {
-            _startAt = eventData.position;
-
-            PressTask(eventData);
-        }
-        
-        public void OnDrag(PointerEventData eventData)
-        {
-            if (Vector2.Distance(_startAt, eventData.position) > _dragThreshold)
-            {
-                _ctSource?.Cancel();
-            }
-        }
-
-        public void OnPointerUp(PointerEventData eventData) => _ctSource?.Cancel();
-
-        private async void PressTask(PointerEventData eventData)
-        {
-            _ctSource = new();
-
-            await UniTask
-                .Delay(TimeSpan.FromSeconds(0.2f), cancellationToken: _ctSource.Token)
-                .SuppressCancellationThrow();
-
-            if (_ctSource.Token.IsCancellationRequested)
-                return;
-
-            var slot = GetItem(eventData);
-            if (slot == null)
-                return;
-            
-            _dragField.Create(slot);
-            
-            var obj = _dragField.gameObject;
-            eventData.pointerDrag = obj;
-            ExecuteEvents.Execute(obj, eventData, ExecuteEvents.dragHandler);
-        }
-        
-        private async UniTask<UnitBehaviour> CreateFromPosition(PointerEventData eventData)
-        {
-            var slot = GetItem(eventData);
-            if (slot == null)
-                return null;
-
-            var info = slot.Info;
-            if(info.id == Constants.BarricadeId)
-                return await _factory.CreateBarricade(slot.Info, slot.transform.position);
-            else
-                return await _factory.Create(slot.Info, slot.transform.position);
-        }
 
         protected override UniTask SetItem(UICharacterSlot slot, UnitInfo data)
         {
-            slot.Clickable = false;
+            slot.OnClick += OnClickSlot;
             
             return base.SetItem(slot, data);
+        }
+
+        private void OnClickSlot(UISlot slot)
+        {
+            if (slot is not UICharacterSlot characterSlot)
+                return;
+
+            selected.Value = characterSlot;
         }
     }
 }

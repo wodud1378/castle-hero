@@ -12,8 +12,6 @@ namespace RGLabs.Common.UI
     public class UISlot : MonoBehaviour, IDisposable, IPointerClickHandler
     {
         public event Action<UISlot> OnClick;
-
-        public Graphic rayTarget;
         public Image icon;
         public TMP_Text label;
 
@@ -24,16 +22,6 @@ namespace RGLabs.Common.UI
         }
 
         private CancellationTokenSource _ctSource;
-
-        public bool Clickable
-        {
-            get => rayTarget != null && rayTarget.enabled;
-            set
-            {
-                if(rayTarget != null)
-                    rayTarget.enabled = value;
-            }
-        }
 
         public async UniTask Init(string spritePath, string text = "")
         {
@@ -78,11 +66,5 @@ namespace RGLabs.Common.UI
         }
 
         public void OnPointerClick(PointerEventData eventData) => OnClick?.Invoke(this);
-
-        protected virtual void OnValidate()
-        {
-            if(rayTarget == null)
-                rayTarget = GetComponent<Graphic>();
-        }
     }
 }

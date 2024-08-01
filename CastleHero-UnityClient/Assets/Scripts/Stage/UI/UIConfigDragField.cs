@@ -1,4 +1,6 @@
+using System;
 using System.Threading;
+using Cysharp.Threading.Tasks;
 using RGLabs.Common;
 using RGLabs.Common.UI;
 using RGLabs.Data;
@@ -14,43 +16,18 @@ namespace RGLabs.Stage.UI
     public class UIConfigDragField : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler,
         IPointerClickHandler
     {
-        public enum UnitFrom
-        {
-            Slot,
-            Field
-        }
-        
         [SerializeField] private FormationField _formation;
+        [SerializeField] private UIConfigCharacterList _characterList;
         [SerializeField] private PolygonDrawer _validationCircle;
         [SerializeField] private Color _validColor;
         [SerializeField] private Color _invalidColor;
 
-        private UnitFrom _unitFrom;
         private readonly ReactiveProperty<UnitBehaviour> _unit = new();
         private CancellationTokenSource _ctSource;
         private int _originLayer;
 
         private bool _onDrag;
-
-        public async void Create(UICharacterSlot slot)
-        {
-            var factory = Storage.unitFactory;
-
-            var info = slot.Info;
-            UnitBehaviour unit;
-            if(info.id == Constants.BarricadeId)
-                unit = await factory.CreateBarricade(info, slot.transform.position);
-            else
-                unit = await factory.Create(info, slot.transform.position);
-
-            SetUnit(UnitFrom.Slot, unit);
-        }
         
-        private void SetUnit(UnitFrom unitFrom, UnitBehaviour unit)
-        {
-            _unitFrom = unitFrom;
-            _unit.Value = unit;
-        }
         
         private void Awake()
         {
@@ -92,7 +69,7 @@ namespace RGLabs.Stage.UI
             if (!_formation.InArea(position))
                 return;
 
-            SetUnit(UnitFrom.Field, FindFromRay(position));
+            _unit.Value = FindFromRay(position);
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -113,7 +90,7 @@ namespace RGLabs.Stage.UI
             if (hold == null)
                 return;
 
-            if (!_formation.TryRegister(hold, _originLayer, _unitFrom == UnitFrom.Field))
+            if (!_formation.TryRegister(hold, _originLayer, true))
             {
                 hold.DestroySelf();
                 _unit.Value = null;
@@ -128,8 +105,7 @@ namespace RGLabs.Stage.UI
 
             _validationCircle.Color = _validColor;
         }
-
-
+        
         private UnitBehaviour FindFromRay(Vector2 position)
         {
             var hit = Physics2D.Raycast(position, Vector2.zero);
@@ -138,14 +114,50 @@ namespace RGLabs.Stage.UI
 
             return hit.collider.GetComponent<UnitBehaviour>();
         }
+        
+        private async UniTaskVoid Create(UICharacterSlot slot, Vector2 position)
+        {
+            var factory = Storage.unitFactory;
+
+            var info = slot.Info;
+            UnitBehaviour unit;
+            if(info.id == Constants.BarricadeId)
+                unit = await factory.CreateBarricade(info, position);
+            else
+                unit = await factory.Create(info, position);
+
+            if (_formation.TryRegister(unit, _originLayer, false))
+            {
+                unit.Core.movement.Default = unit.position;
+                return;
+            }
+
+            unit.DestroySelf();
+            
+            _validationCircle.Color = _invalidColor;
+
+            await UniTask.Delay(TimeSpan.FromSeconds(0.25f));
+            
+            _validationCircle.Color = _validColor;
+        }
 
         public void OnPointerClick(PointerEventData eventData)
         {
             if (!_onDrag)
             {
-                var selected = FindFromRay(eventData.position.ScreenToWorld());
-                if (selected != null)
-                    _formation.Remove(selected);
+                var position = eventData.position.ScreenToWorld();
+                var slot = _characterList.selected.Value;
+                if (slot != null)
+                {
+                    Create(slot, position).Forget();
+                    _characterList.selected.Value = null;
+                }
+                else
+                {
+                    var selected = FindFromRay(position);
+                    if (selected != null)
+                        _formation.Remove(selected);    
+                }
             }
 
             _onDrag = false;
