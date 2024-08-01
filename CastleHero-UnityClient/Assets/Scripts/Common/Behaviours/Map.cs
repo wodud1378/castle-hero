@@ -1,5 +1,8 @@
+using System;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data;
+using RGLabs.Lobby.Behaviours;
+using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -10,15 +13,19 @@ namespace RGLabs.Common.Behaviours
     {
         private string _currentMapName;
         private GameObject _map;
+        private IDisposable _subscription;
 
         private void Awake()
         {
             Context.OnLoadCompleteQueue.Enqueue(Init);
+            
+            this.SubscribeMessage<StartGame>(_=> _subscription?.Dispose());
         }
 
         private void Init()
         {
-           Storage.userRepository.focusedStage
+           _subscription = Storage.userRepository.focusedStage
+               .ThrottleFrame(1)
                .Subscribe(OnStageChanged)
                .AddTo(this);
         }
