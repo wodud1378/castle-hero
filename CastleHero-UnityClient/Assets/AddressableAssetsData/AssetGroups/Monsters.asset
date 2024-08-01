@@ -82,6 +82,131 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec43836aff83fb241b124cda9057e4cd
+    m_Address: Monster_20005
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2dcdf89dd63ede84082b60c399ae539e
+    m_Address: Monster_20006
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae103238040681e4595b7f864ed25a94
+    m_Address: Monster_20011
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 96de5326e551397468b2931228c841a3
+    m_Address: Monster_20012
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8801ff7309edda441a3426935bdea099
+    m_Address: Monster_20043
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 78de60cef1400354780947244e22829f
+    m_Address: Monster_20044
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d5186558ddea124f90cf525f4c4a02a
+    m_Address: Monster_20045
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a8e6a2be1444b94fa57d4e27d50f36d
+    m_Address: Monster_20046
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19c5eaed94ef0024ba7f0f57673be2f6
+    m_Address: Monster_20047
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74bda30eeef4f4742a5396116e4bc0ac
+    m_Address: Monster_20048
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2ef7c3ad17844a409cd1213a58fe59d
+    m_Address: Monster_20049
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2496ac716a867e3459d3a9e66e6f8268
+    m_Address: Monster_20050
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0bac52d6388d96f49bb9bcacee8183a4
+    m_Address: Monster_20051
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 47ac996e1bd89404c8c2c78044721990
+    m_Address: Monster_20052
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: edee175f4473aea4b8947636e54849cb
+    m_Address: Monster_20053
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24c628abb40971448bfb6a936416ff42
+    m_Address: Monster_20054
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 32228f5d3f7d12748bfe10d585bccec8
+    m_Address: Monster_20055
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: adc96aee1eeaca449840b2c77c39257e
+    m_Address: Monster_Archer
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 25bae5e35f394bb4e95a06945347487e
+    m_Address: Monster_Bandit
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f54832912df86b5479bd841d671f0d24
+    m_Address: Monster_Farmer
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8aa8ccc00d6713c4eb5ad3bb69366a93
+    m_Address: Monster_HeavyInfantry
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 824054976863dc142ab40824be47e720
+    m_Address: Monster_Infantry
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c5c3505816089642bb2a811790c8428
+    m_Address: Monster_Knight
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7660048353bf3d7429210e6bc7eabf16
+    m_Address: Monster_Magician
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4564810692c0d9f428a2cbb279da5017
+    m_Address: Monster_Spirit_Lesser
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 5929c0cb8d0d07d4aa9632acaa1413c5, type: 2}
   m_SchemaSet:
