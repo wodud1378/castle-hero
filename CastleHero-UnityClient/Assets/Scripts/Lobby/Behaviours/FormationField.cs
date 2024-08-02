@@ -3,6 +3,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using PolyNav;
 using RGLabs.Common;
+using RGLabs.Common.Behaviours;
 using RGLabs.Data;
 using RGLabs.Data.Repositories;
 using RGLabs.Network;
@@ -40,8 +41,8 @@ namespace RGLabs.Lobby.Behaviours
         {
             _userRepo = Storage.userRepository;
             _gameRepo = Storage.inGameRepository;
-            _castleFactory = Storage.castleFactory;
-            _unitFactory = Storage.unitFactory;
+            _castleFactory = Context.castleFactory;
+            _unitFactory = Context.unitFactory;
 
             _gameRepo.characters
                 .ChangeAsObservable()

@@ -1,12 +1,10 @@
 using System;
 using System.Linq;
+using RGLabs.Common.Behaviours;
 using RGLabs.Data;
-using RGLabs.Data.DB;
 using RGLabs.Data.Model;
 using RGLabs.InGame.System;
 using RGLabs.InGame.System.Wave;
-using RGLabs.Unit.Behaviours;
-using RGLabs.Unit.Factory;
 using RGLabs.Utility;
 using UniRx;
 using UnityEditor;
@@ -69,7 +67,7 @@ namespace RGLabs.InGame.Behaviours
 
             _updates[0] = _main;
 
-            var factory = Storage.unitFactory;
+            var factory = Context.unitFactory;
             var castle = Storage.inGameRepository.castle.Value;
             for (int i = 0; i < length; ++i)
             {

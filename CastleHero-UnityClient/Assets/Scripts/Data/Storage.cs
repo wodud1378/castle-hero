@@ -21,9 +21,6 @@ namespace RGLabs.Data
         public static UserRepository userRepository;
         public static InGameRepository inGameRepository = new();
         public static DBCollections db;
-        public static PoolContainer poolContainer;
-        public static UnitFactory unitFactory;
-        public static CastleFactory castleFactory;
         
         public static Entrance entranceData = new() { state = State.Lobby, };
 
@@ -31,10 +28,6 @@ namespace RGLabs.Data
         {
             userRepository = new UserRepository(nickname, userData);
             db = database;
-            
-            poolContainer = new();
-            unitFactory = new UnitFactory();
-            castleFactory = new CastleFactory();
         }
     }
 }

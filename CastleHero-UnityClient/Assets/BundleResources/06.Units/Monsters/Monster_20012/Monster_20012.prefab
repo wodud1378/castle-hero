@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Monster_20012
       objectReference: {fileID: 0}
+    - target: {fileID: 6927557205221649431, guid: a1a723246b262b640ad3090719ba89bf, type: 3}
+      propertyPath: _enableAttack
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7174810689259680027, guid: a1a723246b262b640ad3090719ba89bf, type: 3}
       propertyPath: m_Controller
       value: 

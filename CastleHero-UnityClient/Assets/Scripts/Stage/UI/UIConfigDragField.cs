@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common;
+using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI;
 using RGLabs.Data;
 using RGLabs.Lobby.Behaviours;
@@ -117,14 +118,15 @@ namespace RGLabs.Stage.UI
         
         private async UniTaskVoid Create(UICharacterSlot slot, Vector2 position)
         {
-            var factory = Storage.unitFactory;
-
+            var factory = Context.unitFactory;
             var info = slot.Info;
             UnitBehaviour unit;
             if(info.id == Constants.BarricadeId)
                 unit = await factory.CreateBarricade(info, position);
             else
                 unit = await factory.Create(info, position);
+
+            await UniTask.NextFrame();
 
             if (_formation.TryRegister(unit, _originLayer, false))
             {
@@ -150,7 +152,6 @@ namespace RGLabs.Stage.UI
                 if (slot != null)
                 {
                     Create(slot, position).Forget();
-                    _characterList.selected.Value = null;
                 }
                 else
                 {
@@ -158,6 +159,8 @@ namespace RGLabs.Stage.UI
                     if (selected != null)
                         _formation.Remove(selected);    
                 }
+                
+                _characterList.selected.Value = null;
             }
 
             _onDrag = false;

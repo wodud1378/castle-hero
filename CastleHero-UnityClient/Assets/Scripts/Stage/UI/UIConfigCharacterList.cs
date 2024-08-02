@@ -1,7 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using RGLabs.Common.UI;
+using RGLabs.Data;
 using RGLabs.Lobby.Behaviours;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
@@ -27,7 +31,7 @@ namespace RGLabs.Stage.UI
 
         public readonly BoolReactiveProperty isOpened = new(false);
         public readonly ReactiveProperty<UICharacterSlot> selected = new(null);
-        
+
         private Vector2 _startAt;
         private Vector2 _current;
 
@@ -39,23 +43,37 @@ namespace RGLabs.Stage.UI
 
         private void Awake()
         {
+            Storage.inGameRepository.characters
+                .ChangeAsObservable()
+                .ThrottleFrame(1)
+                .Subscribe(_ => Init(Storage.userRepository.characters))
+                .AddTo(this);
+
             _formation.placed
                 .CombineLatest(_formation.capacity, (current, max) => (current, max))
                 .ThrottleFrame(1)
-                .Subscribe(x=> _placedUnit.text = $"{x.current}/{x.max}")
+                .Subscribe(x => _placedUnit.text = $"{x.current}/{x.max}")
                 .AddTo(this);
 
             selected
                 .Subscribe(x =>
                 {
-                    foreach (var item in _items) 
+                    foreach (var item in _items)
                         item.SetHighlight(item == x);
                 })
                 .AddTo(this);
-            
+
             this.SubscribeButton(_close, Close);
             this.SubscribeButton(_reset, _formation.Clear);
             this.SubscribeButton(_auto, _formation.AutoPlacement);
+        }
+
+        public override UniTask Init(IEnumerable<UnitInfo> collection)
+        {
+            var exist = Storage.inGameRepository.characters;
+
+            return base.Init(collection
+                .Where(unit => exist.FirstOrDefault(x => x.Id == unit.id) == null));
         }
 
         public void Open() => Entrance();
@@ -66,7 +84,7 @@ namespace RGLabs.Stage.UI
             if (cam != null)
             {
                 cam.transform.DOMoveY(-3.75f, 0.25f);
-                cam.DOOrthoSize(12.5f, 0.25f);  
+                cam.DOOrthoSize(12.5f, 0.25f);
             }
 
             _animator.SetTrigger(UnFold);
@@ -83,7 +101,7 @@ namespace RGLabs.Stage.UI
                 cam.transform.DOMoveY(0, 0.25f);
                 cam.DOOrthoSize(15f, 0.25f);
             }
-            
+
             _animator.SetTrigger(Fold);
             isOpened.Value = false;
 
@@ -94,7 +112,7 @@ namespace RGLabs.Stage.UI
         protected override UniTask SetItem(UICharacterSlot slot, UnitInfo data)
         {
             slot.OnClick += OnClickSlot;
-            
+
             return base.SetItem(slot, data);
         }
 

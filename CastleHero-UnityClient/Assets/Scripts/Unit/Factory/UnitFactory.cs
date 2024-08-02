@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Behaviours;
 using RGLabs.Common.Pattern;
 using RGLabs.Data;
 using RGLabs.Data.DB;
@@ -10,7 +11,7 @@ namespace RGLabs.Unit.Factory
 {
     public class UnitFactory : IUnitFactory
     {
-        private readonly PoolContainer _container = Storage.poolContainer;
+        private readonly PoolContainer _container = Context.poolContainer;
         private readonly UnitDB _unitDB = Storage.db.units;
         private readonly UnitBalanceDB _balanceDB = Storage.db.balances;
 

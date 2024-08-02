@@ -1,5 +1,5 @@
 using Cysharp.Threading.Tasks;
-using RGLabs.Data;
+using RGLabs.Common.Behaviours;
 using RGLabs.Unit.Behaviours;
 using UnityEngine;
 
@@ -116,7 +116,7 @@ namespace RGLabs.InGame.Effects
             if (string.IsNullOrEmpty(prefab))
                 return null;
             
-            var container = Storage.poolContainer;
+            var container = Context.poolContainer;
             var item = await container.GetItem(prefab);
             if (item == null)
                 return null;

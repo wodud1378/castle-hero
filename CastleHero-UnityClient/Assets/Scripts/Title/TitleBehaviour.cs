@@ -19,10 +19,11 @@ namespace RGLabs.Title
         public bool push;
         public bool nightPush;
     }
-    
+
     public class TitleBehaviour : MonoBehaviour, IBootServiceHandler
     {
         [SerializeField] private BootConfig _config;
+        [SerializeField] private PopupCommon _error;
         [SerializeField] private PopupSelectLoginPlatform _selectPlatform;
         [SerializeField] private PopupPolicy _policyPopup;
         [SerializeField] private PopupSetNickname _setNickname;
@@ -35,7 +36,12 @@ namespace RGLabs.Title
 
         public UniTask OnError(Response response)
         {
-            throw new NotImplementedException();
+            Debug.LogError(
+                $"[result] :{response.result}\n" +
+                $"[code] : {response.statusCode}" +
+            $"[raw] : {response.rawData.ToJson()}");
+            
+            return UniTask.CompletedTask;
         }
 
         public UniTask OnMaintenance()
@@ -51,7 +57,7 @@ namespace RGLabs.Title
         public async UniTask<ILoginService> ProvideLoginService()
         {
             _selectPlatform.gameObject.SetActive(true);
-            
+
 #if UNITY_EDITOR
             await _selectPlatform.Open(Platform.Guest);
 #elif UNITY_ANDROID
@@ -65,7 +71,7 @@ namespace RGLabs.Title
         public async UniTask<string> SetNickName()
         {
             _setNickname.gameObject.SetActive(true);
-            
+
             await _setNickname.Open();
 
             return await _setNickname.SetNicknameTask;

@@ -18,7 +18,7 @@ namespace RGLabs.Common.UI
         
         protected readonly List<TSlot> _items = new();
 
-        public virtual UniTask Init(IEnumerable<TData> collection, Action<UISlot> onClick = null)
+        public virtual UniTask Init(IEnumerable<TData> collection)
         {
             Clear();
 

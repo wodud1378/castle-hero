@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using RGLabs.Common.Flow;
+using RGLabs.Common.Pattern;
 using RGLabs.Common.UI;
 using RGLabs.Data;
+using RGLabs.Unit.Factory;
 using RGLabs.Utility;
 using UniRx;
 using UniRx.Triggers;
@@ -17,6 +19,10 @@ namespace RGLabs.Common.Behaviours
         public static readonly BackButton Back = new();
         public static readonly Transition Transition = new();
 
+        public static PoolContainer poolContainer;
+        public static UnitFactory unitFactory;
+        public static CastleFactory castleFactory;
+        
         public static StartButton startButton;
         public static PopupManager popupManager;
         public static UILock uiLock;
@@ -29,21 +35,33 @@ namespace RGLabs.Common.Behaviours
         private void Load()
         {
             Time.timeScale = 1f;
-            
-            uiLock = _uiLock;
-            startButton = _startButton;
-            startButton.StageSelect.Init();
-            
-            popupManager = _popupManager;
-            
-            InitSubscriptions();
-
-            while (OnLoadCompleteQueue.Count > 0)
+         
+            try
             {
-                OnLoadCompleteQueue.Dequeue()?.Invoke();
-            }
+                poolContainer = new();
+                unitFactory = new UnitFactory();
+                castleFactory = new CastleFactory();
             
-            SetEntranceTransition();
+                uiLock = _uiLock;
+                startButton = _startButton;
+                startButton.StageSelect.Init();
+            
+                popupManager = _popupManager;
+            
+                InitSubscriptions();
+
+                while (OnLoadCompleteQueue.Count > 0)
+                {
+                    OnLoadCompleteQueue.Dequeue()?.Invoke();
+                }
+            
+                SetEntranceTransition();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+                throw;
+            }
         }
         
         private void Start()

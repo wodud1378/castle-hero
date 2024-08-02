@@ -22,15 +22,14 @@ namespace RGLabs.InGame.UI
 
         private UIGlobalSkillSlot _selected;
 
-        public override async UniTask Init(IEnumerable<GlobalSkill.Parameter> collection,
-            Action<UISlot> onClick = null)
+        public override async UniTask Init(IEnumerable<GlobalSkill.Parameter> collection)
         {
             _rangeDrawer.Init();
             _rangeDrawer.Color = _rangeColor;
             
             var parameters = collection as GlobalSkill.Parameter[] ?? collection.ToArray();
 
-            await base.Init(parameters, onClick);
+            await base.Init(parameters);
             
             int length = parameters.Length;
             var castle = Storage.inGameRepository.castle.Value;

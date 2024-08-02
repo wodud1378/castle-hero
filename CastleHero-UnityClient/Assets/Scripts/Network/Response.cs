@@ -35,11 +35,9 @@ namespace RGLabs.Network
                 ? raw.FlattenRows()
                 : null;
 
-#if UNITY_EDITOR
             Debug.Log(raw.HasReturnValue()
                 ? raw.GetReturnValuetoJSON().ToJson()
                 : raw.GetMessage());
-#endif
         }
 
         private ResultCode GetResult(BackendReturnObject obj)
@@ -87,9 +85,7 @@ namespace RGLabs.Network
                     : default;
             }
 
-#if UNITY_EDITOR
             Debug.Log(data.ToJson());
-#endif
         }
     }
 }

@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Behaviours;
 using RGLabs.Common.Pattern;
 using RGLabs.Data;
 using RGLabs.Data.DB;
@@ -14,7 +15,7 @@ namespace RGLabs.Unit.Factory
         private const string CastlePrefab = "Castle_01/Castle_01.prefab";
         
         private readonly CastleDB _db = Storage.db.castles;
-        private readonly PoolContainer _container = Storage.poolContainer;
+        private readonly PoolContainer _container = Context.poolContainer;
 
         public async UniTask<UnitBehaviour> Create(int id, int lv, int grade, Vector2 position)
         {

@@ -95,7 +95,7 @@ namespace RGLabs.InGame.UI
                 _ => default
             };
             
-            uiDamage.Container = Storage.poolContainer;
+            uiDamage.Container = Context.poolContainer;
             uiDamage.Show((int)result.Amount, pos);
         }
 
@@ -142,7 +142,7 @@ namespace RGLabs.InGame.UI
             if (string.IsNullOrEmpty(prefab))
                 return null;
 
-            return await Storage.poolContainer.GetItem<UIDamage>(prefab);
+            return await Context.poolContainer.GetItem<UIDamage>(prefab);
         }
 
         public void Init()

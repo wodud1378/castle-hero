@@ -36,6 +36,8 @@ namespace RGLabs.Unit.Skill
                 case 10032: buildMethod = Build10032; break;
                 case 10033: buildMethod = Build10033; break;
                 case 10034: buildMethod = Build10034; break;
+                case 20009: buildMethod = Build20009; break;
+                case 20012: buildMethod = Build20012; break;
                 default:
                     return null;
             }
@@ -185,6 +187,22 @@ namespace RGLabs.Unit.Skill
         }
 
         private static ISkill Build10034(SkillBuilder builder)
+        {
+            return builder
+                .SetTargeting(Targeting.Self, 1)
+                .SetBound(IDetection.Option.Circle, Targeting.Alley, 0)
+                .BuildActiveSkill();
+        }
+
+        private static ISkill Build20009(SkillBuilder builder)
+        {
+            return builder
+                .SetTargeting(Targeting.Self, 1)
+                .SetBound(IDetection.Option.Circle, Targeting.Alley, 0)
+                .BuildActiveSkill();
+        }
+        
+        private static ISkill Build20012(SkillBuilder builder)
         {
             return builder
                 .SetTargeting(Targeting.Self, 1)
