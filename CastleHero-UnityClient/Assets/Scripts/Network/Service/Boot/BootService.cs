@@ -30,6 +30,8 @@ namespace RGLabs.Network.Service.Boot
 
         public async UniTask Start()
         {
+            Debug.Log("부팅 시작");
+
             await Init();
             await CheckVersion();
 
@@ -45,7 +47,13 @@ namespace RGLabs.Network.Service.Boot
             var autoLogin = await _autoLoginService.Login();
             if (!autoLogin.IsSuccess)
             {
+                Debug.Log("자동 로그인 실패");
+
                 var loginService = await _handler.ProvideLoginService();
+
+                if (loginService is not GuestLoginService)
+                    Debug.Log("페더레이션 로그인 진행");
+
                 var loginResponse = await loginService.Login();
                 var code = loginResponse.statusCode;
                 newUser = code == 201;
@@ -53,14 +61,25 @@ namespace RGLabs.Network.Service.Boot
                     await _handler.CheckPolicy();
             }
 
+            Debug.Log("로그인 성공");
+
             var nickname = await GetNickname();
+
+            Debug.Log(newUser
+                ? "신규 유저 로그인"
+                : "기존 유저 로그인");
+
             var userData = newUser
                 ? (await BackendWrapper.NewUser()).data
                 : (await BackendWrapper.GetUserData()).data;
 
+            Debug.Log("데이터 불러오기 완료");
+
             await InitStorage(nickname, userData);
 
             _handler.OnInitDone();
+
+            Debug.Log("부팅 성공");
         }
 
         private async UniTask Init()
@@ -84,11 +103,16 @@ namespace RGLabs.Network.Service.Boot
         private async UniTask CheckVersion()
         {
 #if !UNITY_EDITOR
-            var version = await BackendWrapper.CheckVersion();
-            if(version.result != ResultCode.Success)
-                await _handler.OnError(version);
+            var bro = Backend.Utils.GetLatestVersion();
+            var jsonData = bro.GetReturnValuetoJSON();
+            
+            Debug.Log($"[GetLatestVersion] {bro.IsSuccess()}, {jsonData.ToJson()}");
 
-            if (version.data.type == 2)
+            if (Application.version == jsonData["version"].ToString())
+                return;
+
+            bool foreUpdate = int.Parse(jsonData["type"].ToString()) == 2;
+            if(foreUpdate)
                 await _handler.OnForceUpdate();
 #endif
         }
@@ -103,9 +127,11 @@ namespace RGLabs.Network.Service.Boot
                 {
                     nickname = await _handler.SetNickName();
                     var response = await BackendWrapper.UpdateNickname(nickname);
-                    
+
                     isSuccess = response.IsSuccess;
                 }
+
+                Debug.Log("닉네임 설정 완료");
             }
 
             return nickname;

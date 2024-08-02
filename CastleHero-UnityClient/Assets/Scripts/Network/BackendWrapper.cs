@@ -87,7 +87,7 @@ namespace RGLabs.Network
         public static UniTask<Response<Policy>> GetPolicy()
             => Call<Policy>(Backend.Policy.GetPolicyV2);
 
-        public static UniTask<Response> UpdateNickname(string nickname) 
+        public static UniTask<Response> UpdateNickname(string nickname)
             => Call(onResult => Backend.BMember.UpdateNickname(nickname, onResult.Invoke));
 
         public static UniTask<Response<ChartInfo[]>> GetChartList()
@@ -98,10 +98,7 @@ namespace RGLabs.Network
         private static UniTask Save(string tableName, object obj)
         {
             var param = new Param { { tableName, obj.ToJson() } };
-            var api = new Api(onResult =>
-            {
-                Backend.GameData.Update(tableName, new Where(), param, onResult.Invoke);
-            });
+            var api = new Api(onResult => { Backend.GameData.Update(tableName, new Where(), param, onResult.Invoke); });
 
             return Call(api);
         }
@@ -139,7 +136,7 @@ namespace RGLabs.Network
         public static UniTask<Response> GetChartContent(string id)
             => Call(onResult => Backend.Chart.GetChartContents(id, onResult.Invoke));
 
-        public static UniTask<Response<UserData>> NewUser() 
+        public static UniTask<Response<UserData>> NewUser()
             => InvokeFunc("DefaultData", null, ConvertFunctionResponse<UserData>());
 
         public static UniTask<Response<GrowthResult>> Growth(string method, int unitId, int itemId,
@@ -273,8 +270,16 @@ namespace RGLabs.Network
             {
                 --LeftRequestCount;
 
-                var response = new Response(result);
-                src.TrySetResult(response);
+                try
+                {
+                    var response = new Response(result);
+                    src.TrySetResult(response);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e.ToString());
+                    throw;
+                }
             });
 
             ++LeftRequestCount;
@@ -289,8 +294,16 @@ namespace RGLabs.Network
             {
                 --LeftRequestCount;
 
-                var response = new Response<T>(result, convert);
-                src.TrySetResult(response);
+                try
+                {
+                    var response = new Response<T>(result, convert);
+                    src.TrySetResult(response);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e.ToString());
+                    throw;
+                }
             });
 
             ++LeftRequestCount;
