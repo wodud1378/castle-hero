@@ -43,12 +43,12 @@ namespace RGLabs.InGame.UI
                 _rewardList.Init(result.data.items));
 
             gameObject.SetActive(true);
+            _animtor.SetTrigger(EntranceHash);
 
             UpdateUI(result.isCleared);
 
             if (result.isCleared)
             {
-                _animtor.SetTrigger(EntranceHash);
                 await UniTask.Delay(TimeSpan.FromSeconds(1f));
 
                 _growthList.PlayDirection();

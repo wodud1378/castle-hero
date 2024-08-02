@@ -21,6 +21,8 @@ namespace RGLabs.InGame.UI
         public UniTask Init(UnitTransition data)
         {
             _data = data;
+            _level.Set(data.lvTransition[0], data.expTransition[0]);
+
 
             return _unitSlot.Init(data.unit);
         }
