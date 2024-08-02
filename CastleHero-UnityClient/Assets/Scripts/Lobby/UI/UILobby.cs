@@ -4,6 +4,7 @@ using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Lobby.UI.Inventory.Popup;
 using RGLabs.Lobby.UI.Popup;
+using RGLabs.Network.Service.Test;
 using RGLabs.Utility;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,16 +18,22 @@ namespace RGLabs.Lobby.UI
         [SerializeField] private Button _mail;
         [SerializeField] private Button _attendence;
         [SerializeField] private Button _setting;
-        
+
         [SerializeField] private Button _characters;
         [SerializeField] private Button _inventory;
         [SerializeField] private Button _summon;
         [SerializeField] private Button _dungeon;
 
+        // Test.
+        [SerializeField] private UITest _uiTest;
+        [SerializeField] private Button _cheatButton;
+
         private void Awake()
         {
             _userInfo.Init();
             
+            this.SubscribeButton(_cheatButton, ()=> _uiTest.Open());
+
             this.SubscribeButton(_characters, OpenPopup<PopupCharacterList>);
             this.SubscribeButton(_inventory, OpenPopup<PopupInventory>);
             this.SubscribeButton(_quest, OpenPopup<PopupQuest>);

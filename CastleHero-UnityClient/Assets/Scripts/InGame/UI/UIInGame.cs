@@ -30,6 +30,7 @@ namespace RGLabs.InGame.UI
         [field:SerializeField] public UIGlobalSkill GlobalSkill { get; private set; }
 
         [SerializeField] private Button _pause;
+        [SerializeField] private Button _speedUp;
         [SerializeField] private RectTransform _damageRoot;
         [SerializeField] private DamagePrefabs _damagePrefabs;
         [SerializeField] private string _healPrefab;
@@ -38,6 +39,15 @@ namespace RGLabs.InGame.UI
         private void Awake()
         {
             this.SubscribeButton(_pause, ()=> SetPause(true));
+            this.SubscribeButton(_speedUp, () =>
+            {
+                var repository = Storage.inGameRepository;
+                repository.speedUp = !repository.speedUp;
+
+                Time.timeScale = repository.speedUp
+                    ? 2f
+                    : 1f;
+            });
             this.SubscribeMessage<GameResult>(OnResult);
             this.SubscribeMessage<AtkResult>(OnAtkResult);
             this.SubscribeMessage<HealResult>(OnHealResult);

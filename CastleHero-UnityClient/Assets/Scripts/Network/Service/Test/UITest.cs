@@ -112,7 +112,7 @@ namespace RGLabs.Network.Service.Test
             }
         }
 
-        private void Open() => _root.SetActive(true);
+        public void Open() => _root.SetActive(true);
 
         private void Close() => _root.SetActive(false);
     }
