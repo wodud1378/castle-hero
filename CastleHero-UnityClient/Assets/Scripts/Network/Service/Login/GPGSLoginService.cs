@@ -5,7 +5,7 @@ using GooglePlayGames.BasicApi;
 
 namespace RGLabs.Network.Service.Login
 {
-    public class GPGSLoginService : ILoginService
+    public class GPGSLoginService : NetworkServiceBase, ILoginService
     {
         public async UniTask<Response> Login()
         {
@@ -21,7 +21,10 @@ namespace RGLabs.Network.Service.Login
             PlayGamesPlatform.Activate();
             
             var result = await GetToken();
-            return await BackendWrapper.FederationLogin(result.token, FederationType.Google);
+            var api = new Api(onResult =>
+                Backend.BMember.AuthorizeFederation(result.token, FederationType.Google, onResult.Invoke));
+            
+            return await Call(api);
         }
 
         private UniTask<(bool success, string token)> GetToken()

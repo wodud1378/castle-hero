@@ -7,6 +7,7 @@ using RGLabs.Common.Behaviours;
 using RGLabs.Data;
 using RGLabs.Data.Repositories;
 using RGLabs.Network;
+using RGLabs.Network.Service.User;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Factory;
 using RGLabs.Utility;
@@ -34,6 +35,7 @@ namespace RGLabs.Lobby.Behaviours
 
         public readonly ReactiveProperty<int> capacity = new();
         public readonly ReactiveProperty<int> placed = new();
+        private readonly UserService _userService = new();
 
         private int _barricadeCountMax;
 
@@ -253,7 +255,7 @@ namespace RGLabs.Lobby.Behaviours
             _gameRepo.characters.Add(unit);
         }
 
-        private void Save() => BackendWrapper.SaveFormation(new Formation { fieldUnits = _userRepo.fieldCharacters.ToList() });
+        private void Save() => _userService.SaveFormation(new Formation { fieldUnits = _userRepo.fieldCharacters.ToList() });
 
         private void OnDrawGizmosSelected()
         {

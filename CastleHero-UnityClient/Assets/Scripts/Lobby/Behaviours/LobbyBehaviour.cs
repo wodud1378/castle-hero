@@ -3,6 +3,7 @@ using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Common.Pattern;
 using RGLabs.Data;
+using RGLabs.Lobby.Shop.UI;
 using RGLabs.Lobby.UI;
 using RGLabs.Stage.UI;
 using RGLabs.Unit.Factory;
@@ -22,17 +23,21 @@ namespace RGLabs.Lobby.Behaviours
     {
         [SerializeField] private UILobby _uiLobby;
         [SerializeField] private UIStage _uiStage;
+        [SerializeField] private UIShop _uiShop;
 
-        [FormerlySerializedAs("_formation")] [SerializeField] private FormationField formationField;
+        [SerializeField] private FormationField _formation;
         [SerializeField] private SpriteRenderer _map;
+
+        private UIMain _current;
 
         protected override async void OnLoaded()
         {
             base.OnLoaded();
             
-            await formationField.Init();
+            await _formation.Init();
 
             _uiStage.Init();
+            
             Context.Transition.StateObserver
                 .DistinctUntilChanged()
                 .Subscribe(OnNextState)
@@ -41,36 +46,44 @@ namespace RGLabs.Lobby.Behaviours
 
         private void OnNextState(State state)
         {
-            if (state == State.InGame)
+            switch (state)
             {
-                TransitionTo(_uiStage, null, StartGame);
-                return;
-            }
-
-            if (state == State.Lobby)
-            {
-                TransitionTo(_uiStage, _uiLobby);
-
-                Context.startButton.mode.Value = StartButton.Mode.Lobby;
-                Context.Back.Remove(this);
-            }
-            else
-            {
-                TransitionTo(_uiLobby, _uiStage);
-
-                Context.startButton.mode.Value = StartButton.Mode.Stage;
-                Context.Back.Add(this);
+                case State.Lobby:
+                    TransitionTo(_current, _uiLobby);
+                    Context.startButton.enabled = true;
+                    Context.Back.Remove(this);
+                    break;
+                case State.Shop:
+                    break;
+                case State.Stage:
+                    TransitionTo(_current, _uiStage);
+                    Context.startButton.enabled = false;
+                    Context.Back.Add(this);
+                    break;
+                case State.InGame:
+                    TransitionTo(_current, null, StartGame);
+                    break;
             }
         }
 
         private void TransitionTo(UIMain from, UIMain to = null, Action onTransitionEnd = null)
         {
-            if (!from.IsOpen)
-                OnTransitionEnd(to, onTransitionEnd);
+            if (from != null)
+            {
+                if (!from.IsOpen)
+                    OnTransitionEnd(to, onTransitionEnd);
+                else
+                    from.OnCloseAnimationEnd += () => OnTransitionEnd(to, onTransitionEnd);
+                
+                SetMainUIActive(from, false);
+            }
             else
-                from.OnCloseAnimationEnd += () => OnTransitionEnd(to, onTransitionEnd);
+            {
+                OnTransitionEnd(to, onTransitionEnd);
+            }
+            
 
-            SetMainUIActive(from, false);
+            _current = to;
         }
 
         private void OnTransitionEnd(UIMain target, Action onTransitionEnd)

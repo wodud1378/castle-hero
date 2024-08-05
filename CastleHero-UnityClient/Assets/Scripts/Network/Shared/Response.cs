@@ -73,4 +73,21 @@ namespace RGLabs.Network.Shared
     }
 
     #endregion
+
+    #region Shop.
+
+    public class ItemBought
+    {
+        public Currency currency;
+        public List<IItem> items;
+        public List<UnitInfo> units;
+    }
+
+    public class ItemsSold
+    {
+        public Currency currency;
+        public List<IItem> items;
+    }
+
+    #endregion
 }

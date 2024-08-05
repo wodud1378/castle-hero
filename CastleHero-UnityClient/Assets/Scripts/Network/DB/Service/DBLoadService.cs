@@ -6,12 +6,16 @@ using Cysharp.Threading.Tasks;
 using LitJson;
 using RGLabs.Data.DB;
 using RGLabs.Data.Load;
+using RGLabs.Network.Service.Boot;
 
 namespace RGLabs.Network.DB.Service
 {
     public class DBLoadService : IDBLoadService
     {
         private readonly JsonToDatabase _converter = new();
+        private readonly InitService _service;
+
+        public DBLoadService(InitService service) => _service = service;
         
         public async UniTask<DBCollections> Load()
         {
@@ -40,7 +44,8 @@ namespace RGLabs.Network.DB.Service
             LoadInstance<SummonDB>(map, x => collections.summons = x);
             LoadInstance<SummonGroupDB>(map, x => collections.summonGroups = x);
             LoadInstance<ItemDB>(map, x => collections.items = x);
-            LoadInstance<EquipItemStatDB>(map, x => collections.stats = x);
+            LoadInstance<ShopDB>(map, x => collections.shop = x);
+            LoadInstance<ShopItemGroupDB>(map, x => collections.shopGroup = x);
             
             collections.units.CacheUnitSizes();
 
@@ -49,13 +54,13 @@ namespace RGLabs.Network.DB.Service
         
         private async UniTask<ChartInfo[]> GetChartList()
         {
-            var response = await BackendWrapper.GetChartList();
+            var response = await _service.GetChartList();
             
             return response.data;
         }
         
         private async UniTask<(string chartName, int id, Response response)> GetChartContent(string chartName, int id)
-            => (chartName, id, await BackendWrapper.GetChartContent(id.ToString()));
+            => (chartName, id, await _service.GetChartContent(id.ToString()));
         
         private void LoadInstance<T>(Dictionary<string, (int id, JsonData json)> map, Action<T> onResult) where T : class, IDataBase
         {

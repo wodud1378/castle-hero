@@ -13,13 +13,14 @@ namespace RGLabs.Unit.Finding
         private static readonly Dictionary<Collider2D, UnitBehaviour> CachedUnits = new();
 
         public List<UnitBehaviour> Found { get; } = new();
+        public UnitBehaviour Main => Found.Count > 0 ? Found[0] : null;
 
         public UnitBehaviour Override => _overrides.Count > 0 ? _overrides[^1] : null;
         
-        private readonly List<UnitBehaviour> _overrides = new();
-
         public readonly IDetection detection;
-
+        
+        private readonly List<UnitBehaviour> _overrides = new();
+        
         private Finder(IDetection detection)
         {
             this.detection = detection;

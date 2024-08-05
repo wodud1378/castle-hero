@@ -1,9 +1,10 @@
+using BackEnd;
 using Cysharp.Threading.Tasks;
 
 namespace RGLabs.Network.Service.Login
 {
-    public class AutoLoginService : ILoginService
+    public class AutoLoginService : NetworkServiceBase, ILoginService
     {
-        public UniTask<Response> Login() => BackendWrapper.AutoLogin();
+        public UniTask<Response> Login() => Call(Backend.BMember.LoginWithTheBackendToken);
     }
 }

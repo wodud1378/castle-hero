@@ -98,6 +98,14 @@ namespace RGLabs.Data.DB
         }
         
         public bool IsValidIndex(int index) => index.IsValidIndex(entities);
+
+        public void ForEach(Action<T> action)
+        {
+            foreach (var entity in entities)
+            {
+                action.Invoke(entity);
+            }
+        }
         
         public void ClearCache()
         {

@@ -1,14 +1,18 @@
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data;
 using RGLabs.Network.Shared;
 
 namespace RGLabs.Network.Service.Stage
 {
-    public class StageService
+    public class StageService : NetworkServiceBase
     {
         public async UniTask<StageCleared> SetClear(int stage)
         {
-            var response = await BackendWrapper.SetStageClear(stage);
+            var parameters = new List<KeyValuePair<string, object>> { new(nameof(stage), stage), };
+
+            
+            var response = await InvokeFunc("StageClear", parameters, ConvertFunctionResponse<StageCleared>());
 
             return response.data;
         }

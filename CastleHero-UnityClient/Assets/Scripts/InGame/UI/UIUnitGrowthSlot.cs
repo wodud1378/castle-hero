@@ -21,8 +21,8 @@ namespace RGLabs.InGame.UI
         public UniTask Init(UnitTransition data)
         {
             _data = data;
+            _addedExp.text = 0.ToString();
             _level.Set(data.lvTransition[0], data.expTransition[0]);
-
 
             return _unitSlot.Init(data.unit);
         }
@@ -40,7 +40,8 @@ namespace RGLabs.InGame.UI
             _level.ReleaseOverride();
             _level.Set(lv, exp);
             
-            _addedExp.DOFade(1f, 0.25f)
+            _addedExp
+                .DOFade(1f, 0.25f)
                 .From(0f)
                 .OnComplete(() =>
                 {

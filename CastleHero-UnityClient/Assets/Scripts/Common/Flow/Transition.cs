@@ -7,6 +7,7 @@ namespace RGLabs.Common.Flow
     {
         None,
         Lobby,
+        Shop,
         Stage,
         InGame,
     }

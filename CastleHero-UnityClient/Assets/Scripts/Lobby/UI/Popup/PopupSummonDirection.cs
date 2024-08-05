@@ -12,7 +12,7 @@ namespace RGLabs.Lobby.UI.Popup
     [PrefabPath("Lobby/UI/Prefabs/Summon/PopupSummonDirection.prefab")]
     public class PopupSummonDirection : PopupBase
     {
-         private class OpenDirection
+        private class OpenDirection
         {
             private readonly GameObject _defaultObj;
             private readonly ParticleSystem _openEffect;
@@ -63,18 +63,18 @@ namespace RGLabs.Lobby.UI.Popup
         private UniTaskCompletionSource _completionSource;
 
         private bool _initialized;
-        
+
         protected override void OnAwake()
         {
             base.OnAwake();
-            
+
             this.SubscribeButton(_showAll, OpenAllSlots);
         }
 
         public override UniTask Open(params object[] parameters)
         {
             _close.gameObject.SetActive(false);
-            
+
             var data = (SummonResult)parameters[0];
             _completionSource = new();
 
@@ -96,6 +96,7 @@ namespace RGLabs.Lobby.UI.Popup
 
                 ++index;
             }
+
             return UniTask.WhenAll(tasks);
         }
 
@@ -105,7 +106,7 @@ namespace RGLabs.Lobby.UI.Popup
                 return;
 
             direction.Run().Forget();
-            
+
             SetEndIfAllDone();
         }
 
@@ -119,13 +120,14 @@ namespace RGLabs.Lobby.UI.Popup
 
             _completionSource.TrySetResult();
 
+            _showAll.gameObject.SetActive(false);
             _close.gameObject.SetActive(true);
         }
 
         protected override void OnClose()
         {
             base.OnClose();
-            
+
             _completionSource.TrySetResult();
         }
 

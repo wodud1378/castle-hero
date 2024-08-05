@@ -1,11 +1,10 @@
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using RGLabs.Data;
-using RGLabs.Data.Model;
 using RGLabs.Network.Shared;
 
 namespace RGLabs.Network.Service.Summon
 {
-    public class SummonService
+    public class SummonService : NetworkServiceBase
     {
         public async UniTask<SummonResult> SummonOnce(int eventId, int coastId) => (await Summon(eventId, coastId, 1));
 
@@ -13,7 +12,14 @@ namespace RGLabs.Network.Service.Summon
 
         private async UniTask<SummonResult> Summon(int eventId, int coastId, int count)
         {
-            var response = await BackendWrapper.Summon(eventId, coastId, count);
+            var parameters = new List<KeyValuePair<string, object>>()
+            {
+                new(nameof(eventId), eventId),
+                new(nameof(coastId), coastId),
+            };
+
+            
+            var response = await InvokeFunc($"SummonX{count}", parameters, ConvertFunctionResponse<SummonResult>());
 
             return response.data;
         }

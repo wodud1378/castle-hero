@@ -6,6 +6,8 @@ using RGLabs.Data;
 using RGLabs.Network.DB.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Network.Service.Login;
+using RGLabs.Network.Service.User;
+using RGLabs.Utility;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -16,13 +18,17 @@ namespace RGLabs.Network.Service.Boot
         private readonly IBootServiceHandler _handler;
         private readonly IBackendErrorHandler _errorHandler;
         private readonly ILoginService _autoLoginService;
+        private readonly InitService _initService;
+        private readonly UserService _userService;
         private readonly BootConfig _config;
 
         public BootService(BootConfig config, IBootServiceHandler handler, IBackendErrorHandler errorHandler = null)
         {
             _handler = handler;
-            _autoLoginService = new AutoLoginService();
             _errorHandler = errorHandler;
+            _autoLoginService = new AutoLoginService();
+            _initService = new();
+            _userService = new();
             _config = config;
 
             _errorHandler?.Attach();
@@ -70,8 +76,8 @@ namespace RGLabs.Network.Service.Boot
                 : "기존 유저 로그인");
 
             var userData = newUser
-                ? (await BackendWrapper.NewUser()).data
-                : (await BackendWrapper.GetUserData()).data;
+                ? (await _userService.NewUser()).data
+                : (await _userService.GetUserData()).data;
 
             Debug.Log("데이터 불러오기 완료");
 
@@ -84,9 +90,15 @@ namespace RGLabs.Network.Service.Boot
 
         private async UniTask Init()
         {
-            var initResult = BackendWrapper.Init("dev");
-            if (initResult.result != ResultCode.Success)
-                await _handler.OnError(initResult);
+            var initResult = _initService.Init("dev");
+            if (!initResult.IsSuccess)
+            {
+                _handler
+                    .OnError(initResult)
+                    .Forget();
+                
+                return;
+            }
 
             await Addressables.InitializeAsync();
             var catalogs = await Addressables.CheckForCatalogUpdates();
@@ -103,15 +115,23 @@ namespace RGLabs.Network.Service.Boot
         private async UniTask CheckVersion()
         {
 #if !UNITY_EDITOR
-            var bro = Backend.Utils.GetLatestVersion();
-            var jsonData = bro.GetReturnValuetoJSON();
+            var response = await _initService.GetServerVersion();
+            if (!response.IsSuccess)
+            {
+                _handler
+                    .OnError(response)
+                    .Forget();
+                
+                return;
+            }
             
-            Debug.Log($"[GetLatestVersion] {bro.IsSuccess()}, {jsonData.ToJson()}");
+            var versionInfo = response.data;
+            Debug.Log($"[GetLatestVersion] {versionInfo.ToJson()}");
 
-            if (Application.version == jsonData["version"].ToString())
+            if (Application.version == versionInfo.version)
                 return;
 
-            bool foreUpdate = int.Parse(jsonData["type"].ToString()) == 2;
+            bool foreUpdate = versionInfo.type == 2;
             if(foreUpdate)
                 await _handler.OnForceUpdate();
 #endif
@@ -126,7 +146,7 @@ namespace RGLabs.Network.Service.Boot
                 while (!isSuccess)
                 {
                     nickname = await _handler.SetNickName();
-                    var response = await BackendWrapper.UpdateNickname(nickname);
+                    var response = await _userService.UpdateNickname(nickname);
 
                     isSuccess = response.IsSuccess;
                 }
@@ -141,7 +161,7 @@ namespace RGLabs.Network.Service.Boot
         {
             IDBLoadService service = _config.useLocalDatabase
                 ? new LocalDBLoadService()
-                : new DBLoadService();
+                : new DBLoadService(_initService);
 
             var collections = await service.Load();
 
