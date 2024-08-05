@@ -1,0 +1,9 @@
+Icon_Auto.png
+	size: 1024, 1024
+	filter: Linear, Linear
+	scale: 0.5
+Button_Auto
+	bounds: 2, 266, 482, 445
+	offsets: 15, 15, 512, 512
+Symbol
+	bounds: 486, 405, 225, 306
