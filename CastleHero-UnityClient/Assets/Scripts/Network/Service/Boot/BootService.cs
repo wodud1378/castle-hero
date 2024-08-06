@@ -160,14 +160,18 @@ namespace RGLabs.Network.Service.Boot
 
         private async UniTask InitStorage(string nickname, UserData userData)
         {
-            IDBLoadService service = _config.useLocalDatabase
-                ? new LocalDBLoadService()
-                : new DBLoadService(_initService);
+            var service = new DBLoadService(_initService);
+            var response = await _initService.GetChartList();
+            if (!response.IsSuccess)
+            {
+                _handler
+                    .OnError(response)
+                    .Forget();
 
-            var chartList = _config.useLocalDatabase
-                ? null
-                : (await _initService.GetChartList()).data;
+                return;
+            }
 
+            var chartList = response.data;
             var result = await service.Load(chartList);
 
             Storage.userRepository = new UserRepository(nickname, userData);
