@@ -27,8 +27,8 @@ namespace RGLabs.Utility
             return JsonConvert.DeserializeObject<T>(str, DefaultSetting);
         }
 
-        public static int ToInt(this JsonData data) => ToInt(data.ToString());
+        public static int ToInt(this JsonData data) => int.Parse(data.ToString());
 
-        public static float ToFloat(this JsonData data) => ToFloat(data.ToString());
+        public static float ToFloat(this JsonData data) => float.Parse(data.ToString());
     }
 }

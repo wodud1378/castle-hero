@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Localize;
 using RGLabs.Data.DB;
 using RGLabs.Data.Load;
+using RGLabs.Network.Service.Boot;
 
 namespace RGLabs.Network.DB.Service
 {
@@ -9,7 +11,7 @@ namespace RGLabs.Network.DB.Service
     {
         private readonly CsvToDatabase _loader = new();
         
-        public async UniTask<DBCollections> Load()
+        public async UniTask<(DBCollections db, LocalizeText localize)> Load(ChartInfo[] _)
         {
             DBCollections collections = new();
             
@@ -26,13 +28,15 @@ namespace RGLabs.Network.DB.Service
                 _loader.Load<SummonDB>(x => collections.summons = x),
                 _loader.Load<SummonGroupDB>(x => collections.summonGroups = x), 
                 _loader.Load<ItemDB>(x => collections.items = x),
+                _loader.Load<ShopDB>(x => collections.shop = x),
+                _loader.Load<ShopItemGroupDB>(x => collections.shopGroup = x),
             };
 
             await UniTask.WhenAll(tasks);
 
             collections.units.CacheUnitSizes();
 
-            return collections;
+            return (collections, null);
         }
     }
 }

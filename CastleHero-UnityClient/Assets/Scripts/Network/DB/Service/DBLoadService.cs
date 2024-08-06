@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Cysharp.Threading.Tasks;
 using LitJson;
+using RGLabs.Common.Localize;
 using RGLabs.Data.DB;
 using RGLabs.Data.Load;
 using RGLabs.Network.Service.Boot;
@@ -17,12 +18,12 @@ namespace RGLabs.Network.DB.Service
 
         public DBLoadService(InitService service) => _service = service;
         
-        public async UniTask<DBCollections> Load()
+        public async UniTask<(DBCollections db, LocalizeText localize)> Load(ChartInfo[] chartList)
         {
             DBCollections collections = new();
             
             var tasks = new List<UniTask<(string chartName, int id, Response response)>>();
-            foreach (var chartInfo in await GetChartList())
+            foreach (var chartInfo in chartList)
             {
                 var name = chartInfo.chartName;
                 var id = chartInfo.selectedChartFileId;
@@ -46,17 +47,14 @@ namespace RGLabs.Network.DB.Service
             LoadInstance<ItemDB>(map, x => collections.items = x);
             LoadInstance<ShopDB>(map, x => collections.shop = x);
             LoadInstance<ShopItemGroupDB>(map, x => collections.shopGroup = x);
+
+            LocalizeText localize = map.TryGetValue("localize", out var data)
+                ? new LocalizeText(data.rawData)
+                : null;
             
             collections.units.CacheUnitSizes();
 
-            return collections;
-        }
-        
-        private async UniTask<ChartInfo[]> GetChartList()
-        {
-            var response = await _service.GetChartList();
-            
-            return response.data;
+            return (collections, localize);
         }
         
         private async UniTask<(string chartName, int id, Response response)> GetChartContent(string chartName, int id)

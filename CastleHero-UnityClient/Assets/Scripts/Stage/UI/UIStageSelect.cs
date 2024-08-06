@@ -119,7 +119,9 @@ namespace RGLabs.Stage.UI
                 index = 0;
 
             _prev.gameObject.SetActive(index > 0);
-            _next.gameObject.SetActive(index < stages.Length - 1);
+            _next.gameObject.SetActive(
+                Storage.userRepository.stage.Value+ 1  < index && 
+                index < stages.Length - 1);
         }
 
         #region UI Events.

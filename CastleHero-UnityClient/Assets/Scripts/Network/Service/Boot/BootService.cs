@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BackEnd;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data;
+using RGLabs.Data.Repositories;
 using RGLabs.Network.DB.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Network.Service.Login;
@@ -163,9 +164,16 @@ namespace RGLabs.Network.Service.Boot
                 ? new LocalDBLoadService()
                 : new DBLoadService(_initService);
 
-            var collections = await service.Load();
+            var chartList = _config.useLocalDatabase
+                ? null
+                : (await _initService.GetChartList()).data;
 
-            Storage.Init(nickname, userData, collections);
+            var result = await service.Load(chartList);
+
+            Storage.userRepository = new UserRepository(nickname, userData);
+            Storage.db = result.db;
+            Storage.localize = result.localize;
+            Storage.localize.Set(Application.systemLanguage);
         }
 
         public void Dispose() => _errorHandler?.Detach();
