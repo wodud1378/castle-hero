@@ -177,7 +177,8 @@ namespace RGLabs.Network.Service.Boot
             Storage.userRepository = new UserRepository(nickname, userData);
             Storage.db = result.db;
             Storage.localize = result.localize;
-            Storage.localize.Set(Application.systemLanguage);
+            
+            await Storage.localize.Set(Application.systemLanguage);
         }
 
         public void Dispose() => _errorHandler?.Detach();

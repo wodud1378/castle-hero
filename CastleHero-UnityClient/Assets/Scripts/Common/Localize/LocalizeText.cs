@@ -1,43 +1,58 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using LitJson;
 using RGLabs.Utility;
 using UnityEngine;
 
 namespace RGLabs.Common.Localize
 {
-    public class LocalizeText : IDisposable
+    public class LocalizeText
     {
-        public event Action OnLoaded; 
-        
-        private readonly Dictionary<int, string> _texts = new();
+        public event Action OnLoaded;
+
+        private readonly Dictionary<int, Dictionary<int, string>> _map = new();
         private readonly JsonData _raw;
-        private readonly IDisposable _subscription;
-        
+
         public LocalizeText(JsonData raw) => _raw = raw;
 
-        public string Get(int id) => _texts.TryGetValue(id, out var value) ? value : string.Empty; 
-
-        public void Set(SystemLanguage language)
+        public string Get(int id)
         {
-            _texts.Clear();
-            
-            var key = LocalizeHelper.SystemLanguageToIso(language);
-            foreach (JsonData data in _raw)
-            {
-                int id = data["String_ID"].ToInt();
-                if (_texts.ContainsKey(id))
-                    continue;
-                
-                _texts.Add(id, data[key].ToString());
-            }
-            
-            OnLoaded?.Invoke();
+            int division = id / 100;
+
+            return _map.TryGetValue(division, out var texts) &&
+                   texts.TryGetValue(id, out var text)
+                ? text
+                : string.Empty;
         }
 
-        public void Dispose()
+        public async UniTask Set(SystemLanguage language)
         {
-            _subscription?.Dispose();
+            int length = _raw.Count;
+            int division = length / 100;
+            var key = LocalizeHelper.SystemLanguageToIso(language);
+            for (int i = 0; i <= division; ++i)
+            {
+                if (!_map.TryGetValue(i, out var texts))
+                {
+                    texts = new();
+                    _map[i] = texts;
+                }
+                else
+                    texts.Clear();
+
+                await UniTask.RunOnThreadPool(() =>
+                {
+                    int start = i * 100;
+                    int max = Mathf.Min(start + 100, length - division * i);
+                    for (int j = start; j < max; ++j)
+                    {
+                        texts.Add(j, _raw[j][key].ToString());
+                    }
+                });
+            }
+
+            OnLoaded?.Invoke();
         }
     }
 }
