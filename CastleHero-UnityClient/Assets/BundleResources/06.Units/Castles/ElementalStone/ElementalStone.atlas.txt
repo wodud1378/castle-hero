@@ -1,0 +1,36 @@
+ElementalStone.png
+	size: 2048, 2048
+	filter: Linear, Linear
+	scale: 0.5
+Earth
+	bounds: 2, 133, 462, 462
+	offsets: 3, 5, 469, 472
+Fire
+	bounds: 2, 597, 462, 462
+	offsets: 3, 5, 469, 472
+Gloss_01
+	bounds: 466, 1203, 129, 129
+Gloss_02
+	bounds: 466, 1334, 129, 129
+Gloss_03
+	bounds: 466, 1465, 129, 129
+Gloss_04
+	bounds: 466, 1596, 129, 129
+Gloss_05
+	bounds: 466, 1727, 129, 129
+Gloss_06
+	bounds: 466, 1858, 129, 129
+Gloss_07
+	bounds: 395, 2, 129, 129
+Gloss_08
+	bounds: 264, 2, 129, 129
+Gloss_09
+	bounds: 133, 2, 129, 129
+Gloss_10
+	bounds: 2, 2, 129, 129
+Water
+	bounds: 2, 1061, 462, 462
+	offsets: 3, 5, 469, 472
+Wind
+	bounds: 2, 1525, 462, 462
+	offsets: 3, 5, 469, 472
