@@ -1,0 +1,59 @@
+Character_Slime.png
+	size: 512, 512
+	filter: Linear, Linear
+	scale: 0.5
+Elipse
+	bounds: 364, 399, 65, 65
+HitWave_01
+	bounds: 120, 235, 30, 29
+	offsets: 29, 29, 91, 91
+HitWave_02
+	bounds: 426, 333, 62, 64
+	offsets: 12, 10, 91, 91
+HitWave_03
+	bounds: 426, 271, 60, 66
+	offsets: 15, 10, 91, 91
+	rotate: 90
+HitWave_04
+	bounds: 363, 326, 61, 71
+	offsets: 14, 9, 91, 91
+Slime/Blusher
+	bounds: 276, 304, 188, 31
+	rotate: 90
+Slime/Body
+	bounds: 2, 295, 273, 197
+	offsets: 0, 0, 274, 197
+Slime/Eye
+	bounds: 76, 266, 77, 28
+Slime/Mouth
+	bounds: 64, 239, 54, 22
+	offsets: 5, 5, 64, 32
+Slime/Piece
+	bounds: 2, 321, 35, 34
+	offsets: 5, 5, 45, 44
+Steam_01
+	bounds: 2, 235, 60, 26
+	offsets: 5, 39, 141, 141
+Steam_02
+	bounds: 308, 271, 98, 40
+	offsets: 7, 37, 141, 141
+Steam_03
+	bounds: 308, 399, 93, 54
+	offsets: 37, 37, 141, 141
+	rotate: 90
+Steam_04
+	bounds: 308, 313, 84, 53
+	offsets: 50, 40, 141, 141
+	rotate: 90
+Steam_05
+	bounds: 2, 263, 72, 52
+	offsets: 63, 43, 141, 141
+Steam_06
+	bounds: 216, 266, 58, 51
+	offsets: 76, 44, 141, 141
+Steam_07
+	bounds: 159, 256, 55, 39
+	offsets: 78, 56, 141, 141
+Steam_08
+	bounds: 276, 233, 56, 36
+	offsets: 78, 59, 141, 141
