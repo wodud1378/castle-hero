@@ -35,7 +35,7 @@ namespace RGLabs.InGame.UI
             var castle = Storage.inGameRepository.castle.Value;
             for (int i = 0; i < length; ++i)
             {
-                _items[i].skill = new GlobalSkill(castle, parameters[i]);
+                items[i].skill = new GlobalSkill(castle, parameters[i]);
             }
         }
 

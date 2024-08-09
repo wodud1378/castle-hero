@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
+using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Lobby.UI.Adapter;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
+using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,12 +20,12 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
     [PrefabPath("Lobby/UI/Prefabs/Popup_Inventory.prefab")]
     public class PopupInventory : PopupBase
     {
-        public enum ClickMethod
+        public enum Mode
         {
             Default,
-            Refine,
+            Sell
         }
-
+        
         public enum Tab
         {
             All,
@@ -48,19 +50,24 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         public Toggle other;
 
         public Toggle[] categoryToggles;
-        
+
+        [SerializeField] private TMP_Text _sellGold;
+        [SerializeField] private Button _sell;
         [SerializeField] private UIInventoryItemList _itemList;
 
         [Header("Tab Sprites")]
         [SerializeField] private SpriteState _tabSprites;
         [Header("Category Colors")]
         [SerializeField] private ColorBlock _categoryColors;
-  
+        
         public readonly ReactiveProperty<Tab> tab = new();
         public readonly ReactiveCollection<Category> filter = new();
 
         private readonly Dictionary<Tab, Toggle> _tabToggles = new();
         private readonly Dictionary<Category, Toggle> _categoryToggles = new();
+        
+        private readonly ReactiveProperty<Mode> _mode = new();
+        private readonly List<UIItemSlot> _sellTargets = new();
 
         private UniTask _updateTask;
 
@@ -70,6 +77,9 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
             _itemList.OnSlotClickEvent -= OnClickItemSlot;
             _itemList.OnSlotClickEvent += OnClickItemSlot;
+            _mode
+                .Subscribe(_=> _itemList.items.ForEach(x=>x.state.Value = UISlot.State.Default))
+                .AddTo(this);
             
             BindTabToggle(Tab.All, all);
             BindTabToggle(Tab.Equipment, equipment);
@@ -103,8 +113,53 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 .Subscribe(_ => UpdateList())
                 .AddTo(this);
         }
+
+        private void OnModeChanged(Mode value)
+        {
+            if (value == Mode.Default)
+                _itemList.items.ForEach(x => x.state.Value = UISlot.State.Default);
+
+            else
+            {
+                _sellTargets.Clear();
+                _itemList.items.ForEach(x =>
+                {
+                    x.state.Value = x.Entity.sellPrice > 0
+                        ? UISlot.State.Diminished
+                        : UISlot.State.Default;
+                });
+            }
+        }
         
         private void OnClickItemSlot(UIItemSlot slot)
+        {
+            switch (_mode.Value)
+            {
+                case Mode.Default:
+                    OpenPopup(slot);
+                    break;
+                case Mode.Sell:
+                    RemoveOrAddSellTarget(slot);
+                    break;
+            }
+        }
+
+        private void RemoveOrAddSellTarget(UIItemSlot slot)
+        {
+            switch (slot.state.Value)
+            {
+                case UISlot.State.Default:
+                    slot.state.Value = UISlot.State.Highlighted;
+                    _sellTargets.Add(slot);
+                    break;
+                case UISlot.State.Highlighted:
+                    slot.state.Value = UISlot.State.Default;
+                    _sellTargets.Remove(slot);
+                    break;
+            }
+        }
+
+        private void OpenPopup(UIItemSlot slot)
         {
             var item = slot.Item;
             var type = slot.Entity.type;

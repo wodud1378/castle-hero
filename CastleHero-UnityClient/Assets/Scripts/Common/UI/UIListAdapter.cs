@@ -16,7 +16,7 @@ namespace RGLabs.Common.UI
         [SerializeField] protected RectTransform itemRoot;
         [SerializeField] private AssetReference _itemPrefab;
         
-        protected readonly List<TSlot> _items = new();
+        public readonly List<TSlot> items = new();
 
         public virtual UniTask Init(IEnumerable<TData> collection)
         {
@@ -42,7 +42,7 @@ namespace RGLabs.Common.UI
 
             TSlot selected = null;
             float closest = float.MaxValue;
-            foreach (TSlot item in _items)
+            foreach (TSlot item in items)
             {
                 RectTransform childRectTransform = item.GetComponent<RectTransform>();
                 if (childRectTransform != null)
@@ -65,13 +65,13 @@ namespace RGLabs.Common.UI
 
         public void Clear()
         {
-            _items.ForEach(x =>
+            items.ForEach(x =>
             {
                 x.Dispose();
                 Addressables.ReleaseInstance(x.gameObject);
             });
 
-            _items.Clear();
+            items.Clear();
         }
 
         protected abstract UniTask SetItem(TSlot slot, TData data);
@@ -90,7 +90,7 @@ namespace RGLabs.Common.UI
                 OnClick(slot);
             };
             
-            _items.Add(item);
+            items.Add(item);
             await SetItem(item, data);
             
             return item;

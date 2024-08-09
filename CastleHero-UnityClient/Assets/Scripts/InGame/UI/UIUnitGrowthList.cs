@@ -8,7 +8,7 @@ namespace RGLabs.InGame.UI
     {
         public void PlayDirection()
         {
-            foreach (var item in _items)
+            foreach (var item in items)
             {
                 item.Show();
             }

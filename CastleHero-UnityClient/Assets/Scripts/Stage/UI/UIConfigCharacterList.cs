@@ -31,9 +31,9 @@ namespace RGLabs.Stage.UI
         [SerializeField] private float _dragThreshold = 0.3f;
 
         public UniTask ConfigTask => _completionSource.Task;
-        
+
         private UniTaskCompletionSource _completionSource;
-        
+
         public readonly BoolReactiveProperty isOpened = new(false);
         public readonly ReactiveProperty<UICharacterSlot> selected = new(null);
 
@@ -62,15 +62,19 @@ namespace RGLabs.Stage.UI
             selected
                 .Subscribe(x =>
                 {
-                    foreach (var item in _items)
-                        item.SetHighlight(item == x);
+                    foreach (var item in items)
+                    {
+                        item.state.Value = item == x
+                            ? UISlot.State.Highlighted
+                            : UISlot.State.Default;
+                    }
                 })
                 .AddTo(this);
 
             this.SubscribeButton(_close, Close);
             this.SubscribeButton(_reset, _formation.Clear);
             this.SubscribeButton(_auto, _formation.AutoPlacement);
-            this.SubscribeButton(_confirm, ()=> _completionSource.TrySetResult());
+            this.SubscribeButton(_confirm, () => _completionSource.TrySetResult());
         }
 
         public override UniTask Init(IEnumerable<UnitInfo> collection)
@@ -84,7 +88,7 @@ namespace RGLabs.Stage.UI
         public void Open()
         {
             _completionSource = new();
-            
+
             Entrance();
         }
 
@@ -104,7 +108,7 @@ namespace RGLabs.Stage.UI
         public void Close()
         {
             _completionSource.TrySetCanceled();
-            
+
             Exit();
         }
 
