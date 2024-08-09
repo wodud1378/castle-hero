@@ -69,7 +69,7 @@ namespace RGLabs.Stage.UI
 
         private async void StartStage()
         {
-            var isEnable = await CheckEntrance();
+            //var isEnable = await CheckEntrance();
             
             Context.Transition.CurrentState = State.InGame;
         }
