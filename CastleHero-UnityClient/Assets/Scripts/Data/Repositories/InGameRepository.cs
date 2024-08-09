@@ -14,6 +14,7 @@ namespace RGLabs.Data.Repositories
         public readonly ReactiveProperty<UnitBehaviour> castle = new(null);
         public readonly ReactiveCollection<UnitBehaviour> characters = new();
         public readonly ReactiveCollection<WaitRecover> recovers = new();
+        public readonly ReactiveProperty<float> leftTime = new();
 
         public void Dispose()
         {

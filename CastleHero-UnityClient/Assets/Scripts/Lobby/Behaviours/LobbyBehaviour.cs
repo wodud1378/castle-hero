@@ -1,22 +1,21 @@
 using System;
+using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
-using RGLabs.Common.Pattern;
 using RGLabs.Data;
 using RGLabs.Lobby.Shop.UI;
 using RGLabs.Lobby.UI;
+using RGLabs.Network.Service;
 using RGLabs.Stage.UI;
-using RGLabs.Unit.Factory;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace RGLabs.Lobby.Behaviours
 {
     public struct StartGame
     {
-        public SceneBehaviour from;
+        public int stage;
     }
 
     public class LobbyBehaviour : SceneBehaviour, IBackButtonListener
@@ -33,11 +32,11 @@ namespace RGLabs.Lobby.Behaviours
         protected override async void OnLoaded()
         {
             base.OnLoaded();
-            
+
             await _formation.Init();
 
             _uiStage.Init();
-            
+
             Context.Transition.StateObserver
                 .DistinctUntilChanged()
                 .Subscribe(OnNextState)
@@ -61,7 +60,7 @@ namespace RGLabs.Lobby.Behaviours
                     Context.Back.Add(this);
                     break;
                 case State.InGame:
-                    TransitionTo(_current, null, StartGame);
+                    TransitionTo(_current, null, () => StartGame().Forget());
                     break;
             }
         }
@@ -74,14 +73,13 @@ namespace RGLabs.Lobby.Behaviours
                     OnTransitionEnd(to, onTransitionEnd);
                 else
                     from.OnCloseAnimationEnd += () => OnTransitionEnd(to, onTransitionEnd);
-                
+
                 SetMainUIActive(from, false);
             }
             else
             {
                 OnTransitionEnd(to, onTransitionEnd);
             }
-            
 
             _current = to;
         }
@@ -105,15 +103,16 @@ namespace RGLabs.Lobby.Behaviours
                 ui.Close();
         }
 
-        private void StartGame()
+        private async UniTaskVoid StartGame()
         {
-            Storage.inGameRepository.stage 
-                = Storage.userRepository.focusedStage.Value;
-            
+            int stage = Storage.userRepository.profile.focusedStage.Value;
+            if (!await NetworkService.Stage.StartGame(stage))
+                return;
+
             _uiLobby.Dispose();
             _uiStage.Dispose();
 
-            new StartGame().Publish();
+            new StartGame { stage = stage }.Publish();
 
             Context.Back.Clear();
         }

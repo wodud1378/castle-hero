@@ -127,9 +127,9 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             var leftItem = result.leftItem;
 
             var repository = Storage.userRepository;
-            repository.Add(currency);
-            repository.Add(items);
-            repository.Update(leftItem);
+            repository.currency.Add(currency);
+            repository.inventory.Add(items);
+            repository.inventory.Update(leftItem);
             
             Context.popupManager
                 .OpenAsync<PopupReceivedItems>(currency, items)

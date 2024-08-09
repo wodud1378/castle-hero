@@ -24,15 +24,19 @@ namespace RGLabs.Common.Behaviours
             
             gameObject.SetActive(true);
             
-            _animator.SetTrigger(_openHashId);
+            OnOpen();
         }
 
         public void Close()
         {
             IsOpen = false;
             
-            _animator.SetTrigger(_closeHashId);
+            OnClose();
         }
+
+        protected virtual void OnOpen() => _animator.SetTrigger(_openHashId);
+
+        protected virtual void OnClose() => _animator.SetTrigger(_closeHashId);
 
         public virtual void Dispose()
         {

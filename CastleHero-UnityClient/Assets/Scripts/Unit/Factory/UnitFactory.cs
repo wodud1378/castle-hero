@@ -29,7 +29,7 @@ namespace RGLabs.Unit.Factory
 
         public async UniTask<UnitBehaviour> CreateBarricade(UnitInfo info, Vector2 position)
         {
-            int lv = Storage.userRepository.castleLv.Value;
+            int lv = Storage.userRepository.profile.castleLv.Value;
             if (!Storage.db.castles.TryFind(lv, out var castleEntity))
                 return null;
             

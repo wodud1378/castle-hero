@@ -12,6 +12,12 @@ namespace RGLabs.Data.Model
         [DataField("Stage_Bg")] 
         public string map;
 
+        [DataField("Stage_Time")]
+        public int timeLimit;
+        
+        [DataField("Stage_Act")] 
+        public int ap;
+
         [DataField("Stage_Rwd_Gold_Min")]
         public int goldMin;
         

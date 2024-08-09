@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using RGLabs.Common;
-using RGLabs.Common.UI;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Data.Repositories;
@@ -11,8 +9,6 @@ using RGLabs.Utility;
 using TMPro;
 using UniRx;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.U2D;
 using UnityEngine.UI;
 
 namespace RGLabs.Stage.UI
@@ -23,11 +19,8 @@ namespace RGLabs.Stage.UI
         [SerializeField] private Button _next;
 
         [SerializeField] private TMP_Text _title;
-        [SerializeField] private RectTransform _rewardParent;
-        [SerializeField] private AssetReference _rewardPrefab;
-        [SerializeField] private AssetReferenceT<SpriteAtlas> _rewardIconAtlas;
-
-        private readonly List<UISlot> _uiSlots = new();
+        [SerializeField] private UIStageRewardList _rewardList;
+        
         private readonly ReactiveProperty<StageEntity> _stageData = new(default);
 
         private UserRepository _repository;
@@ -43,16 +36,19 @@ namespace RGLabs.Stage.UI
             this.SubscribeButton(_prev, OnPrevStage);
             this.SubscribeButton(_next, OnNextStage);
 
-            _subscriptions.Add(_repository.focusedStage.Subscribe(OnStageSelected));
+            _subscriptions.Add(_repository.profile.focusedStage.Subscribe(OnStageSelected));
             _subscriptions.Add(_stageData
                 .Subscribe(x =>
                 {
                     _title.text = $"STAGE {x.Id}";
-                    SetRewards(x);
+                    _rewardList
+                        .Init(x)
+                        .Forget();
+                    
                     UpdateButtonsActive(x);
                 }));
 
-            OnStageSelected(_repository.focusedStage.Value);
+            OnStageSelected(_repository.profile.focusedStage.Value);
         }
 
         public void SetMoveStageEnable(bool enabled)
@@ -68,42 +64,6 @@ namespace RGLabs.Stage.UI
             }
         }
 
-        private void SetRewards(StageEntity stageData)
-        {
-            Clear();
-            
-            if (stageData is { goldMin: > 0, goldMax: > 0 })
-                AddRewardUI(Constants.GoldIcon);
-
-            if (stageData.exp > 0)
-                AddRewardUI(Constants.ExpIcon);
-
-            if (_db.items.TryFind(stageData.propItemId, out var entity))
-                AddRewardUI(entity.icon);
-        }
-
-        private async void AddRewardUI(string icon)
-        {
-            var obj = await Addressables.InstantiateAsync(_rewardPrefab, _rewardParent);
-            if (!obj.TryGetComponent(out UISlot slot))
-                return;
-
-            _uiSlots.Add(slot);
-
-            await slot.Init(icon, string.Empty);
-        }
-
-        private void Clear()
-        {
-            foreach (var slot in _uiSlots)
-            {
-                slot.Dispose();
-                Addressables.ReleaseInstance(slot.gameObject);
-            }
-            
-            _uiSlots.Clear();
-        }
-
         private void OnStageSelected(int stage)
         {
             if (!_db.stages.TryFind(stage, out var entity))
@@ -115,13 +75,16 @@ namespace RGLabs.Stage.UI
         private void UpdateButtonsActive(StageEntity stageData)
         {
             var stages = _db.stages;
-            if (!stages.TryFindIndex(stageData.Id, out int index))
-                index = 0;
+            if (!stages.TryFindIndex(stageData.Id, out int dataIndex))
+                dataIndex = 0;
 
-            _prev.gameObject.SetActive(index > 0);
+            if (!stages.TryFindIndex(Storage.userRepository.profile.stage.Value, out int userIndex))
+                userIndex = 0;
+
+            _prev.gameObject.SetActive(dataIndex > 0);
             _next.gameObject.SetActive(
-                Storage.userRepository.stage.Value+ 1  < index && 
-                index < stages.Length - 1);
+                userIndex >= dataIndex &&
+                dataIndex < stages.Length - 1);
         }
 
         #region UI Events.
@@ -145,12 +108,12 @@ namespace RGLabs.Stage.UI
             if (!stages.TryIndexOf(index, out var entity))
                 return;
 
-            _repository.focusedStage.Value = entity.Id;
+            _repository.profile.focusedStage.Value = entity.Id;
         }
 
         public void Dispose()
         {
-            Clear();
+            _rewardList.Dispose();
 
             foreach (var subscription in _subscriptions)
             {

@@ -26,9 +26,11 @@ namespace RGLabs.Common.Behaviours
         public static StartButton startButton;
         public static PopupManager popupManager;
         public static UILock uiLock;
+        public static UIToolTip toolTip;
         
         [SerializeField] private int _frameRate;
         [SerializeField] private UILock _uiLock;
+        [SerializeField] private UIToolTip _toolTip;
         [SerializeField] private StartButton _startButton;
         [SerializeField] private PopupManager _popupManager;
 
@@ -43,6 +45,7 @@ namespace RGLabs.Common.Behaviours
                 castleFactory = new CastleFactory();
             
                 uiLock = _uiLock;
+                toolTip = _toolTip;
                 startButton = _startButton;
                 startButton.StageSelect.Init();
             
@@ -76,7 +79,7 @@ namespace RGLabs.Common.Behaviours
         {
             if (Storage.entranceData.state == State.InGame)
             {
-                Storage.userRepository.focusedStage.Value = Storage.entranceData.stage;
+                Storage.userRepository.profile.focusedStage.Value = Storage.entranceData.stage;
                 return;
             }
 
@@ -91,16 +94,13 @@ namespace RGLabs.Common.Behaviours
                 .Where(_ => Input.GetKeyDown(KeyCode.Escape))
                 .Subscribe(_=> ProcessBack())
                 .AddTo(this);
+
+            this.SubscribeButton(startButton, () => Transition.CurrentState = State.Stage);
             
-            this.SubscribeButton(startButton, NextStep);
-        }
-
-        private void NextStep()
-        {
-            if (Transition.CurrentState == State.InGame)
-                return;
-
-            ++Transition.CurrentState;
+            Transition
+                .StateObserver
+                .Subscribe(x => { startButton.enabled = x == State.Lobby; })
+                .AddTo(this);
         }
 
         private void ProcessBack()

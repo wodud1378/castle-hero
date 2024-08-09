@@ -68,6 +68,11 @@ namespace RGLabs.Data.Model
         public int forCombine;
     }
 
+    public struct ChestOption
+    {
+        public int[] items;
+    }
+
     public struct ItemEntity : IEntity
     {
         [DataField("guid")]
@@ -188,6 +193,59 @@ namespace RGLabs.Data.Model
                 targetId = int.Parse(options[(int)IngredientOptionIndex.TargetId]),
                 forCombine = int.Parse(options[(int)IngredientOptionIndex.ForCombine])
             };
+
+        #endregion
+
+        #region Chest
+
+        public ChestOption GetChestOption()
+        {
+            void FilterItemIds(int id, List<int> result)
+            {
+                // a의 각 자릿수
+                int length = (int)Math.Log10(id) + 1;
+                var db = Storage.db.items;
+                db.ForEach(x =>
+                {
+                    if (!MatchesCriteria(id, x.Id, length))
+                        return;
+                    
+                    if(!result.Contains(x.Id))
+                        result.Add(x.Id);
+                });
+            }
+            
+            bool MatchesCriteria(int a, int b, int length)
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    int aDigit = a / (int)Math.Pow(10, length - i - 1) % 10;
+                    int idDigit = b / (int)Math.Pow(10, length - i - 1) % 10;
+
+                    if (aDigit != 0 && aDigit != idDigit)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            var ids = options[0]
+                .Trim()
+                .Replace("[", string.Empty)
+                .Replace("]", string.Empty)
+                .Split(',')
+                .Select(int.Parse);
+
+            var list = new List<int>();
+
+            foreach (var id in ids)
+            {
+                FilterItemIds(id, list);
+            }
+
+            return new() { items = list.ToArray() };
+        }
 
         #endregion
     }

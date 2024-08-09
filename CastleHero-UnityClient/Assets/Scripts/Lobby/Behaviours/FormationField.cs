@@ -7,6 +7,7 @@ using RGLabs.Common.Behaviours;
 using RGLabs.Data;
 using RGLabs.Data.Repositories;
 using RGLabs.Network;
+using RGLabs.Network.Service;
 using RGLabs.Network.Service.User;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Factory;
@@ -32,10 +33,10 @@ namespace RGLabs.Lobby.Behaviours
 
         private UserRepository _userRepo;
         private InGameRepository _gameRepo;
+        private Formation _formation;
 
         public readonly ReactiveProperty<int> capacity = new();
         public readonly ReactiveProperty<int> placed = new();
-        private readonly UserService _userService = new();
 
         private int _barricadeCountMax;
 
@@ -46,12 +47,14 @@ namespace RGLabs.Lobby.Behaviours
             _castleFactory = Context.castleFactory;
             _unitFactory = Context.unitFactory;
 
+            _formation = _userRepo.formation;
+
             _gameRepo.characters
                 .ChangeAsObservable()
                 .Subscribe(OnFieldCharacterCollectionChanged)
                 .AddTo(this);
 
-            if (Storage.db.castles.TryFind(_userRepo.castleLv.Value, out var entity))
+            if (Storage.db.castles.TryFind(_userRepo.profile.castleLv.Value, out var entity))
             {
                 capacity.Value = entity.maxCharacter;
                 _barricadeCountMax = entity.barricadeCount;
@@ -79,7 +82,7 @@ namespace RGLabs.Lobby.Behaviours
         {
             Clear();
 
-            var characters = _userRepo.characters
+            var characters = _userRepo.characters.units
                 .Where(x => x.id != Constants.BarricadeId)
                 .ToList();
 
@@ -96,7 +99,7 @@ namespace RGLabs.Lobby.Behaviours
 
             await UniTask.WhenAll(tasks);
             
-            _userRepo.ApplyFieldCharacters(_gameRepo.characters);
+            _formation.Set(_gameRepo.characters);
 
             Save();
         }
@@ -109,7 +112,7 @@ namespace RGLabs.Lobby.Behaviours
             }
 
             _gameRepo.characters.Clear();
-            _userRepo.ApplyFieldCharacters(_gameRepo.characters);
+            _formation.Set(_gameRepo.characters);
         }
 
         public void Remove(UnitBehaviour unit)
@@ -127,7 +130,7 @@ namespace RGLabs.Lobby.Behaviours
             characters.Remove(unit);
             unit.DestroySelf();
             
-            _userRepo.ApplyFieldCharacters(_gameRepo.characters);
+            _formation.Set(_gameRepo.characters);
             
             Save();
         }
@@ -157,7 +160,7 @@ namespace RGLabs.Lobby.Behaviours
                 characters.Add(unit);   
             }
             
-            _userRepo.ApplyFieldCharacters(characters);
+            _formation.Set(characters);
             
             if(isBarricade)
                 _map.AddObstacle(unit);
@@ -217,7 +220,7 @@ namespace RGLabs.Lobby.Behaviours
 
         private async UniTask LoadCastle()
         {
-            int lv = _userRepo.castleLv.Value;
+            int lv = _userRepo.profile.castleLv.Value;
             var unit = await _castleFactory.Create(1, lv, 0, Vector2.zero);
             _gameRepo.castle.Value = unit;
         }
@@ -225,9 +228,9 @@ namespace RGLabs.Lobby.Behaviours
         private async UniTask LoadSavedUnits()
         {
             var tasks = new List<UniTask>();
-            foreach (var data in _userRepo.fieldCharacters)
+            foreach (var data in _userRepo.formation.fieldUnits)
             {
-                var character = _userRepo.characters.FirstOrDefault(x => x.id == data.id);
+                var character = _userRepo.characters.units.FirstOrDefault(x => x.id == data.id);
                 if (character == null)
                     continue;
                 
@@ -255,7 +258,11 @@ namespace RGLabs.Lobby.Behaviours
             _gameRepo.characters.Add(unit);
         }
 
-        private void Save() => _userService.SaveFormation(new Formation { fieldUnits = _userRepo.fieldCharacters.ToList() });
+        private void Save()
+        {
+            NetworkService.User.SaveFormation(
+                new FormationDto { fieldUnits = _userRepo.formation.fieldUnits.ToList() });
+        }
 
         private void OnDrawGizmosSelected()
         {

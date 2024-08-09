@@ -1,6 +1,7 @@
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Data;
+using RGLabs.Network.Service;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
@@ -14,12 +15,10 @@ namespace RGLabs.Stage.UI
         [SerializeField] private UIConfigDragField _dragField;
 
         [SerializeField] private Button _speedUp;
-        [SerializeField] private Button _startConfig;
         [SerializeField] private Button _back;
         
         public void Init()
         {
-            this.SubscribeButton(_startConfig, StartConfig);
             this.SubscribeButton(_back, BackToLobby);
             this.SubscribeButton(_speedUp, () =>
             {
@@ -32,13 +31,49 @@ namespace RGLabs.Stage.UI
                 .AddTo(this);
         }
 
-        private async void StartConfig()
+        protected override void OnOpen()
         {
-            await _characterList.Init(Storage.userRepository.characters);
+            base.OnOpen();
+            
+            StartAfterConfig();
+        }
+
+        protected override void OnClose()
+        {
+            base.OnClose();
+            
+            _characterList.Close();
+        }
+
+        private async void StartAfterConfig()
+        {
+            await _characterList.Init(Storage.userRepository.characters.units);
             
             _characterList.Open();
+            
+            var canceled = await _characterList
+                .ConfigTask
+                .SuppressCancellationThrow();
+
+            if (canceled)
+            {
+                BackToLobby();
+                return;
+            }
+            
+            StartStage();
         }
         
         private void BackToLobby() => Context.Transition.CurrentState = State.Lobby;
+
+        private async void StartStage()
+        {
+            int stage = Storage.userRepository.profile.focusedStage.Value;
+            bool isValid = await NetworkService.Stage.StartGame(stage);
+            if (!isValid)
+                return;
+            
+            Context.Transition.CurrentState = State.InGame;
+        }
     }
 }

@@ -75,7 +75,7 @@ namespace RGLabs.InGame.UI
                 obj.SetActive(!isCleared);
 
             var db = Storage.db.stages;
-            int currentStage = Storage.userRepository.focusedStage.Value;
+            int currentStage = Storage.userRepository.profile.focusedStage.Value;
             int lastStageIndex = db.Length;
             if (db.TryFindIndex(currentStage, out int index))
                 _nextButton.gameObject.SetActive(index < lastStageIndex);

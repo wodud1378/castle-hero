@@ -49,7 +49,7 @@ namespace RGLabs.Lobby.UI.Popup
         {
             base.OnAwake();
 
-            Storage.userRepository.gold
+            Storage.userRepository.currency.gold
                 .Subscribe(UpdateGoldSlot)
                 .AddTo(this);
 
@@ -120,7 +120,7 @@ namespace RGLabs.Lobby.UI.Popup
 
         private IItem GetExpItem(int id)
         {
-            return Storage.userRepository.items.FirstOrDefault(x => x.ItemId == id)
+            return Storage.userRepository.inventory.items.FirstOrDefault(x => x.ItemId == id)
                    ?? new Item { ItemId = id, };
         }
 
@@ -150,7 +150,7 @@ namespace RGLabs.Lobby.UI.Popup
             var unit = _unit.Value;
             Calculate(unit.lv, unit.exp, out int lv, out int exp, out int gold);
 
-            bool hasEnoughGold = gold <= Storage.userRepository.gold.Value;
+            bool hasEnoughGold = gold <= Storage.userRepository.currency.gold.Value;
             _goldSlot.QuantityLabelColor = hasEnoughGold 
                 ? Color.white
                 : StringHelper.NegativeColor;
@@ -210,9 +210,9 @@ namespace RGLabs.Lobby.UI.Popup
                 .Forget();
 
             var repository = Storage.userRepository;
-            repository.Update(unit);
-            repository.Update(result.leftCurrency);
-            repository.Update(result.leftItem);
+            repository.currency.Update(result.leftCurrency);
+            repository.inventory.Update(result.leftItem);
+            repository.characters.Update(unit);
 
             _unit.Value = unit;
             _selected.Value = slot;

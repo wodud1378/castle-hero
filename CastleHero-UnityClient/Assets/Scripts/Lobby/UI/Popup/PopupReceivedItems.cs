@@ -17,7 +17,7 @@ namespace RGLabs.Lobby.UI.Popup
         public override UniTask Open(params object[] parameters)
         {
             var items = new List<IItem>();
-            var currency = new Currency();
+            var currency = new CurrencyDto();
             foreach (var parameter in parameters)
             {
                 switch (parameter)
@@ -25,7 +25,7 @@ namespace RGLabs.Lobby.UI.Popup
                     case IEnumerable<IItem> i:
                         items.AddRange(i);
                         break;
-                    case Currency c:
+                    case CurrencyDto c:
                         currency += c;
                         break;
                 }

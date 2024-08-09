@@ -17,7 +17,7 @@ namespace RGLabs.Network.Shared
     public class GrowthResult
     {
         public UnitTransition transition;
-        public Currency leftCurrency;
+        public CurrencyDto leftCurrency;
         public IItem leftItem;
     }
     #endregion
@@ -29,7 +29,7 @@ namespace RGLabs.Network.Shared
         public int stage;
         public int exp;
         public bool isFirstClear;
-        public Currency currency;
+        public CurrencyDto currency;
         public List<IItem> items;
         public List<UnitTransition> transitions;
     }
@@ -67,7 +67,7 @@ namespace RGLabs.Network.Shared
 
     public class OpenBoxResult
     {
-        public Currency currency;
+        public CurrencyDto currency;
         public List<IItem> items;
         public IItem leftItem;
     }
@@ -78,14 +78,14 @@ namespace RGLabs.Network.Shared
 
     public class ItemBought
     {
-        public Currency currency;
+        public CurrencyDto currency;
         public List<IItem> items;
         public List<UnitInfo> units;
     }
 
     public class ItemsSold
     {
-        public Currency currency;
+        public CurrencyDto currency;
         public List<IItem> items;
     }
 

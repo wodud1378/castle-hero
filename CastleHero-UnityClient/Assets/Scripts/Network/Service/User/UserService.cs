@@ -6,15 +6,15 @@ namespace RGLabs.Network.Service.User
 {
     public class UserService : NetworkServiceBase
     {
-        public UniTask SaveFormation(Formation formation) => Save(FORMATION_TABLE, formation);
+        public UniTask SaveFormation(FormationDto formation) => Save(FORMATION_TABLE, formation);
         
         public UniTask<Response> UpdateNickname(string nickname)
             => Call(onResult => Backend.BMember.UpdateNickname(nickname, onResult.Invoke));
         
-        public UniTask<Response<UserData>> NewUser()
-            => InvokeFunc("DefaultData", null, ConvertFunctionResponse<UserData>());
+        public UniTask<Response<UserDataDto>> NewUser()
+            => InvokeFunc("DefaultData", null, ConvertFunctionResponse<UserDataDto>());
         
-        public async UniTask<Response<UserData>> GetUserData()
+        public async UniTask<Response<UserDataDto>> GetUserData()
         {
             var read = TransactionGet(
                 PROFILE_TABLE,
@@ -30,14 +30,14 @@ namespace RGLabs.Network.Service.User
                 raw =>
                 {
                     var jsonData = raw.GetFlattenJSON();
-                    var userData = new UserData
+                    var userData = new UserDataDto
                     {
-                        profile = FromTransaction<Profile>(jsonData, PROFILE_TABLE),
-                        act = FromTransaction<Act>(jsonData, ACT_TABLE),
-                        currency = FromTransaction<Currency>(jsonData, CURRENCY_TABLE),
-                        characters = FromTransaction<Characters>(jsonData, CHARACTERS_TABLE),
-                        formation = FromTransaction<Formation>(jsonData, FORMATION_TABLE),
-                        inventory = FromTransaction<Inventory>(jsonData, INVENTORY_TABLE)
+                        profile = FromTransaction<ProfileDto>(jsonData, PROFILE_TABLE),
+                        act = FromTransaction<ActDto>(jsonData, ACT_TABLE),
+                        currency = FromTransaction<CurrencyDto>(jsonData, CURRENCY_TABLE),
+                        characters = FromTransaction<CharactersDto>(jsonData, CHARACTERS_TABLE),
+                        formation = FromTransaction<FormationDto>(jsonData, FORMATION_TABLE),
+                        inventoryDto = FromTransaction<InventoryDto>(jsonData, INVENTORY_TABLE)
                     };
 
                     return userData;

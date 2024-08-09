@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +8,19 @@ namespace RGLabs.Utility
 {
     public static class RxHelper
     {
+        public static void Update<T>(this ReactiveCollection<T> collection, T value, Predicate<T> findTarget)
+        {
+            var exist = collection.FirstOrDefault(findTarget.Invoke);
+            if (exist == null)
+                return;
+
+            int index = collection.IndexOf(exist);
+            if(value != null)
+                collection.Insert(index, value);
+            
+            collection.Remove(exist);
+        }
+        
         public static IObservable<ReactiveCollection<T>> ChangeAsObservable<T>(this ReactiveCollection<T> collection)
         {
             return Observable.Create<ReactiveCollection<T>>(observer =>

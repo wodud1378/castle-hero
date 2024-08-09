@@ -1,3 +1,4 @@
+using System;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data;
 using RGLabs.Lobby.UI;
@@ -15,30 +16,47 @@ namespace RGLabs.Common.UI
         [SerializeField] private UIItemSlot _dia;
         [SerializeField] private UIItemSlot _gold;
 
-        public void Init()
+        private void Awake()
+        {
+            Init();
+        }
+
+        private void Init()
         {
             var repository = Storage.userRepository;
-            _nickName.text = repository.nickname;
+            if(_nickName != null)
+                _nickName.text = repository.nickname;
 
-            if (!Storage.db.units.TryFind(repository.profileCharacter, out var entity))
-                entity = Storage.db.units[0];
+            if (_portrait != null)
+            {
+                if (!Storage.db.units.TryFind(repository.profile.iconId.Value, out var entity))
+                    entity = Storage.db.units[1];
             
-            _portrait.Init(entity.icon).Forget();
+                _portrait.Init(entity.icon).Forget();    
+            }
 
-            repository.gold
-                .Subscribe(x =>
-                {
-                    _gold.Init(new Item { ItemId = Constants.GoldId, Quantity = x }).Forget();
-                })
-                .AddTo(this);
+            var currency = repository.currency;
 
-            Observable.Merge(repository.freeDia, repository.paidDia)
-                .Subscribe(_ =>
-                {
-                    int qty = repository.freeDia.Value + repository.paidDia.Value;
-                    _dia.Init(new Item { ItemId = Constants.FreeDiaId, Quantity = qty }).Forget();
-                })
-                .AddTo(this);
+            if (_gold != null)
+            {
+                currency.gold
+                    .Subscribe(x =>
+                    {
+                        _gold.Init(new Item { ItemId = Constants.GoldId, Quantity = x }).Forget();
+                    })
+                    .AddTo(this);
+            }
+
+            if (_dia != null)
+            {
+                Observable.Merge(currency.freeDia, currency.paidDia)
+                    .Subscribe(_ =>
+                    {
+                        int qty = currency.freeDia.Value + currency.paidDia.Value;
+                        _dia.Init(new Item { ItemId = Constants.FreeDiaId, Quantity = qty }).Forget();
+                    })
+                    .AddTo(this);
+            }
         }
     }
 }

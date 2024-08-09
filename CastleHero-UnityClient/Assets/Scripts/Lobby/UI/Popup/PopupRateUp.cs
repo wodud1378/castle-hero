@@ -46,7 +46,7 @@ namespace RGLabs.Lobby.UI.Popup
 
             this.SubscribeButton(_confirm, () => Confirm().Forget());
 
-            Storage.userRepository.gold
+            Storage.userRepository.currency.gold
                 .Subscribe(UpdateGoldSlot)
                 .AddTo(this);
             
@@ -107,7 +107,7 @@ namespace RGLabs.Lobby.UI.Popup
             _name.text = unitEntity.name;
 
             int soulItemId = unitEntity.soulItemId;
-            var item = Storage.userRepository.items.FirstOrDefault(x => x.ItemId == soulItemId) ?? new Item
+            var item = Storage.userRepository.inventory.items.FirstOrDefault(x => x.ItemId == soulItemId) ?? new Item
             {
                 ItemId = soulItemId,
             };
@@ -135,7 +135,7 @@ namespace RGLabs.Lobby.UI.Popup
                 : text.WithNegativeColor();
 
             int requireGold = rateEntity.gold;
-            bool hasEnoughGold = requireGold <= Storage.userRepository.gold.Value;
+            bool hasEnoughGold = requireGold <= Storage.userRepository.currency.gold.Value;
             var goldText = requireGold.CurrencyText();
             _requireGold.text = hasEnoughGold
                 ? goldText.WithColor(Color.white)
@@ -164,9 +164,9 @@ namespace RGLabs.Lobby.UI.Popup
             var result = await _service.Upgrade(_unit.Value.id, item.ItemId, rateEntity.soul);
             var unit = result.transition.unit;
             var repository = Storage.userRepository;
-            repository.Update(result.leftCurrency);
-            repository.Update(result.leftItem);
-            repository.Update(unit);
+            repository.currency.Update(result.leftCurrency);
+            repository.inventory.Update(result.leftItem);
+            repository.characters.Update(unit);
             
             _unit.Value = unit;
             _result = result;

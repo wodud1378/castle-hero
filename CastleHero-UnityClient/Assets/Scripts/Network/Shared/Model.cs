@@ -4,29 +4,30 @@ using RGLabs.Common;
 
 namespace RGLabs.Network.Shared
 {
-    public class Profile
+    public class ProfileDto
     {
-        public int stage { get; set; }
-        public int focusedStage { get; set; }
-        public int castleLv { get; set; }
+        public int iconId;
+        public int stage;
+        public int focusedStage;
+        public int castleLv;
     }
 
-    public class Act
+    public class ActDto
     {
         public int point;
-        public int pointMax;
-        public DateTime lastUsage;
+        public int pointLimit;
+        public DateTime lastUpdate;
     }
 
-    public class Currency
+    public class CurrencyDto
     {
         public int gold;
         public int freeDia;
         public int paidDia;
 
-        public static Currency operator +(Currency a, Currency b)
+        public static CurrencyDto operator +(CurrencyDto a, CurrencyDto b)
         {
-            return new Currency
+            return new CurrencyDto
             {
                 gold = a.gold + b.gold,
                 freeDia = a.freeDia + b.freeDia,
@@ -34,9 +35,9 @@ namespace RGLabs.Network.Shared
             };
         }
         
-        public static Currency operator -(Currency a, Currency b)
+        public static CurrencyDto operator -(CurrencyDto a, CurrencyDto b)
         {
-            return new Currency
+            return new CurrencyDto
             {
                 gold = a.gold - b.gold,
                 freeDia = a.freeDia - b.freeDia,
@@ -55,29 +56,29 @@ namespace RGLabs.Network.Shared
         }
     }
 
-    public class Characters
+    public class CharactersDto
     {
         public List<UnitInfo> units;
     }
 
-    public class Formation
+    public class FormationDto
     {
         public List<FieldUnit> fieldUnits;
     }
 
-    public class Inventory
+    public class InventoryDto
     {
         public List<IItem> items;
     }
 
-    public class UserData
+    public class UserDataDto
     {
-        public Profile profile;
-        public Act act;
-        public Currency currency;
-        public Characters characters;
-        public Formation formation;
-        public Inventory inventory;
+        public ProfileDto profile;
+        public ActDto act;
+        public CurrencyDto currency;
+        public CharactersDto characters;
+        public FormationDto formation;
+        public InventoryDto inventoryDto;
     }
 
     #region Unit.

@@ -26,9 +26,14 @@ namespace RGLabs.Stage.UI
         [SerializeField] private Button _close;
         [SerializeField] private Button _reset;
         [SerializeField] private Button _auto;
+        [SerializeField] private Button _confirm;
         [SerializeField] private TMP_Text _placedUnit;
         [SerializeField] private float _dragThreshold = 0.3f;
 
+        public UniTask ConfigTask => _completionSource.Task;
+        
+        private UniTaskCompletionSource _completionSource;
+        
         public readonly BoolReactiveProperty isOpened = new(false);
         public readonly ReactiveProperty<UICharacterSlot> selected = new(null);
 
@@ -38,7 +43,6 @@ namespace RGLabs.Stage.UI
         private float _holdTime;
         private bool _onHold;
 
-        private CancellationTokenSource _ctSource;
         private int _originLayer;
 
         private void Awake()
@@ -46,7 +50,7 @@ namespace RGLabs.Stage.UI
             Storage.inGameRepository.characters
                 .ChangeAsObservable()
                 .ThrottleFrame(1)
-                .Subscribe(_ => Init(Storage.userRepository.characters))
+                .Subscribe(_ => Init(Storage.userRepository.characters.units))
                 .AddTo(this);
 
             _formation.placed
@@ -66,6 +70,7 @@ namespace RGLabs.Stage.UI
             this.SubscribeButton(_close, Close);
             this.SubscribeButton(_reset, _formation.Clear);
             this.SubscribeButton(_auto, _formation.AutoPlacement);
+            this.SubscribeButton(_confirm, ()=> _completionSource.TrySetResult());
         }
 
         public override UniTask Init(IEnumerable<UnitInfo> collection)
@@ -76,7 +81,12 @@ namespace RGLabs.Stage.UI
                 .Where(unit => exist.FirstOrDefault(x => x.Id == unit.id) == null));
         }
 
-        public void Open() => Entrance();
+        public void Open()
+        {
+            _completionSource = new();
+            
+            Entrance();
+        }
 
         private void Entrance()
         {
@@ -91,7 +101,12 @@ namespace RGLabs.Stage.UI
             isOpened.Value = true;
         }
 
-        private void Close() => Exit();
+        public void Close()
+        {
+            _completionSource.TrySetCanceled();
+            
+            Exit();
+        }
 
         private void Exit()
         {

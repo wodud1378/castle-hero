@@ -7,7 +7,6 @@ using RGLabs.Data.Repositories;
 using RGLabs.Network.DB.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Network.Service.Login;
-using RGLabs.Network.Service.User;
 using RGLabs.Utility;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -20,7 +19,6 @@ namespace RGLabs.Network.Service.Boot
         private readonly IBackendErrorHandler _errorHandler;
         private readonly ILoginService _autoLoginService;
         private readonly InitService _initService;
-        private readonly UserService _userService;
         private readonly BootConfig _config;
 
         public BootService(BootConfig config, IBootServiceHandler handler, IBackendErrorHandler errorHandler = null)
@@ -29,7 +27,6 @@ namespace RGLabs.Network.Service.Boot
             _errorHandler = errorHandler;
             _autoLoginService = new AutoLoginService();
             _initService = new();
-            _userService = new();
             _config = config;
 
             _errorHandler?.Attach();
@@ -77,8 +74,8 @@ namespace RGLabs.Network.Service.Boot
                 : "기존 유저 로그인");
 
             var userData = newUser
-                ? (await _userService.NewUser()).data
-                : (await _userService.GetUserData()).data;
+                ? (await NetworkService.User.NewUser()).data
+                : (await NetworkService.User.GetUserData()).data;
 
             Debug.Log("데이터 불러오기 완료");
 
@@ -147,7 +144,7 @@ namespace RGLabs.Network.Service.Boot
                 while (!isSuccess)
                 {
                     nickname = await _handler.SetNickName();
-                    var response = await _userService.UpdateNickname(nickname);
+                    var response = await NetworkService.User.UpdateNickname(nickname);
 
                     isSuccess = response.IsSuccess;
                 }
@@ -158,7 +155,7 @@ namespace RGLabs.Network.Service.Boot
             return nickname;
         }
 
-        private async UniTask InitStorage(string nickname, UserData userData)
+        private async UniTask InitStorage(string nickname, UserDataDto userData)
         {
             var service = new DBLoadService(_initService);
             var response = await _initService.GetChartList();

@@ -70,7 +70,7 @@ namespace RGLabs.Network.Service.Test
 
             var result = await _service.AddItems(idList.ToArray(), quantityList.ToArray());
             
-            Storage.userRepository.Update(result);
+            Storage.userRepository.inventory.Update(result);
             
             _addItemLog.text = "요청 성공".WithPositiveColor();
         }
@@ -89,11 +89,11 @@ namespace RGLabs.Network.Service.Test
             else
             {
                 _addCurrencyLog.text = "요청 진행 중".WithColor(Color.gray);
-                var currency = new Currency { paidDia = paidDia, freeDia = freeDia, gold = gold, };
+                var currency = new CurrencyDto { paidDia = paidDia, freeDia = freeDia, gold = gold, };
 
                 var result = await _service.AddCurrency(currency);
                 
-                Storage.userRepository.Update(result);
+                Storage.userRepository.currency.Update(result);
 
                 _addCurrencyLog.text = "요청 성공".WithPositiveColor();
             }

@@ -7,9 +7,11 @@ using RGLabs.Common;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Data;
+using RGLabs.Data.Repositories;
 using RGLabs.InGame.System;
 using RGLabs.InGame.UI;
 using RGLabs.Lobby.Behaviours;
+using RGLabs.Network.Service;
 using RGLabs.Network.Service.Stage;
 using RGLabs.Network.Shared;
 using RGLabs.Unit.Components;
@@ -26,7 +28,7 @@ namespace RGLabs.InGame.Behaviours
         Retry,
         Next,
     }
-
+    
     public struct GameResult
     {
         public bool isCleared;
@@ -38,19 +40,24 @@ namespace RGLabs.InGame.Behaviours
         [SerializeField] private UIInGame _uiInGame;
         [SerializeField] private WaveRunner _waveRunner;
 
-        private readonly StageService _service = new();
+        private StageTimer _timer;
         private UnitProcessor _unitProcessor;
-        
+        private InGameRepository _repository;
+  
         protected override void OnAwake()
         {
             base.OnAwake();
             
-            this.SubscribeMessage<StartGame>(Run);
             this.SubscribeMessage<ExitCode>(Exit);
+            this.SubscribeMessage<StartGame>(Run);
+            this.SubscribeMessage<TimeOver>(_=> OnStageFailed());
         }
 
         private void Run(StartGame startGame)
         {
+            if (!Storage.db.stages.TryFind(startGame.stage, out var stageData))
+                return;
+            
             Time.timeScale = Storage.inGameRepository.speedUp
                 ? 2f
                 : 1f;
@@ -59,11 +66,15 @@ namespace RGLabs.InGame.Behaviours
             cam.DOOrthoSize(20f, 0.4f);
             
             _uiInGame.gameObject.SetActive(true);
+
+            _repository = Storage.inGameRepository;
+            _repository.stage = stageData.Id;
+            _repository.leftTime.Value = stageData.timeLimit;
             
-            var castle = Storage.inGameRepository.castle.Value;
+            var castle = _repository.castle.Value;
             castle.state
                 .Where(x => x == UnitCore.States.Dead)
-                .Subscribe(_ => OnCastleDestroy())
+                .Subscribe(_ => OnStageFailed())
                 .AddTo(this);
 
             InitGlobalSkills();
@@ -73,7 +84,8 @@ namespace RGLabs.InGame.Behaviours
             _uiInGame.Init();
             _uiInGame.Open();
             
-            _unitProcessor = new UnitProcessor();
+            _unitProcessor = new ();
+            _timer = new();
 
             RunWave();
             RunUnits();
@@ -81,7 +93,7 @@ namespace RGLabs.InGame.Behaviours
 
         private void InitGlobalSkills()
         {
-            int lv = Storage.userRepository.castleLv.Value;
+            int lv = Storage.userRepository.profile.castleLv.Value;
             if (!Storage.db.castles.TryFind(lv, out var entity))
                 return;
 
@@ -110,7 +122,7 @@ namespace RGLabs.InGame.Behaviours
         private void RunWave()
         {
             var db = Storage.db;
-            var stage = Storage.userRepository.focusedStage.Value;
+            var stage = _repository.stage;
             if (!db.stages.TryFind(stage, out var entity))
                 return;
 
@@ -121,7 +133,7 @@ namespace RGLabs.InGame.Behaviours
                 .Subscribe(_ => OnWaveComplete());
         }
 
-        private void OnCastleDestroy()
+        private void OnStageFailed()
         {
             new GameResult
             {
@@ -134,8 +146,8 @@ namespace RGLabs.InGame.Behaviours
         {
             var transitions = new List<UnitTransition>();
             var repository = Storage.userRepository;
-            var units = repository.characters
-                .Where(unit => repository.fieldCharacters.FirstOrDefault(x => x.id == unit.id) != null);
+            var units = repository.characters.units
+                .Where(unit => repository.formation.fieldUnits.FirstOrDefault(x => x.id == unit.id) != null);
 
             foreach (var unit in units)
             {
@@ -164,8 +176,7 @@ namespace RGLabs.InGame.Behaviours
 
         private async void OnWaveComplete()
         {
-            var result = await _service.SetClear(Storage.userRepository.focusedStage.Value);
-            
+            var result = await NetworkService.Stage.SetClear(Storage.userRepository.profile.focusedStage.Value);
             new GameResult
             {
                 isCleared = true,
@@ -175,7 +186,7 @@ namespace RGLabs.InGame.Behaviours
 
         private void RunUnits()
         {
-            foreach (var character in Storage.inGameRepository.characters)
+            foreach (var character in _repository.characters)
             {
                 character.Core.onRest.Value = false;
             }
@@ -190,7 +201,7 @@ namespace RGLabs.InGame.Behaviours
             if (exitCode != ExitCode.Exit)
             {
                 state = State.InGame;
-                int currentStage = Storage.userRepository.focusedStage.Value;
+                int currentStage = _repository.stage;
                 if (exitCode == ExitCode.Retry)
                 {
                     stage = currentStage;
@@ -227,6 +238,7 @@ namespace RGLabs.InGame.Behaviours
             
             _unitProcessor.Dispose();
             _uiInGame.Dispose();
+            _timer.Dispose();
         }
     }
 }

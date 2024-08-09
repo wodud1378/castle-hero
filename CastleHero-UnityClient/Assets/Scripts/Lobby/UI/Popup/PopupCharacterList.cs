@@ -63,7 +63,7 @@ namespace RGLabs.Lobby.UI.Popup
             {
                 switch (tab.Value)
                 {
-                    case Tab.Storage: return Storage.userRepository.characters
+                    case Tab.Storage: return Storage.userRepository.characters.units
                         .Where(x=> x.id != Constants.BarricadeId)
                         .ToArray();
                     case Tab.Collections:
@@ -117,7 +117,7 @@ namespace RGLabs.Lobby.UI.Popup
                 .Subscribe(_ => UpdateUI())
                 .AddTo(this);
             
-            Storage.userRepository.characters
+            Storage.userRepository.characters.units
                 .ChangeAsObservable()
                 .ThrottleFrame(1)
                 .Subscribe(_=> UpdateUI())
@@ -169,7 +169,7 @@ namespace RGLabs.Lobby.UI.Popup
 
         private void OpenEquipmentCompare(UnitInfo unit)
         {
-            var items = Storage.userRepository.items;
+            var items = Storage.userRepository.inventory.items;
             var item = items.FirstOrDefault(x => x.ItemId == equipmentId);
 
             if (item is not EquipItem right)

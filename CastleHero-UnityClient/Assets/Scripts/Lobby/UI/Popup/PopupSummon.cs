@@ -80,7 +80,7 @@ namespace RGLabs.Lobby.UI.Popup
             var buttonRect = (_info.transform as RectTransform)!;
             var popupRect = (popup.transform as RectTransform)!;
 
-            popupRect.AttachThrough(buttonRect, 0f, 1f);
+            popupRect.Attach(buttonRect, new Vector2(0f, 1f));
         }
 
         private void AddDataIndex(int value)
@@ -196,10 +196,10 @@ namespace RGLabs.Lobby.UI.Popup
                 switch (summoned)
                 {
                     case SummonedSoul soul:
-                        repository.Add(new Item { ItemId = soul.Id, Quantity = soul.quantity });
+                        repository.inventory.Add(new Item { ItemId = soul.Id, Quantity = soul.quantity });
                         break;
                     case SummonedUnit unit:
-                        repository.Add(new UnitInfo { id = unit.Id, lv = unit.lv, rate = unit.rate });
+                        repository.characters.Add(new UnitInfo { id = unit.Id, lv = unit.lv, rate = unit.rate });
                         break;
                 }
             }
@@ -220,14 +220,15 @@ namespace RGLabs.Lobby.UI.Popup
         private bool CheckInventory(int coastId, int coast, bool openPopup = true)
         {
             var repo = Storage.userRepository;
+            var currency = repo.currency;
             bool isEnough;
             if (coastId == Constants.GoldId)
-                isEnough = repo.gold.Value >= coast;
+                isEnough = currency.gold.Value >= coast;
             else if (coastId == Constants.PaidDiaId || coastId == Constants.FreeDiaId)
-                isEnough = repo.paidDia.Value + repo.freeDia.Value >= coast;
+                isEnough = currency.paidDia.Value + currency.freeDia.Value >= coast;
             else
             {
-                var item = repo.items.FirstOrDefault(x => x.ItemId == coastId);
+                var item = repo.inventory.items.FirstOrDefault(x => x.ItemId == coastId);
                 isEnough = item != null && item.Quantity >= coast;
             }
 

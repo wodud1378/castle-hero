@@ -6,7 +6,7 @@ namespace RGLabs.Network.Service.Test
 {
     public class TestService : NetworkServiceBase
     {
-        public async UniTask<Currency> AddCurrency(Currency currency)
+        public async UniTask<CurrencyDto> AddCurrency(CurrencyDto currency)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
@@ -15,12 +15,12 @@ namespace RGLabs.Network.Service.Test
                 new(nameof(currency.gold), currency.gold)
             };
 
-            var response = await InvokeFunc("AddCurrency", parameters, ConvertFunctionResponse<Currency>());
+            var response = await InvokeFunc("AddCurrency", parameters, ConvertFunctionResponse<CurrencyDto>());
 
             return response.data;
         }
 
-        public async UniTask<Inventory> AddItems(int[] ids, int[] quantities)
+        public async UniTask<InventoryDto> AddItems(int[] ids, int[] quantities)
         {
             var parameters = new List<KeyValuePair<string, object>>
             {
@@ -28,7 +28,7 @@ namespace RGLabs.Network.Service.Test
                 new(nameof(quantities), quantities),
             };
             
-            var response = await InvokeFunc("AddItems", parameters, ConvertFunctionResponse<Inventory>());
+            var response = await InvokeFunc("AddItems", parameters, ConvertFunctionResponse<InventoryDto>());
 
             return response.data;
         }

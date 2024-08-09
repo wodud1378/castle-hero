@@ -185,7 +185,7 @@ namespace RGLabs.Unit.Components
 
             if (info.equipments != null)
             {
-                var equipments = Storage.userRepository.items
+                var equipments = Storage.userRepository.inventory.items
                     .OfType<EquipItem>()
                     .Where(x => info.equipments.Contains(x.Guid));
                 

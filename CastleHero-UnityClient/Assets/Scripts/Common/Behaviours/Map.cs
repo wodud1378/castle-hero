@@ -24,7 +24,7 @@ namespace RGLabs.Common.Behaviours
 
         private void Init()
         {
-           _subscription = Storage.userRepository.focusedStage
+           _subscription = Storage.userRepository.profile.focusedStage
                .ThrottleFrame(1)
                .Subscribe(OnStageChanged)
                .AddTo(this);

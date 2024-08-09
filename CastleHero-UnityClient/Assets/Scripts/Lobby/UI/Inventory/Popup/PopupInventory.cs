@@ -92,8 +92,13 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             tab.AsObservable()
                 .Select(_ => UniRx.Unit.Default)
                 .Merge(
-                    filter.ChangeAsObservable().Select(_ => UniRx.Unit.Default), 
-                    Storage.userRepository.items.ChangeAsObservable().Select(_=> UniRx.Unit.Default))
+                    filter
+                        .ChangeAsObservable()
+                        .Select(_ => UniRx.Unit.Default), 
+                    
+                    Storage.userRepository.inventory.items
+                        .ChangeAsObservable()
+                        .Select(_=> UniRx.Unit.Default))
                 .ThrottleFrame(1)
                 .Subscribe(_ => UpdateList())
                 .AddTo(this);
@@ -226,7 +231,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         private void UpdateList()
         {
-            var items = Storage.userRepository.items
+            var items = Storage.userRepository.inventory.items
                 .Where(CompareMethod(tab.Value).Invoke);
 
             if(filter.Count > 0)

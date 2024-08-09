@@ -13,7 +13,6 @@ namespace RGLabs.Lobby.UI
 {
     public class UILobby : UIMain
     {
-        [SerializeField] private UIUserInfo _userInfo;
         [SerializeField] private Button _quest;
         [SerializeField] private Button _mail;
         [SerializeField] private Button _attendence;
@@ -23,6 +22,7 @@ namespace RGLabs.Lobby.UI
         [SerializeField] private Button _inventory;
         [SerializeField] private Button _summon;
         [SerializeField] private Button _dungeon;
+        [SerializeField] private StartButton _startButton;
 
         // Test.
         [SerializeField] private UITest _uiTest;
@@ -30,8 +30,6 @@ namespace RGLabs.Lobby.UI
 
         private void Awake()
         {
-            _userInfo.Init();
-            
             this.SubscribeButton(_cheatButton, ()=> _uiTest.Open());
 
             this.SubscribeButton(_characters, OpenPopup<PopupCharacterList>);
