@@ -60,7 +60,7 @@ namespace RGLabs.Lobby.Behaviours
                     Context.Back.Add(this);
                     break;
                 case State.InGame:
-                    TransitionTo(_current, null, () => StartGame().Forget());
+                    TransitionTo(_current, null, StartGame);
                     break;
             }
         }
@@ -103,12 +103,10 @@ namespace RGLabs.Lobby.Behaviours
                 ui.Close();
         }
 
-        private async UniTaskVoid StartGame()
+        private void StartGame()
         {
             int stage = Storage.userRepository.profile.focusedStage.Value;
-            if (!await NetworkService.Stage.StartGame(stage))
-                return;
-
+   
             _uiLobby.Dispose();
             _uiStage.Dispose();
 
