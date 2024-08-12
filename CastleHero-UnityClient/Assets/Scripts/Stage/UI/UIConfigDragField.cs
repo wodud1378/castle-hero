@@ -28,8 +28,8 @@ namespace RGLabs.Stage.UI
         private int _originLayer;
 
         private bool _onDrag;
-        
-        
+
+
         private void Awake()
         {
             _validationCircle.Init();
@@ -106,22 +106,26 @@ namespace RGLabs.Stage.UI
 
             _validationCircle.Color = _validColor;
         }
-        
+
         private UnitBehaviour FindFromRay(Vector2 position)
         {
             var hit = Physics2D.Raycast(position, Vector2.zero);
             if (hit.collider == null)
                 return null;
 
-            return hit.collider.GetComponent<UnitBehaviour>();
+            var unit = hit.collider.GetComponent<UnitBehaviour>();
+            if (unit == Storage.inGameRepository.castle.Value)
+                return null;
+
+            return unit;
         }
-        
+
         private async UniTaskVoid Create(UICharacterSlot slot, Vector2 position)
         {
             var factory = Context.unitFactory;
             var info = slot.Info;
             UnitBehaviour unit;
-            if(info.id == Constants.BarricadeId)
+            if (info.id == Constants.BarricadeId)
                 unit = await factory.CreateBarricade(info, position);
             else
                 unit = await factory.Create(info, position);
@@ -135,11 +139,11 @@ namespace RGLabs.Stage.UI
             }
 
             unit.DestroySelf();
-            
+
             _validationCircle.Color = _invalidColor;
 
             await UniTask.Delay(TimeSpan.FromSeconds(0.25f));
-            
+
             _validationCircle.Color = _validColor;
         }
 
@@ -157,9 +161,9 @@ namespace RGLabs.Stage.UI
                 {
                     var selected = FindFromRay(position);
                     if (selected != null)
-                        _formation.Remove(selected);    
+                        _formation.Remove(selected);
                 }
-                
+
                 _characterList.selected.Value = null;
             }
 
