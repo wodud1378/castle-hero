@@ -21,6 +21,14 @@ namespace RGLabs.Network.Shared
         public IItem leftItem;
     }
     #endregion
+    
+    #region Castle
+    public class CastleGrowth
+    {
+        public int lv;
+        public CurrencyDto leftCurrency;
+    }
+    #endregion
 
     #region Stage.
 
@@ -78,9 +86,10 @@ namespace RGLabs.Network.Shared
 
     public class ItemBought
     {
+        public int shopId;
         public CurrencyDto currency;
         public List<IItem> items;
-        public List<UnitInfo> units;
+        public List<int> unitIds;
     }
 
     public class ItemsSold

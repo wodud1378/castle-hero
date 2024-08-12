@@ -3,6 +3,7 @@ using RGLabs.Common.Behaviours;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Lobby.UI.Popup;
+using RGLabs.Network.Service;
 using RGLabs.Network.Service.Item;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
@@ -21,9 +22,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         [SerializeField] private TMP_Text _description;
         [SerializeField] private TMP_Text _useCount;
         [SerializeField] private TMP_Text _effect;
-
-        private readonly ItemService _service = new();
-
+        
         protected override void OnAwake()
         {
             base.OnAwake();
@@ -120,7 +119,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         private async void OpenBox()
         {
-            var result = await _service.OpenBox(item.Value.ItemId, (int)_slider.value);
+            var result = await NetworkService.Item.OpenBox(item.Value.ItemId, (int)_slider.value);
 
             var currency = result.currency;
             var items = result.items;

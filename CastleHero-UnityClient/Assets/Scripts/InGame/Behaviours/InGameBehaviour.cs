@@ -7,6 +7,7 @@ using RGLabs.Common;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Data;
+using RGLabs.Data.Model;
 using RGLabs.Data.Repositories;
 using RGLabs.InGame.System;
 using RGLabs.InGame.UI;
@@ -97,26 +98,10 @@ namespace RGLabs.InGame.Behaviours
             if (!Storage.db.castles.TryFind(lv, out var entity))
                 return;
 
-            int index = 0;
-            var list = new List<GlobalSkill.Parameter>();
-            while (index.IsValidIndex(entity.skills, entity.skillValues))
-            {
-                var type = Enum.Parse<GlobalSkill.Type>(entity.skills[index]);
-                if (type == GlobalSkill.Type.Damage)
-                {
-                    list.Add(new GlobalSkill.Parameter
-                    {
-                        type = type,
-                        radius = 5f,
-                        value = entity.skillValues[index],
-                        coolTime = 7.5f,
-                        centerEffect = Constants.GlobalSkillEffect[type]
-                    });
-                }
-                ++index;
-            }
-
-            _uiInGame.GlobalSkill.Init(list).Forget();
+            var parameters = entity.SkillParameters();
+            _uiInGame.GlobalSkill
+                .Init(parameters)
+                .Forget();
         }
 
         private void RunWave()

@@ -7,6 +7,7 @@ using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
+using RGLabs.Network.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Network.Service.Character;
 using RGLabs.Utility;
@@ -36,7 +37,6 @@ namespace RGLabs.Lobby.UI.Popup
         private GrowthResult _result;
         
         private readonly ReactiveProperty<UnitInfo> _unit = new();
-        private readonly CharacterService _service = new ();
         
         private UniTask _updateTask;
 
@@ -161,7 +161,7 @@ namespace RGLabs.Lobby.UI.Popup
             if (!Storage.db.rates.TryFind(_unit.Value.rate, out var rateEntity))
                 return;
 
-            var result = await _service.Upgrade(_unit.Value.id, item.ItemId, rateEntity.soul);
+            var result = await  NetworkService.Character.Upgrade(_unit.Value.id, item.ItemId, rateEntity.soul);
             var unit = result.transition.unit;
             var repository = Storage.userRepository;
             repository.currency.Update(result.leftCurrency);

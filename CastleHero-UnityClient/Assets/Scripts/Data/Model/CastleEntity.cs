@@ -1,7 +1,28 @@
+using System;
+using RGLabs.Common;
 using RGLabs.Data.DB;
 
 namespace RGLabs.Data.Model
 {
+    public enum CastleSkillType
+    {
+        Shield,
+        Damage,
+        Sturn,
+        Heal
+    }
+    
+    public struct CastleSkillParameter
+    {
+        public CastleSkillType type;
+        public string icon;
+        public float value;
+        public float radius;
+        public float coolTime;
+        public string centerEffect;
+        public string unitEffect;
+    }
+    
     public struct CastleEntity : IEntity
     {
         [DataField("Castle_Level")]
@@ -29,5 +50,28 @@ namespace RGLabs.Data.Model
 
         [DataField("Castle_Skill_Value")] 
         public float[] skillValues;
+
+        public CastleSkillParameter[] SkillParameters()
+        {
+            var array = new CastleSkillParameter[4];
+            for (int i = 0; i < 4; ++i)
+            {
+                var type = Enum.Parse<CastleSkillType>(skills[i]);
+                array[i] = new CastleSkillParameter
+                {
+                    type = type,
+                    icon = Constants.GlobalSkillIcon[type],
+                    value = skillValues[i],
+                    radius = 5f,
+                    coolTime = 10f,
+                    centerEffect = Constants.GlobalSkillEffect[type],
+                    unitEffect = type == CastleSkillType.Heal
+                        ? "Effect_Heal"
+                        : string.Empty
+                };
+            }
+
+            return array;
+        }
     }
 }

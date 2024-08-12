@@ -1,5 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
+using RGLabs.Data.Model;
 using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
@@ -14,28 +15,8 @@ namespace RGLabs.Unit.Skill.Global
 {
     public class GlobalSkill
     {
-        public enum Type
-        {
-            Shield = 0,
-            Damage,
-            Sturn,
-            Heal
-        }
-
-        public struct Parameter
-        {
-            public Type type;
-            public float radius;
-            public float value;
-            public float coolTime;
-            public int mana;
-            public string centerEffect;
-            public string unitEffect;
-        }
-
-        public readonly Type type;
+        public readonly CastleSkillType type;
         public readonly float radius;
-        public readonly int mana;
         public readonly CoolTime coolTime;
 
         private readonly string _centerEffect;
@@ -45,11 +26,10 @@ namespace RGLabs.Unit.Skill.Global
         private readonly UnitBehaviour _castle;
         private readonly CircleBound _bound;
 
-        public GlobalSkill(UnitBehaviour castle, Parameter parameter)
+        public GlobalSkill(UnitBehaviour castle, CastleSkillParameter parameter)
         {
             type = parameter.type;
             radius = parameter.radius;
-            mana = parameter.mana;
 
             _value = parameter.value;
             _centerEffect = parameter.centerEffect;
@@ -65,10 +45,10 @@ namespace RGLabs.Unit.Skill.Global
 
             var targeting = type switch
             {
-                Type.Shield => Targeting.Alley,
-                Type.Sturn => Targeting.Enemy,
-                Type.Damage => Targeting.Enemy,
-                Type.Heal => Targeting.Alley,
+                CastleSkillType.Shield => Targeting.Alley,
+                CastleSkillType.Sturn => Targeting.Enemy,
+                CastleSkillType.Damage => Targeting.Enemy,
+                CastleSkillType.Heal => Targeting.Alley,
                 _ => default
             };
 
@@ -81,10 +61,10 @@ namespace RGLabs.Unit.Skill.Global
         {
             Action<UnitBehaviour> action = type switch
             {
-                Type.Shield => Shield,
-                Type.Damage => Damage,
-                Type.Sturn => Stun,
-                Type.Heal => Heal,
+                CastleSkillType.Shield => Shield,
+                CastleSkillType.Damage => Damage,
+                CastleSkillType.Sturn => Stun,
+                CastleSkillType.Heal => Heal,
                 _ => null
             };
 

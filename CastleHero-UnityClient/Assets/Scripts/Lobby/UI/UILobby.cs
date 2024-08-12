@@ -1,6 +1,6 @@
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
-using RGLabs.Common.UI;
+using RGLabs.Common.Flow;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Lobby.UI.Inventory.Popup;
 using RGLabs.Lobby.UI.Popup;
@@ -22,7 +22,7 @@ namespace RGLabs.Lobby.UI
         [SerializeField] private Button _inventory;
         [SerializeField] private Button _summon;
         [SerializeField] private Button _dungeon;
-        [SerializeField] private StartButton _startButton;
+        [SerializeField] private Button _castle;
 
         // Test.
         [SerializeField] private UITest _uiTest;
@@ -31,7 +31,6 @@ namespace RGLabs.Lobby.UI
         private void Awake()
         {
             this.SubscribeButton(_cheatButton, ()=> _uiTest.Open());
-
             this.SubscribeButton(_characters, OpenPopup<PopupCharacterList>);
             this.SubscribeButton(_inventory, OpenPopup<PopupInventory>);
             this.SubscribeButton(_quest, OpenPopup<PopupQuest>);
@@ -39,6 +38,7 @@ namespace RGLabs.Lobby.UI
             this.SubscribeButton(_setting, OpenPopup<PopupSetting>);
             this.SubscribeButton(_dungeon, OpenPopup<PopupDungeon>);
             this.SubscribeButton(_summon, OpenPopup<PopupSummon>);
+            this.SubscribeButton(_castle, () => Context.Transition.CurrentState = State.Castle);
         }
 
         private void OpenPopup<T>() where T : PopupBase => Context.popupManager.OpenAsync<T>().Forget();

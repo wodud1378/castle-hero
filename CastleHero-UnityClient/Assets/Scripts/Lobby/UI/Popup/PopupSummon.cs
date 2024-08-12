@@ -8,6 +8,7 @@ using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
+using RGLabs.Network.Service;
 using RGLabs.Network.Service.Summon;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
@@ -39,7 +40,6 @@ namespace RGLabs.Lobby.UI.Popup
 
         private readonly Dictionary<int, Cache> _propCache = new();
         private readonly ReactiveProperty<SummonEntity> _entity = new();
-        private readonly SummonService _service = new();
 
         private SummonResult _result;
 
@@ -167,10 +167,10 @@ namespace RGLabs.Lobby.UI.Popup
         }
 
         private UniTask SummonOnce(int eventId, int coastId, int coast)
-            => Summon(eventId, coastId, coast, OnceTrigger, _service.SummonOnce);
+            => Summon(eventId, coastId, coast, OnceTrigger, NetworkService.Summon.SummonOnce);
 
         private UniTask SummonTenth(int eventId, int coastId, int coast)
-            => Summon(eventId, coastId, coast, TenthTrigger, _service.SummonTenth);
+            => Summon(eventId, coastId, coast, TenthTrigger, NetworkService.Summon.SummonTenth);
 
         private async UniTask Summon(int eventId, int coastId, int coast, int animationHash,
             Func<int, int, UniTask<SummonResult>> method)

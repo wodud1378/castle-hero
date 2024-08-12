@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RGLabs.Data.Model;
 using RGLabs.Unit.Skill.Global;
 
 namespace RGLabs.Common
@@ -21,20 +22,20 @@ namespace RGLabs.Common
         public static string ExpIcon = "Common/Icon/Icon_Exp.png";
         public static float DefaultObjectAngle = 0;
 
-        public static readonly Dictionary<GlobalSkill.Type, string> GlobalSkillIcon = new()
+        public static readonly Dictionary<CastleSkillType, string> GlobalSkillIcon = new()
         {
-            { GlobalSkill.Type.Shield, "Common/Icon/Icon_Skill_Global_03.png" },
-            { GlobalSkill.Type.Damage, "Common/Icon/Icon_Skill_Global_03.png" },
-            { GlobalSkill.Type.Sturn, "Common/Icon/Icon_Skill_Global_03.png" },
-            { GlobalSkill.Type.Heal, "Common/Icon/Icon_Skill_Global_03.png" },
+            { CastleSkillType.Shield, "Common/Icon/Icon_Skill_Global_03.png" },
+            { CastleSkillType.Damage, "Common/Icon/Icon_Skill_Global_03.png" },
+            { CastleSkillType.Sturn, "Common/Icon/Icon_Skill_Global_03.png" },
+            { CastleSkillType.Heal, "Common/Icon/Icon_Skill_Global_03.png" },
         };
 
-        public static readonly Dictionary<GlobalSkill.Type, string> GlobalSkillEffect = new()
+        public static readonly Dictionary<CastleSkillType, string> GlobalSkillEffect = new()
         {
-            { GlobalSkill.Type.Shield, "Effect_Global_03" },
-            { GlobalSkill.Type.Damage, "Effect_Global_03" },
-            { GlobalSkill.Type.Sturn, "Effect_Global_03" },
-            { GlobalSkill.Type.Heal, "Effect_Global_03" },
+            { CastleSkillType.Shield, "Effect_Global_03" },
+            { CastleSkillType.Damage, "Effect_Global_03" },
+            { CastleSkillType.Sturn, "Effect_Global_03" },
+            { CastleSkillType.Heal, "Effect_Global_03" },
         };
 
         public static string ManaDropEffect = "Effect_ManaStone";

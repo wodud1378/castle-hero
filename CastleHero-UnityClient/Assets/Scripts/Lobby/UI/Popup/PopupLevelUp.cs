@@ -5,6 +5,7 @@ using RGLabs.Common;
 using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
+using RGLabs.Network.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Network.Service.Character;
 using RGLabs.Utility;
@@ -42,8 +43,6 @@ namespace RGLabs.Lobby.UI.Popup
 
         private readonly ReactiveProperty<UnitInfo> _unit = new();
         private readonly ReactiveProperty<UIItemSlot> _selected = new();
-
-        private readonly CharacterService _service = new();
 
         protected override void OnAwake()
         {
@@ -196,7 +195,7 @@ namespace RGLabs.Lobby.UI.Popup
             if (_selected.Value.Item is not Item item)
                 return;
 
-            var result = await _service.LevelUp(_unit.Value.id, item.ItemId, (int)_slider.value);
+            var result = await NetworkService.Character.LevelUp(_unit.Value.id, item.ItemId, (int)_slider.value);
             var unit = result.transition.unit;
 
             var slot = new List<UIItemSlot>

@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Common;
 using RGLabs.Common.UI;
 using RGLabs.Data;
+using RGLabs.Data.Model;
 using RGLabs.Lobby.Behaviours;
 using RGLabs.Unit.Skill.Global;
 using RGLabs.Utility;
@@ -14,7 +15,7 @@ using UnityEngine.EventSystems;
 
 namespace RGLabs.InGame.UI
 {
-    public class UIGlobalSkill : UIListAdapter<UIGlobalSkillSlot, GlobalSkill.Parameter>, IBeginDragHandler,
+    public class UIGlobalSkill : UIListAdapter<UIGlobalSkillSlot, CastleSkillParameter>, IBeginDragHandler,
         IDragHandler, IEndDragHandler
     {
         [SerializeField] private Color _rangeColor;
@@ -22,12 +23,12 @@ namespace RGLabs.InGame.UI
 
         private UIGlobalSkillSlot _selected;
 
-        public override async UniTask Init(IEnumerable<GlobalSkill.Parameter> collection)
+        public override async UniTask Init(IEnumerable<CastleSkillParameter> collection)
         {
             _rangeDrawer.Init();
             _rangeDrawer.Color = _rangeColor;
             
-            var parameters = collection as GlobalSkill.Parameter[] ?? collection.ToArray();
+            var parameters = collection as CastleSkillParameter[] ?? collection.ToArray();
 
             await base.Init(parameters);
             
@@ -39,7 +40,7 @@ namespace RGLabs.InGame.UI
             }
         }
 
-        protected override UniTask SetItem(UIGlobalSkillSlot slot, GlobalSkill.Parameter data) => slot.Init(Constants.GlobalSkillIcon[data.type]);
+        protected override UniTask SetItem(UIGlobalSkillSlot slot,CastleSkillParameter data) => slot.Init(Constants.GlobalSkillIcon[data.type]);
 
         public void OnBeginDrag(PointerEventData eventData)
         {
@@ -48,7 +49,7 @@ namespace RGLabs.InGame.UI
                 return;
 
             var skill = slot.skill;
-            if (!skill.coolTime.IsReady || skill.mana > Storage.inGameRepository.mana.Value)
+            if (!skill.coolTime.IsReady)
                 return;
             
             _selected = slot;

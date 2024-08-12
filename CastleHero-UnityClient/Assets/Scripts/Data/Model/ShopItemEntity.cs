@@ -33,7 +33,7 @@ namespace RGLabs.Data.Model
         public int count;
         [DataField("Shop_Count_Reset")]
         public int resetDays;
-        [DataField("Shop_Link_Front")]
+        [DataField("Shop_Link_Front" )]
         public int prevItem;
         [DataField("Shop_Link_Next")]
         public int nextItem;

@@ -1,3 +1,4 @@
+using RGLabs.Network.Service.Castle;
 using RGLabs.Network.Service.Character;
 using RGLabs.Network.Service.Item;
 using RGLabs.Network.Service.Stage;
@@ -14,6 +15,7 @@ namespace RGLabs.Network.Service
         public static readonly CharacterService Character = new();
         public static readonly ItemService Item = new();
         public static readonly SummonService Summon = new();
+        public static readonly CastleService Castle = new();
 
         public static readonly TestService Test = new();
     }

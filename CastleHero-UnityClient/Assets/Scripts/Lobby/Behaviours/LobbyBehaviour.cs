@@ -1,5 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
+using RGLabs.Castle;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Data;
@@ -23,6 +24,7 @@ namespace RGLabs.Lobby.Behaviours
         [SerializeField] private UILobby _uiLobby;
         [SerializeField] private UIStage _uiStage;
         [SerializeField] private UIShop _uiShop;
+        [SerializeField] private UICastle _uiCastle;
 
         [SerializeField] private FormationField _formation;
         [SerializeField] private SpriteRenderer _map;
@@ -53,9 +55,17 @@ namespace RGLabs.Lobby.Behaviours
                     Context.Back.Remove(this);
                     break;
                 case State.Shop:
+                    TransitionTo(_current, _uiShop, ()=> _uiShop.Init());
+                    Context.startButton.enabled = false;
+                    Context.Back.Add(this);
                     break;
                 case State.Stage:
                     TransitionTo(_current, _uiStage);
+                    Context.startButton.enabled = false;
+                    Context.Back.Add(this);
+                    break;
+                case State.Castle:
+                    TransitionTo(_current, _uiCastle);
                     Context.startButton.enabled = false;
                     Context.Back.Add(this);
                     break;
