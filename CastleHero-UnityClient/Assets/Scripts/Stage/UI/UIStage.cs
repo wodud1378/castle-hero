@@ -17,7 +17,7 @@ namespace RGLabs.Stage.UI
 
         [SerializeField] private Button _speedUp;
         [SerializeField] private Button _back;
-        
+
         public void Init()
         {
             this.SubscribeButton(_back, BackToLobby);
@@ -35,23 +35,23 @@ namespace RGLabs.Stage.UI
         protected override void OnOpen()
         {
             base.OnOpen();
-            
+
             StartAfterConfig();
         }
 
         protected override void OnClose()
         {
             base.OnClose();
-            
+
             _characterList.Close();
         }
 
         private async void StartAfterConfig()
         {
             await _characterList.Init(Storage.userRepository.characters.units);
-            
+
             _characterList.Open();
-            
+
             var canceled = await _characterList
                 .ConfigTask
                 .SuppressCancellationThrow();
@@ -61,16 +61,18 @@ namespace RGLabs.Stage.UI
                 BackToLobby();
                 return;
             }
-            
+
             StartStage();
         }
-        
+
         private void BackToLobby() => Context.Transition.CurrentState = State.Lobby;
 
         private async void StartStage()
         {
-            //var isEnable = await CheckEntrance();
-            
+            var canEntrance = await CheckEntrance();
+            if (!canEntrance)
+                return;
+
             Context.Transition.CurrentState = State.InGame;
         }
 
