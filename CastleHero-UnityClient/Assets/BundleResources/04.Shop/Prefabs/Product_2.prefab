@@ -210,8 +210,8 @@ MonoBehaviour:
   m_ChildAlignment: 1
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 360, y: 260}
-  m_Spacing: {x: 25, y: 10}
+  m_CellSize: {x: 360, y: 330}
+  m_Spacing: {x: 25, y: 30}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!1 &5829610654263642363
@@ -635,6 +635,10 @@ PrefabInstance:
     - target: {fileID: 4381666621459225716, guid: ba8f9c344bbd1fd43b4243f478cfb6db, type: 3}
       propertyPath: m_Name
       value: Slot_Product_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 4381666621459225716, guid: ba8f9c344bbd1fd43b4243f478cfb6db, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4889786108001012335, guid: ba8f9c344bbd1fd43b4243f478cfb6db, type: 3}
       propertyPath: m_Pivot.x
