@@ -3,6 +3,18 @@ using RGLabs.Data.DB;
 
 namespace RGLabs.Data.Model
 {
+    public enum ShopCategory
+    {
+        NoAds,
+        MonthlyFee,
+        BattlePass,
+        Package,
+        Currency01,
+        Currency02,
+        Supply,
+        Limited
+    }
+    
     public struct ShopItemEntity : IEntity
     {
         [DataField("Shop_ID")]
@@ -16,15 +28,17 @@ namespace RGLabs.Data.Model
         [DataField("Shop_Description")]
         public string desc;
         [DataField("Shop_Type")]
-        public int category;
+        public ShopCategory category;
         [DataField("Shop_Rwd_Grp")]
         public int groupId;
+        [DataField("Shop_Duration")]
+        public int duration;
         [DataField("Shop_Index")]
         public int order;
         [DataField("Shop_Cost_Type")]
-        public int coastId;
+        public int costId;
         [DataField("Shop_Cost_Value")]
-        public int coastValue;
+        public int costValue;
         [DataField("Shop_Count_Free")]
         public int countForFree;
         [DataField("Shop_Count_Ad")]
@@ -40,6 +54,24 @@ namespace RGLabs.Data.Model
         [DataField("Shop_Day_Start")]
         public DateTime startDate;
         [DataField("Shop_Day_End")]
-        public DateTime expireDate;
+        public DateTime endDate;
+
+        public string CategoryText()
+        {
+            int id = category switch
+            {
+                ShopCategory.NoAds => 112,
+                ShopCategory.MonthlyFee => 118,
+                ShopCategory.BattlePass => 122,
+                ShopCategory.Package => 125,
+                ShopCategory.Currency01 => 134,
+                ShopCategory.Currency02 => 134,
+                ShopCategory.Supply => 138,
+                ShopCategory.Limited => 0,
+                _ => 0
+            };
+            
+            return Storage.localize.Get(id);
+        }
     }
 }

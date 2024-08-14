@@ -23,7 +23,7 @@ namespace RGLabs.Common.Localize
             return _map.TryGetValue(division, out var texts) &&
                    texts.TryGetValue(id, out var text)
                 ? text
-                : string.Empty;
+                : $"[{id}] id에 해당하는 텍스트가 없습니다.".WithNegativeColor();
         }
 
         public async UniTask Set(SystemLanguage language)

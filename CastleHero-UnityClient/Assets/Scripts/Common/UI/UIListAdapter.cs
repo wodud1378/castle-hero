@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using NaughtyAttributes;
 using RGLabs.Utility;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -14,14 +15,19 @@ namespace RGLabs.Common.UI
         public event Action<TSlot> OnSlotClickEvent;
         
         [SerializeField] protected RectTransform itemRoot;
+        [SerializeField] private bool _provideSlotAsset;
+        
+        [HideIf("_provideSlotAsset")]
         [SerializeField] private AssetReference _itemPrefab;
         
         public readonly List<TSlot> items = new();
 
+        public Func<TData, AssetReference> provideSlot;
+
         public virtual UniTask Init(IEnumerable<TData> collection)
         {
             Clear();
-
+            
             var tasks = new List<UniTask>();
             foreach (var data in collection)
             {
@@ -78,7 +84,11 @@ namespace RGLabs.Common.UI
 
         private async UniTask<TSlot> Add(TData data)
         {
-            var item = await _itemPrefab.Instantiate<TSlot>(itemRoot);
+            var prefab = _provideSlotAsset
+                ? provideSlot?.Invoke(data) ?? _itemPrefab
+                : _itemPrefab;
+            
+            var item = await prefab.Instantiate<TSlot>(itemRoot);
             if (item == null)
                 return null;
 

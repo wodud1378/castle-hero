@@ -22,6 +22,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09c836222786ae34e8a31b4bdee3fef8
+    m_Address: Assets/BundleResources/04.Shop/Prefabs/Slot/Slot_Product_1.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba8f9c344bbd1fd43b4243f478cfb6db
+    m_Address: Assets/BundleResources/04.Shop/Prefabs/Slot/Slot_Product_2.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb558d987cd104e478d79f36d2d76343
+    m_Address: Assets/BundleResources/04.Shop/Prefabs/Slot/Slot_Product_3.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 5929c0cb8d0d07d4aa9632acaa1413c5, type: 2}
   m_SchemaSet:

@@ -150,7 +150,7 @@ namespace RGLabs.InGame.Behaviours
 
             return new StageCleared
             {
-                stage = Storage.inGameRepository.stage,
+                id = Storage.inGameRepository.stage,
                 exp = 0,
                 isFirstClear = false,
                 currency = null,

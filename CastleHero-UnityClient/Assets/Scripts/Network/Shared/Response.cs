@@ -30,18 +30,22 @@ namespace RGLabs.Network.Shared
     }
     #endregion
 
-    #region Stage.
-
-    public class StageCleared
+    #region InGame.
+    public class Cleared
     {
-        public int stage;
-        public int exp;
+        public int id;
         public bool isFirstClear;
         public CurrencyDto currency;
         public List<IItem> items;
-        public List<UnitTransition> transitions;
     }
 
+    public class DungeonCleared : Cleared { }
+
+    public class StageCleared : Cleared
+    {
+        public int exp;
+        public List<UnitTransition> transitions;
+    }
     #endregion
 
     #region Summon.

@@ -81,6 +81,29 @@ namespace RGLabs.Network.Shared
         public InventoryDto inventoryDto;
     }
 
+    public class ReceiptDto
+    {
+        public List<Purchase> purchasedItems;
+    }
+    
+    #region Shop
+    public class Purchase
+    {
+        public struct History
+        {
+            public int type;
+            public DateTime at;
+        }
+
+        public int shopId;
+        public int byDefault;
+        public int byAd;
+        public int byFree;
+        public DateTime nextReset;
+        public List<History> histories;
+    }
+    #endregion
+
     #region Unit.
 
     public class FieldUnit
