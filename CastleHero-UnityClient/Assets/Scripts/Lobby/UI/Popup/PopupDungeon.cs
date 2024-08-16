@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
@@ -28,14 +29,22 @@ namespace RGLabs.Lobby.UI.Popup
 
         public override UniTask Open()
         {
-            var currentTime = NetworkService.CurrentTime();
+            _dayOfWeek.Value = NetworkService.CurrentTime().DayOfWeek;
             
-            
-            return base.Open();
+            return UniTask.CompletedTask;
         }
 
-        private void UpdateUI(DayOfWeek dow)
+        private async void UpdateUI(DayOfWeek value)
         {
+            
+            
+            for (var dow = DayOfWeek.Sunday; dow <= DayOfWeek.Saturday; ++dow)
+            {
+                int index = (int)dow;
+                _dayOfWeeks[index].state.Value = value == dow
+                    ? UISlot.State.Highlighted
+                    : UISlot.State.Default;
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ namespace RGLabs.Stage.UI
     {
         [SerializeField] private TMP_Text _stage;
         [SerializeField] private TMP_Text _ap;
-        [SerializeField] private UIStageRewardList _rewardList;
+        [SerializeField] private UIRewardList _rewardList;
 
         private readonly ReactiveProperty<StageEntity> _entity = new();
 

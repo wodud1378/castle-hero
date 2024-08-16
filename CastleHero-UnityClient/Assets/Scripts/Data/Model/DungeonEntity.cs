@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using RGLabs.Data.DB;
 
 namespace RGLabs.Data.Model
@@ -47,12 +48,44 @@ namespace RGLabs.Data.Model
         public DungeonType type;
         
         [DataField("Dg_Week")]
-        public DayOfWeek dayOfWeek;
+        public int dayOfWeek;
         
         [DataField("Dg_Lv")]
         public int lv;
         
         [DataField("Dg_Rwd_Item_Grp_ID")]
         public int rewardGroup;
+        
+        public List<DayOfWeek> OpenDaysOfWeek()
+        {
+            var list = new List<DayOfWeek> { DayOfWeek.Saturday, DayOfWeek.Sunday };
+
+            if (dayOfWeek == 0)
+            {
+                for (var dow = DayOfWeek.Monday; dow <= DayOfWeek.Friday; ++dow)
+                {
+                    list.Add(dow);
+                }
+            }
+            else
+                list.Add((DayOfWeek)dayOfWeek);
+
+            return list;
+        }
+
+        public string OpenDaysOfWeekText()
+        {
+            if (dayOfWeek == 0)
+                return "매일";
+       
+            var dow = (DayOfWeek)dayOfWeek;
+            int id = dow switch
+            {
+                DayOfWeek.Sunday => 570,
+                _ => 563 + (int)dow
+            };
+
+            return Storage.localize.Get(id);
+        }
     }
 }

@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace RGLabs.Stage.UI
 {
-    public struct StageReward
+    public struct Reward
     {
         public string icon;
         public int id;
@@ -20,11 +20,11 @@ namespace RGLabs.Stage.UI
         public float percent;
     }
     
-    public class UIStageRewardList : UIListAdapter<UISlot, StageReward>
+    public class UIRewardList : UIListAdapter<UISlot, Reward>
     {
         public UniTask Init(StageEntity entity)
         {
-            var rewards = new List<StageReward>();
+            var rewards = new List<Reward>();
             
             if (entity is { MinGold: > 0, MaxGold: > 0 })
                 rewards.Add(new ()
@@ -57,7 +57,7 @@ namespace RGLabs.Stage.UI
             return base.Init(rewards);
         }
         
-        protected override UniTask SetItem(UISlot slot, StageReward data)
+        protected override UniTask SetItem(UISlot slot, Reward data)
         {
             var task = slot.Init(data.icon);
             slot.OnClick += (s)=> OnClickSlot(s, data);
@@ -65,7 +65,7 @@ namespace RGLabs.Stage.UI
             return task;
         }
 
-        private void OnClickSlot(UISlot slot, StageReward data)
+        private void OnClickSlot(UISlot slot, Reward data)
         {
             var sb = new StringBuilder();
             if (data.id != 0 && Storage.db.items.TryFind(data.id, out var entity))

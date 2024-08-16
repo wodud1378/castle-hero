@@ -19,7 +19,7 @@ namespace RGLabs.Stage.UI
         [SerializeField] private Button _next;
 
         [SerializeField] private TMP_Text _title;
-        [SerializeField] private UIStageRewardList _rewardList;
+        [SerializeField] private UIRewardList _rewardList;
         
         private readonly ReactiveProperty<StageEntity> _stageData = new(default);
 
