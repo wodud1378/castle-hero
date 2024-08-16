@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using RGLabs.Network.Shared;
 
-namespace RGLabs.Network.Service.Summon
+namespace RGLabs.Network.Service
 {
     public class SummonService : NetworkServiceBase
     {

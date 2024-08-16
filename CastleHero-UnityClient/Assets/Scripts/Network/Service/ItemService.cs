@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using RGLabs.Network.Shared;
 
-namespace RGLabs.Network.Service.Item
+namespace RGLabs.Network.Service
 {
     public class ItemService: NetworkServiceBase
     {

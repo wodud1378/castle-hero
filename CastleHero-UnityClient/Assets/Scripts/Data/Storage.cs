@@ -8,7 +8,7 @@ namespace RGLabs.Data
     public struct Entrance
     {
         public State state;
-        public int stage;
+        public GameEntrance gameEntrance;
     }
     
     public static class Storage

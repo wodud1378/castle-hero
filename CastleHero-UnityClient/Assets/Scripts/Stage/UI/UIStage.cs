@@ -2,6 +2,8 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Data;
+using RGLabs.Data.Model;
+using RGLabs.Data.Repositories;
 using RGLabs.Network.Service;
 using RGLabs.Utility;
 using UniRx;
@@ -69,17 +71,17 @@ namespace RGLabs.Stage.UI
 
         private async void StartStage()
         {
-            var canEntrance = await CheckEntrance();
+            int stage = Storage.userRepository.stageFocus.Value;
+            var canEntrance = await NetworkService.Game.Start(GameType.Stage, stage);
             if (!canEntrance)
                 return;
 
             Context.Transition.CurrentState = State.InGame;
-        }
-
-        private async UniTask<bool> CheckEntrance()
-        {
-            int stage = Storage.userRepository.profile.focusedStage.Value;
-            return await NetworkService.Stage.StartGame(stage);
+            Storage.userRepository.entrance = new GameEntrance
+            {
+                type = GameType.Stage,
+                id = stage,
+            };
         }
     }
 }

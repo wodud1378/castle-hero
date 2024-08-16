@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Data;
 using RGLabs.InGame.Behaviours;
 using RGLabs.Lobby.UI.Adapter;
+using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using TMPro;
 using UnityEngine;
@@ -38,9 +41,13 @@ namespace RGLabs.InGame.UI
 
         public async UniTaskVoid Open(GameResult result)
         {
+            var data = result.data;
+            var transitions = GetTransition(data);
+            var items = GetItems(result.data);
+            
             await UniTask.WhenAll(
-                _growthList.Init(result.data.transitions),
-                _rewardList.Init(result.data.items));
+                _growthList.Init(transitions),
+                _rewardList.Init(items));
 
             gameObject.SetActive(true);
             _animtor.SetTrigger(EntranceHash);
@@ -55,6 +62,39 @@ namespace RGLabs.InGame.UI
             }
 
             Context.Back.Add(this);
+        }
+
+        private List<UnitTransition> GetTransition(GameCleared data)
+        {
+            List<UnitTransition> transitions = null;
+            if (data is StageCleared stageResult)
+            {
+                transitions = stageResult.transitions;
+            }
+
+            if (transitions == null)
+            {
+                transitions = Storage.inGameRepository.characters
+                    .Select(unit => UnitTransition.Create(unit.Info))
+                    .ToList();
+            }
+
+            return transitions;
+        }
+
+        private List<IItem> GetItems(GameCleared data)
+        {
+            var items = new List<IItem>();
+            if (data != null)
+            {
+                if (data.currency != null && !data.currency.IsEmpty())
+                    items.AddRange(data.currency.ToItems());
+
+                if (data.items is { Count: > 0 })
+                    items.AddRange(data.items);
+            }
+
+            return items;
         }
 
         private async void CloseWith(Action onClose)
@@ -75,7 +115,7 @@ namespace RGLabs.InGame.UI
                 obj.SetActive(!isCleared);
 
             var db = Storage.db.stages;
-            int currentStage = Storage.userRepository.profile.focusedStage.Value;
+            int currentStage = Storage.userRepository.stageFocus.Value;
             int lastStageIndex = db.Length;
             if (db.TryFindIndex(currentStage, out int index))
                 _nextButton.gameObject.SetActive(index < lastStageIndex);

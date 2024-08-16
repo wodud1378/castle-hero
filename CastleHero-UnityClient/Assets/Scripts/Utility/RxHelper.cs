@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using UnityEngine;
@@ -19,6 +20,16 @@ namespace RGLabs.Utility
                 collection.Insert(index, value);
             
             collection.Remove(exist);
+        }
+        
+        public static void Update<T>(this ReactiveCollection<T> collection, IEnumerable<T> values)
+        {
+            collection.Clear();
+
+            foreach (var value in values)
+            {
+                collection.Add(value);
+            }
         }
         
         public static IObservable<ReactiveCollection<T>> ChangeAsObservable<T>(this ReactiveCollection<T> collection)

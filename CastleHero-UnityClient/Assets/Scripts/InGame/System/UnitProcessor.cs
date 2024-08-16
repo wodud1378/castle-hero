@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Common;
 using RGLabs.Data;
 using RGLabs.InGame.Effects.Behaviours;
+using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Components;
 using RGLabs.Utility;
 using UniRx;
@@ -22,7 +23,7 @@ namespace RGLabs.InGame.System
             SubscribeMessage<ShieldEvent>(OnReceiveShieldEvent);
             SubscribeMessage<RestrictionEvent>(OnReceiveRestrictionEvent);
             SubscribeMessage<StatusEffectEvent>(OnReceiveStatusEffectEvent);
-            SubscribeMessage<WaitRecover>(OnCreatedRecover);
+            SubscribeMessage<UnitDead>(OnUnitDead);
         }
 
         public void Dispose() => _disposables.Dispose();
@@ -133,8 +134,25 @@ namespace RGLabs.InGame.System
             PlayEffect(ev, ev.Duration);
         }
 
-        private void OnCreatedRecover(WaitRecover recover)
+        private void OnUnitDead(UnitDead unitDead)
         {
+            var unit = unitDead.unit;
+            if (unit.Core.Team != UnitCore.Teams.Character || unit.Type == UnitBehaviour.BehaviourType.Barricade)
+                return;
+            
+            Storage.inGameRepository.deadCharacters.Add(unit);
+            
+            float recoverTime = unit.status.recovery;
+            if (!unit.Core.enableRecover || recoverTime <= 0f)
+                return;
+
+            var recover = new WaitRecover
+            {
+                behaviour = unit,
+                position = unit.Core.movement.Default,
+                time = recoverTime
+            };
+            
             var subscription = ReserveRecover(recover);
             var collection = Storage.inGameRepository.recovers;
             collection.Add(recover);
@@ -175,6 +193,7 @@ namespace RGLabs.InGame.System
                 .Take(1)
                 .Subscribe(_ =>
                 {
+                    Storage.inGameRepository.deadCharacters.Remove(recover.behaviour);
                     Recovery(recover);
                 })
                 .AddTo(_disposables);

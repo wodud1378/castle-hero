@@ -29,7 +29,7 @@ namespace RGLabs.Common.UI
 
             if (_portrait != null)
             {
-                if (!Storage.db.units.TryFind(repository.profile.iconId.Value, out var entity))
+                if (!Storage.db.units.TryFind(repository.gameRecord.iconId.Value, out var entity))
                     entity = Storage.db.units[1];
             
                 _portrait.Init(entity.icon).Forget();    

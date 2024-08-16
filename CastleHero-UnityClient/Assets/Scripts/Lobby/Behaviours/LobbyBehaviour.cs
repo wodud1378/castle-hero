@@ -1,12 +1,12 @@
 using System;
-using Cysharp.Threading.Tasks;
 using RGLabs.Castle;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Data;
+using RGLabs.Data.Model;
+using RGLabs.Data.Repositories;
 using RGLabs.Lobby.Shop.UI;
 using RGLabs.Lobby.UI;
-using RGLabs.Network.Service;
 using RGLabs.Stage.UI;
 using RGLabs.Utility;
 using UniRx;
@@ -16,7 +16,7 @@ namespace RGLabs.Lobby.Behaviours
 {
     public struct StartGame
     {
-        public int stage;
+        public IGameEntity entity;
     }
 
     public class LobbyBehaviour : SceneBehaviour, IBackButtonListener
@@ -115,12 +115,14 @@ namespace RGLabs.Lobby.Behaviours
 
         private void StartGame()
         {
-            int stage = Storage.userRepository.profile.focusedStage.Value;
-   
+            var entrance = Storage.userRepository.entrance;
+            if (!Storage.db.TryLoadGameEntity(entrance.type, entrance.id, out var entity))
+                return;
+            
             _uiLobby.Dispose();
             _uiStage.Dispose();
-
-            new StartGame { stage = stage }.Publish();
+            
+            new StartGame { entity = entity }.Publish();
 
             Context.Back.Clear();
         }

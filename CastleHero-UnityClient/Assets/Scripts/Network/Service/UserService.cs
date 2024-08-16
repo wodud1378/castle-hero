@@ -2,7 +2,7 @@ using BackEnd;
 using Cysharp.Threading.Tasks;
 using RGLabs.Network.Shared;
 
-namespace RGLabs.Network.Service.User
+namespace RGLabs.Network.Service
 {
     public class UserService : NetworkServiceBase
     {
@@ -17,12 +17,13 @@ namespace RGLabs.Network.Service.User
         public async UniTask<Response<UserDataDto>> GetUserData()
         {
             var read = TransactionGet(
-                PROFILE_TABLE,
                 ACT_TABLE,
                 CURRENCY_TABLE,
                 CHARACTERS_TABLE,
                 FORMATION_TABLE,
-                INVENTORY_TABLE
+                INVENTORY_TABLE,
+                GAME_RECORD_TABLE,
+                SHOP_RECORD_TABLE
             );
 
             return await Call(
@@ -32,12 +33,13 @@ namespace RGLabs.Network.Service.User
                     var jsonData = raw.GetFlattenJSON();
                     var userData = new UserDataDto
                     {
-                        profile = FromTransaction<ProfileDto>(jsonData, PROFILE_TABLE),
                         act = FromTransaction<ActDto>(jsonData, ACT_TABLE),
                         currency = FromTransaction<CurrencyDto>(jsonData, CURRENCY_TABLE),
                         characters = FromTransaction<CharactersDto>(jsonData, CHARACTERS_TABLE),
                         formation = FromTransaction<FormationDto>(jsonData, FORMATION_TABLE),
-                        inventoryDto = FromTransaction<InventoryDto>(jsonData, INVENTORY_TABLE)
+                        inventory = FromTransaction<InventoryDto>(jsonData, INVENTORY_TABLE),
+                        gameRecord = FromTransaction<GameRecordDto>(jsonData, GAME_RECORD_TABLE),
+                        shopRecord = FromTransaction<ShopRecordDto>(jsonData, SHOP_RECORD_TABLE),
                     };
 
                     return userData;

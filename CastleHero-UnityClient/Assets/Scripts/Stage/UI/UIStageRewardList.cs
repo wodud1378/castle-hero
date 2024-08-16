@@ -26,12 +26,12 @@ namespace RGLabs.Stage.UI
         {
             var rewards = new List<StageReward>();
             
-            if (entity is { goldMin: > 0, goldMax: > 0 })
+            if (entity is { MinGold: > 0, MaxGold: > 0 })
                 rewards.Add(new ()
                 {
                     icon = Constants.GoldIcon,
-                    min = entity.goldMin,
-                    max = entity.goldMax,
+                    min = entity.MinGold,
+                    max = entity.MaxGold,
                     percent = 1f
                 });
 

@@ -57,7 +57,7 @@ namespace RGLabs.Unit.Components
 
         private static readonly int AtkSpeedHash = Animator.StringToHash("AttackSpeed");
 
-        public readonly ReactiveProperty<bool> onRest; 
+        public readonly ReactiveProperty<bool> onRest;
         public readonly ReactiveProperty<States> state;
         public readonly Status status;
         public readonly PolyNavAgent navAgent;
@@ -70,6 +70,8 @@ namespace RGLabs.Unit.Components
         public readonly RenderController renderController;
         public readonly AnimationEvents animationEvent;
         public readonly ReactiveProperty<Vector2> lookDirection;
+
+        public bool enableRecover;
 
         private readonly bool _enableAttack;
         private readonly bool _enableMove;
@@ -95,7 +97,7 @@ namespace RGLabs.Unit.Components
         public UnitCore(UnitBehaviour owner, bool enableAttack, bool enableMove, bool enableAnimation)
         {
             restrictions = new float[(int)Restrictions.Count];
-            
+
             status = new();
 
             this.owner = owner;
@@ -133,7 +135,7 @@ namespace RGLabs.Unit.Components
                 .DistinctUntilChanged()
                 .Subscribe(OnRestStateChanged)
                 .AddTo(this.owner);
-            
+
             state = new(States.Prepare);
             state
                 .DistinctUntilChanged()
@@ -159,9 +161,9 @@ namespace RGLabs.Unit.Components
             {
                 restrictions[i] = 0f;
             }
-            
+
             status.Init(data);
-            
+
             elemental.atkType = (Elemental.Type)data.elementalAtk;
             elemental.defType = (Elemental.Type)data.elementalDef;
 
@@ -188,7 +190,7 @@ namespace RGLabs.Unit.Components
                 var equipments = Storage.userRepository.inventory.items
                     .OfType<EquipItem>()
                     .Where(x => info.equipments.Contains(x.Guid));
-                
+
                 ApplyEquipmentBonus(equipments);
             }
 
@@ -213,7 +215,7 @@ namespace RGLabs.Unit.Components
                 var type = kvp.Key;
                 var value = kvp.Value;
                 var adjustValue = status[type].fixedAdjust;
-                if(value > 0f)
+                if (value > 0f)
                     adjustValue.Increase(value);
                 else
                     adjustValue.Decrease(Mathf.Abs(value));
@@ -238,14 +240,14 @@ namespace RGLabs.Unit.Components
 
             if (isRest)
                 return;
-            
+
             _skill?.SetToEnable();
         }
-        
+
         private void OnRest()
         {
             state.Value = States.Idle;
-            
+
             OnIdle();
         }
 
@@ -276,15 +278,10 @@ namespace RGLabs.Unit.Components
             navAgent.Stop();
             state.Value = States.Dead;
 
-            if (status.recovery > 0f)
+            new UnitDead
             {
-                new WaitRecover
-                {
-                    behaviour = owner,
-                    position = movement.Default,
-                    time = status.recovery
-                }.Publish();
-            }
+                unit = owner
+            }.Publish();
 
             return true;
         }

@@ -1,36 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RGLabs.Data.Model;
 using RGLabs.Network.Shared;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using UniRx;
-using Unity.VisualScripting;
+using UnityEngine;
 
 namespace RGLabs.Data.Repositories
 {
-    public class Profile
+    public struct GameEntrance
     {
-        public readonly ReactiveProperty<int> iconId;
-        public readonly ReactiveProperty<int> stage;
-        public readonly ReactiveProperty<int> focusedStage;
-        public readonly ReactiveProperty<int> castleLv;
-
-        public Profile(ProfileDto dto)
-        {
-            iconId = new(dto.iconId);
-            stage = new(dto.stage);
-            focusedStage = new(dto.focusedStage);
-            castleLv = new(dto.castleLv);
-        }
-
-        public void Update(ProfileDto dto)
-        {
-            iconId.Value = dto.iconId;
-            stage.Value = dto.stage;
-            focusedStage.Value = dto.focusedStage;
-            castleLv.Value = dto.castleLv;
-        }
+        public GameType type;
+        public int id;
     }
 
     public class Act
@@ -88,11 +71,7 @@ namespace RGLabs.Data.Repositories
 
         public Inventory(InventoryDto dto) => items = new(dto.items);
 
-        public void Update(InventoryDto dto)
-        {
-            items.Clear();
-            items.AddRange(dto.items);
-        }
+        public void Update(InventoryDto dto) => items.Update(dto.items);
 
         public void Update(IItem item)
         {
@@ -129,11 +108,7 @@ namespace RGLabs.Data.Repositories
 
         public Characters(CharactersDto dto) => units = new(dto.units);
 
-        public void Update(CharactersDto dto)
-        {
-            units.Clear();
-            units.AddRange(dto.units);
-        }
+        public void Update(CharactersDto dto) => units.Update(dto.units);
 
         public void Add(UnitInfo unit)
         {
@@ -167,36 +142,98 @@ namespace RGLabs.Data.Repositories
             }
         }
 
-        public void Update(FormationDto dto)
+        public void Update(FormationDto dto) => fieldUnits.Update(dto.fieldUnits);
+    }
+
+    public class GameRecord
+    {
+        public readonly ReactiveProperty<int> iconId;
+        public readonly ReactiveProperty<int> castleLv;
+        public readonly ReactiveProperty<int> lastClearedStage;
+        public readonly ReactiveCollection<DungeonRecord> dungeon;
+
+        public GameRecord(GameRecordDto dto)
         {
-            fieldUnits.Clear();
-            fieldUnits.AddRange(dto.fieldUnits);
+            iconId = new(dto.iconId);
+            castleLv = new(dto.castleLv);
+            lastClearedStage = new(dto.lastClearedStage);
+            dungeon = new(dto.dungeon);
+        }
+
+        public void Update(GameRecordDto dto)
+        {
+            iconId.Value = dto.iconId;
+            castleLv.Value = dto.castleLv;
+            lastClearedStage.Value = dto.lastClearedStage;
+            dungeon.Update(dto.dungeon);
+        }
+    }
+
+    public class ShopRecord
+    {
+        public readonly ReactiveCollection<Product> products;
+        public readonly ReactiveCollection<ShopRecordDto.History> histories;
+
+        public ShopRecord(ShopRecordDto dto)
+        {
+            products = new(dto.products);
+            histories = new(dto.histories);
+        }
+
+        public void Update(ShopRecordDto dto)
+        {
+            products.Update(dto.products);
+            histories.Update(dto.histories);
         }
     }
 
     public class UserRepository
     {
+        public GameEntrance entrance;
+
         public readonly string nickname;
 
-        public readonly Profile profile;
+        public readonly ReactiveProperty<int> stageFocus;
+
         public readonly Act act;
         public readonly Currency currency;
         public readonly Inventory inventory;
         public readonly Characters characters;
         public readonly Formation formation;
+        public readonly GameRecord gameRecord;
+        public readonly ShopRecord shopRecord;
+
+        private const string StageFocusKey = "stage-focus";
+        private const string DungeonFocusKey = "dungeon-focus-type_";
 
         public UserRepository(string nickname, UserDataDto dto)
         {
             this.nickname = nickname;
 
-            profile = new(dto.profile);
             act = new(dto.act);
             currency = new(dto.currency);
-            inventory = new(dto.inventoryDto);
+            inventory = new(dto.inventory);
             characters = new(dto.characters);
             formation = new(dto.formation);
+            gameRecord = new(dto.gameRecord);
+            shopRecord = new(dto.shopRecord);
+
+            int focus = PlayerPrefs.GetInt(StageFocusKey, gameRecord.lastClearedStage.Value);
+            stageFocus = new ReactiveProperty<int>(focus);
+            stageFocus.Subscribe(x => PlayerPrefs.SetInt(StageFocusKey, x));
         }
-        
+
+        public void Update(UserDataDto dto)
+        {
+            act.Update(dto.act);
+            currency.Update(dto.currency);
+            inventory.Update(dto.inventory);
+            characters.Update(dto.characters);
+            formation.Update(dto.formation);
+            gameRecord.Update(dto.gameRecord);
+            shopRecord.Update(dto.shopRecord);
+        }
+
         public IEnumerable<EquipItem> EquipItems(IList<string> guids)
         {
             return inventory.items

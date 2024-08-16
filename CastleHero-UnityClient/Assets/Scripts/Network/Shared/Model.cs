@@ -45,15 +45,17 @@ namespace RGLabs.Network.Shared
             };
         }
 
-        public List<Item> ToItems()
+        public List<IItem> ToItems()
         {
-            return new List<Item>
+            return new List<IItem>
             {
-                new() { ItemId = Constants.PaidDiaId, Quantity = paidDia },
-                new() { ItemId = Constants.FreeDiaId, Quantity = freeDia },
-                new() { ItemId = Constants.GoldId, Quantity = gold },
+                new Item { ItemId = Constants.PaidDiaId, Quantity = paidDia },
+                new Item { ItemId = Constants.FreeDiaId, Quantity = freeDia },
+                new Item { ItemId = Constants.GoldId, Quantity = gold },
             };
         }
+
+        public bool IsEmpty() => gold > 0 || freeDia > 0 || paidDia > 0;
     }
 
     public class CharactersDto
@@ -70,20 +72,38 @@ namespace RGLabs.Network.Shared
     {
         public List<IItem> items;
     }
+    
+    public class GameRecordDto
+    {
+        public int iconId;
+        public int castleLv;
+        public int lastClearedStage;
+        public List<DungeonRecord> dungeon;
+    }
+
+    public class ShopRecordDto
+    {
+        public class History
+        {
+            public int id;
+            public int type;
+            public DateTime time;
+        }
+
+        public List<Product> products;
+        public List<History> histories;
+    }
+
 
     public class UserDataDto
     {
-        public ProfileDto profile;
         public ActDto act;
         public CurrencyDto currency;
         public CharactersDto characters;
         public FormationDto formation;
-        public InventoryDto inventoryDto;
-    }
-
-    public class ReceiptDto
-    {
-        public List<Purchase> purchasedItems;
+        public InventoryDto inventory;
+        public GameRecordDto gameRecord;
+        public ShopRecordDto shopRecord;
     }
     
     #region Shop
@@ -104,8 +124,50 @@ namespace RGLabs.Network.Shared
     }
     #endregion
 
-    #region Unit.
+   #region Dungeon
+    public class DungeonRecord
+    {
+        public int type;
+        public int lv;
+        public DateTime lastTime;
+    }
+    #endregion
 
+    #region Shop
+
+    public class Product
+    {
+        public int shopId;
+        public int byDefault;
+        public int byAd;
+        public int byFree;
+        public DateTime nextReset;
+        public DateTime expireDate;
+        public DateTime updatedAt;
+    }
+
+    public class Pack
+    {
+        public CurrencyDto currency;
+        public List<IItem> items;
+        public List<int> unitIds;
+    }
+
+    public class ItemBought
+    {
+        public int shopId;
+        public Pack pack;
+        public ShopRecordDto record;
+    }
+
+    public class ItemsSold
+    {
+        public CurrencyDto currency;
+        public List<IItem> items;
+    }
+    #endregion
+
+    #region Unit.
     public class FieldUnit
     {
         public int id;
@@ -123,9 +185,102 @@ namespace RGLabs.Network.Shared
         public List<string> equipments;
     }
 
+    public class UnitTransition
+    {
+        public int[] rateTransition;
+        public int[] lvTransition;
+        public int[] expTransition;
+        public UnitInfo unit;
+
+        public static UnitTransition Create(UnitInfo unit)
+        {
+            int rate = unit.rate;
+            int exp = unit.exp;
+            int lv = unit.lv;
+            
+            return new UnitTransition
+            {
+                rateTransition = new int[] { rate, rate },
+                expTransition = new int[] { exp, exp },
+                lvTransition = new int[] { lv, lv },
+                unit = unit
+            };
+        }
+
+        public static UnitTransition Create(UnitInfo unit, int lv, int exp)
+        {
+            return new UnitTransition
+            {
+                rateTransition = new int[] { unit.rate, unit.rate },
+                expTransition = new int[] { unit.exp, exp },
+                lvTransition = new int[] { unit.lv, lv },
+                unit = unit
+            };
+        }
+
+        public static UnitTransition Create(UnitInfo unit, int rate)
+        {
+            return new UnitTransition
+            {
+                rateTransition = new int[] { unit.rate, rate },
+                expTransition = new int[] { unit.exp, unit.exp },
+                lvTransition = new int[] { unit.lv, unit.lv },
+                unit = unit
+            };
+        }
+    }
+
+    public class GrowthResult
+    {
+        public UnitTransition transition;
+        public CurrencyDto leftCurrency;
+        public IItem leftItem;
+    }
     #endregion
 
+    #region Castle
+    public class CastleGrowth
+    {
+        public int lv;
+        public CurrencyDto leftCurrency;
+    }
+    #endregion
+
+    #region Summon.
+    public interface ISummoned
+    {
+        public int Id { get; }
+    }
+
+    public class SummonedUnit : ISummoned
+    {
+        public int Id { get; set; }
+        public int lv;
+        public int rate;
+    }
+
+    public class SummonedSoul : ISummoned
+    {
+        public int Id { get; set; }
+        public int quantity;
+    }
+
+    public class SummonResult
+    {
+        public CurrencyDto leftCurrency;
+        public IItem leftItem;
+        public List<ISummoned> summoneds;
+    }
+    #endregion
+
+
     #region Item.
+    public class OpenBoxResult
+    {
+        public CurrencyDto currency;
+        public List<IItem> items;
+        public IItem leftItem;
+    }
 
     public class Consume
     {
@@ -185,6 +340,23 @@ namespace RGLabs.Network.Shared
         public int ItemId { get; set; }
         public int Quantity { get; set; }
     }
+    #endregion
 
+    #region InGame.
+    public class GameCleared
+    {
+        public int id;
+        public bool isFirstClear;
+        public CurrencyDto currency;
+        public List<IItem> items;
+    }
+
+    public class DungeonCleared : GameCleared { }
+
+    public class StageCleared : GameCleared
+    {
+        public int exp;
+        public List<UnitTransition> transitions;
+    }
     #endregion
 }

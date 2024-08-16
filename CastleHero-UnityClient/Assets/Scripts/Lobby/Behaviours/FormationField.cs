@@ -8,7 +8,6 @@ using RGLabs.Data;
 using RGLabs.Data.Repositories;
 using RGLabs.Network;
 using RGLabs.Network.Service;
-using RGLabs.Network.Service.User;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Factory;
 using RGLabs.Utility;
@@ -54,7 +53,7 @@ namespace RGLabs.Lobby.Behaviours
                 .Subscribe(OnFieldCharacterCollectionChanged)
                 .AddTo(this);
 
-            if (Storage.db.castles.TryFind(_userRepo.profile.castleLv.Value, out var entity))
+            if (Storage.db.castles.TryFind(_userRepo.gameRecord.castleLv.Value, out var entity))
             {
                 capacity.Value = entity.maxCharacter;
                 _barricadeCountMax = entity.barricadeCount;
@@ -220,7 +219,7 @@ namespace RGLabs.Lobby.Behaviours
 
         private async UniTask LoadCastle()
         {
-            int lv = _userRepo.profile.castleLv.Value;
+            int lv = _userRepo.gameRecord.castleLv.Value;
             var unit = await _castleFactory.Create(1, lv, 0, Vector2.zero);
             _gameRepo.castle.Value = unit;
         }

@@ -24,7 +24,7 @@ namespace RGLabs.Common.Behaviours
 
         private void Init()
         {
-           _subscription = Storage.userRepository.profile.focusedStage
+           _subscription = Storage.userRepository.stageFocus
                .ThrottleFrame(1)
                .Subscribe(OnStageChanged)
                .AddTo(this);
@@ -36,7 +36,7 @@ namespace RGLabs.Common.Behaviours
             if (!db.TryFind(stage, out var entity))
                 return;
 
-            string mapName = entity.map;
+            string mapName = entity.Map;
             if (mapName == _currentMapName)
                 return;
 

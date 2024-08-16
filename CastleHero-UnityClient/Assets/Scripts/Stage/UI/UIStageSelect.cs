@@ -36,7 +36,7 @@ namespace RGLabs.Stage.UI
             this.SubscribeButton(_prev, OnPrevStage);
             this.SubscribeButton(_next, OnNextStage);
 
-            _subscriptions.Add(_repository.profile.focusedStage.Subscribe(OnStageSelected));
+            _subscriptions.Add(_repository.stageFocus.Subscribe(OnStageSelected));
             _subscriptions.Add(_stageData
                 .Subscribe(x =>
                 {
@@ -48,7 +48,7 @@ namespace RGLabs.Stage.UI
                     UpdateButtonsActive(x);
                 }));
 
-            OnStageSelected(_repository.profile.focusedStage.Value);
+            OnStageSelected(_repository.stageFocus.Value);
         }
 
         public void SetMoveStageEnable(bool enabled)
@@ -78,7 +78,7 @@ namespace RGLabs.Stage.UI
             if (!stages.TryFindIndex(stageData.Id, out int dataIndex))
                 dataIndex = 0;
 
-            if (!stages.TryFindIndex(Storage.userRepository.profile.stage.Value, out int userIndex))
+            if (!stages.TryFindIndex(Storage.userRepository.gameRecord.lastClearedStage.Value, out int userIndex))
                 userIndex = 0;
 
             _prev.gameObject.SetActive(dataIndex > 0);
@@ -108,7 +108,7 @@ namespace RGLabs.Stage.UI
             if (!stages.TryIndexOf(index, out var entity))
                 return;
 
-            _repository.profile.focusedStage.Value = entity.Id;
+            _repository.stageFocus.Value = entity.Id;
         }
 
         public void Dispose()

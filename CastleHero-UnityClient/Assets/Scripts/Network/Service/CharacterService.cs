@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using RGLabs.Network.Shared;
 
-namespace RGLabs.Network.Service.Character
+namespace RGLabs.Network.Service
 {
     public class CharacterService : NetworkServiceBase
     {

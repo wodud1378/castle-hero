@@ -18,7 +18,7 @@ namespace RGLabs.Stage.UI
 
         private void Awake()
         {
-            Storage.userRepository.profile.focusedStage
+            Storage.userRepository.stageFocus
                 .ThrottleFrame(1)
                 .Subscribe(OnStageChanged)
                 .AddTo(this);
@@ -37,7 +37,7 @@ namespace RGLabs.Stage.UI
             if (!_entity.Value.IsValid)
                 return;
 
-            int require = _entity.Value.ap;
+            int require = _entity.Value.Ap;
             string text = $"-{require}";
             _ap.text = ap < require
                 ? text.WithNegativeColor()

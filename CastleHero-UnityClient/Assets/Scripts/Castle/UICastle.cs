@@ -31,7 +31,7 @@ namespace RGLabs.Castle
                 .Subscribe(OnUpdateGold)
                 .AddTo(this);
             
-            _repository.profile.castleLv
+            _repository.gameRecord.castleLv
                 .Subscribe(UpdateUI)
                 .AddTo(this);
             
@@ -46,7 +46,7 @@ namespace RGLabs.Castle
 
         private void OnUpdateGold(int gold)
         {
-            var lv = _repository.profile.castleLv.Value;
+            var lv = _repository.gameRecord.castleLv.Value;
             if (!Storage.db.castles.TryFind(lv, out var entity))
                 return;
 
@@ -84,7 +84,7 @@ namespace RGLabs.Castle
         {
             var result = await NetworkService.Castle.LevelUp();
             
-            _repository.profile.castleLv.Value = result.lv;
+            _repository.gameRecord.castleLv.Value = result.lv;
             _repository.currency.Update(result.leftCurrency);
         }
     }

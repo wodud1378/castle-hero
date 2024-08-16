@@ -11,4 +11,15 @@ namespace RGLabs.Data.DB
     {
         public WaveEntity[] Map(int groupId) => Array.FindAll(entities, (x) => x.groupId == groupId);
     }
+
+    [DB("Dg_Table", "dungeon")]
+    public class DungeonDB : DB<DungeonEntity>
+    {
+    }
+    
+    
+    [DB("Dg_Rwd_Item_Grp_Table", "dungeon_reward")]
+    public class DungeonRewardDB : DB<DungeonRewardEntity>
+    {
+    }
 }

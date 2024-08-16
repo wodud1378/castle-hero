@@ -5,4 +5,22 @@ namespace RGLabs.Data.Model
         public int Id { get; set; }
         public bool IsValid { get; set; }
     }
+
+    public enum GameType
+    {
+        Stage,
+        Dungeon,
+    }
+
+    public interface IGameEntity : IEntity
+    {
+        public GameType Type { get; }
+        public string Map { get; set; }
+        public int Ap { get; set; }
+        public int TimeLimit { get; set; }
+        public int WaveId { get; set; }
+        
+        public int MinGold { get; set; }
+        public int MaxGold { get; set; }
+    }
 }

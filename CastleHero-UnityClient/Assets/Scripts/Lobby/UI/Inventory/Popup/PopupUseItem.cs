@@ -4,7 +4,6 @@ using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Lobby.UI.Popup;
 using RGLabs.Network.Service;
-using RGLabs.Network.Service.Item;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using TMPro;

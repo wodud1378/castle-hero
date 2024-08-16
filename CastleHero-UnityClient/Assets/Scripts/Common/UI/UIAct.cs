@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Data;
 using RGLabs.Data.Repositories;
+using RGLabs.Network.Service;
 using RGLabs.Utility;
 using TMPro;
 using UniRx;
@@ -120,11 +121,9 @@ namespace RGLabs.Common.UI
             }
         }
 
-        private DateTime CurrentTime() => DateTime.UtcNow.AddHours(3);
-
         private Calculation Calculate()
         {
-            var now = CurrentTime();
+            var now = NetworkService.CurrentTime();
             int limit = _act.pointLimit.Value;
             var calculation = new Calculation
             {

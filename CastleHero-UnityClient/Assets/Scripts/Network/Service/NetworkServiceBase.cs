@@ -15,12 +15,13 @@ namespace RGLabs.Network.Service
         
         public static int LeftRequestCount { get; private set; }
         
-        protected const string PROFILE_TABLE = "profile";
         protected const string ACT_TABLE = "act";
         protected const string CURRENCY_TABLE = "currency";
         protected const string CHARACTERS_TABLE = "characters";
         protected const string FORMATION_TABLE = "formation";
         protected const string INVENTORY_TABLE = "inventory";
+        protected const string GAME_RECORD_TABLE = "record";
+        protected const string SHOP_RECORD_TABLE = "shop";
         
         protected UniTask Save(string tableName, object obj)
         {
@@ -137,9 +138,6 @@ namespace RGLabs.Network.Service
         protected List<TransactionValue> TransactionGet(params string[] tables)
         {
             var list = new List<TransactionValue>();
-            if (tables.Contains(PROFILE_TABLE))
-                list.Add(TransactionGetProfile());
-            
             if (tables.Contains(ACT_TABLE))
                 list.Add(TransactionGetAct());
 
@@ -154,9 +152,19 @@ namespace RGLabs.Network.Service
 
             if (tables.Contains(INVENTORY_TABLE))
                 list.Add(TransactionGetInventory());
+            
+            if (tables.Contains(GAME_RECORD_TABLE))
+                list.Add(TransactionGetGameRecord());
+            
+            if (tables.Contains(SHOP_RECORD_TABLE))
+                list.Add(TransactionGetShopRecord());
 
             return list;
         }
+
+        private TransactionValue TransactionGetShopRecord() => TransactionValue.SetGet(SHOP_RECORD_TABLE, new Where());
+        
+        private TransactionValue TransactionGetGameRecord() => TransactionValue.SetGet(GAME_RECORD_TABLE, new Where());
 
         private TransactionValue TransactionGetInventory() => TransactionValue.SetGet(INVENTORY_TABLE, new Where());
 
@@ -167,7 +175,5 @@ namespace RGLabs.Network.Service
         private TransactionValue TransactionGetCurrency() => TransactionValue.SetGet(CURRENCY_TABLE, new Where());
 
         private TransactionValue TransactionGetAct() => TransactionValue.SetGet(ACT_TABLE, new Where());
-        
-        private TransactionValue TransactionGetProfile() => TransactionValue.SetGet(PROFILE_TABLE, new Where());
     }
 }

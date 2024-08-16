@@ -7,32 +7,32 @@ using UnityEngine;
 
 namespace RGLabs.InGame
 {
-    public struct TimeOver
+    public class GameTimer : IDisposable
     {
-    }
-
-    public class StageTimer : IDisposable
-    {
+        public event Action OnTimeOver;
+        
         private readonly IDisposable _update;
         private readonly IDisposable _subscription;
 
+        private bool _onRun;
         private bool _disposed;
 
-        public StageTimer()
+        public GameTimer(ReactiveProperty<float> timeProperty)
         {
-            var leftTime = Storage.inGameRepository.leftTime;
-
             _update = Observable
                 .EveryUpdate()
                 .Select(_ => Time.deltaTime)
                 .Subscribe(x =>
                 {
-                    leftTime.Value -= x;
+                    if (!_onRun)
+                        return;
+                    
+                    timeProperty.Value -= x;
 
-                    if (leftTime.Value > 0)
+                    if (timeProperty.Value > 0)
                         return;
 
-                    new TimeOver().Publish();
+                    OnTimeOver?.Invoke();
                     Dispose();
                 });
 
@@ -40,6 +40,8 @@ namespace RGLabs.InGame
                 .Receive<GameResult>()
                 .Subscribe(_ => Dispose());
         }
+
+        public void Run() => _onRun = true;
 
         public void Dispose()
         {
@@ -49,6 +51,7 @@ namespace RGLabs.InGame
             _update?.Dispose();
             _subscription?.Dispose();
             _disposed = true;
+            OnTimeOver = null;
         }
     }
 }

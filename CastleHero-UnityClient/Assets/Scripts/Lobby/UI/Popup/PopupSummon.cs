@@ -9,7 +9,6 @@ using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Network.Service;
-using RGLabs.Network.Service.Summon;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using TMPro;

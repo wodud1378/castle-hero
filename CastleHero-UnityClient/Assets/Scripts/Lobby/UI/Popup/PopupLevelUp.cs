@@ -7,7 +7,6 @@ using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Network.Service;
 using RGLabs.Network.Shared;
-using RGLabs.Network.Service.Character;
 using RGLabs.Utility;
 using TMPro;
 using UniRx;

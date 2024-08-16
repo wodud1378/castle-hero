@@ -46,6 +46,11 @@ namespace RGLabs.InGame.System
         Debuff
     }
 
+    public struct UnitDead
+    {
+        public UnitBehaviour unit;
+    }
+
     public interface IUnitEvent
     {
         public UnitBehaviour From { get; }
