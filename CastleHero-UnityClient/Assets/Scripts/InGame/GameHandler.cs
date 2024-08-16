@@ -236,7 +236,6 @@ namespace RGLabs.InGame
 
         public void Dispose()
         {
-            _gameRepo?.Dispose();
             _timer?.Dispose();
             _unitProcessor?.Dispose();
             

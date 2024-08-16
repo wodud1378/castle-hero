@@ -21,5 +21,12 @@ namespace RGLabs.Data
         public static LocalizeText localize;
         
         public static Entrance entranceData = new() { state = State.Lobby, };
+
+        public static void ClearRepositories()
+        {
+            settingRepository.Dispose();
+            inGameRepository.Dispose();
+            userRepository.Dispose();
+        }
     }
 }

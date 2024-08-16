@@ -16,7 +16,7 @@ namespace RGLabs.Data.Repositories
         public int id;
     }
 
-    public class Act
+    public class Act : IDisposable
     {
         public readonly ReactiveProperty<int> point;
         public readonly ReactiveProperty<int> pointLimit;
@@ -35,9 +35,16 @@ namespace RGLabs.Data.Repositories
             pointLimit.Value = dto.pointLimit;
             lastUpdate.Value = dto.lastUpdate;
         }
+
+        public void Dispose()
+        {
+            point?.Dispose();
+            pointLimit?.Dispose();
+            lastUpdate?.Dispose();
+        }
     }
 
-    public class Currency
+    public class Currency : IDisposable
     {
         public readonly ReactiveProperty<int> paidDia;
         public readonly ReactiveProperty<int> freeDia;
@@ -63,9 +70,16 @@ namespace RGLabs.Data.Repositories
             freeDia.Value += dto.freeDia;
             gold.Value += dto.gold;
         }
+
+        public void Dispose()
+        {
+            paidDia?.Dispose();
+            freeDia?.Dispose();
+            gold?.Dispose();
+        }
     }
 
-    public class Inventory
+    public class Inventory : IDisposable
     {
         public readonly ReactiveCollection<IItem> items;
 
@@ -100,9 +114,14 @@ namespace RGLabs.Data.Repositories
             else
                 items.Add(item);
         }
+
+        public void Dispose()
+        {
+            items?.Dispose();
+        }
     }
 
-    public class Characters
+    public class Characters : IDisposable
     {
         public readonly ReactiveCollection<UnitInfo> units;
 
@@ -119,9 +138,14 @@ namespace RGLabs.Data.Repositories
         }
 
         public void Update(UnitInfo unit) => units.Update(unit, x => x.id == unit.id);
+
+        public void Dispose()
+        {
+            units?.Dispose();
+        }
     }
 
-    public class Formation
+    public class Formation : IDisposable
     {
         public readonly ReactiveCollection<FieldUnit> fieldUnits;
 
@@ -143,9 +167,14 @@ namespace RGLabs.Data.Repositories
         }
 
         public void Update(FormationDto dto) => fieldUnits.Update(dto.fieldUnits);
+
+        public void Dispose()
+        {
+            fieldUnits?.Dispose();
+        }
     }
 
-    public class GameRecord
+    public class GameRecord : IDisposable
     {
         public readonly ReactiveProperty<int> iconId;
         public readonly ReactiveProperty<int> castleLv;
@@ -167,9 +196,17 @@ namespace RGLabs.Data.Repositories
             lastClearedStage.Value = dto.lastClearedStage;
             dungeon.Update(dto.dungeon);
         }
+
+        public void Dispose()
+        {
+            iconId?.Dispose();
+            castleLv?.Dispose();
+            lastClearedStage?.Dispose();
+            dungeon?.Dispose();
+        }
     }
 
-    public class ShopRecord
+    public class ShopRecord : IDisposable
     {
         public readonly ReactiveCollection<Product> products;
         public readonly ReactiveCollection<ShopRecordDto.History> histories;
@@ -185,9 +222,15 @@ namespace RGLabs.Data.Repositories
             products.Update(dto.products);
             histories.Update(dto.histories);
         }
+
+        public void Dispose()
+        {
+            products?.Dispose();
+            histories?.Dispose();
+        }
     }
 
-    public class UserRepository
+    public class UserRepository : IDisposable
     {
         public GameEntrance entrance;
 
@@ -239,6 +282,18 @@ namespace RGLabs.Data.Repositories
             return inventory.items
                 .OfType<EquipItem>()
                 .Where(x => guids.Contains(x.Guid));
+        }
+
+        public void Dispose()
+        {
+            stageFocus?.Dispose();
+            act?.Dispose();
+            currency?.Dispose();
+            inventory?.Dispose();
+            characters?.Dispose();
+            formation?.Dispose();
+            gameRecord?.Dispose();
+            shopRecord?.Dispose();
         }
     }
 }

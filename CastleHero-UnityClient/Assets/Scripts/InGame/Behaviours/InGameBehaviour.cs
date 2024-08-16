@@ -93,7 +93,11 @@ namespace RGLabs.InGame.Behaviours
         private void Exit(ExitCode exitCode)
         {
             _handler.OnExit(exitCode);
+
+            var task = NetworkService.User.GetUserData()
+                .ContinueWith(x => Storage.userRepository.Update(x.data));
             
+            Loading.Tasks.Add(task);
             LoadSceneAfterDispose("Main");
         }
 
@@ -103,6 +107,8 @@ namespace RGLabs.InGame.Behaviours
             
             _uiInGame.Dispose();
             _handler.Dispose();
+            
+            Storage.ClearRepositories();
         }
     }
 }

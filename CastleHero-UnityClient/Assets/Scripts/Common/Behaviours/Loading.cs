@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,31 +9,38 @@ namespace RGLabs.Common.Behaviours
 {
     public class Loading : MonoBehaviour
     {
+        public static List<UniTask> Tasks = new();
+        
         public static string NextScene
         {
             set
             {
                 _nextScene = value;
-                _prevScene = SceneManager.GetActiveScene();
                 SceneManager.LoadScene("Loading", LoadSceneMode.Additive);
             }
         }
         
-        private static Scene _prevScene;
         private static string _nextScene;
 
         private void Start()
         {
-            StartCoroutine(LoadSceneCoroutine(_prevScene, _nextScene));
+            StartCoroutine(LoadSceneCoroutine(_nextScene));
         }
         
-        private IEnumerator LoadSceneCoroutine(Scene unload, string load)
+        private IEnumerator LoadSceneCoroutine(string load)
         {
             Context.Back.enabled = false;
 
             var loadHandle = SceneManager.LoadSceneAsync(load);
             while (!loadHandle.isDone)
                 yield return null;
+
+            if (Tasks.Count > 0)
+            {
+                yield return UniTask.WhenAll(Tasks).ToCoroutine();
+            
+                Tasks.Clear();                
+            }
             
             var finishHandle = SceneManager.UnloadSceneAsync("Loading");
             while (!finishHandle.isDone)
