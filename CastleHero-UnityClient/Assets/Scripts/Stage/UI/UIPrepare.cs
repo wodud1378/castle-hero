@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 namespace RGLabs.Stage.UI
 {
-    public class UIStage : UIMain
+    public class UIPrepare : UIMain
     {
         [SerializeField] private UIConfigCharacterList _characterList;
         [SerializeField] private UIConfigDragField _dragField;
@@ -64,24 +64,19 @@ namespace RGLabs.Stage.UI
                 return;
             }
 
-            StartStage();
+            Start();
         }
 
         private void BackToLobby() => Context.Transition.CurrentState = State.Lobby;
 
-        private async void StartStage()
+        private async void Start()
         {
-            int stage = Storage.userRepository.stageFocus.Value;
-            var canEntrance = await NetworkService.Game.Start(GameType.Stage, stage);
+            var entrance = Storage.userRepository.gameEntrance.Value;
+            var canEntrance = await NetworkService.Game.Start(entrance.type, entrance.id);
             if (!canEntrance)
                 return;
 
             Context.Transition.CurrentState = State.InGame;
-            Storage.userRepository.entrance = new GameEntrance
-            {
-                type = GameType.Stage,
-                id = stage,
-            };
         }
     }
 }

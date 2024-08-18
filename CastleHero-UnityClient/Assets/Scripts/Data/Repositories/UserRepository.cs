@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using RGLabs.Data.Model;
+using RGLabs.Network.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
@@ -18,10 +20,23 @@ namespace RGLabs.Data.Repositories
 
     public class Act : IDisposable
     {
+        // TODO : 행동력 계산 로직 UIAct에서 이 클래스로 이관
+        private struct Calculation
+        {
+            public int point;
+            public int pointLimit;
+            public DateTime lastUpdate;
+        }
+        
         public readonly ReactiveProperty<int> point;
         public readonly ReactiveProperty<int> pointLimit;
         public readonly ReactiveProperty<DateTime> lastUpdate;
 
+        private const int ApAddIntervalMinute = 10;
+        private const int ApAddPerOnce = 1;
+
+        private IDisposable _update;
+        
         public Act(ActDto dto)
         {
             point = new(dto.point);
@@ -38,9 +53,53 @@ namespace RGLabs.Data.Repositories
 
         public void Dispose()
         {
+            _update?.Dispose();
             point?.Dispose();
             pointLimit?.Dispose();
             lastUpdate?.Dispose();
+        }
+        
+        private async UniTaskVoid UpdateTask()
+        {
+            while (true)
+            {
+                // 계산은 스레드 풀에서 진행.
+                var result = await UniTask.RunOnThreadPool(Calculate);
+
+                await UniTask.SwitchToMainThread();
+
+                // UI 갱신 가능성이 있는 스트림은 메인 스레드에서 업데이트.
+                point.Value = result.point;
+                pointLimit.Value = result.pointLimit;
+                lastUpdate.Value = result.lastUpdate;
+
+                await UniTask.SwitchToThreadPool();
+            }
+        }
+        
+        private Calculation Calculate()
+        {
+            var now = NetworkService.CurrentTime();
+            int limit = pointLimit.Value;
+            var calculation = new Calculation
+            {
+                pointLimit = limit,
+                lastUpdate = now
+            };
+
+            if (point.Value >= limit)
+            {
+                calculation.point = point.Value;
+            }
+            else
+            {
+                var minutes = (now - lastUpdate.Value).Minutes;
+                int amount = minutes / ApAddIntervalMinute * ApAddPerOnce;
+                int total = point.Value + amount;
+                calculation.point = total < limit ? total : limit;
+            }
+
+            return calculation;
         }
     }
 
@@ -236,7 +295,13 @@ namespace RGLabs.Data.Repositories
 
         public readonly string nickname;
 
-        public readonly ReactiveProperty<int> stageFocus;
+        public readonly ReactiveProperty<GameEntrance> gameEntrance;
+
+        public int StageFocus
+        {
+            get => PlayerPrefs.GetInt(StageFocusKey, gameRecord.lastClearedStage.Value);
+            set => PlayerPrefs.SetInt(StageFocusKey, value);
+        }
 
         public readonly Act act;
         public readonly Currency currency;
@@ -261,9 +326,20 @@ namespace RGLabs.Data.Repositories
             gameRecord = new(dto.gameRecord);
             shopRecord = new(dto.shopRecord);
 
-            int focus = PlayerPrefs.GetInt(StageFocusKey, gameRecord.lastClearedStage.Value);
-            stageFocus = new ReactiveProperty<int>(focus);
-            stageFocus.Subscribe(x => PlayerPrefs.SetInt(StageFocusKey, x));
+            gameEntrance = new(new GameEntrance
+            {
+                type = GameType.Stage,
+                id = StageFocus
+            });
+
+            gameEntrance
+                .Subscribe(x =>
+                {
+                    if (x.type != GameType.Stage)
+                        return;
+
+                    StageFocus = x.id;
+                });
         }
 
         public void Update(UserDataDto dto)
@@ -286,7 +362,7 @@ namespace RGLabs.Data.Repositories
 
         public void Dispose()
         {
-            stageFocus?.Dispose();
+            gameEntrance?.Dispose();
             act?.Dispose();
             currency?.Dispose();
             inventory?.Dispose();

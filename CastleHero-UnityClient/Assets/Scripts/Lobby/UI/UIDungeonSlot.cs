@@ -12,8 +12,12 @@ namespace RGLabs.Lobby.UI
     {
         [SerializeField] private UIRewardList _rewardList;
         
+        public DungeonEntity Entity { get; private set; }
+        
         public UniTask Init(DungeonEntity entity)
         {
+            Entity = entity;
+            
             return base.Init(entity.image, entity.OpenDaysOfWeekText());
         }
     }

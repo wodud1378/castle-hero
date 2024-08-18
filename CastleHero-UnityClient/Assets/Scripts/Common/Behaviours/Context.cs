@@ -95,7 +95,7 @@ namespace RGLabs.Common.Behaviours
                 .Subscribe(_=> ProcessBack())
                 .AddTo(this);
 
-            this.SubscribeButton(startButton, () => Transition.CurrentState = State.Stage);
+            this.SubscribeButton(startButton, () => Transition.CurrentState = State.Prepare);
             
             Transition
                 .StateObserver

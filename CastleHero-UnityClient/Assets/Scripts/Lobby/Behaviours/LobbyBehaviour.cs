@@ -11,6 +11,7 @@ using RGLabs.Stage.UI;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace RGLabs.Lobby.Behaviours
 {
@@ -22,7 +23,7 @@ namespace RGLabs.Lobby.Behaviours
     public class LobbyBehaviour : SceneBehaviour, IBackButtonListener
     {
         [SerializeField] private UILobby _uiLobby;
-        [SerializeField] private UIStage _uiStage;
+        [FormerlySerializedAs("_uiStage")] [SerializeField] private UIPrepare uiPrepare;
         [SerializeField] private UIShop _uiShop;
         [SerializeField] private UICastle _uiCastle;
 
@@ -37,7 +38,7 @@ namespace RGLabs.Lobby.Behaviours
 
             await _formation.Init();
 
-            _uiStage.Init();
+            uiPrepare.Init();
 
             Context.Transition.StateObserver
                 .DistinctUntilChanged()
@@ -59,8 +60,8 @@ namespace RGLabs.Lobby.Behaviours
                     Context.startButton.enabled = false;
                     Context.Back.Add(this);
                     break;
-                case State.Stage:
-                    TransitionTo(_current, _uiStage);
+                case State.Prepare:
+                    TransitionTo(_current, uiPrepare);
                     Context.startButton.enabled = false;
                     Context.Back.Add(this);
                     break;
@@ -120,7 +121,7 @@ namespace RGLabs.Lobby.Behaviours
                 return;
             
             _uiLobby.Dispose();
-            _uiStage.Dispose();
+            uiPrepare.Dispose();
             
             new StartGame { entity = entity }.Publish();
 
@@ -137,7 +138,7 @@ namespace RGLabs.Lobby.Behaviours
         public bool OnProcessBack()
         {
             var state = Context.Transition.CurrentState;
-            if (state != State.Stage)
+            if (state != State.Prepare)
                 return false;
 
             Context.Transition.CurrentState = State.Lobby;

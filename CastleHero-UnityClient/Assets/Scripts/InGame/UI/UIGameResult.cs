@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Data;
+using RGLabs.Data.Model;
 using RGLabs.InGame.Behaviours;
 using RGLabs.Lobby.UI.Adapter;
 using RGLabs.Network.Shared;
@@ -52,7 +53,7 @@ namespace RGLabs.InGame.UI
             gameObject.SetActive(true);
             _animtor.SetTrigger(EntranceHash);
 
-            UpdateUI(result.isCleared);
+            UpdateUI(result);
 
             if (result.isCleared)
             {
@@ -106,21 +107,29 @@ namespace RGLabs.InGame.UI
             onClose.Invoke();
         }
 
-        private void UpdateUI(bool isCleared)
+        private void UpdateUI(GameResult result)
         {
+            bool isCleared = result.isCleared;
             foreach (var obj in _clearObjects)
                 obj.SetActive(isCleared);
 
             foreach (var obj in _failedObjects)
                 obj.SetActive(!isCleared);
-
-            var db = Storage.db.stages;
-            int currentStage = Storage.userRepository.stageFocus.Value;
-            int lastStageIndex = db.Length;
-            if (db.TryFindIndex(currentStage, out int index))
-                _nextButton.gameObject.SetActive(index < lastStageIndex);
-            else
+            
+            if (!isCleared)
+            {
+                _retryButton.gameObject.SetActive(false);
                 _nextButton.gameObject.SetActive(false);
+                return;
+            }
+            
+            // TODO : 행동력 체크.
+
+            if (Storage.db.TryLoadNextGameEntity(result.type, result.data.id, out var entity))
+            {
+                _retryButton.gameObject.SetActive(true);
+                _nextButton.gameObject.SetActive(true);
+            }
         }
 
         private void Exit() => CloseWith(() => ExitCode.Exit.Publish());

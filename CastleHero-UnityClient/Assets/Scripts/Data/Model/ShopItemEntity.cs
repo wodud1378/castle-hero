@@ -15,6 +15,13 @@ namespace RGLabs.Data.Model
         Limited
     }
     
+    public enum PaymentType
+    {
+        Default = 0,
+        Ad,
+        Free,
+    }
+    
     public struct ShopItemEntity : IEntity
     {
         [DataField("Shop_ID")]

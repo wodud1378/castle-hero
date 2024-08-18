@@ -29,6 +29,7 @@ namespace RGLabs.InGame.Behaviours
     public struct GameResult
     {
         public bool isCleared;
+        public GameType type;
         public GameCleared data;
     }
 
@@ -79,6 +80,7 @@ namespace RGLabs.InGame.Behaviours
             new GameResult
             {
                 isCleared = finished.isCleared,
+                type = finished.type,
                 data = data
             }.Publish();
         }

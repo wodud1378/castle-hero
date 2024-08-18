@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using RGLabs.Stage.UI;
+
 namespace RGLabs.Data.Model
 {
     public interface IEntity
@@ -14,13 +17,17 @@ namespace RGLabs.Data.Model
 
     public interface IGameEntity : IEntity
     {
+        public int Lv { get; }
         public GameType Type { get; }
         public string Map { get; set; }
         public int Ap { get; set; }
         public int TimeLimit { get; set; }
         public int WaveId { get; set; }
         
+        public int Exp { get; }
         public int MinGold { get; set; }
         public int MaxGold { get; set; }
+
+        public List<Reward> GetRewardItems();
     }
 }

@@ -29,17 +29,5 @@ namespace RGLabs.Network.Service
             var response = await InvokeFunc("Sell", parameters, ConvertFunctionResponse<ItemsSold>());
             return response.data;
         }
-
-        public async UniTask<ItemBought> Buy(int id, int quantity)
-        {
-            var parameters = new List<KeyValuePair<string, object>>()
-            {
-                new(nameof(id), id),
-                new(nameof(quantity), quantity)
-            };
-
-            var response = await InvokeFunc("Sell", parameters, ConvertFunctionResponse<ItemBought>());
-            return response.data;
-        }
     }
 }

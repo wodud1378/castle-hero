@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using RGLabs.Data.DB;
+using RGLabs.Stage.UI;
 
 namespace RGLabs.Data.Model
 {
@@ -10,6 +12,8 @@ namespace RGLabs.Data.Model
         public int Id { get; set; }
         
         public bool IsValid { get; set; }
+
+        public int Lv => Id;
         
         [DataField("Stage_Bg")] 
         public string Map { get; set; }
@@ -29,6 +33,8 @@ namespace RGLabs.Data.Model
         [DataField("Stage_Rwd_Gold_Max")]
         public int MaxGold { get; set; }
 
+        public int Exp => exp;
+
         [DataField("Stage_Rwd_Exp")]
         public int exp; 
 
@@ -40,5 +46,24 @@ namespace RGLabs.Data.Model
 
         [DataField("Stage_Rwd_Item_Value")]
         public int propItemQty;
+
+        public List<Reward> GetRewardItems()
+        {
+            var rewards = new List<Reward>();
+
+            if (Storage.db.items.TryFind(propItemId, out var itemEntity))
+            {
+                rewards.Add(new()
+                {
+                    icon = itemEntity.icon,
+                    id = itemEntity.Id,
+                    min = propItemQty,
+                    max = propItemQty,
+                    percent = itemPer
+                });
+            }
+
+            return rewards;
+        }
     }
 }

@@ -28,7 +28,7 @@ namespace RGLabs.Common.UI
                     var hash = x switch
                     {
                         State.Lobby => _lobbyHashId,
-                        State.Stage => _stageHashId,
+                        State.Prepare => _stageHashId,
                         _ => 0
                     };
                     

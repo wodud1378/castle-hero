@@ -22,11 +22,12 @@ namespace RGLabs.Stage.UI
     
     public class UIRewardList : UIListAdapter<UISlot, Reward>
     {
-        public UniTask Init(StageEntity entity)
+        public UniTask Init(IGameEntity entity)
         {
             var rewards = new List<Reward>();
-            
+
             if (entity is { MinGold: > 0, MaxGold: > 0 })
+            {
                 rewards.Add(new ()
                 {
                     icon = Constants.GoldIcon,
@@ -34,26 +35,21 @@ namespace RGLabs.Stage.UI
                     max = entity.MaxGold,
                     percent = 1f
                 });
+            }
 
-            if (entity.exp > 0)
+            if (entity.Exp > 0)
+            {
                 rewards.Add(new ()
                 {
                     icon = Constants.ExpIcon,
-                    min = entity.exp,
-                    max = entity.exp,
+                    min = entity.Exp,
+                    max = entity.Exp,
                     percent = 1f
                 });
-
-            if (Storage.db.items.TryFind(entity.propItemId, out var itemEntity))
-                rewards.Add(new ()
-                {
-                    icon = itemEntity.icon,
-                    id = itemEntity.Id,
-                    min = entity.propItemQty,
-                    max = entity.propItemQty,
-                    percent = entity.itemPer
-                });
-
+            }
+            
+            rewards.AddRange(entity.GetRewardItems());
+            
             return base.Init(rewards);
         }
         

@@ -9,7 +9,7 @@ namespace RGLabs.Common.Flow
         Lobby,
         Shop,
         Castle,
-        Stage,
+        Prepare,
         InGame,
     }
     

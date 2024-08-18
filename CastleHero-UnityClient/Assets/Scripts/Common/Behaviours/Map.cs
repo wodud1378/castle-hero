@@ -1,6 +1,7 @@
 using System;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data;
+using RGLabs.Data.Repositories;
 using RGLabs.Lobby.Behaviours;
 using RGLabs.Utility;
 using UniRx;
@@ -24,31 +25,30 @@ namespace RGLabs.Common.Behaviours
 
         private void Init()
         {
-           _subscription = Storage.userRepository.stageFocus
+           _subscription = Storage.userRepository.gameEntrance
                .ThrottleFrame(1)
-               .Subscribe(OnStageChanged)
+               .Subscribe(OnEntranceChanged)
                .AddTo(this);
         }
 
-        private async void OnStageChanged(int stage)
+        private async void OnEntranceChanged(GameEntrance entrance)
         {
-            var db = Storage.db.stages;
-            if (!db.TryFind(stage, out var entity))
-                return;
+            if (!Storage.db.TryLoadGameEntity(entrance.type, entrance.id, out var entity))
+            {
+                string mapName = entity.Map;
+                if (mapName == _currentMapName)
+                    return;
 
-            string mapName = entity.Map;
-            if (mapName == _currentMapName)
-                return;
-
-            var legacy = _map;
-            var handle = Addressables.InstantiateAsync(mapName);
-            _map = await handle.ToUniTask();
-            _map.transform.SetParent(transform);
-            _map.transform.localScale = Vector3.one;
-            _currentMapName = mapName;
+                var legacy = _map;
+                var handle = Addressables.InstantiateAsync(mapName);
+                _map = await handle.ToUniTask();
+                _map.transform.SetParent(transform);
+                _map.transform.localScale = Vector3.one;
+                _currentMapName = mapName;
   
-            if(legacy != null)
-                Addressables.ReleaseInstance(legacy);
+                if(legacy != null)
+                    Addressables.ReleaseInstance(legacy);
+            }
         }
     }
 }

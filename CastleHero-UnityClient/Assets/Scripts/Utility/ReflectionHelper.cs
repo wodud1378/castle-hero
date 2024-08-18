@@ -61,6 +61,10 @@ namespace RGLabs.Utility
                     success = true;
                     result = value;
                     break;
+                case TypeCode.DateTime:
+                    success = DateTime.TryParse(value, out var dateTime);
+                    result = success ? dateTime : default;
+                    break;
                 default:
                     result = null;
                     break;

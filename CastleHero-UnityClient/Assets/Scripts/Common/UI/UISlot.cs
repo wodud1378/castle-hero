@@ -35,7 +35,9 @@ namespace RGLabs.Common.UI
 
         private CancellationTokenSource _ctSource;
 
-        private void Awake()
+        private void Awake() => OnAwake();
+
+        protected virtual void OnAwake()
         {
             state
                 .Subscribe(x =>

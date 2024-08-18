@@ -36,7 +36,9 @@ namespace RGLabs.Stage.UI
             this.SubscribeButton(_prev, OnPrevStage);
             this.SubscribeButton(_next, OnNextStage);
 
-            _subscriptions.Add(_repository.stageFocus.Subscribe(OnStageSelected));
+            _subscriptions.Add(_repository.gameEntrance
+                .Subscribe(OnEntranceChanged));
+            
             _subscriptions.Add(_stageData
                 .Subscribe(x =>
                 {
@@ -47,8 +49,12 @@ namespace RGLabs.Stage.UI
                     
                     UpdateButtonsActive(x);
                 }));
-
-            OnStageSelected(_repository.stageFocus.Value);
+            
+            _repository.gameEntrance.Value = new GameEntrance
+            {
+                type = GameType.Stage,
+                id = _repository.StageFocus
+            };
         }
 
         public void SetMoveStageEnable(bool enabled)
@@ -64,9 +70,12 @@ namespace RGLabs.Stage.UI
             }
         }
 
-        private void OnStageSelected(int stage)
+        private void OnEntranceChanged(GameEntrance entrance)
         {
-            if (!_db.stages.TryFind(stage, out var entity))
+            if (entrance.type != GameType.Stage)
+                return;
+            
+            if (!_db.stages.TryFind(entrance.id, out var entity))
                 return;
 
             _stageData.Value = entity;
@@ -108,7 +117,11 @@ namespace RGLabs.Stage.UI
             if (!stages.TryIndexOf(index, out var entity))
                 return;
 
-            _repository.stageFocus.Value = entity.Id;
+            _repository.gameEntrance.Value = new GameEntrance
+            {
+                type = GameType.Stage,
+                id = entity.Id
+            };
         }
 
         public void Dispose()

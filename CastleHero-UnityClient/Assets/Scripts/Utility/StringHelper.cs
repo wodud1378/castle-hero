@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -20,6 +21,19 @@ namespace RGLabs.Utility
             var stripped = Regex.Replace(text, @"<color=.*?>|</color>", string.Empty); 
             
             return string.Format(ColoredStringTag, color.Hex(), stripped);
+        }
+
+        public static string ToLeftTimeText(this double seconds)
+        {
+            int totalSeconds = (int)seconds;
+            int days = totalSeconds / 86400;
+            int hours = (totalSeconds % 86400) / 3600;
+            int minutes = (totalSeconds % 3600) / 60;
+            int secs = totalSeconds % 60;
+            
+            return days > 0 
+                ? $"{days}d:{hours:D2}h:{minutes:D2}m:{secs:D2}s" 
+                : $"{hours:D2}h:{minutes:D2}m:{secs:D2}s";
         }
 
         private static string Hex(this Color color)

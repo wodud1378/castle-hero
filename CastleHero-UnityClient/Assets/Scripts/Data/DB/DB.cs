@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using LitJson;
@@ -13,7 +14,7 @@ namespace RGLabs.Data.DB
         public int Id { get; set; }
         public void Load(object[] data);
     }
-    
+
     public class DataFieldAttribute : Attribute
     {
         public string Name { get; }
@@ -25,7 +26,7 @@ namespace RGLabs.Data.DB
             Index = index;
         }
     }
-    
+
     public class DBAttribute : Attribute
     {
         public string LocalFile { get; }
@@ -38,11 +39,11 @@ namespace RGLabs.Data.DB
             ChartName = chartName;
         }
     }
-    
+
     public abstract class DB<T> : IDataBase where T : IEntity, new()
     {
         public int Id { get; set; }
-        
+
         protected T[] entities;
 
         private readonly Dictionary<int, int> _resultCache = new();
@@ -59,7 +60,7 @@ namespace RGLabs.Data.DB
         }
 
         public IEnumerable<T> Where(Predicate<T> condition) => entities.Where(condition.Invoke);
-        
+
         public bool TryIndexOf(int index, out T entity)
         {
             if (!index.IsValidIndex(entities))
@@ -71,7 +72,7 @@ namespace RGLabs.Data.DB
             entity = entities[index];
             return true;
         }
-        
+
         public bool TryFind(int id, out T entity)
         {
             if (!_resultCache.TryGetValue(id, out int index))
@@ -89,14 +90,46 @@ namespace RGLabs.Data.DB
             entity = entities[index];
             return true;
         }
-        
+
+        public List<T> FindAll(Predicate<T> predicate)
+        {
+            var list = new List<T>();
+            ForEach(x =>
+            {
+                if (!predicate.Invoke(x))
+                    return;
+                
+                list.Add(x);
+            });
+
+            return list;
+        }
+
+        public bool TryFind(Predicate<T> predicate, out T entity)
+        {
+            int index = 0;
+            while (index.IsValidIndex(entities))
+            {
+                if (predicate.Invoke(entities[index]))
+                {
+                    entity = entities[index];
+                    return true;
+                }
+
+                ++index;
+            }
+
+            entity = FallBackEntity();
+            return false;
+        }
+
         public bool TryFindIndex(int id, out int index)
         {
             index = Array.FindIndex(entities, (x) => x.Id == id);
 
             return IsValidIndex(index);
         }
-        
+
         public bool IsValidIndex(int index) => index.IsValidIndex(entities);
 
         public void ForEach(Action<T> action)
@@ -106,7 +139,7 @@ namespace RGLabs.Data.DB
                 action.Invoke(entity);
             }
         }
-        
+
         public void ClearCache()
         {
             _resultCache.Clear();
@@ -123,13 +156,13 @@ namespace RGLabs.Data.DB
 
             return array;
         }
-        
+
         public IEnumerable<T> Map(IEnumerable<int> ids)
         {
             var result = new List<T>();
             foreach (var id in ids)
             {
-                if(TryFind(id, out var entity))
+                if (TryFind(id, out var entity))
                     result.Add(entity);
             }
 
@@ -140,7 +173,7 @@ namespace RGLabs.Data.DB
         {
             int length = data.Length;
             entities = new T[length];
-            
+
             for (int i = 0; i < length; ++i)
             {
                 Convert(data[i], ref entities[i]);
@@ -151,7 +184,7 @@ namespace RGLabs.Data.DB
         {
             return new() { IsValid = true };
         }
-        
+
         protected virtual void Convert(object from, ref T to)
         {
             to = (T)from;
