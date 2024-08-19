@@ -11,7 +11,7 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace RGLabs.Stage.UI
+namespace RGLabs.Prepare.UI
 {
     public class UIStageSelect : MonoBehaviour, IDisposable
     {
@@ -36,7 +36,7 @@ namespace RGLabs.Stage.UI
             this.SubscribeButton(_prev, OnPrevStage);
             this.SubscribeButton(_next, OnNextStage);
 
-            _subscriptions.Add(_repository.gameEntrance
+            _subscriptions.Add(_repository.entrance
                 .Subscribe(OnEntranceChanged));
             
             _subscriptions.Add(_stageData
@@ -50,7 +50,7 @@ namespace RGLabs.Stage.UI
                     UpdateButtonsActive(x);
                 }));
             
-            _repository.gameEntrance.Value = new GameEntrance
+            _repository.entrance.Value = new GameEntrance
             {
                 type = GameType.Stage,
                 id = _repository.StageFocus
@@ -117,7 +117,7 @@ namespace RGLabs.Stage.UI
             if (!stages.TryIndexOf(index, out var entity))
                 return;
 
-            _repository.gameEntrance.Value = new GameEntrance
+            _repository.entrance.Value = new GameEntrance
             {
                 type = GameType.Stage,
                 id = entity.Id

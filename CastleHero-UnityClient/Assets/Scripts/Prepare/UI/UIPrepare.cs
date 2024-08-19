@@ -1,16 +1,13 @@
-using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Data;
-using RGLabs.Data.Model;
-using RGLabs.Data.Repositories;
 using RGLabs.Network.Service;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace RGLabs.Stage.UI
+namespace RGLabs.Prepare.UI
 {
     public class UIPrepare : UIMain
     {
@@ -71,7 +68,7 @@ namespace RGLabs.Stage.UI
 
         private async void Start()
         {
-            var entrance = Storage.userRepository.gameEntrance.Value;
+            var entrance = Storage.userRepository.entrance.Value;
             var canEntrance = await NetworkService.Game.Start(entrance.type, entrance.id);
             if (!canEntrance)
                 return;

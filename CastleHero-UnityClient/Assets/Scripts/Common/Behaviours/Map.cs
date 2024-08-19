@@ -25,7 +25,7 @@ namespace RGLabs.Common.Behaviours
 
         private void Init()
         {
-           _subscription = Storage.userRepository.gameEntrance
+           _subscription = Storage.userRepository.entrance
                .ThrottleFrame(1)
                .Subscribe(OnEntranceChanged)
                .AddTo(this);
@@ -34,21 +34,21 @@ namespace RGLabs.Common.Behaviours
         private async void OnEntranceChanged(GameEntrance entrance)
         {
             if (!Storage.db.TryLoadGameEntity(entrance.type, entrance.id, out var entity))
-            {
-                string mapName = entity.Map;
-                if (mapName == _currentMapName)
-                    return;
+                return;
+            
+            string mapName = entity.Map;
+            if (mapName == _currentMapName)
+                return;
 
-                var legacy = _map;
-                var handle = Addressables.InstantiateAsync(mapName);
-                _map = await handle.ToUniTask();
-                _map.transform.SetParent(transform);
-                _map.transform.localScale = Vector3.one;
-                _currentMapName = mapName;
+            var legacy = _map;
+            var handle = Addressables.InstantiateAsync(mapName);
+            _map = await handle.ToUniTask();
+            _map.transform.SetParent(transform);
+            _map.transform.localScale = Vector3.one;
+            _currentMapName = mapName;
   
-                if(legacy != null)
-                    Addressables.ReleaseInstance(legacy);
-            }
+            if(legacy != null)
+                Addressables.ReleaseInstance(legacy);
         }
     }
 }

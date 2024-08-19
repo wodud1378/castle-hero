@@ -12,7 +12,7 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace RGLabs.Stage.UI
+namespace RGLabs.Prepare.UI
 {
     public class UIConfigDragField : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler,
         IPointerClickHandler

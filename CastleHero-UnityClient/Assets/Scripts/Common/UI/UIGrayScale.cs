@@ -1,8 +1,11 @@
-using System;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace RGLabs.Common.UI
 {
@@ -61,5 +64,23 @@ namespace RGLabs.Common.UI
 
             _isApplied = false;
         }
+
+#if UNITY_EDITOR
+        [SerializeField] private bool _preview;
+        
+        private void OnValidate()
+        {
+            if (_material == null)
+            {
+                _material = AssetDatabase.LoadAssetAtPath<Material>(
+                    "Assets/BundleResources/01.Global/Materials/GrayScale.mat");
+            }
+            
+            if(_preview)
+                Apply();
+            else
+                Release();
+        }
+#endif
     }
 }

@@ -20,7 +20,7 @@ namespace RGLabs.Network.DB.Service
 
         public DBLoadService(InitService service) => _service = service;
 
-        public async UniTask<(DBCollections db, LocalizeText localize)> Load(ChartInfo[] chartList)
+        public async UniTask<(DBCollections db, LocalizeText localize)> InitialLoad(ChartInfo[] chartList)
         {
             DBCollections collections = new();
 
@@ -49,6 +49,8 @@ namespace RGLabs.Network.DB.Service
             LoadInstance<ItemDB>(map, x => collections.items = x);
             LoadInstance<ShopDB>(map, x => collections.shop = x);
             LoadInstance<ShopItemGroupDB>(map, x => collections.shopGroup = x);
+            LoadInstance<DungeonDB>(map, x => collections.dungeons = x);
+            LoadInstance<DungeonRewardDB>(map, x => collections.dungeonRewards = x);
 
             var localize = map.TryGetValue("localize", out var data)
                 ? new LocalizeText(data.rawData)

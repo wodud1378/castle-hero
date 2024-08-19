@@ -6,9 +6,8 @@ using RGLabs.Utility;
 using TMPro;
 using UniRx;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace RGLabs.Stage.UI
+namespace RGLabs.Prepare.UI
 {
     public class UIGameInfo : MonoBehaviour
     {
@@ -20,7 +19,7 @@ namespace RGLabs.Stage.UI
 
         private void Awake()
         {
-            Storage.userRepository.gameEntrance
+            Storage.userRepository.entrance
                 .ThrottleFrame(1)
                 .Subscribe(OnEntranceChanged)
                 .AddTo(this);

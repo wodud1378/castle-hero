@@ -79,7 +79,7 @@ namespace RGLabs.Common.Behaviours
         {
             if (Storage.entranceData.state == State.InGame)
             {
-                Storage.userRepository.entrance = Storage.entranceData.gameEntrance;
+                Storage.userRepository.entrance.Value = Storage.entranceData.gameEntrance;
                 return;
             }
 

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using RGLabs.Common.UI;
-using RGLabs.Stage.UI;
+using RGLabs.Prepare.UI;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;

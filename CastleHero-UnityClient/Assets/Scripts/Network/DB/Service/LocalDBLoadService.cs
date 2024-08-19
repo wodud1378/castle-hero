@@ -11,7 +11,7 @@ namespace RGLabs.Network.DB.Service
     {
         private readonly CsvToDatabase _loader = new();
         
-        public async UniTask<(DBCollections db, LocalizeText localize)> Load(ChartInfo[] _)
+        public async UniTask<(DBCollections db, LocalizeText localize)> InitialLoad(ChartInfo[] _)
         {
             DBCollections collections = new();
             

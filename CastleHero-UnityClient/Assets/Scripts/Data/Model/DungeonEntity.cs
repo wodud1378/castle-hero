@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using RGLabs.Data.DB;
 using RGLabs.Network.Service;
-using RGLabs.Stage.UI;
+using RGLabs.Prepare.UI;
 using RGLabs.Utility;
 
 namespace RGLabs.Data.Model
@@ -14,54 +14,41 @@ namespace RGLabs.Data.Model
         Raid,
         Invasion
     }
-    
+
     public struct DungeonEntity : IGameEntity
     {
         public GameType Type => GameType.Dungeon;
-        
-        [DataField("Dg_index")]
-        public int Id { get; set; }
+
+        [DataField("Dg_index")] public int Id { get; set; }
         public bool IsValid { get; set; }
 
         public int Lv => lv;
 
-        [DataField("Dg_Bg")] 
-        public string Map { get; set; }
-        
-        [DataField("Dg_Act")] 
-        public int Ap { get; set; }
+        [DataField("Dg_Bg")] public string Map { get; set; }
 
-        [DataField("Dg_Time")]
-        public int TimeLimit { get; set; }
-        
-        [DataField("Dg_Mob_Wave")]
-        public int WaveId { get; set; }
-        
-        [DataField("Dg_Rwd_Gold_Min")]
-        public int MinGold { get; set; }
-        
-        [DataField("Dg_Rwd_Gold_Max")]
-        public int MaxGold { get; set; }
+        [DataField("Dg_Act")] public int Ap { get; set; }
+
+        [DataField("Dg_Time")] public int TimeLimit { get; set; }
+
+        [DataField("Dg_Mob_Wave")] public int WaveId { get; set; }
+
+        [DataField("Dg_Rwd_Gold_Min")] public int MinGold { get; set; }
+
+        [DataField("Dg_Rwd_Gold_Max")] public int MaxGold { get; set; }
 
         public int Exp => 0;
-        
-        [DataField("Dg_Image")]
-        public string image;
-        
-        [DataField("Dg_Name")]
-        public string name;
-        
-        [DataField("Dg_Type")]
-        public DungeonType type;
-        
-        [DataField("Dg_Week")]
-        public int dayOfWeek;
-        
-        [DataField("Dg_Lv")]
-        public int lv;
-        
-        [DataField("Dg_Rwd_Item_Grp_ID")]
-        public int rewardGroup;
+
+        [DataField("Dg_Image")] public string image;
+
+        [DataField("Dg_Name")] public string name;
+
+        [DataField("Dg_Type")] public DungeonType type;
+
+        [DataField("Dg_Week")] public int dayOfWeek;
+
+        [DataField("Dg_Lv")] public int lv;
+
+        [DataField("Dg_Rwd_Item_Grp_ID")] public int rewardGroup;
 
         public bool IsOpened()
         {
@@ -70,37 +57,31 @@ namespace RGLabs.Data.Model
 
             return openDays.Contains(dow);
         }
-        
+
         public List<DayOfWeek> OpenDaysOfWeek()
         {
-            var list = new List<DayOfWeek> { DayOfWeek.Saturday, DayOfWeek.Sunday };
+            var list = new List<DayOfWeek>();
 
             if (dayOfWeek == 0)
             {
-                for (var dow = DayOfWeek.Monday; dow <= DayOfWeek.Friday; ++dow)
+                for (var dow = DayOfWeek.Sunday; dow <= DayOfWeek.Saturday; ++dow)
                 {
                     list.Add(dow);
                 }
             }
             else
-                list.Add((DayOfWeek)dayOfWeek);
+            {
+                var dow = (DayOfWeek)dayOfWeek;
+                list.Add(dow);
+                
+                if (dow != DayOfWeek.Sunday)
+                    list.Add(DayOfWeek.Sunday);
+                
+                if (dow != DayOfWeek.Saturday)
+                    list.Add(DayOfWeek.Saturday);
+            }
 
             return list;
-        }
-
-        public string OpenDaysOfWeekText()
-        {
-            if (dayOfWeek == 0)
-                return "매일";
-       
-            var dow = (DayOfWeek)dayOfWeek;
-            int id = dow switch
-            {
-                DayOfWeek.Sunday => 570,
-                _ => 563 + (int)dow
-            };
-
-            return Storage.localize.Get(id);
         }
 
         public List<Reward> GetRewardItems()
@@ -113,7 +94,7 @@ namespace RGLabs.Data.Model
             while (index.IsValidIndex(
                        group.itemIds,
                        group.probabilities,
-                       group.minQuantities, 
+                       group.minQuantities,
                        group.maxQuantities))
             {
                 if (Storage.db.items.TryFind(group.itemIds[index], out var itemEntity))

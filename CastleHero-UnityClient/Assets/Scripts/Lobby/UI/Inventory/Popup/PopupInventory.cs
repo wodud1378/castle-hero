@@ -78,7 +78,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             _itemList.OnSlotClickEvent -= OnClickItemSlot;
             _itemList.OnSlotClickEvent += OnClickItemSlot;
             _mode
-                .Subscribe(_=> _itemList.items.ForEach(x=>x.state.Value = UISlot.State.Default))
+                .Subscribe(_=> _itemList.items.ForEach(x=>x.state.Value = UIState.State.Default))
                 .AddTo(this);
             
             BindTabToggle(Tab.All, all);
@@ -117,7 +117,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         private void OnModeChanged(Mode value)
         {
             if (value == Mode.Default)
-                _itemList.items.ForEach(x => x.state.Value = UISlot.State.Default);
+                _itemList.items.ForEach(x => x.state.Value = UIState.State.Default);
 
             else
             {
@@ -125,8 +125,8 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 _itemList.items.ForEach(x =>
                 {
                     x.state.Value = x.Entity.sellPrice > 0
-                        ? UISlot.State.Diminished
-                        : UISlot.State.Default;
+                        ? UIState.State.Dim
+                        : UIState.State.Default;
                 });
             }
         }
@@ -148,12 +148,12 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         {
             switch (slot.state.Value)
             {
-                case UISlot.State.Default:
-                    slot.state.Value = UISlot.State.Highlighted;
+                case UIState.State.Default:
+                    slot.state.Value = UIState.State.Highlighted;
                     _sellTargets.Add(slot);
                     break;
-                case UISlot.State.Highlighted:
-                    slot.state.Value = UISlot.State.Default;
+                case UIState.State.Highlighted:
+                    slot.state.Value = UIState.State.Default;
                     _sellTargets.Remove(slot);
                     break;
             }

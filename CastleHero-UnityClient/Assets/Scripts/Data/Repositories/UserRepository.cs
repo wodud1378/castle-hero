@@ -291,16 +291,14 @@ namespace RGLabs.Data.Repositories
 
     public class UserRepository : IDisposable
     {
-        public GameEntrance entrance;
-
         public readonly string nickname;
 
-        public readonly ReactiveProperty<GameEntrance> gameEntrance;
+        public readonly ReactiveProperty<GameEntrance> entrance;
 
         public int StageFocus
         {
             get => PlayerPrefs.GetInt(StageFocusKey, gameRecord.lastClearedStage.Value);
-            set => PlayerPrefs.SetInt(StageFocusKey, value);
+            private set => PlayerPrefs.SetInt(StageFocusKey, value);
         }
 
         public readonly Act act;
@@ -326,13 +324,13 @@ namespace RGLabs.Data.Repositories
             gameRecord = new(dto.gameRecord);
             shopRecord = new(dto.shopRecord);
 
-            gameEntrance = new(new GameEntrance
+            entrance = new(new GameEntrance
             {
                 type = GameType.Stage,
                 id = StageFocus
             });
 
-            gameEntrance
+            entrance
                 .Subscribe(x =>
                 {
                     if (x.type != GameType.Stage)
@@ -362,7 +360,7 @@ namespace RGLabs.Data.Repositories
 
         public void Dispose()
         {
-            gameEntrance?.Dispose();
+            entrance?.Dispose();
             act?.Dispose();
             currency?.Dispose();
             inventory?.Dispose();

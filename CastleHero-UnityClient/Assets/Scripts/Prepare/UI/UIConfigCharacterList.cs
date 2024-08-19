@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using RGLabs.Common.UI;
@@ -14,7 +12,7 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace RGLabs.Stage.UI
+namespace RGLabs.Prepare.UI
 {
     public class UIConfigCharacterList : UICharacterList
     {
@@ -65,8 +63,8 @@ namespace RGLabs.Stage.UI
                     foreach (var item in items)
                     {
                         item.state.Value = item == x
-                            ? UISlot.State.Highlighted
-                            : UISlot.State.Default;
+                            ? UIState.State.Highlighted
+                            : UIState.State.Default;
                     }
                 })
                 .AddTo(this);

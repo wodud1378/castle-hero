@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 using Cysharp.Threading.Tasks;
@@ -9,7 +8,7 @@ using RGLabs.Data;
 using RGLabs.Data.Model;
 using UnityEngine;
 
-namespace RGLabs.Stage.UI
+namespace RGLabs.Prepare.UI
 {
     public struct Reward
     {

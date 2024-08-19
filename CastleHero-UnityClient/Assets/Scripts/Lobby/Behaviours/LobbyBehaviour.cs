@@ -7,7 +7,7 @@ using RGLabs.Data.Model;
 using RGLabs.Data.Repositories;
 using RGLabs.Lobby.Shop.UI;
 using RGLabs.Lobby.UI;
-using RGLabs.Stage.UI;
+using RGLabs.Prepare.UI;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
@@ -116,7 +116,7 @@ namespace RGLabs.Lobby.Behaviours
 
         private void StartGame()
         {
-            var entrance = Storage.userRepository.entrance;
+            var entrance = Storage.userRepository.entrance.Value;
             if (!Storage.db.TryLoadGameEntity(entrance.type, entrance.id, out var entity))
                 return;
             

@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Common.UI.Popup;
+using RGLabs.Data;
 using RGLabs.Lobby.UI.Inventory.Popup;
 using RGLabs.Lobby.UI.Popup;
 using RGLabs.Network.Service.Test;

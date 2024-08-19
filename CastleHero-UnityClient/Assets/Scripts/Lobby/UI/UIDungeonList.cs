@@ -14,8 +14,8 @@ namespace RGLabs.Lobby.UI
             var dow = NetworkService.CurrentTime().DayOfWeek;
 
             slot.state.Value = openDays.Contains(dow)
-                ? UISlot.State.Default
-                : UISlot.State.Diminished;
+                ? UIState.State.Default
+                : UIState.State.Dim;
             
             return slot.Init(data);
         }

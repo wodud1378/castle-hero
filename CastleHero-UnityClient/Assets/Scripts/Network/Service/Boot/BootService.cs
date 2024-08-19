@@ -169,7 +169,7 @@ namespace RGLabs.Network.Service.Boot
             }
 
             var chartList = response.data;
-            var result = await service.Load(chartList);
+            var result = await service.InitialLoad(chartList);
 
             Storage.userRepository = new UserRepository(nickname, userData);
             Storage.db = result.db;

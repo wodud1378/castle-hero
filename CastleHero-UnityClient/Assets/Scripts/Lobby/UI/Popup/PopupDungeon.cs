@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
@@ -18,15 +17,18 @@ namespace RGLabs.Lobby.UI.Popup
     [PrefabPath("Lobby/UI/Prefabs/Popup_Dungeon.prefab")]
     public class PopupDungeon : PopupBase
     {
-        [SerializeField] private UISlot[] _dayOfWeeks;
+        [SerializeField] private UIDayOfWeek[] _dayOfWeeks;
         [SerializeField] private UIDungeonList _dungeonList;
 
         private readonly ReactiveProperty<DayOfWeek> _dayOfWeek = new();
         private UniTask _updateTask;
 
-        protected override void OnAwake()
+        private void Start()
         {
-            base.OnAwake();
+            for (var dow = DayOfWeek.Sunday; dow <= DayOfWeek.Saturday; ++dow)
+            {
+                _dayOfWeeks[(int)dow].values.Update(new[] { dow });
+            }
 
             _dungeonList.OnSlotClickEvent += OnClickSlot;
             _dayOfWeek
@@ -36,15 +38,15 @@ namespace RGLabs.Lobby.UI.Popup
 
         private void OnClickSlot(UIDungeonSlot slot)
         {
-            if (slot.state.Value == UISlot.State.Diminished)
+            if (slot.state.Value == UIState.State.Dim)
                 return;
 
-            Storage.userRepository.gameEntrance.Value = new GameEntrance
+            Storage.userRepository.entrance.Value = new GameEntrance
             {
                 type = GameType.Dungeon,
                 id = slot.Entity.Id
             };
-            
+
             CloseAsync().Forget();
         }
 
@@ -68,8 +70,8 @@ namespace RGLabs.Lobby.UI.Popup
             {
                 int index = (int)dow;
                 _dayOfWeeks[index].state.Value = value == dow
-                    ? UISlot.State.Highlighted
-                    : UISlot.State.Default;
+                    ? UIState.State.Highlighted
+                    : UIState.State.Default;
             }
         }
 
@@ -79,24 +81,21 @@ namespace RGLabs.Lobby.UI.Popup
             var db = Storage.db.dungeons;
 
             var list = new List<DungeonEntity>();
-            if (dungeonRecords is { Count: > 0 })
+            for (var t = DungeonType.Assault; t <= DungeonType.Invasion; ++t)
             {
-                for (var t = DungeonType.Assault; t <= DungeonType.Invasion; ++t)
-                {
-                    var type = t;
-                    var record = dungeonRecords.FirstOrDefault(x => x.type == (int)type);
+                var type = t;
+                var record = dungeonRecords.FirstOrDefault(x => x.type == (int)type);
 
-                    var byType = db.FindAll(x => x.type == type);
-                    byType.Sort((x, y) => x.lv.CompareTo(y.lv));
+                var byType = db.FindAll(x => x.type == type);
+                byType.Sort((x, y) => x.lv.CompareTo(y.lv));
 
-                    int lv = record != null
-                        ? Mathf.Min(record.lv + 1, byType[^1].lv)
-                        : 1;
+                int lv = record != null
+                    ? Mathf.Min(record.lv + 1, byType[^1].lv)
+                    : 1;
 
-                    var index = byType.FindIndex(x => x.lv == lv);
-                    if (index.IsValidIndex(byType))
-                        list.Add(byType[index]);
-                }
+                var index = byType.FindIndex(x => x.lv == lv);
+                if (index.IsValidIndex(byType))
+                    list.Add(byType[index]);
             }
 
             list.Sort((x, y) =>
@@ -106,10 +105,10 @@ namespace RGLabs.Lobby.UI.Popup
                 int compareDow = (openDaysX.Contains(dow) ? 0 : 1).CompareTo(openDaysY.Contains(dow) ? 0 : 1);
                 if (compareDow != 0)
                     return compareDow;
-                
+
                 return x.type.CompareTo(y.type);
             });
-            
+
             return _dungeonList.Init(list);
         }
     }

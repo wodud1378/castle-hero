@@ -25,10 +25,8 @@ namespace RGLabs.Lobby.Shop.UI
         private readonly Timer _timer = new();
         private IDisposable _timerSubscription;
 
-        protected override void OnAwake()
+        private void Awake()
         {
-            base.OnAwake();
-
             Observable.Merge(
                     data.Select(_ => UniRx.Unit.Default),
                     product.Select(_ => UniRx.Unit.Default))

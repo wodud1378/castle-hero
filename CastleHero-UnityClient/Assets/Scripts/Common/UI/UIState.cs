@@ -1,0 +1,55 @@
+using NaughtyAttributes;
+using UniRx;
+using UnityEngine;
+using UnityEngine.Serialization;
+
+namespace RGLabs.Common.UI
+{
+    public class UIState : MonoBehaviour
+    {
+        public enum State
+        {
+            Dim,
+            Default,
+            Highlighted,
+        }
+        
+        [SerializeField] private bool _grayScaleOnDim;
+        [ShowIf("_grayScaleOnDim")]
+        public UIGrayScale grayScale;
+        [HideIf("_grayScaleOnDim")]
+        public GameObject dim; 
+        public GameObject highlight;
+        
+        public readonly ReactiveProperty<State> state = new();
+
+        private void Awake()
+        {
+            state
+                .Subscribe(x =>
+                {
+                    if (highlight != null)
+                        highlight.SetActive(x == State.Highlighted);
+
+                    if (_grayScaleOnDim)
+                    {
+                        grayScale.enabled.Value = x == State.Dim;
+                    }
+                    else
+                    {
+                        if (dim != null)
+                            dim.SetActive(x == State.Dim);
+                    }
+                })
+                .AddTo(this);
+        }
+        
+        private void OnValidate()
+        {
+            if (_grayScaleOnDim && grayScale == null)
+            {
+                grayScale = gameObject.AddComponent<UIGrayScale>();
+            }
+        }
+    }
+}

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using LitJson;
 using RGLabs.Utility;
@@ -9,50 +10,86 @@ namespace RGLabs.Common.Localize
 {
     public class LocalizeText
     {
+        private struct Range
+        {
+            public int start;
+            public int end;
+        }
+        
         public event Action OnLoaded;
 
-        private readonly Dictionary<int, Dictionary<int, string>> _map = new();
+        private readonly Dictionary<Range, Dictionary<int, string>> _map = new();
         private readonly JsonData _raw;
 
-        public LocalizeText(JsonData raw) => _raw = raw;
+        private const string IdKey = "String_ID";
 
+        public LocalizeText(JsonData raw) => _raw = raw;
+        
         public string Get(int id)
         {
-            int division = id / 100;
+            string text = string.Empty;
+            foreach (var kvp in _map)
+            {
+                var range = kvp.Key;
+                if (id < range.start || id > range.end)
+                    continue;
 
-            return _map.TryGetValue(division, out var texts) &&
-                   texts.TryGetValue(id, out var text)
-                ? text
-                : $"[{id}] id에 해당하는 텍스트가 없습니다.".WithNegativeColor();
+                if (!kvp.Value.TryGetValue(id, out text))
+                    text = string.Empty;
+            }
+
+            return string.IsNullOrEmpty(text)
+                ? $"[{id}] id에 해당하는 텍스트가 없습니다.".WithNegativeColor()
+                : text;
         }
 
         public async UniTask Set(SystemLanguage language)
         {
-            int length = _raw.Count;
-            int division = length / 100;
-            var key = LocalizeHelper.SystemLanguageToIso(language);
-            for (int i = 0; i <= division; ++i)
-            {
-                if (!_map.TryGetValue(i, out var texts))
-                {
-                    texts = new();
-                    _map[i] = texts;
-                }
-                else
-                    texts.Clear();
+            var iso = LocalizeHelper.SystemLanguageToIso(language);
+            
+            await ProcessDataAsync(iso, 100);
+            
+            OnLoaded?.Invoke();
+        }
+        
+        private async UniTask ProcessDataAsync(string iso, int chunkSize)
+        {
+            _map.Clear();
+            
+            int totalChunks = (_raw.Count + chunkSize - 1) / chunkSize; // 전체 덩어리 수 계산
+            var tasks = new List<UniTask<KeyValuePair<Range, Dictionary<int, string>>>>();
 
-                await UniTask.RunOnThreadPool(() =>
-                {
-                    int start = i * 100;
-                    int max = Mathf.Min(start + 100, length - division * i);
-                    for (int j = start; j < max; ++j)
-                    {
-                        texts.Add(j, _raw[j][key].ToString());
-                    }
-                });
+            for (int i = 0; i < totalChunks; i++)
+            {
+                int startIndex = i * chunkSize;
+                tasks.Add(UniTask.RunOnThreadPool(() => ProcessChunk(iso, startIndex, chunkSize)));
             }
 
-            OnLoaded?.Invoke();
+            // 모든 작업을 병렬로 실행
+            var resultChunks = await UniTask.WhenAll(tasks);
+
+            foreach (var chunk in resultChunks)
+            {
+                _map.Add(chunk.Key, chunk.Value);
+            }
+        }
+
+        private KeyValuePair<Range, Dictionary<int, string>> ProcessChunk(string iso, int startIndex, int chunkSize)
+        {
+            int endIndex = Mathf.Min(startIndex + chunkSize, _raw.Count) - 1;
+            var chunk = new KeyValuePair<Range, Dictionary<int, string>>(
+                new Range { start = _raw[startIndex][IdKey].ToInt(), end = _raw[endIndex][IdKey].ToInt()}, 
+                new Dictionary<int, string>());
+            
+            for (int i = startIndex; i <= endIndex; ++i)
+            {
+                var item = _raw[i];
+                int id = item[IdKey].ToInt();
+                string text = item[iso].ToString();
+
+                chunk.Value[id] = text;
+            }
+            return chunk;
         }
     }
 }

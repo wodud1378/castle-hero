@@ -6,6 +6,6 @@ namespace RGLabs.Network.DB.Service
 {
     public interface IDBLoadService
     {
-        public UniTask<(DBCollections db, LocalizeText localize)> Load(ChartInfo[] chartInfo);
+        public UniTask<(DBCollections db, LocalizeText localize)> InitialLoad(ChartInfo[] chartInfo);
     }
 }
