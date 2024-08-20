@@ -14,6 +14,5 @@ namespace RGLabs.Unit.Skill
         protected abstract void OnExecute();
         
         private void OnRelease() =>  Cycle.StartWaiting();
-
     }
 }

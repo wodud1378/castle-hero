@@ -34,13 +34,7 @@ namespace RGLabs.Unit.Factory
             if (!_db.TryFind(info.lv, out var entity))
                 return null;
 
-            var unitEntity = new UnitEntity
-            {
-                Id = 1,
-                hp = entity.hp,
-                atkLayer = 1,
-                defLayer = 1,
-            };
+            var unitEntity = entity.ToUnitEntity();
             
             var unit = await CreateInternal(position);
             unit.Init(info, unitEntity, default);

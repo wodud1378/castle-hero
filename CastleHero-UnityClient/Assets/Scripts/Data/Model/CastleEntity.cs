@@ -21,7 +21,7 @@ namespace RGLabs.Data.Model
         public float coolTime;
         public string centerEffect;
         public string unitEffect;
-        public string sound;
+        public string sfx;
     }
     
     public struct CastleEntity : IEntity
@@ -31,6 +31,9 @@ namespace RGLabs.Data.Model
         
         public bool IsValid { get; set; }
 
+        [DataField("Castle_Sound_Hit")] 
+        public string hitSfx;
+        
         [DataField("Castle_Gold")]
         public int lvUpPrice;
 
@@ -84,11 +87,24 @@ namespace RGLabs.Data.Model
                     radius = skillRanges[i],
                     coolTime = skillCoolTimes[i],
                     centerEffect = skillEffects[i],
-                    unitEffect = unitEffects[i]
+                    unitEffect = unitEffects[i],
+                    sfx = skillSounds[i],
                 };
             }
 
             return array;
+        }
+
+        public UnitEntity ToUnitEntity()
+        {
+            return new UnitEntity
+            {
+                Id = 1,
+                hp = hp,
+                atkLayer = 1,
+                defLayer = 1,
+                hitSfx = hitSfx
+            };
         }
     }
 }

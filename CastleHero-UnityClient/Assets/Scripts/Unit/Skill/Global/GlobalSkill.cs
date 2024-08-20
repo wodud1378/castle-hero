@@ -1,5 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Behaviours;
 using RGLabs.Data.Model;
 using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.InGame.System;
@@ -21,6 +22,7 @@ namespace RGLabs.Unit.Skill.Global
 
         private readonly string _centerEffect;
         private readonly string _unitEffect;
+        private readonly string _sfx;
         private readonly float _value;
 
         private readonly UnitBehaviour _castle;
@@ -34,6 +36,7 @@ namespace RGLabs.Unit.Skill.Global
             _value = parameter.value;
             _centerEffect = parameter.centerEffect;
             _unitEffect = parameter.unitEffect;
+            _sfx = parameter.sfx;
             _castle = castle;
 
             _castle
@@ -74,6 +77,7 @@ namespace RGLabs.Unit.Skill.Global
             var units = _bound.UnitsInBound(position, default);
             units.ForEach(action);
 
+            Context.sounds.PlaySfx(_sfx);
             Effect.Builder.Run(_centerEffect, position);
             
             coolTime.StartWaiting();

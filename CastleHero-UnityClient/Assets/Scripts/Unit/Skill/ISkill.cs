@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common;
+using RGLabs.Common.Behaviours;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.InGame.Effects;
