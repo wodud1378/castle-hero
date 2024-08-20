@@ -34,8 +34,10 @@ namespace RGLabs.Lobby.UI
 
         private AsyncOperationHandle<Sprite> _bgHandle;
 
-        private void Awake()
+        protected override void OnAwake()
         {
+            base.OnAwake();
+            
             values
                 .ChangeAsObservable()
                 .ThrottleFrame(1)

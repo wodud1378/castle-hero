@@ -11,16 +11,28 @@ namespace RGLabs.Lobby.UI
     {
         [SerializeField] private UIDayOfWeek _dayOfWeek;
         [SerializeField] private UIRewardList _rewardList;
-        
+
         public DungeonEntity Entity { get; private set; }
-        
-        public UniTask Init(DungeonEntity entity)
+
+        public UniTask Init(DungeonEntity entity, State initialState)
         {
             Entity = entity;
-            
+
+            state.Value = initialState;
+
             _dayOfWeek.values.Update(entity.OpenDaysOfWeek());
-            
-            return base.Init(entity.image);
+
+            var baseTask = base.Init(entity.image);
+            if (initialState == State.Dim)
+            {
+                _rewardList.gameObject.SetActive(false);
+                return baseTask;
+            }
+
+            _rewardList.gameObject.SetActive(true);
+            var rewardTask = _rewardList.Init(entity);
+
+            return UniTask.WhenAll(baseTask, rewardTask);
         }
     }
 }

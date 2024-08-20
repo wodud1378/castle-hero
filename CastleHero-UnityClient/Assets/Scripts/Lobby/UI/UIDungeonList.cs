@@ -11,12 +11,10 @@ namespace RGLabs.Lobby.UI
         {
             var openDays = data.OpenDaysOfWeek();
             var dow = NetworkService.CurrentTime().DayOfWeek;
-
-            slot.state.Value = openDays.Contains(dow)
-                ? UIState.State.Default
-                : UIState.State.Dim;
             
-            return slot.Init(data);
+            return slot.Init(data, openDays.Contains(dow)
+                ? UIState.State.Default
+                : UIState.State.Dim);
         }
     }
 }

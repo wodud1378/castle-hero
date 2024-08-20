@@ -22,7 +22,7 @@ namespace RGLabs.Common.UI
         
         public readonly ReactiveProperty<State> state = new();
 
-        private void Awake()
+        protected virtual void OnAwake()
         {
             state
                 .Subscribe(x =>
@@ -42,6 +42,8 @@ namespace RGLabs.Common.UI
                 })
                 .AddTo(this);
         }
+
+        private void Awake() => OnAwake();
         
         private void OnValidate()
         {
