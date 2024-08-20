@@ -6,8 +6,8 @@ using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Data;
 using RGLabs.InGame.Behaviours;
-using RGLabs.Lobby.UI.Adapter;
 using RGLabs.Network.Shared;
+using RGLabs.Prepare.UI;
 using RGLabs.Utility;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,7 +29,7 @@ namespace RGLabs.InGame.UI
         [SerializeField] private Button _equipmentLink;
         [SerializeField] private Button _rateUpLink;
 
-        [SerializeField] private UIItemList _rewardList;
+        [SerializeField] private UIRewardList _rewardList;
         [SerializeField] private UIUnitGrowthList _growthList;
 
         [SerializeField] private GameObject[] _clearObjects;
@@ -50,7 +50,6 @@ namespace RGLabs.InGame.UI
         {
             var data = result.data;
             var transitions = GetTransition(data);
-            var items = GetItems(result.data);
 
             UpdateUI(result);
 
@@ -60,7 +59,7 @@ namespace RGLabs.InGame.UI
                 
                 await UniTask.WhenAll(
                     _growthList.Init(transitions),
-                    _rewardList.Init(items));
+                    _rewardList.Init(result.data.GetRewardItems()));
 
                 Activate();
 
@@ -100,21 +99,6 @@ namespace RGLabs.InGame.UI
             }
 
             return transitions;
-        }
-
-        private List<IItem> GetItems(GameCleared data)
-        {
-            var items = new List<IItem>();
-            if (data != null)
-            {
-                if (data.currency != null && !data.currency.IsEmpty())
-                    items.AddRange(data.currency.ToItems());
-
-                if (data.items is { Count: > 0 })
-                    items.AddRange(data.items);
-            }
-
-            return items;
         }
 
         private async void CloseWith(Action onClose)

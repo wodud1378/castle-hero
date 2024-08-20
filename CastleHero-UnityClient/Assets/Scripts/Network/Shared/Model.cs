@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using RGLabs.Common;
+using RGLabs.Data;
+using RGLabs.Prepare.UI;
+using RGLabs.Utility;
 
 namespace RGLabs.Network.Shared
 {
@@ -34,7 +37,7 @@ namespace RGLabs.Network.Shared
                 paidDia = a.paidDia + b.paidDia
             };
         }
-        
+
         public static CurrencyDto operator -(CurrencyDto a, CurrencyDto b)
         {
             return new CurrencyDto
@@ -72,7 +75,7 @@ namespace RGLabs.Network.Shared
     {
         public List<IItem> items;
     }
-    
+
     public class GameRecordDto
     {
         public int iconId;
@@ -105,8 +108,9 @@ namespace RGLabs.Network.Shared
         public GameRecordDto gameRecord;
         public ShopRecordDto shopRecord;
     }
-    
+
     #region Shop
+
     public class Purchase
     {
         public struct History
@@ -122,15 +126,18 @@ namespace RGLabs.Network.Shared
         public DateTime nextReset;
         public List<History> histories;
     }
+
     #endregion
 
-   #region Dungeon
+    #region Dungeon
+
     public class DungeonRecord
     {
         public int type;
         public int lv;
         public DateTime lastTime;
     }
+
     #endregion
 
     #region Shop
@@ -165,9 +172,11 @@ namespace RGLabs.Network.Shared
         public CurrencyDto currency;
         public List<IItem> items;
     }
+
     #endregion
 
     #region Unit.
+
     public class FieldUnit
     {
         public int id;
@@ -197,7 +206,7 @@ namespace RGLabs.Network.Shared
             int rate = unit.rate;
             int exp = unit.exp;
             int lv = unit.lv;
-            
+
             return new UnitTransition
             {
                 rateTransition = new int[] { rate, rate },
@@ -236,17 +245,21 @@ namespace RGLabs.Network.Shared
         public CurrencyDto leftCurrency;
         public IItem leftItem;
     }
+
     #endregion
 
     #region Castle
+
     public class CastleGrowth
     {
         public int lv;
         public CurrencyDto leftCurrency;
     }
+
     #endregion
 
     #region Summon.
+
     public interface ISummoned
     {
         public int Id { get; }
@@ -271,10 +284,12 @@ namespace RGLabs.Network.Shared
         public IItem leftItem;
         public List<ISummoned> summoneds;
     }
+
     #endregion
 
 
     #region Item.
+
     public class OpenBoxResult
     {
         public CurrencyDto currency;
@@ -340,23 +355,93 @@ namespace RGLabs.Network.Shared
         public int ItemId { get; set; }
         public int Quantity { get; set; }
     }
+
     #endregion
 
     #region InGame.
+
     public class GameCleared
     {
         public int id;
         public bool isFirstClear;
         public CurrencyDto currency;
         public List<IItem> items;
+
+        public virtual List<Reward> GetRewardItems()
+        {
+            var rewards = new List<Reward>();
+            if (!currency.IsEmpty())
+            {
+                var currencyItems = currency.ToItems();
+                currencyItems.ForEach(x =>
+                {
+                    if (x.Quantity == 0)
+                        return;
+
+                    rewards.Add(new()
+                    {
+                        icon = x.ItemId == Constants.GoldId ? Constants.GoldIcon : Constants.DiaIcon,
+                        id = x.ItemId,
+                        min = x.Quantity,
+                        max = x.Quantity,
+                        percent = 1f
+                    });
+                });
+            }
+
+            items.ForEach(x =>
+            {
+                if (!Storage.db.items.TryFind(x.ItemId, out var entity))
+                    return;
+
+                rewards.Add(new()
+                {
+                    icon = entity.icon,
+                    id = x.ItemId,
+                    min = x.Quantity,
+                    max = x.Quantity,
+                    percent = 1f
+                });
+            });
+
+            return rewards;
+        }
     }
 
-    public class DungeonCleared : GameCleared { }
+    public class DungeonCleared : GameCleared
+    {
+    }
 
     public class StageCleared : GameCleared
     {
         public int exp;
         public List<UnitTransition> transitions;
+
+        public override List<Reward> GetRewardItems()
+        {
+            var list = base.GetRewardItems();
+            if (exp > 0)
+            {
+                int index = list.FindLastIndex(
+                    x => x.id == Constants.GoldId ||
+                         x.id == Constants.FreeDiaId ||
+                         x.id == Constants.PaidDiaId);
+
+                if (!index.IsValidIndex(list))
+                    index = 0;
+
+                list.Insert(index, new()
+                {
+                    icon = Constants.ExpIcon,
+                    min = exp,
+                    max = exp,
+                    percent = 1f
+                });
+            }
+
+            return list;
+        }
     }
+
     #endregion
 }

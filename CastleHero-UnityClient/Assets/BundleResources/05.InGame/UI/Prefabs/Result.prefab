@@ -2386,7 +2386,7 @@ GameObject:
   - component: {fileID: 2533370604261582395}
   - component: {fileID: 139912131945422717}
   - component: {fileID: 6750665656279570261}
-  - component: {fileID: 2773568648793275218}
+  - component: {fileID: 1931012256570675847}
   m_Layer: 5
   m_Name: Reward
   m_TagString: Untagged
@@ -2452,7 +2452,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2773568648793275218
+--- !u!114 &1931012256570675847
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2461,7 +2461,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6949266709710210393}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 97b22824e6904e3aa6dbe0d5c58869c4, type: 3}
+  m_Script: {fileID: 11500000, guid: 260828568053428c8a5ec34589690f3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   itemRoot: {fileID: 4040741383476044553}
@@ -8363,7 +8363,7 @@ MonoBehaviour:
   _levelUpLink: {fileID: 7995897155288106590}
   _equipmentLink: {fileID: 8987337105973026872}
   _rateUpLink: {fileID: 5827357013329165572}
-  _rewardList: {fileID: 2773568648793275218}
+  _rewardList: {fileID: 1931012256570675847}
   _growthList: {fileID: 992271774065264034}
   _clearObjects:
   - {fileID: 4211861524136671738}
