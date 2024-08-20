@@ -20,7 +20,6 @@ namespace RGLabs.Castle
         [SerializeField] private TMP_Text _requireGold;
         [SerializeField] private UIGlobalSkillDisplay _skillList;
         [SerializeField] private Button _levelUp;
-        [SerializeField] private Button _back;
 
         private UserRepository _repository;
         
@@ -35,11 +34,10 @@ namespace RGLabs.Castle
                 .Subscribe(UpdateUI)
                 .AddTo(this);
             
-            this.SubscribeButton(_back, OnBack);
             this.SubscribeButton(_levelUp, OnClickLevelUp);
         }
 
-        private void OnBack()
+        protected override void OnBack()
         {
             Context.Transition.CurrentState = State.Lobby;
         }
@@ -86,6 +84,8 @@ namespace RGLabs.Castle
             
             _repository.gameRecord.castleLv.Value = result.lv;
             _repository.currency.Update(result.leftCurrency);
+            
+            Context.sounds.PlaySfx(Storage.soundPath.levelUp);
         }
     }
 }

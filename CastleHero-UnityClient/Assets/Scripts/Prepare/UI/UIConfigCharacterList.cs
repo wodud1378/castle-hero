@@ -2,10 +2,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI;
+using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Lobby.Behaviours;
 using RGLabs.Network.Shared;
+using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using TMPro;
 using UniRx;
@@ -72,7 +75,7 @@ namespace RGLabs.Prepare.UI
             this.SubscribeButton(_close, Close);
             this.SubscribeButton(_reset, _formation.Clear);
             this.SubscribeButton(_auto, _formation.AutoPlacement);
-            this.SubscribeButton(_confirm, () => _completionSource.TrySetResult());
+            this.SubscribeButton(_confirm, OnConfirm);
         }
 
         public override UniTask Init(IEnumerable<UnitInfo> collection)
@@ -88,6 +91,23 @@ namespace RGLabs.Prepare.UI
             _completionSource = new();
 
             Entrance();
+        }
+
+        private void OnConfirm()
+        {
+            int fieldUnitCount = Storage.inGameRepository.characters
+                .Count(x => x.Type == UnitBehaviour.BehaviourType.Unit);
+
+            if (fieldUnitCount <= 0)
+            {
+                Context.popups
+                    .OpenAsync<PopupCommon>(Storage.localize.Get(594))
+                    .Forget();
+
+                return;
+            }
+
+            _completionSource.TrySetResult();
         }
 
         private void Entrance()

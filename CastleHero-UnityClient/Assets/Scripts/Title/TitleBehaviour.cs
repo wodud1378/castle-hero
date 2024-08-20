@@ -1,14 +1,13 @@
 using System;
-using BackEnd;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
+using RGLabs.Common.Sound;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Network;
 using RGLabs.Network.Service.Boot;
 using RGLabs.Network.Service.Login;
 using RGLabs.Title.UI.Popup;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace RGLabs.Title
 {
@@ -27,6 +26,7 @@ namespace RGLabs.Title
         [SerializeField] private PopupSelectLoginPlatform _selectPlatform;
         [SerializeField] private PopupPolicy _policyPopup;
         [SerializeField] private PopupSetNickname _setNickname;
+        [SerializeField] private SoundManager _soundManager;
 
         private void Awake()
         {

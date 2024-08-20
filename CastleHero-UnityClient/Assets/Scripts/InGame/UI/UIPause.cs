@@ -1,5 +1,6 @@
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
+using RGLabs.Data;
 using RGLabs.InGame.Behaviours;
 using RGLabs.Utility;
 using UnityEngine;
@@ -38,14 +39,22 @@ namespace RGLabs.InGame.UI
 
         private void Exit()
         {
-            ExitCode.Exit.Publish();
-            
+            new ExitGame
+            {
+                code = ExitCode.Exit,
+                link = Entrance.Link.None
+            }.Publish();
+
             Close();
         }
 
         private void Retry()
         {
-            ExitCode.Retry.Publish();
+            new ExitGame
+            {
+                code = ExitCode.Retry,
+                link = Entrance.Link.None
+            }.Publish();
             
             Close();
         }

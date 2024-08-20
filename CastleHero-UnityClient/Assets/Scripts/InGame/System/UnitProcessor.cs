@@ -1,6 +1,7 @@
 using System;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common;
+using RGLabs.Common.Behaviours;
 using RGLabs.Data;
 using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.Unit.Behaviours;
@@ -24,6 +25,13 @@ namespace RGLabs.InGame.System
             SubscribeMessage<RestrictionEvent>(OnReceiveRestrictionEvent);
             SubscribeMessage<StatusEffectEvent>(OnReceiveStatusEffectEvent);
             SubscribeMessage<UnitDead>(OnUnitDead);
+            SubscribeMessage<GameFinished>(_ =>
+            {
+                foreach (var recover in Storage.inGameRepository.recovers)
+                {
+                    recover.Dispose();
+                }
+            });
         }
 
         public void Dispose() => _disposables.Dispose();
@@ -72,6 +80,8 @@ namespace RGLabs.InGame.System
             if (to.Hit != null)
                 to.Hit.Play();
 
+            Context.sounds.PlaySfx(to.Data.hitSfx);
+            
             PlayEffect(ev);
 
             new AtkResult { Event = ev, IsCritical = isCritical, Protected = @protected }.Publish();

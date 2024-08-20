@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
 using RGLabs.Utility;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace RGLabs.Common.UI
 {
@@ -15,26 +17,28 @@ namespace RGLabs.Common.UI
         public event Action<TSlot> OnSlotClickEvent;
         
         [SerializeField] protected RectTransform itemRoot;
-        [SerializeField] private bool _provideSlotAsset;
-        
-        [HideIf("_provideSlotAsset")]
         [SerializeField] private AssetReference _itemPrefab;
         
         public readonly List<TSlot> items = new();
 
-        public Func<TData, AssetReference> provideSlot;
-
-        public virtual UniTask Init(IEnumerable<TData> collection)
+        public virtual async UniTask Init(IEnumerable<TData> collection)
         {
             Clear();
             
-            var tasks = new List<UniTask>();
+            var tasks = new List<UniTask<(TSlot slot, int order)>>();
+            int index = 0;
             foreach (var data in collection)
             {
-                tasks.Add(Add(data));
+                tasks.Add(Add(data, ++index));
             }
 
-            return UniTask.WhenAll(tasks);
+            var result = (await UniTask.WhenAll(tasks)).ToList();
+            result.Sort((x, y)=> x.order.CompareTo(y.order));
+
+            foreach (var tuple in result)
+            {
+                tuple.slot.transform.SetAsLastSibling();
+            }
         }
 
         public TSlot GetItem(PointerEventData eventData)
@@ -82,15 +86,13 @@ namespace RGLabs.Common.UI
 
         protected abstract UniTask SetItem(TSlot slot, TData data);
 
-        private async UniTask<TSlot> Add(TData data)
+        protected virtual async UniTask<TSlot> ProvideSlot(TData data) => await _itemPrefab.Instantiate<TSlot>(itemRoot);
+
+        private async UniTask<(TSlot slot, int order)> Add(TData data, int order)
         {
-            var prefab = _provideSlotAsset
-                ? provideSlot?.Invoke(data) ?? _itemPrefab
-                : _itemPrefab;
-            
-            var item = await prefab.Instantiate<TSlot>(itemRoot);
+            var item = await ProvideSlot(data);
             if (item == null)
-                return null;
+                return default;
 
             item.OnClick += (x) =>
             {
@@ -101,9 +103,10 @@ namespace RGLabs.Common.UI
             };
             
             items.Add(item);
+            
             await SetItem(item, data);
             
-            return item;
+            return (item, order);
         }
 
         private void OnClick(TSlot slot) => OnSlotClickEvent?.Invoke(slot);

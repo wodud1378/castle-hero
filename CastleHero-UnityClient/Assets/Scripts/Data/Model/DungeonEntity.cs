@@ -25,6 +25,9 @@ namespace RGLabs.Data.Model
         public int Lv => lv;
 
         [DataField("Dg_Bg")] public string Map { get; set; }
+        
+        [DataField("Dg_Sound")]
+        public string Bgm { get; set; }
 
         [DataField("Dg_Act")] public int Ap { get; set; }
 

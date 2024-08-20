@@ -898,6 +898,8 @@ GameObject:
   - component: {fileID: 8565536796487385750}
   - component: {fileID: 7656947177170225167}
   - component: {fileID: 3370099833463531277}
+  - component: {fileID: 9153049433844076014}
+  - component: {fileID: 5532036395318836086}
   m_Layer: 5
   m_Name: Product_Diamond_7000
   m_TagString: Untagged
@@ -912,7 +914,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4381666621459225716}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1031,6 +1033,43 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &9153049433844076014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4381666621459225716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdddb29241a94c3e9f9a54e301636b6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _grayScaleOnDim: 1
+  grayScale: {fileID: 5532036395318836086}
+  dim: {fileID: 0}
+  highlight: {fileID: 0}
+  icon: {fileID: 0}
+  label: {fileID: 1503334170346676253}
+  price: {fileID: 7855746012894868883}
+  leftTime: {fileID: 0}
+  leftCount: {fileID: 2414523704486081406}
+--- !u!114 &5532036395318836086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4381666621459225716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79270c6e7da94852ae11eee026e752a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _material: {fileID: 2100000, guid: 52eba2c552de3cd41b4c17d693e7619c, type: 2}
+  targets:
+  - {fileID: 6637269839811739596}
+  _preview: 0
 --- !u!1 &4518988694663964532
 GameObject:
   m_ObjectHideFlags: 0
@@ -1383,6 +1422,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7080848488262371058}
   - component: {fileID: 3163634715045422215}
+  - component: {fileID: 7855746012894868883}
   m_Layer: 5
   m_Name: Price
   m_TagString: Untagged
@@ -1438,6 +1478,24 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &7855746012894868883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6033553816290917668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3f07f0f215140e4b18744387695e10c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
+  highlight: {fileID: 0}
+  icon: {fileID: 4985721814695028358}
+  label: {fileID: 4274584030504214365}
 --- !u!1 &6303068606049200909
 GameObject:
   m_ObjectHideFlags: 0

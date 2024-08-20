@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PolyNav;
 using RGLabs.Common;
+using RGLabs.Common.Behaviours;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.InGame.System;
@@ -388,6 +389,8 @@ namespace RGLabs.Unit.Components
             if (_skill.Cycle.IsReady)
             {
                 _skill.Runner.Run();
+                
+                Context.sounds.PlaySfx(_skill.Data.sfx);
                 state.Value = States.Skill;
                 return true;
             }

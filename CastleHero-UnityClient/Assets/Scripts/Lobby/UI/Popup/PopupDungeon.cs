@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Behaviours;
+using RGLabs.Common.Flow;
 using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
@@ -47,7 +49,10 @@ namespace RGLabs.Lobby.UI.Popup
                 id = slot.Entity.Id
             };
 
-            CloseAsync().Forget();
+            Context.Transition.CurrentState = State.Prepare;
+            
+            CloseAsync()
+                .Forget();
         }
 
         public override UniTask Open()

@@ -38,7 +38,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         
         private async void OpenCharacterList()
         {
-            var popup = await Context.popupManager.OpenAsync<PopupCharacterList>();
+            var popup = await Context.popups.OpenAsync<PopupCharacterList>();
             popup.clickMethod = PopupCharacterList.ClickMethod.Equip;
             popup.equipmentId = item.Value.ItemId;
         }

@@ -35,7 +35,6 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private Button _x10;
         [SerializeField] private UIItemSlot _itemForX10;
 
-        public override UniTask Open() => Open(0);
 
         private readonly Dictionary<int, Cache> _propCache = new();
         private readonly ReactiveProperty<SummonEntity> _entity = new();
@@ -50,11 +49,12 @@ namespace RGLabs.Lobby.UI.Popup
             this.SubscribeButton(_prev, OnPrev);
             this.SubscribeButton(_next, OnNext);
         }
+        
+        public override UniTask Open() => Open(Storage.db.summons[0]);
 
         public override UniTask Open(params object[] parameters)
         {
-            int index = (int)parameters[0];
-            if (!Storage.db.summons.TryIndexOf(index, out var entity))
+            if(parameters[0] is not SummonEntity entity)
             {
                 var exception = new Exception("파라미터가 잘못되었습니다.");
                 return UniTask.FromException(exception);
@@ -73,7 +73,7 @@ namespace RGLabs.Lobby.UI.Popup
             var data = GetOrCreateFromCache(_entity.Value.groupId);
             var infoString = BuildInfoString(data);
 
-            var popup = await Context.popupManager
+            var popup = await Context.popups
                 .OpenAsync<PopupCommon>(infoString);
 
             var buttonRect = (_info.transform as RectTransform)!;
@@ -205,13 +205,13 @@ namespace RGLabs.Lobby.UI.Popup
 
             if (result.summoneds.Count > 1)
             {
-                var direction = await Context.popupManager
+                var direction = await Context.popups
                     .OpenAsync<PopupSummonDirection>(result);
 
                 await direction.DisplayTask;
             }
 
-            Context.popupManager
+            Context.popups
                 .OpenAsync<PopupSummonResult>(result)
                 .Forget();
         }
@@ -233,7 +233,7 @@ namespace RGLabs.Lobby.UI.Popup
 
             if (!isEnough && openPopup)
             {
-                Context.popupManager
+                Context.popups
                     .OpenAsync<PopupCommon>("재화 혹은 아이템 부족해유")
                     .Forget();
             }

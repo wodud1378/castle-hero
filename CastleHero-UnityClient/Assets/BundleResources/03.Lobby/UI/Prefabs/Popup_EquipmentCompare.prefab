@@ -1303,7 +1303,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6751651833887448805
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1986,7 +1986,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fromManager: 1
   _animator: {fileID: 0}
-  _close: {fileID: 2229213631922384869}
+  _close: {fileID: 4794964850755981218}
   _left: {fileID: 1502996357999010571}
   _right: {fileID: 8018102201329922023}
   _statusTexts:
@@ -1996,6 +1996,7 @@ MonoBehaviour:
   - {fileID: 3000819419602237823}
   - {fileID: 5065830745907908489}
   - {fileID: 4024507201585126335}
+  _equip: {fileID: 6867661985450409182}
 --- !u!1 &6550450050574859580
 GameObject:
   m_ObjectHideFlags: 0

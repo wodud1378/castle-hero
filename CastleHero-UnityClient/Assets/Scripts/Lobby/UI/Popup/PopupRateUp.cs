@@ -3,6 +3,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using RGLabs.Common;
+using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
@@ -169,6 +170,8 @@ namespace RGLabs.Lobby.UI.Popup
             
             _unit.Value = unit;
             _result = result;
+            
+            Context.sounds.PlaySfx(Storage.soundPath.levelUp);
         }
     }
 }

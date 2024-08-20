@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI.Popup;
+using RGLabs.Data;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;

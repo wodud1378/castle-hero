@@ -27,6 +27,9 @@ namespace RGLabs.Data.Model
         [DataField("Character_Projectile")]
         public string projectile;
 
+        [DataField("Character_Sound")] 
+        public string hitSfx;
+
         [DataField("Character_Class")]
         public int rate;
         

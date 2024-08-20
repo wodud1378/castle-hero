@@ -17,7 +17,7 @@ namespace RGLabs.Common.UI
             Context.Transition.StateObserver
                 .Subscribe(x =>
                 {
-                    if (x == State.Shop)
+                    if (x is State.Shop or State.Castle or State.InGame)
                     {
                         gameObject.SetActive(false);
                         return;

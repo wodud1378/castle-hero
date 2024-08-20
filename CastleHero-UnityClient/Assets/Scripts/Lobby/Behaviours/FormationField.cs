@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using PolyNav;
 using RGLabs.Common;
 using RGLabs.Common.Behaviours;
+using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Repositories;
 using RGLabs.Network;
@@ -53,6 +54,10 @@ namespace RGLabs.Lobby.Behaviours
                 .Subscribe(OnFieldCharacterCollectionChanged)
                 .AddTo(this);
 
+            _userRepo.gameRecord.castleLv
+                .Subscribe(OnCastleLevelChanged)
+                .AddTo(this);
+
             if (Storage.db.castles.TryFind(_userRepo.gameRecord.castleLv.Value, out var entity))
             {
                 capacity.Value = entity.maxCharacter;
@@ -74,6 +79,15 @@ namespace RGLabs.Lobby.Behaviours
                 }
                 
                 _map.GenerateMap();
+            }
+        }
+
+        private void OnCastleLevelChanged(int lv)
+        {
+            if (Storage.db.castles.TryFind(lv, out var entity))
+            {
+                capacity.Value = entity.maxCharacter;
+                _barricadeCountMax = entity.barricadeCount;
             }
         }
 
@@ -153,7 +167,13 @@ namespace RGLabs.Lobby.Behaviours
             {
                 if (!isBarricade &&
                     placed.Value >= capacity.Value)
+                {
+                    Context.popups
+                        .OpenAsync<PopupCommon>(Storage.localize.Get(593))
+                        .Forget();
+                    
                     return false;
+                }
                 
                 RemoveIfLimited(unit);
                 characters.Add(unit);   
@@ -165,6 +185,8 @@ namespace RGLabs.Lobby.Behaviours
                 _map.AddObstacle(unit);
 
             Save();
+            
+            Context.sounds.PlaySfx(Storage.soundPath.modifyFormation);
 
             return true;
         }

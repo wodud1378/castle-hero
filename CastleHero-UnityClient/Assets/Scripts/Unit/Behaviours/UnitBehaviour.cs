@@ -4,6 +4,7 @@ using RGLabs.Common;
 using RGLabs.Common.Behaviours;
 using RGLabs.Data;
 using RGLabs.Data.Model;
+using RGLabs.InGame;
 using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.Unit.Components;
 using RGLabs.Utility;
@@ -54,7 +55,18 @@ namespace RGLabs.Unit.Behaviours
         public UnitEntity Data { get; private set; }
         
         private UnitBalanceEntity _balance;
-        
+
+        private void Awake()
+        {
+            this.SubscribeMessage<GameFinished>(_ =>
+            {
+                if (Core.state.Value == UnitCore.States.Dead)
+                    return;
+
+                Core.onRest.Value = true;
+            });
+        }
+
         public void Init(UnitInfo info, UnitEntity entity, UnitBalanceEntity balance)
         {
             Info = info;

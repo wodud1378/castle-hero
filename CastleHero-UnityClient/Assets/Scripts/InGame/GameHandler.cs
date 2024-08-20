@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Data;
 using RGLabs.Data.Model;
@@ -93,6 +94,8 @@ namespace RGLabs.InGame
 
         public void OnStart()
         {
+            Context.sounds.PlayBgm(_entity.Bgm);
+            
             SetConditions();
             
             _timer.Run();
@@ -102,15 +105,16 @@ namespace RGLabs.InGame
             RunUnits();
         }
 
-        public void OnExit(ExitCode exitCode)
+        public void OnExit(ExitGame exit)
         {
             _wave.isRunning = false;
 
-            var data = NextEntrance(exitCode);
+            var data = NextEntrance(exit.code);
             Storage.entranceData = new Entrance
             {
                 state = data.Item1,
-                gameEntrance = data.Item2
+                gameEntrance = data.Item2,
+                link = exit.link,
             };
         }
 
@@ -176,6 +180,8 @@ namespace RGLabs.InGame
 
             if (isEnd)
             {
+                Context.sounds.StopBgm();
+                
                 OnFinished?.Invoke(new GameFinished
                 {
                     isCleared = isCleared,

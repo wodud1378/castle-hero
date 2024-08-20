@@ -21,6 +21,7 @@ namespace RGLabs.Data.Model
         public float coolTime;
         public string centerEffect;
         public string unitEffect;
+        public string sfx;
     }
     
     public struct CastleEntity : IEntity
@@ -30,6 +31,9 @@ namespace RGLabs.Data.Model
         
         public bool IsValid { get; set; }
 
+        [DataField("Castle_Sound_Hit")] 
+        public string hitSfx;
+        
         [DataField("Castle_Gold")]
         public int lvUpPrice;
 
@@ -48,8 +52,26 @@ namespace RGLabs.Data.Model
         [DataField("Castle_Skill")] 
         public string[] skills;
 
+        [DataField("Castle_Skill_Icon")] 
+        public string[] skillIcons;
+
         [DataField("Castle_Skill_Value")] 
         public float[] skillValues;
+
+        [DataField("Castle_Skill_Range")] 
+        public float[] skillRanges;
+
+        [DataField("Castle_Skill_Time")] 
+        public float[] skillCoolTimes;
+
+        [DataField("Castle_Skill_Sound")] 
+        public string[] skillSounds;
+        
+        [DataField("Castle_Effect")] 
+        public string[] skillEffects;
+        
+        [DataField("Castle_Effect_Unit")] 
+        public string[] unitEffects;
 
         public CastleSkillParameter[] SkillParameters()
         {
@@ -60,18 +82,29 @@ namespace RGLabs.Data.Model
                 array[i] = new CastleSkillParameter
                 {
                     type = type,
-                    icon = Constants.GlobalSkillIcon[type],
+                    icon = skillIcons[i],
                     value = skillValues[i],
-                    radius = 5f,
-                    coolTime = 10f,
-                    centerEffect = Constants.GlobalSkillEffect[type],
-                    unitEffect = type == CastleSkillType.Heal
-                        ? "Effect_Heal"
-                        : string.Empty
+                    radius = skillRanges[i],
+                    coolTime = skillCoolTimes[i],
+                    centerEffect = skillEffects[i],
+                    unitEffect = unitEffects[i],
+                    sfx = skillSounds[i],
                 };
             }
 
             return array;
+        }
+
+        public UnitEntity ToUnitEntity()
+        {
+            return new UnitEntity
+            {
+                Id = 1,
+                hp = hp,
+                atkLayer = 1,
+                defLayer = 1,
+                hitSfx = hitSfx
+            };
         }
     }
 }

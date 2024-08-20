@@ -1,3 +1,4 @@
+using System;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
@@ -18,6 +19,7 @@ namespace RGLabs.Lobby.UI
         [SerializeField] private Button _mail;
         [SerializeField] private Button _attendence;
         [SerializeField] private Button _setting;
+        [SerializeField] private Button _shop;
 
         [SerializeField] private Button _characters;
         [SerializeField] private Button _inventory;
@@ -40,8 +42,23 @@ namespace RGLabs.Lobby.UI
             this.SubscribeButton(_dungeon, OpenPopup<PopupDungeon>);
             this.SubscribeButton(_summon, OpenPopup<PopupSummon>);
             this.SubscribeButton(_castle, () => Context.Transition.CurrentState = State.Castle);
+            this.SubscribeButton(_shop, ()=> Context.Transition.CurrentState = State.Shop);
         }
 
-        private void OpenPopup<T>() where T : PopupBase => Context.popupManager.OpenAsync<T>().Forget();
+        public void ProcessLink(Entrance.Link link)
+        {
+            switch (link)
+            {
+                case Entrance.Link.LevelUp:
+                case Entrance.Link.RateUp:
+                case Entrance.Link.Equipment:
+                    OpenPopup<PopupCharacterList>();
+                    break;
+            }
+        }
+
+        protected override void OnBack() { }
+
+        private void OpenPopup<T>() where T : PopupBase => Context.popups.OpenAsync<T>().Forget();
     }
 }

@@ -1,7 +1,11 @@
 using System;
+using RGLabs.Common.Sound;
 using RGLabs.Common.UI;
+using RGLabs.Data;
+using RGLabs.Utility;
 using UnityEngine;
 using UnityEngine.U2D;
+using UnityEngine.UI;
 
 namespace RGLabs.Common.Behaviours
 {
@@ -14,9 +18,16 @@ namespace RGLabs.Common.Behaviours
 
         [SerializeField] private UIAtlasedSpriteCollection _spriteCollection;
         [SerializeField] private Animator _animator;
+        [SerializeField] private Button _back;
         
         private readonly int _openHashId = Animator.StringToHash("Entrance");
         private readonly int _closeHashId = Animator.StringToHash("Exit");
+
+        private void Awake()
+        {
+            if(_back != null)
+                this.SubscribeButton(_back, OnBack, Storage.soundPath.back);
+        }
 
         public void Open()
         {
@@ -38,6 +49,8 @@ namespace RGLabs.Common.Behaviours
 
         protected virtual void OnClose() => _animator.SetTrigger(_closeHashId);
 
+        protected abstract void OnBack();
+
         public virtual void Dispose()
         {
             _spriteCollection.Dispose();
@@ -53,8 +66,6 @@ namespace RGLabs.Common.Behaviours
 
         public void OnClosed()
         {
-            _spriteCollection.Dispose();
-            
             gameObject.SetActive(false);
             
             OnCloseAnimationEnd?.Invoke();

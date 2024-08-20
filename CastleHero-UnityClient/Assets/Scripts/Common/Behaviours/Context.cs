@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using RGLabs.Common.Flow;
 using RGLabs.Common.Pattern;
+using RGLabs.Common.Sound;
 using RGLabs.Common.UI;
 using RGLabs.Data;
+using RGLabs.Lobby.UI;
 using RGLabs.Unit.Factory;
 using RGLabs.Utility;
 using UniRx;
@@ -24,7 +25,8 @@ namespace RGLabs.Common.Behaviours
         public static CastleFactory castleFactory;
         
         public static StartButton startButton;
-        public static PopupManager popupManager;
+        public static PopupManager popups;
+        public static SoundManager sounds;
         public static UILock uiLock;
         public static UIToolTip toolTip;
         
@@ -33,6 +35,7 @@ namespace RGLabs.Common.Behaviours
         [SerializeField] private UIToolTip _toolTip;
         [SerializeField] private StartButton _startButton;
         [SerializeField] private PopupManager _popupManager;
+        [SerializeField] private SoundManager _soundManager;
 
         private void Load()
         {
@@ -49,7 +52,8 @@ namespace RGLabs.Common.Behaviours
                 startButton = _startButton;
                 startButton.StageSelect.Init();
             
-                popupManager = _popupManager;
+                popups = _popupManager;
+                sounds = _soundManager;
             
                 InitSubscriptions();
 
@@ -77,14 +81,26 @@ namespace RGLabs.Common.Behaviours
 
         private void SetEntranceTransition()
         {
-            if (Storage.entranceData.state == State.InGame)
+            var entrance = Storage.entranceData;
+            if (entrance.state == State.InGame)
             {
-                Storage.userRepository.entrance.Value = Storage.entranceData.gameEntrance;
+                Storage.userRepository.entrance.Value = entrance.gameEntrance;
                 return;
             }
 
             startButton.enabled = true;
             Transition.CurrentState = Storage.entranceData.state;
+            
+            sounds.PlayBgm(Storage.soundPath.lobbyBgm);
+
+            if (entrance.state == State.Lobby && entrance.link != Entrance.Link.None)
+            {
+                var lobby = FindObjectOfType<UILobby>();
+                if (lobby == null)
+                    return;
+                
+                lobby.ProcessLink(entrance.link);
+            }
         }
 
         private void InitSubscriptions()

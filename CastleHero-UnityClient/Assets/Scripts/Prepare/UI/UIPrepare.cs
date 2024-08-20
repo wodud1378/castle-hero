@@ -1,7 +1,11 @@
+using System.Linq;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Data;
+using RGLabs.Data.Model;
+using RGLabs.Data.Repositories;
 using RGLabs.Network.Service;
+using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
@@ -15,11 +19,9 @@ namespace RGLabs.Prepare.UI
         [SerializeField] private UIConfigDragField _dragField;
 
         [SerializeField] private Button _speedUp;
-        [SerializeField] private Button _back;
 
         public void Init()
         {
-            this.SubscribeButton(_back, BackToLobby);
             this.SubscribeButton(_speedUp, () =>
             {
                 var repository = Storage.inGameRepository;
@@ -45,6 +47,8 @@ namespace RGLabs.Prepare.UI
             _characterList.Close();
         }
 
+        protected override void OnBack() => BackToLobby();
+
         private async void StartAfterConfig()
         {
             await _characterList.Init(Storage.userRepository.characters.units);
@@ -61,12 +65,26 @@ namespace RGLabs.Prepare.UI
                 return;
             }
 
-            Start();
+            StartGame();
         }
 
-        private void BackToLobby() => Context.Transition.CurrentState = State.Lobby;
+        private void BackToLobby()
+        {
+            var repository = Storage.userRepository;
+            var prop = repository.entrance;
+            if (prop.Value.type == GameType.Dungeon)
+            {
+                prop.Value = new GameEntrance
+                {
+                    type = GameType.Stage,
+                    id = repository.StageFocus
+                };
+            }
+            
+            Context.Transition.CurrentState = State.Lobby;
+        }
 
-        private async void Start()
+        private async void StartGame()
         {
             var entrance = Storage.userRepository.entrance.Value;
             var canEntrance = await NetworkService.Game.Start(entrance.type, entrance.id);

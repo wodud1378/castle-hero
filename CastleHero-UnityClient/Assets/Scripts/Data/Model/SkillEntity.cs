@@ -11,6 +11,9 @@ namespace RGLabs.Data.Model
 
         [DataField("Name")]
         public string name;
+
+        [DataField("Skill_Sound")] 
+        public string sfx;
         
         [DataField("CoolTime")]
         public float coolTime;

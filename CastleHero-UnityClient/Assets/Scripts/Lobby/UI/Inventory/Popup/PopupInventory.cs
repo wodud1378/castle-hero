@@ -166,12 +166,12 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             switch (type)
             {
                 case ItemType.Equipment:
-                    Context.popupManager.OpenAsync<PopupEquipItem>(item).Forget();
+                    Context.popups.OpenAsync<PopupEquipItem>(item).Forget();
                     break;
                 case ItemType.Consumable:
                 case ItemType.Ingredient:
                 case ItemType.Chest:
-                    Context.popupManager.OpenAsync<PopupUseItem>(item).Forget();
+                    Context.popups.OpenAsync<PopupUseItem>(item).Forget();
                     break;
             }
         }

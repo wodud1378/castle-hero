@@ -6,11 +6,13 @@ namespace RGLabs.Data.Model
     public enum ShopCategory
     {
         NoAds,
-        MonthlyFee,
+        Contract,
         BattlePass,
         Package,
+        UnitPackage,
         Currency01,
         Currency02,
+        Currency03,
         Supply,
         Limited
     }
@@ -30,8 +32,8 @@ namespace RGLabs.Data.Model
 
         [DataField("Shop_Name")]
         public string name;
-        [DataField("Shop_Image")]
-        public string image;
+        [DataField("Shop_Prefab")]
+        public string prefab;
         [DataField("Shop_Description")]
         public string desc;
         [DataField("Shop_Type")]
@@ -68,11 +70,13 @@ namespace RGLabs.Data.Model
             int id = category switch
             {
                 ShopCategory.NoAds => 112,
-                ShopCategory.MonthlyFee => 118,
+                ShopCategory.Contract => 118,
                 ShopCategory.BattlePass => 122,
                 ShopCategory.Package => 125,
+                ShopCategory.UnitPackage => 132,
                 ShopCategory.Currency01 => 134,
                 ShopCategory.Currency02 => 134,
+                ShopCategory.Currency03 => 134,
                 ShopCategory.Supply => 138,
                 ShopCategory.Limited => 0,
                 _ => 0

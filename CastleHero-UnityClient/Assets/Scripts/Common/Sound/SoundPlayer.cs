@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using RGLabs.Utility;
@@ -9,7 +10,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace RGLabs.Common.Sound
 {
-    public class SoundPlayer : IDisposable
+    public class SoundPlayer : MonoBehaviour, IDisposable
     {
         private enum LoadState
         {
@@ -29,89 +30,82 @@ namespace RGLabs.Common.Sound
             set => _source.volume = value;
         }
 
-        public readonly ReactiveProperty<string> asset = new();
+        public bool Loop
+        {
+            get => _source.loop;
+            set => _source.loop = value;
+        }
 
-        private readonly AudioSource _source;
-        private readonly IDisposable _subscription;
+        private string _asset;
+        private AudioSource _source;
+        private IDisposable _subscription;
 
-        private CancellationTokenSource _ctSource;
         private AsyncOperationHandle<AudioClip> _handle;
+        private Coroutine _coroutine;
 
         private LoadState _loadState;
 
-        private UniTask<(bool IsCanceled, AudioClip Result)> _loadTask;
-        private bool _loadDone;
 
-        public SoundPlayer(AudioSource source)
+        private void Awake()
         {
-            _source = source;
-            _subscription = asset.Subscribe(OnAssetChanged);
+            _source = GetComponent<AudioSource>();
+        }
+
+        public void Play(string asset)
+        {
+            if (string.IsNullOrEmpty(asset))
+                return;
+            
+            Stop();
+            StartCoroutine(PlayInternal(asset));
         }
 
         public void Play()
         {
-            UniTask
-                .RunOnThreadPool(()=> PlayInternal(asset.Value), cancellationToken: _ctSource.Token)
-                .SuppressCancellationThrow();
+            if (string.IsNullOrEmpty(_asset))
+                return;
+            
+            Stop();
+            StartCoroutine(PlayInternal(_asset));
         }
 
         public void Stop()
         {
+            if(_coroutine != null)
+                StopCoroutine(_coroutine);
+            
             _source.Stop();
-            _ctSource?.Cancel();
-
-            _ctSource = new();
         }
 
-        private void OnAssetChanged(string asset)
+        private IEnumerator PlayInternal(string asset)
         {
-            if (string.IsNullOrEmpty(asset))
-                return;
-
-            Stop();
-            Play();
-        }
-
-        private async UniTask PlayInternal(string asset)
-        {
-            if (this.asset.Value != asset) 
+            if (_asset != asset)
                 _loadState = LoadState.None;
 
             if (_loadState != LoadState.Done)
             {
                 if (_loadState != LoadState.InProgress)
                 {
-                    if (_handle.IsValid())
-                        _handle.Release();
-
+                    _handle.Release();
                     _handle = Addressables.LoadAssetAsync<AudioClip>(asset);
-
-                    _loadTask = _handle
-                        .ToUniTask(cancellationToken: _ctSource.Token)
-                        .SuppressCancellationThrow();
-
+                    
                     _loadState = LoadState.InProgress;
                 }
+                
+                yield return new WaitUntil(() => _handle.IsDone);
 
-                var result = await _loadTask;
-                if (result.IsCanceled)
-                {
-                    _loadState = LoadState.None;
-                    return;
-                }
-
-                _source.clip = result.Result;
+                _source.clip = _handle.Result;
                 _loadState = LoadState.Done;
             }
-
+            
             _source.Play();
         }
 
+        private void OnDestroy() => Dispose();
+
         public void Dispose()
         {
-            asset?.Dispose();
             _subscription?.Dispose();
-            _ctSource?.Dispose();
             
             _handle.Release();
         }

@@ -14,6 +14,7 @@ namespace RGLabs.Common
         {
             Stop();
 
+            leftTime.Value = time;
             _update = Observable
                 .EveryUpdate()
                 .Select(_=> Time.deltaTime)

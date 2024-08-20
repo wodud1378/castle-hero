@@ -18,6 +18,9 @@ namespace RGLabs.Data.Model
         [DataField("Stage_Bg")] 
         public string Map { get; set; }
         
+        [DataField("Stage_Sound")]
+        public string Bgm { get; set; }
+        
         [DataField("Stage_Act")] 
         public int Ap { get; set; }
 

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RGLabs.Common.Behaviours;
+using RGLabs.Data;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,12 +18,12 @@ namespace RGLabs.Utility
                 return;
 
             int index = collection.IndexOf(exist);
-            if(value != null)
+            if (value != null)
                 collection.Insert(index, value);
-            
+
             collection.Remove(exist);
         }
-        
+
         public static void Update<T>(this ReactiveCollection<T> collection, IEnumerable<T> values)
         {
             collection.Clear();
@@ -31,7 +33,7 @@ namespace RGLabs.Utility
                 collection.Add(value);
             }
         }
-        
+
         public static IObservable<ReactiveCollection<T>> ChangeAsObservable<T>(this ReactiveCollection<T> collection)
         {
             return Observable.Create<ReactiveCollection<T>>(observer =>
@@ -67,10 +69,22 @@ namespace RGLabs.Utility
         public static void SubscribeButton(this MonoBehaviour behaviour, Button button, Action onClick,
             float clickThreshold = 0.25f)
         {
+            behaviour.SubscribeButton(button, onClick, Storage.soundPath.button, clickThreshold);
+        }
+        
+        public static void SubscribeButton(this MonoBehaviour behaviour, Button button, Action onClick,
+            string clickSfx, float clickThreshold = 0.25f)
+        {
             button
                 .OnClickAsObservable()
                 .ThrottleFirst(TimeSpan.FromSeconds(clickThreshold))
-                .Subscribe(_ => onClick.Invoke())
+                .Subscribe(_ =>
+                {
+                    if(!string.IsNullOrEmpty(clickSfx))
+                        Context.sounds.PlaySfx(clickSfx);
+                    
+                    onClick.Invoke();
+                })
                 .AddTo(behaviour);
         }
     }
