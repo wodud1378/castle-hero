@@ -1,4 +1,3 @@
-using NaughtyAttributes;
 using RGLabs.Utility;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,7 +8,6 @@ namespace RGLabs.Common.UI
     public class UIScrollIndicator : MonoBehaviour
     {
         [SerializeField] private ScrollRect _scroll;
-        [MinMaxSlider(0f, 1f)]
         [SerializeField] private float _threshold;
         [SerializeField] private Button _button;
 
@@ -21,14 +19,14 @@ namespace RGLabs.Common.UI
         private void OnClick()
         {
             if (_scroll.horizontal)
-                _scroll.horizontalNormalizedPosition = 1f;
+                _scroll.horizontalNormalizedPosition = 0f;
             else
-                _scroll.verticalNormalizedPosition = 1f;
+                _scroll.verticalNormalizedPosition = 0f;
         }
 
         private void Update()
         {
-            float normalized = 1f - (_scroll.horizontal
+            float normalized = (_scroll.horizontal
                 ? _scroll.horizontalNormalizedPosition
                 : _scroll.verticalNormalizedPosition);
             

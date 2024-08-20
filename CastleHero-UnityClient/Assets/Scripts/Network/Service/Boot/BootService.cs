@@ -109,7 +109,8 @@ namespace RGLabs.Network.Service.Boot
             }
 
             await UniTask.WhenAll(tasks);
-            
+
+            Storage.settingRepository = new();
             Storage.soundPath = await Addressables.LoadAssetAsync<SoundPath>("Sound/SoundPath.asset");
         }
 
@@ -174,6 +175,7 @@ namespace RGLabs.Network.Service.Boot
             var chartList = response.data;
             var result = await service.InitialLoad(chartList);
 
+            Storage.inGameRepository = new();
             Storage.userRepository = new UserRepository(nickname, userData);
             Storage.db = result.db;
             Storage.localize = result.localize;

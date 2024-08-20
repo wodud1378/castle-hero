@@ -41,6 +41,8 @@ namespace RGLabs.Common.Behaviours
             
                 Tasks.Clear();                
             }
+
+            yield return null;
             
             var finishHandle = SceneManager.UnloadSceneAsync("Loading");
             while (!finishHandle.isDone)
