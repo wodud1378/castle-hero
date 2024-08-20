@@ -340,6 +340,7 @@ MonoBehaviour:
   _mail: {fileID: 443266197945880958}
   _attendence: {fileID: 6853834941849222258}
   _setting: {fileID: 8606707329807751712}
+  _shop: {fileID: 8703539259910161776}
   _characters: {fileID: 4247259264058424911}
   _inventory: {fileID: 7253160913362542540}
   _summon: {fileID: 3001186427410011717}
@@ -535,8 +536,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34b6d78b90a642199ae25092911e0803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
   highlight: {fileID: 0}
-  diminish: {fileID: 0}
   icon: {fileID: 3635119234370594762}
   label: {fileID: 0}
   _quantity: {fileID: 1537285339014581057}
@@ -3539,8 +3542,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34b6d78b90a642199ae25092911e0803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
   highlight: {fileID: 0}
-  diminish: {fileID: 0}
   icon: {fileID: 45046701311510595}
   label: {fileID: 0}
   _quantity: {fileID: 7173573718352012159}

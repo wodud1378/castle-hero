@@ -35,7 +35,7 @@ namespace RGLabs.Prepare.UI
             if (_ap == null)
                 return;
 
-            if (!_entity.Value.IsValid)
+            if (_entity.Value == null)
                 return;
 
             int require = _entity.Value.Ap;

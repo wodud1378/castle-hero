@@ -561,6 +561,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8912185330687814927}
   - component: {fileID: 7038345487504865799}
+  - component: {fileID: 3593884732231283323}
   m_Layer: 5
   m_Name: Price
   m_TagString: Untagged
@@ -616,6 +617,24 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &3593884732231283323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2112907130650043761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3f07f0f215140e4b18744387695e10c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
+  highlight: {fileID: 0}
+  icon: {fileID: 5904778920606278426}
+  label: {fileID: 4383526549862978877}
 --- !u!1 &2116705167954755260
 GameObject:
   m_ObjectHideFlags: 0
@@ -1386,6 +1405,8 @@ GameObject:
   - component: {fileID: 8889569877224798486}
   - component: {fileID: 3496719976073911958}
   - component: {fileID: 4572819408068166263}
+  - component: {fileID: 5931063734074313410}
+  - component: {fileID: 756395237911277621}
   m_Layer: 5
   m_Name: Product_Contract_Hero
   m_TagString: Untagged
@@ -1400,7 +1421,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4381666621459225716}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1520,6 +1541,43 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5931063734074313410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4381666621459225716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdddb29241a94c3e9f9a54e301636b6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _grayScaleOnDim: 1
+  grayScale: {fileID: 756395237911277621}
+  dim: {fileID: 0}
+  highlight: {fileID: 0}
+  icon: {fileID: 0}
+  label: {fileID: 3002258035092909298}
+  price: {fileID: 3593884732231283323}
+  leftTime: {fileID: 0}
+  leftCount: {fileID: 9033829305588091682}
+--- !u!114 &756395237911277621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4381666621459225716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79270c6e7da94852ae11eee026e752a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _material: {fileID: 2100000, guid: 52eba2c552de3cd41b4c17d693e7619c, type: 2}
+  targets:
+  - {fileID: 6637269839811739596}
+  _preview: 0
 --- !u!1 &5352126636916429536
 GameObject:
   m_ObjectHideFlags: 0

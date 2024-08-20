@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common;
+using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
@@ -215,6 +216,8 @@ namespace RGLabs.Lobby.UI.Popup
             _unit.Value = unit;
             _selected.Value = slot;
             _result = result;
+            
+            Context.soundManager.PlaySfx(Storage.soundPath.levelUp);
         }
     }
 }

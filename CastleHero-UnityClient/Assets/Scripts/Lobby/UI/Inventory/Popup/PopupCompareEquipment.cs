@@ -3,10 +3,11 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
+using RGLabs.Data;
 using RGLabs.Network.Shared;
-using RGLabs.Unit;
 using RGLabs.Utility;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace RGLabs.Lobby.UI.Inventory.Popup
 {
@@ -16,6 +17,14 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         [SerializeField] private UIEquipmentSlot _left;
         [SerializeField] private UIEquipmentSlot _right;
         [SerializeField] private UIStatusText[] _statusTexts;
+        [SerializeField] private Button _equip;
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+            
+            this.SubscribeButton(_equip, OnEquip, Storage.soundPath.equipItem);
+        }
 
         public override UniTask Open(params object[] parameters)
         {
@@ -42,6 +51,11 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             
             _left.Dispose();
             _right.Dispose();
+        }
+
+        private void OnEquip()
+        {
+            
         }
 
         private void UpdateUI(EquipItem leftItem, EquipItem rightItem)

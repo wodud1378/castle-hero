@@ -11,7 +11,7 @@ namespace RGLabs.Common.Sound
     [RequireComponent(typeof(AudioListener))]
     public class SoundManager : MonoBehaviour, IDisposable
     {
-        [SerializeField] private int _maxSfx = 10;
+        [SerializeField] private int _maxSfx = 20;
         
         private readonly List<SoundPlayer> _sfxList = new();
 
@@ -71,11 +71,25 @@ namespace RGLabs.Common.Sound
         
         private void InitPlayers()
         {
-            _bgm = new (gameObject.AddComponent<AudioSource>());
+            _bgm = CreatePlayer("BGM", true);
+            
             for (int i = 0; i < _maxSfx; ++i)
             {
-                _sfxList.Add(new (gameObject.AddComponent<AudioSource>()));
+                _sfxList.Add(CreatePlayer($"Sfx_{i + 1:D2}"));
             }
+        }
+
+        private SoundPlayer CreatePlayer(string name, bool loop = false)
+        {
+            var obj = new GameObject(name);
+            obj.transform.SetParent(transform);
+            obj.transform.position = Vector3.zero;
+            
+            var source = obj.AddComponent<AudioSource>();
+            source.playOnAwake = false;
+            source.loop = loop;
+            
+            return obj.AddComponent<SoundPlayer>();
         }
 
         public void PlayBgm(string asset)
@@ -83,8 +97,10 @@ namespace RGLabs.Common.Sound
             if (!_repository.bgmToggle.Value)
                 return;
             
-            _bgm.asset.Value = asset;
+            _bgm.Play(asset);
         }
+
+        public void StopBgm() => _bgm.Stop();
 
         public void PlaySfx(string asset)
         {
@@ -95,7 +111,7 @@ namespace RGLabs.Common.Sound
                 .OrderByDescending(x => x.NormalizedTime)
                 .First();
 
-            player.asset.Value = asset;
+            player.Play(asset);
         }
 
         public void Dispose()

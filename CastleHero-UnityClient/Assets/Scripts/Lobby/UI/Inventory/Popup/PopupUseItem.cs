@@ -1,3 +1,4 @@
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Data;
@@ -98,7 +99,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 switch (option)
                 {
                     case ConsumeType.SummonTicket:
-                        MoveToDrawCharacter();
+                        MoveToDrawCharacter(Entity.Id);
                         break;
                     default:
                         Use();
@@ -142,9 +143,17 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             item.Value = leftItem;
         }
 
-        private void MoveToDrawCharacter()
+        private void MoveToDrawCharacter(int ticketId)
         {
-            // TODO 캐릭터 뽑기로 이동.
+            if (!Storage.db.summons.TryFind(x => x.item.Contains(ticketId), out var entity))
+                return;
+            
+            Context.popupManager
+                .OpenAsync<PopupSummon>(entity)
+                .Forget();
+            
+            CloseAsync()
+                .Forget();
         }
 
         private void MoveToRefine()

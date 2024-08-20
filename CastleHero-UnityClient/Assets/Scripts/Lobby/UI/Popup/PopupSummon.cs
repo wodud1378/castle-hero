@@ -35,7 +35,6 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private Button _x10;
         [SerializeField] private UIItemSlot _itemForX10;
 
-        public override UniTask Open() => Open(0);
 
         private readonly Dictionary<int, Cache> _propCache = new();
         private readonly ReactiveProperty<SummonEntity> _entity = new();
@@ -50,11 +49,12 @@ namespace RGLabs.Lobby.UI.Popup
             this.SubscribeButton(_prev, OnPrev);
             this.SubscribeButton(_next, OnNext);
         }
+        
+        public override UniTask Open() => Open(Storage.db.summons[0]);
 
         public override UniTask Open(params object[] parameters)
         {
-            int index = (int)parameters[0];
-            if (!Storage.db.summons.TryIndexOf(index, out var entity))
+            if(parameters[0] is not SummonEntity entity)
             {
                 var exception = new Exception("파라미터가 잘못되었습니다.");
                 return UniTask.FromException(exception);

@@ -20,6 +20,7 @@ namespace RGLabs.Data.Model
         public int Lv { get; }
         public GameType Type { get; }
         public string Map { get; set; }
+        public string Bgm { get; set; }
         public int Ap { get; set; }
         public int TimeLimit { get; set; }
         public int WaveId { get; set; }

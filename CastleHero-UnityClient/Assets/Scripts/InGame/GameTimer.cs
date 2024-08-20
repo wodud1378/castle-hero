@@ -1,7 +1,5 @@
 using System;
-using RGLabs.Data;
 using RGLabs.InGame.Behaviours;
-using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
 

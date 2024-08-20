@@ -50,6 +50,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34b6d78b90a642199ae25092911e0803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
   highlight: {fileID: 0}
   icon: {fileID: 5316317446152945208}
   label: {fileID: 0}
@@ -182,6 +185,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34b6d78b90a642199ae25092911e0803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
   highlight: {fileID: 0}
   icon: {fileID: 2617445896031396965}
   label: {fileID: 0}
@@ -665,7 +671,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7dfe0e4f91c4292ada2fb6d5531caf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stage: {fileID: 3795770749320332291}
+  _id: {fileID: 3795770749320332291}
   _ap: {fileID: 0}
   _rewardList: {fileID: 505636194228242001}
 --- !u!1 &1193019646093152537
@@ -1545,6 +1551,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemRoot: {fileID: 1250632947675504745}
+  _provideSlotAsset: 0
   _itemPrefab:
     m_AssetGUID: dfb08704d625cd34dbd1315d09c84a21
     m_SubObjectName: 
@@ -2855,7 +2862,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 50, y: 0}
   m_SizeDelta: {x: 0, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5543619215587702121

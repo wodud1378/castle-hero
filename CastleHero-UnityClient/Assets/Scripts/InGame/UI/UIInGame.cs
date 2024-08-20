@@ -7,6 +7,7 @@ using RGLabs.Data;
 using RGLabs.InGame.Behaviours;
 using RGLabs.InGame.System;
 using RGLabs.Utility;
+using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,6 +30,8 @@ namespace RGLabs.InGame.UI
         [field:SerializeField] public UIPause Pause { get; private set; }
         [field:SerializeField] public UIGlobalSkill GlobalSkill { get; private set; }
 
+        [SerializeField] private TMP_Text _timerText;
+        
         [SerializeField] private Button _pause;
         [SerializeField] private Button _speedUp;
         [SerializeField] private RectTransform _damageRoot;
@@ -53,7 +56,10 @@ namespace RGLabs.InGame.UI
             this.SubscribeMessage<HealResult>(OnHealResult);
             this.SubscribeMessage<ShieldResult>(OnShieldResult);
         }
-        
+
+
+        protected override void OnBack() { }
+
         private async void OnAtkResult(AtkResult result)
         {
             var ev = (AtkEvent)result.Event;
@@ -148,6 +154,10 @@ namespace RGLabs.InGame.UI
         public void Init()
         {
             DeadCharacters.Init();
+            
+            Storage.inGameRepository.leftTime
+                .Subscribe(x => _timerText.text = $"{(int)x / 60:D2}:{(int)x % 60:D2}")
+                .AddTo(this);
         }
 
         private void SetPause(bool isPause)

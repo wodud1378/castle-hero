@@ -25,6 +25,12 @@ namespace RGLabs.InGame.Behaviours
         Retry,
         Next,
     }
+
+    public struct ExitGame
+    {
+        public ExitCode code;
+        public Entrance.Link link;
+    }
     
     public struct GameResult
     {
@@ -44,7 +50,7 @@ namespace RGLabs.InGame.Behaviours
         {
             base.OnAwake();
             
-            this.SubscribeMessage<ExitCode>(Exit);
+            this.SubscribeMessage<ExitGame>(Exit);
             this.SubscribeMessage<StartGame>(Run);
         }
 
@@ -92,9 +98,9 @@ namespace RGLabs.InGame.Behaviours
                 .Forget();
         }
 
-        private void Exit(ExitCode exitCode)
+        private void Exit(ExitGame exit)
         {
-            _handler.OnExit(exitCode);
+            _handler.OnExit(exit);
 
             var task = NetworkService.User.GetUserData()
                 .ContinueWith(x => Storage.userRepository.Update(x.data));

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using BackEnd;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Sound;
 using RGLabs.Data;
 using RGLabs.Data.Repositories;
 using RGLabs.Network.DB.Service;
@@ -79,7 +80,7 @@ namespace RGLabs.Network.Service.Boot
 
             Debug.Log("데이터 불러오기 완료");
 
-            await InitStorage(nickname, userData);
+            await InitFromServer(nickname, userData);
 
             _handler.OnInitDone();
 
@@ -108,6 +109,8 @@ namespace RGLabs.Network.Service.Boot
             }
 
             await UniTask.WhenAll(tasks);
+            
+            Storage.soundPath = await Addressables.LoadAssetAsync<SoundPath>("Sound/SoundPath.asset");
         }
 
         private async UniTask CheckVersion()
@@ -155,7 +158,7 @@ namespace RGLabs.Network.Service.Boot
             return nickname;
         }
 
-        private async UniTask InitStorage(string nickname, UserDataDto userData)
+        private async UniTask InitFromServer(string nickname, UserDataDto userData)
         {
             var service = new DBLoadService(_initService);
             var response = await _initService.GetChartList();

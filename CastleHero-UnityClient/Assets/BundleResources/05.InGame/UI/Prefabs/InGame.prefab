@@ -1114,6 +1114,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemRoot: {fileID: 2852681613024264959}
+  _provideSlotAsset: 0
   _itemPrefab:
     m_AssetGUID: 97be1be8ea5fffb4c9dd49b748df1c6f
     m_SubObjectName: 
@@ -1452,6 +1453,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemRoot: {fileID: 6187462673480762027}
+  _provideSlotAsset: 0
   _itemPrefab:
     m_AssetGUID: c752a42ff27756848a7f29bf984eb826
     m_SubObjectName: 
@@ -1759,6 +1761,8 @@ MonoBehaviour:
   <Result>k__BackingField: {fileID: 2450989168676422717}
   <Pause>k__BackingField: {fileID: 4420886906921359635}
   <GlobalSkill>k__BackingField: {fileID: 2548831782899979793}
+  _timerObj: {fileID: 9219146944319148932}
+  _timerText: {fileID: 24676393951039228}
   _pause: {fileID: 5986724365978457604}
   _speedUp: {fileID: 3065841938506350996}
   _damageRoot: {fileID: 8797528834993109522}

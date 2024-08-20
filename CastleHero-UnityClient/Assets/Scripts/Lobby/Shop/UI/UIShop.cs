@@ -1,27 +1,28 @@
 using System.Collections.Generic;
-using System.Linq;
-using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
+using RGLabs.Common.Flow;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Network.Service;
 using RGLabs.Utility;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
+using UnityEngine.UI;
 
 namespace RGLabs.Lobby.Shop.UI
 {
     public class UIShop : UIMain
     {
         [SerializeField] private UIShopCategoryList _itemList;
-        [SerializeField] private AssetReference _slotBySingle;
-        [SerializeField] private AssetReference _slotByDouble;
-        [SerializeField] private AssetReference _slotByMultiple;
+        [SerializeField] private RectTransform _withdrawalRoot;
+        
 
-        public void Init()
+        protected override void OnBack()
         {
-            _itemList.provideSlot = ProvideSlot;
+            Context.Transition.CurrentState = State.Lobby;
+        }
 
+        public async void Init()
+        {
             var categoryMap = new Dictionary<ShopCategory, List<ShopItemEntity>>();
             var currentTime = NetworkService.CurrentTime();
             Storage.db.shop.ForEach(x =>
@@ -48,24 +49,17 @@ namespace RGLabs.Lobby.Shop.UI
                     list.Add(x);
             });
 
-            _itemList
-                .Init(categoryMap.Values)
-                .Forget();
-        }
+            _withdrawalRoot.gameObject.SetActive(false);
 
-        private AssetReference ProvideSlot(IEnumerable<ShopItemEntity> data)
-        {
-            var asset = data.First().category switch
+            foreach (var kvp in categoryMap)
             {
-                ShopCategory.NoAds or
-                    ShopCategory.Package or
-                    ShopCategory.BattlePass => _slotBySingle,
-
-                ShopCategory.MonthlyFee => _slotByDouble,
-                _ => _slotByMultiple
-            };
-
-            return asset;
+                kvp.Value.Sort((x, y) => x.order.CompareTo(y.order));
+            }
+            
+            await _itemList.Init(categoryMap.Values);
+            
+            _withdrawalRoot.gameObject.SetActive(true);
+            _withdrawalRoot.transform.SetAsLastSibling();
         }
     }
 }

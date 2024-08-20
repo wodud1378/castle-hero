@@ -24,6 +24,13 @@ namespace RGLabs.InGame.System
             SubscribeMessage<RestrictionEvent>(OnReceiveRestrictionEvent);
             SubscribeMessage<StatusEffectEvent>(OnReceiveStatusEffectEvent);
             SubscribeMessage<UnitDead>(OnUnitDead);
+            SubscribeMessage<GameFinished>(_ =>
+            {
+                foreach (var recover in Storage.inGameRepository.recovers)
+                {
+                    recover.Dispose();
+                }
+            });
         }
 
         public void Dispose() => _disposables.Dispose();

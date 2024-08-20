@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
+using RGLabs.Data;
 using RGLabs.Utility;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -38,6 +40,10 @@ namespace RGLabs.Common.UI.Popup
         public virtual UniTask Open(params object[] parameters) => Open();
 
         public virtual UniTask Open() => UniTask.CompletedTask;
+
+        private void OnEnable() => Context.soundManager.PlaySfx(Storage.soundPath.openPopup);
+
+        private void OnDisable() => Context.soundManager.PlaySfx(Storage.soundPath.closePopup);
 
         public async UniTask CloseAsync()
         {

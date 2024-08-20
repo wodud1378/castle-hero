@@ -10,14 +10,14 @@ using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using TMPro;
 using UniRx;
-using UnityEngine;
 
 namespace RGLabs.Lobby.Shop.UI
 {
     public class UIShopItemSlot : UISlot
     {
-        [SerializeField] private TMP_Text _leftTime;
-        [SerializeField] private TMP_Text _leftCount;
+        public UISlot price;
+        public TMP_Text leftTime;
+        public TMP_Text leftCount;
 
         public readonly ReactiveProperty<ShopItemEntity> data = new();
         public readonly ReactiveProperty<Product> product = new();
@@ -31,7 +31,7 @@ namespace RGLabs.Lobby.Shop.UI
                     data.Select(_ => UniRx.Unit.Default),
                     product.Select(_ => UniRx.Unit.Default))
                 .ThrottleFrame(1)
-                .Subscribe(_=> UpdateUI())
+                .Subscribe(_ => UpdateUI())
                 .AddTo(this);
         }
 
@@ -40,8 +40,8 @@ namespace RGLabs.Lobby.Shop.UI
             data.Value = entity;
             product.Value = Storage.userRepository.shopRecord.products
                 .FirstOrDefault(x => x.shopId == entity.Id);
-            
-            return base.Init(entity.image, entity.name);
+
+            return base.Init(string.Empty, entity.name);
         }
 
         private void UpdateUI()
@@ -50,29 +50,49 @@ namespace RGLabs.Lobby.Shop.UI
             if (!entity.IsValid)
                 return;
 
-            int limit = entity.count;
-            _leftCount.text = product == null
-                ? $"{limit}/{limit}"
-                : $"{limit - product.Value.byDefault}/{limit}";
-            
+            if (leftCount != null)
+            {
+                int limit = entity.count;
+                leftCount.text = product.Value == null
+                    ? $"{limit}/{limit}"
+                    : $"{limit - product.Value.byDefault}/{limit}";
+            }
+
+            string spritePath = entity.costId switch
+            {
+                1 or 2 => Constants.DiaIcon,
+                3 => Constants.GoldIcon,
+                _ => string.Empty
+            };
+
+            string text = entity.costId == 0
+                ? $"\uffe6 {entity.costValue:N0}"
+                : $"{entity.costValue:N0}";
+
+            price.Init(spritePath, text)
+                .Forget();
+
             SetTimer();
         }
 
         private void SetTimer()
         {
+            if (leftTime == null)
+                return;
+            
             var entity = data.Value;
             if (entity.endDate == default)
             {
-                _leftTime.gameObject.SetActive(false);
+                leftTime.gameObject.SetActive(false);
                 return;
             }
-            
-            _leftTime.gameObject.SetActive(true);
-                
+
+            leftTime.gameObject.SetActive(true);
+
             var currentTime = NetworkService.CurrentTime();
             var endTime = entity.endDate;
             var seconds = (endTime - currentTime).TotalSeconds;
-            
+
             _timer.Run(seconds);
             _timerSubscription = _timer.leftTime
                 .Subscribe(OnTimerUpdate);
@@ -82,10 +102,10 @@ namespace RGLabs.Lobby.Shop.UI
         {
             if (seconds > 0)
             {
-                _leftTime.text = seconds.ToLeftTimeText();
+                leftTime.text = seconds.ToLeftTimeText();
                 return;
             }
-            
+
             _timerSubscription.Dispose();
             SetTimer();
         }

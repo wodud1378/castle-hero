@@ -1,10 +1,10 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using NaughtyAttributes;
+using RGLabs.Common.Behaviours;
+using RGLabs.Data;
 using RGLabs.Utility;
 using TMPro;
-using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -24,17 +24,20 @@ namespace RGLabs.Common.UI
             _ctSource?.Cancel();
             _ctSource = new();
 
-            icon.enabled = false;
+            if (icon != null)
+                icon.enabled = false;
 
-            Sprite sprite;
-            try
+            Sprite sprite = null;
+            if (!string.IsNullOrEmpty(spritePath))
             {
-                sprite = await spritePath.Load<Sprite>(_ctSource.Token);
-            }
-            catch
-            {
-                Debug.LogError($"Sprite Not Found. path=\"{spritePath}\"");
-                sprite = null;
+                try
+                {
+                    sprite = await spritePath.Load<Sprite>(_ctSource.Token);
+                }
+                catch
+                {
+                    Debug.LogError($"Sprite Not Found. path=\"{spritePath}\"");
+                }
             }
 
             Init(sprite, text);
@@ -61,6 +64,13 @@ namespace RGLabs.Common.UI
             icon.sprite = null;
         }
 
-        public void OnPointerClick(PointerEventData eventData) => OnClick?.Invoke(this);
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (OnClick == null)
+                return;
+
+            Context.soundManager.PlaySfx(Storage.soundPath.button);
+            OnClick.Invoke(this);
+        }
     }
 }

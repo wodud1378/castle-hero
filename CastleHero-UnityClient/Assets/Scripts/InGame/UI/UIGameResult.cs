@@ -5,12 +5,10 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Data;
-using RGLabs.Data.Model;
 using RGLabs.InGame.Behaviours;
 using RGLabs.Lobby.UI.Adapter;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,6 +25,10 @@ namespace RGLabs.InGame.UI
         [SerializeField] private Button _retryButton;
         [SerializeField] private Button _nextButton;
 
+        [SerializeField] private Button _levelUpLink;
+        [SerializeField] private Button _equipmentLink;
+        [SerializeField] private Button _rateUpLink;
+
         [SerializeField] private UIItemList _rewardList;
         [SerializeField] private UIUnitGrowthList _growthList;
 
@@ -35,9 +37,13 @@ namespace RGLabs.InGame.UI
 
         private void Awake()
         {
-            this.SubscribeButton(_exitButton, Exit);
-            this.SubscribeButton(_retryButton, Retry);
-            this.SubscribeButton(_nextButton, Next);
+            this.SubscribeButton(_exitButton,()=> Exit());
+            this.SubscribeButton(_retryButton, ()=>Retry());
+            this.SubscribeButton(_nextButton, ()=>Next());
+
+            this.SubscribeButton(_levelUpLink, () => Exit(Entrance.Link.LevelUp));
+            this.SubscribeButton(_equipmentLink, () => Exit(Entrance.Link.Equipment));
+            this.SubscribeButton(_rateUpLink, () => Exit(Entrance.Link.RateUp));
         }
 
         public async UniTaskVoid Open(GameResult result)
@@ -45,24 +51,37 @@ namespace RGLabs.InGame.UI
             var data = result.data;
             var transitions = GetTransition(data);
             var items = GetItems(result.data);
-            
-            await UniTask.WhenAll(
-                _growthList.Init(transitions),
-                _rewardList.Init(items));
-
-            gameObject.SetActive(true);
-            _animtor.SetTrigger(EntranceHash);
 
             UpdateUI(result);
 
             if (result.isCleared)
             {
+                Context.soundManager.PlaySfx(Storage.soundPath.gameClear);
+                
+                await UniTask.WhenAll(
+                    _growthList.Init(transitions),
+                    _rewardList.Init(items));
+
+                Activate();
+
                 await UniTask.Delay(TimeSpan.FromSeconds(1f));
 
                 _growthList.PlayDirection();
             }
+            else
+            {
+                Context.soundManager.PlaySfx(Storage.soundPath.gameFailed);
+                
+                Activate();
+            }
 
             Context.Back.Add(this);
+        }
+
+        private void Activate()
+        {
+            gameObject.SetActive(true);
+            _animtor.SetTrigger(EntranceHash);
         }
 
         private List<UnitTransition> GetTransition(GameCleared data)
@@ -115,14 +134,14 @@ namespace RGLabs.InGame.UI
 
             foreach (var obj in _failedObjects)
                 obj.SetActive(!isCleared);
-            
+
             if (!isCleared)
             {
                 _retryButton.gameObject.SetActive(false);
                 _nextButton.gameObject.SetActive(false);
                 return;
             }
-            
+
             // TODO : 행동력 체크.
 
             if (Storage.db.TryLoadNextGameEntity(result.type, result.data.id, out var entity))
@@ -132,11 +151,32 @@ namespace RGLabs.InGame.UI
             }
         }
 
-        private void Exit() => CloseWith(() => ExitCode.Exit.Publish());
+        private void Exit(Entrance.Link link = Entrance.Link.None) => CloseWith(() =>
+        {
+            new ExitGame
+            {
+                code = ExitCode.Exit,
+                link = link
+            }.Publish();
+        });
 
-        private void Retry() => CloseWith(() => ExitCode.Retry.Publish());
+        private void Retry(Entrance.Link link = Entrance.Link.None) => CloseWith(() =>
+        {
+            new ExitGame
+            {
+                code = ExitCode.Retry,
+                link = link
+            }.Publish();
+        });
 
-        private void Next() => CloseWith(() => ExitCode.Next.Publish());
+        private void Next(Entrance.Link link = Entrance.Link.None) => CloseWith(() =>
+        {
+            new ExitGame
+            {
+                code = ExitCode.Next,
+                link = link
+            }.Publish();
+        });
 
         public bool OnProcessBack()
         {

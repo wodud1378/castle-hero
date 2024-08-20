@@ -521,6 +521,8 @@ GameObject:
   - component: {fileID: 1487028215092835430}
   - component: {fileID: 4822242739683171210}
   - component: {fileID: 2187422209160447561}
+  - component: {fileID: 2098701297876030393}
+  - component: {fileID: 7534489459154430519}
   m_Layer: 5
   m_Name: Product_Package_Demon
   m_TagString: Untagged
@@ -535,7 +537,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3275528849755290293}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -656,6 +658,43 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2098701297876030393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3275528849755290293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdddb29241a94c3e9f9a54e301636b6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _grayScaleOnDim: 1
+  grayScale: {fileID: 7534489459154430519}
+  dim: {fileID: 0}
+  highlight: {fileID: 0}
+  icon: {fileID: 0}
+  label: {fileID: 729611197907116936}
+  price: {fileID: 9026073737937324724}
+  leftTime: {fileID: 0}
+  leftCount: {fileID: 5099828823762097524}
+--- !u!114 &7534489459154430519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3275528849755290293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79270c6e7da94852ae11eee026e752a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _material: {fileID: 2100000, guid: 52eba2c552de3cd41b4c17d693e7619c, type: 2}
+  targets:
+  - {fileID: 721691451944813247}
+  _preview: 0
 --- !u!1 &3428832893350654328
 GameObject:
   m_ObjectHideFlags: 0
@@ -1200,6 +1239,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3160087608906861947}
   - component: {fileID: 5642679789799271797}
+  - component: {fileID: 9026073737937324724}
   m_Layer: 5
   m_Name: Price
   m_TagString: Untagged
@@ -1255,6 +1295,24 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &9026073737937324724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5510647764301965484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3f07f0f215140e4b18744387695e10c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
+  highlight: {fileID: 0}
+  icon: {fileID: 6099942323374863685}
+  label: {fileID: 6904541198856448379}
 --- !u!1 &6255590041580883316
 GameObject:
   m_ObjectHideFlags: 0

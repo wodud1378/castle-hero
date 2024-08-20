@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e9d68588cc34dec841737982468e1b2, type: 3}
+  m_Name: SoundPath
+  m_EditorClassIdentifier: 
+  lobbyBgm: Sound/Bgm/Lobby.mp3
+  button: Sound/Fx/UI/Button - Low.mp3
+  modifyFormation: Sound/Fx/UI/FX_button.mp3
+  back: Sound/Fx/UI/FX_Popup_Up.mp3
+  gameClear: Sound/Fx/UI/FX_Mission_Success.mp3
+  gameFailed: Sound/Fx/UI/FX_Mission_Fail.mp3
+  equipItem: Sound/Fx/UI/FX_item_Equip.mp3
+  releaseItem: Sound/Fx/UI/FX_Intro_Picture.mp3
+  levelUp: Sound/Fx/UI/Item_Double.mp3
+  openPopup: Sound/Fx/UI/FX_Popup_Up.mp3
+  closePopup: Sound/Fx/UI/Button - Low.mp3
+  useCurrency: Sound/Fx/UI/Coins.mp3
+  summonDirection: 
+  summonResult: 

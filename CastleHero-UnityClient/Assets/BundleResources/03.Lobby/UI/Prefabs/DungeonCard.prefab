@@ -228,7 +228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 52eba2c552de3cd41b4c17d693e7619c, type: 2}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -524,8 +524,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3833572255669326138}
   - component: {fileID: 5961856895801799094}
-  - component: {fileID: 7532708792969537774}
   - component: {fileID: 7951635913040024868}
+  - component: {fileID: 4655252358376870993}
+  - component: {fileID: 7230633968665544077}
   m_Layer: 5
   m_Name: DungeonCard
   m_TagString: Untagged
@@ -573,24 +574,6 @@ MonoBehaviour:
   label: {fileID: 0}
   _dayOfWeek: {fileID: 6865101658031788679}
   _rewardList: {fileID: 6848738702517332679}
---- !u!114 &7532708792969537774
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7024132892593497416}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79270c6e7da94852ae11eee026e752a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _material: {fileID: 2100000, guid: 52eba2c552de3cd41b4c17d693e7619c, type: 2}
-  targets:
-  - {fileID: 1529916527949587917}
-  - {fileID: 906422361218076420}
-  - {fileID: 0}
-  _preview: 0
 --- !u!114 &7951635913040024868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -609,6 +592,44 @@ MonoBehaviour:
   - {fileID: 906422361218076420}
   - {fileID: 1529916527949587917}
   _preview: 0
+--- !u!222 &4655252358376870993
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7024132892593497416}
+  m_CullTransparentMesh: 1
+--- !u!114 &7230633968665544077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7024132892593497416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &8946019330165698986
 GameObject:
   m_ObjectHideFlags: 0
