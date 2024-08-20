@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using BackEnd;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using RGLabs.Common.Behaviours;
@@ -115,8 +116,6 @@ namespace RGLabs.InGame.Behaviours
             
             _uiInGame.Dispose();
             _handler.Dispose();
-            
-            Storage.ClearRepositories();
         }
     }
 }

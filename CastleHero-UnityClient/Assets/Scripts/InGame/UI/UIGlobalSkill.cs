@@ -40,7 +40,7 @@ namespace RGLabs.InGame.UI
             }
         }
 
-        protected override UniTask SetItem(UIGlobalSkillSlot slot,CastleSkillParameter data) => slot.Init(Constants.GlobalSkillIcon[data.type]);
+        protected override UniTask SetItem(UIGlobalSkillSlot slot,CastleSkillParameter data) => slot.Init(data.icon);
 
         public void OnBeginDrag(PointerEventData eventData)
         {

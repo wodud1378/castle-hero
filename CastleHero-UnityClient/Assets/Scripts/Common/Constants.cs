@@ -22,22 +22,6 @@ namespace RGLabs.Common
         public static string ExpIcon = "Common/Icon/Icon_Exp.png";
         public static float DefaultObjectAngle = 0;
 
-        public static readonly Dictionary<CastleSkillType, string> GlobalSkillIcon = new()
-        {
-            { CastleSkillType.Shield, "Common/Icon/Icon_Skill_Global_03.png" },
-            { CastleSkillType.Damage, "Common/Icon/Icon_Skill_Global_03.png" },
-            { CastleSkillType.Sturn, "Common/Icon/Icon_Skill_Global_03.png" },
-            { CastleSkillType.Heal, "Common/Icon/Icon_Skill_Global_03.png" },
-        };
-
-        public static readonly Dictionary<CastleSkillType, string> GlobalSkillEffect = new()
-        {
-            { CastleSkillType.Shield, "Effect_Global_03" },
-            { CastleSkillType.Damage, "Effect_Global_03" },
-            { CastleSkillType.Sturn, "Effect_Global_03" },
-            { CastleSkillType.Heal, "Effect_Global_03" },
-        };
-
         public static string ManaDropEffect = "Effect_ManaStone";
         public static string DeadEffect = "UnitEffect/Dead/Dead.prefab";
         public static string RecoverEffect = "UnitEffect/Recover/Recover.prefab";

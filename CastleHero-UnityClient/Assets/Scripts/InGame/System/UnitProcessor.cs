@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Common;
 using RGLabs.Common.Behaviours;
 using RGLabs.Data;
+using RGLabs.InGame.Effects;
 using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Unit.Components;
@@ -82,7 +83,8 @@ namespace RGLabs.InGame.System
 
             Context.sounds.PlaySfx(to.Data.hitSfx);
             
-            PlayEffect(ev);
+            PlayEffect(ev)
+                .Forget();
 
             new AtkResult { Event = ev, IsCritical = isCritical, Protected = @protected }.Publish();
         }
@@ -95,24 +97,25 @@ namespace RGLabs.InGame.System
 
             to.status.hp.Increase(ev.Amount);
 
-            PlayEffect(ev);
+            PlayEffect(ev)
+                .Forget();
 
             new HealResult { Event = ev }.Publish();
         }
 
-        private void OnReceiveShieldEvent(ShieldEvent ev)
+        private async void OnReceiveShieldEvent(ShieldEvent ev)
         {
             var to = ev.To;
             if (!to.IsValid())
                 return;
 
             var shield = to.status.shield;
+            var effect = await PlayEffect(ev);
+            
             if (ev.Duration == 0f)
-                shield.Increase(ev.Amount);
+                shield.Increase(ev.Amount, effect);
             else
-                shield.Increase(ev.Amount, ev.Duration);
-
-            PlayEffect(ev);
+                shield.Increase(ev.Amount, ev.Duration, effect);
 
             new HealResult { Event = ev }.Publish();
         }
@@ -130,7 +133,8 @@ namespace RGLabs.InGame.System
             else
                 adjust.Decrease(ev.Amount);
 
-            PlayEffect(ev, ev.Duration);
+            PlayEffect(ev, ev.Duration)
+                .Forget();
         }
         
         private void OnReceiveRestrictionEvent(RestrictionEvent ev)
@@ -141,7 +145,8 @@ namespace RGLabs.InGame.System
 
             to.Core.restrictions[(int)ev.Type] += ev.Duration;
             
-            PlayEffect(ev, ev.Duration);
+            PlayEffect(ev, ev.Duration)
+                .Forget();
         }
 
         private void OnUnitDead(UnitDead unitDead)
@@ -168,7 +173,7 @@ namespace RGLabs.InGame.System
             collection.Add(recover);
 
             recover.Bind(collection, subscription);
-            
+
             Effect.Builder
                 .StartBuild(Constants.RecoverEffect)
                 .To(recover.behaviour.position)
@@ -176,16 +181,18 @@ namespace RGLabs.InGame.System
                 .Run();
         }
 
-        private void PlayEffect(IUnitEvent ev, float duration = 0f)
+        private async UniTask<IEffect> PlayEffect(IUnitEvent ev, float duration = 0f)
         {
             if (string.IsNullOrEmpty(ev.Effect))
-                return;
+                return null;
 
-            Effect.Builder
+            var effect = await Effect.Builder
                 .StartBuild(ev.Effect)
                 .To(ev.To)
                 .Duration(duration)
-                .Run();
+                .RunAsync();
+
+            return effect;
         }
 
         private IDisposable ReserveRecover(WaitRecover recover)

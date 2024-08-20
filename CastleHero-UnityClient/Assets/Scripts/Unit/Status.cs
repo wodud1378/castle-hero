@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RGLabs.Data.Model;
+using RGLabs.InGame.Effects;
+using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.Utility;
 using UnityEngine;
 
@@ -122,7 +124,7 @@ namespace RGLabs.Unit
         {
             multiplyAdjust.Update();
             fixedAdjust.Update();
-            
+
             base.Update();
         }
 
@@ -133,41 +135,58 @@ namespace RGLabs.Unit
 
     public class Shield : CachedValue
     {
-        private readonly List<TimedValue> _timedValues = new();
+        private readonly List<KeyValuePair<TimedValue, IEffect>> _timedValues = new();
+        private const float NotTimedValue = float.MinValue;
 
         private float _value;
 
         public void Init(IList<IUpdate> root) => root.Add(this);
 
-        protected override float Value => _value + _timedValues.Sum(x => x.value);
-
-        public void Increase(float val) => _value += val;
-
-        public void Increase(float val, float time) => _timedValues.Add(new TimedValue
-        {
-            leftTime = time,
-            value = val,
-        });
+        protected override float Value => _timedValues.Sum(x => x.Key.value);
         
+        public void Increase(float val, IEffect effect)
+        {
+            _timedValues.Add(new KeyValuePair<TimedValue, IEffect>(
+                new TimedValue
+                {
+                    leftTime = NotTimedValue,
+                    value = val
+                },
+                effect)
+            );
+        }
+
+        public void Increase(float val, float time, IEffect effect)
+        {
+            _timedValues.Add(new KeyValuePair<TimedValue, IEffect>(
+                new TimedValue
+                {
+                    leftTime = time,
+                    value = val
+                },
+                effect)
+            );
+        }
+
         public void Decrease(float val, out float @protected, out float left)
         {
             left = val;
             @protected = 0f;
             foreach (var timedValue in _timedValues)
             {
-                float diff = timedValue.value - left;
+                float diff = timedValue.Key.value - left;
                 float damage;
                 if (diff < 0)
                 {
-                    damage = timedValue.value;
+                    damage = timedValue.Key.value;
                     left = Mathf.Abs(diff);
                 }
                 else
                 {
                     damage = diff;
                 }
-                
-                timedValue.value -= damage;
+
+                timedValue.Key.value -= damage;
                 @protected += damage;
                 left = Mathf.Abs(diff);
             }
@@ -176,8 +195,24 @@ namespace RGLabs.Unit
         public override void Update()
         {
             float deltaTime = Time.deltaTime;
-            _timedValues.ForEach(x => x.leftTime -= deltaTime);
-            _timedValues.RemoveAll((item) => item.leftTime <= 0 || item.value <= 0);
+            _timedValues.ForEach(x =>
+            {
+                if (x.Key.leftTime <= NotTimedValue)
+                    return;
+
+                x.Key.leftTime -= deltaTime;
+            });
+            
+            _timedValues.RemoveAll((item) =>
+            {
+                bool isRemove = item.Key.value <= 0 || item.Key.leftTime is > NotTimedValue and <= 0f;
+                if (isRemove && item.Value != null)
+                {
+                    item.Value.Stop();
+                }
+
+                return isRemove;
+            });
 
             base.Update();
         }

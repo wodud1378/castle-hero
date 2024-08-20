@@ -23,9 +23,8 @@ namespace RGLabs.Data
     
     public static class Storage
     {
-        public static readonly SettingRepository settingRepository = new();
-        public static readonly InGameRepository inGameRepository = new();
-        
+        public static SettingRepository settingRepository;
+        public static InGameRepository inGameRepository;
         public static UserRepository userRepository;
         public static DBCollections db;
         public static LocalizeText localize;
