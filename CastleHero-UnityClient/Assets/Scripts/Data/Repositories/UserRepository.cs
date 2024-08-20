@@ -297,7 +297,7 @@ namespace RGLabs.Data.Repositories
 
         public int StageFocus
         {
-            get => PlayerPrefs.GetInt(StageFocusKey, gameRecord.lastClearedStage.Value);
+            get => PlayerPrefs.GetInt(StageFocusKey, Mathf.Max(1, gameRecord.lastClearedStage.Value));
             private set => PlayerPrefs.SetInt(StageFocusKey, value);
         }
 
@@ -310,7 +310,6 @@ namespace RGLabs.Data.Repositories
         public readonly ShopRecord shopRecord;
 
         private const string StageFocusKey = "stage-focus";
-        private const string DungeonFocusKey = "dungeon-focus-type_";
 
         public UserRepository(string nickname, UserDataDto dto)
         {

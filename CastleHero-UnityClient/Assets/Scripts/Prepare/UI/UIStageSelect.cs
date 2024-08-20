@@ -88,7 +88,7 @@ namespace RGLabs.Prepare.UI
                 dataIndex = 0;
 
             if (!stages.TryFindIndex(Storage.userRepository.gameRecord.lastClearedStage.Value, out int userIndex))
-                userIndex = 0;
+                userIndex = -1;
 
             _prev.gameObject.SetActive(dataIndex > 0);
             _next.gameObject.SetActive(

@@ -32,6 +32,8 @@ namespace RGLabs.Title
         {
             var service = new BootService(_config, this);
             service.Start().Forget();
+            
+            Context.sounds = _soundManager;
         }
 
         public UniTask OnError(Response response)
@@ -79,6 +81,7 @@ namespace RGLabs.Title
 
         public void OnInitDone()
         {
+            Context.sounds = null;
             Loading.NextScene = "Main";
         }
 
