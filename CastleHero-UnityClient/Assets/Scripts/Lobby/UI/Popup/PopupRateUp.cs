@@ -171,7 +171,7 @@ namespace RGLabs.Lobby.UI.Popup
             _unit.Value = unit;
             _result = result;
             
-            Context.soundManager.PlaySfx(Storage.soundPath.levelUp);
+            Context.sounds.PlaySfx(Storage.soundPath.levelUp);
         }
     }
 }

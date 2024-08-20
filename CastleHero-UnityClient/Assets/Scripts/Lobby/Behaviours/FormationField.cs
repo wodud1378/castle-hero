@@ -168,7 +168,7 @@ namespace RGLabs.Lobby.Behaviours
                 if (!isBarricade &&
                     placed.Value >= capacity.Value)
                 {
-                    Context.popupManager
+                    Context.popups
                         .OpenAsync<PopupCommon>(Storage.localize.Get(593))
                         .Forget();
                     
@@ -186,7 +186,7 @@ namespace RGLabs.Lobby.Behaviours
 
             Save();
             
-            Context.soundManager.PlaySfx(Storage.soundPath.modifyFormation);
+            Context.sounds.PlaySfx(Storage.soundPath.modifyFormation);
 
             return true;
         }

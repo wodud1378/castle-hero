@@ -156,14 +156,14 @@ namespace RGLabs.Lobby.UI.Popup
 
         private async UniTaskVoid OnLevelUp()
         {
-            var popup = await Context.popupManager.OpenAsync<PopupLevelUp>(_unit.Value);
+            var popup = await Context.popups.OpenAsync<PopupLevelUp>(_unit.Value);
 
             HandleGrowthTask(popup).Forget();
         }
 
         private async UniTaskVoid OnUpgrade()
         {
-            var popup = await Context.popupManager.OpenAsync<PopupRateUp>(_unit.Value);
+            var popup = await Context.popups.OpenAsync<PopupRateUp>(_unit.Value);
 
             HandleGrowthTask(popup).Forget();
         }

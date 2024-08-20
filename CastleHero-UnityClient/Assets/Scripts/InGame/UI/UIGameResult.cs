@@ -56,7 +56,7 @@ namespace RGLabs.InGame.UI
 
             if (result.isCleared)
             {
-                Context.soundManager.PlaySfx(Storage.soundPath.gameClear);
+                Context.sounds.PlaySfx(Storage.soundPath.gameClear);
                 
                 await UniTask.WhenAll(
                     _growthList.Init(transitions),
@@ -70,7 +70,7 @@ namespace RGLabs.InGame.UI
             }
             else
             {
-                Context.soundManager.PlaySfx(Storage.soundPath.gameFailed);
+                Context.sounds.PlaySfx(Storage.soundPath.gameFailed);
                 
                 Activate();
             }

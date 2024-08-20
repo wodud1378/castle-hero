@@ -94,7 +94,7 @@ namespace RGLabs.InGame
 
         public void OnStart()
         {
-            Context.soundManager.PlayBgm(_entity.Bgm);
+            Context.sounds.PlayBgm(_entity.Bgm);
             
             SetConditions();
             
@@ -180,7 +180,7 @@ namespace RGLabs.InGame
 
             if (isEnd)
             {
-                Context.soundManager.StopBgm();
+                Context.sounds.StopBgm();
                 
                 OnFinished?.Invoke(new GameFinished
                 {

@@ -81,7 +81,7 @@ namespace RGLabs.Utility
                 .Subscribe(_ =>
                 {
                     if(!string.IsNullOrEmpty(clickSfx))
-                        Context.soundManager.PlaySfx(clickSfx);
+                        Context.sounds.PlaySfx(clickSfx);
                     
                     onClick.Invoke();
                 })

@@ -69,7 +69,7 @@ namespace RGLabs.Common.UI
             if (OnClick == null)
                 return;
 
-            Context.soundManager.PlaySfx(Storage.soundPath.button);
+            Context.sounds.PlaySfx(Storage.soundPath.button);
             OnClick.Invoke(this);
         }
     }

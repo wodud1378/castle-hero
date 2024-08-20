@@ -59,6 +59,6 @@ namespace RGLabs.Lobby.UI
 
         protected override void OnBack() { }
 
-        private void OpenPopup<T>() where T : PopupBase => Context.popupManager.OpenAsync<T>().Forget();
+        private void OpenPopup<T>() where T : PopupBase => Context.popups.OpenAsync<T>().Forget();
     }
 }

@@ -73,7 +73,7 @@ namespace RGLabs.Lobby.UI.Popup
             var data = GetOrCreateFromCache(_entity.Value.groupId);
             var infoString = BuildInfoString(data);
 
-            var popup = await Context.popupManager
+            var popup = await Context.popups
                 .OpenAsync<PopupCommon>(infoString);
 
             var buttonRect = (_info.transform as RectTransform)!;
@@ -205,13 +205,13 @@ namespace RGLabs.Lobby.UI.Popup
 
             if (result.summoneds.Count > 1)
             {
-                var direction = await Context.popupManager
+                var direction = await Context.popups
                     .OpenAsync<PopupSummonDirection>(result);
 
                 await direction.DisplayTask;
             }
 
-            Context.popupManager
+            Context.popups
                 .OpenAsync<PopupSummonResult>(result)
                 .Forget();
         }
@@ -233,7 +233,7 @@ namespace RGLabs.Lobby.UI.Popup
 
             if (!isEnough && openPopup)
             {
-                Context.popupManager
+                Context.popups
                     .OpenAsync<PopupCommon>("재화 혹은 아이템 부족해유")
                     .Forget();
             }

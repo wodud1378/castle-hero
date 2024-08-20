@@ -25,8 +25,8 @@ namespace RGLabs.Common.Behaviours
         public static CastleFactory castleFactory;
         
         public static StartButton startButton;
-        public static PopupManager popupManager;
-        public static SoundManager soundManager;
+        public static PopupManager popups;
+        public static SoundManager sounds;
         public static UILock uiLock;
         public static UIToolTip toolTip;
         
@@ -52,8 +52,8 @@ namespace RGLabs.Common.Behaviours
                 startButton = _startButton;
                 startButton.StageSelect.Init();
             
-                popupManager = _popupManager;
-                soundManager = _soundManager;
+                popups = _popupManager;
+                sounds = _soundManager;
             
                 InitSubscriptions();
 
@@ -91,7 +91,7 @@ namespace RGLabs.Common.Behaviours
             startButton.enabled = true;
             Transition.CurrentState = Storage.entranceData.state;
             
-            soundManager.PlayBgm(Storage.soundPath.lobbyBgm);
+            sounds.PlayBgm(Storage.soundPath.lobbyBgm);
 
             if (entrance.state == State.Lobby && entrance.link != Entrance.Link.None)
             {

@@ -100,7 +100,7 @@ namespace RGLabs.Prepare.UI
 
             if (fieldUnitCount <= 0)
             {
-                Context.popupManager
+                Context.popups
                     .OpenAsync<PopupCommon>(Storage.localize.Get(594))
                     .Forget();
 

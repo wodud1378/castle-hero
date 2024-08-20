@@ -85,7 +85,7 @@ namespace RGLabs.Castle
             _repository.gameRecord.castleLv.Value = result.lv;
             _repository.currency.Update(result.leftCurrency);
             
-            Context.soundManager.PlaySfx(Storage.soundPath.levelUp);
+            Context.sounds.PlaySfx(Storage.soundPath.levelUp);
         }
     }
 }

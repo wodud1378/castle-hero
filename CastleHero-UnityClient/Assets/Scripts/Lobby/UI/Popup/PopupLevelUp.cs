@@ -217,7 +217,7 @@ namespace RGLabs.Lobby.UI.Popup
             _selected.Value = slot;
             _result = result;
             
-            Context.soundManager.PlaySfx(Storage.soundPath.levelUp);
+            Context.sounds.PlaySfx(Storage.soundPath.levelUp);
         }
     }
 }

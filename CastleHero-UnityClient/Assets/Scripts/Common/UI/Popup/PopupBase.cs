@@ -41,9 +41,9 @@ namespace RGLabs.Common.UI.Popup
 
         public virtual UniTask Open() => UniTask.CompletedTask;
 
-        private void OnEnable() => Context.soundManager.PlaySfx(Storage.soundPath.openPopup);
+        private void OnEnable() => Context.sounds.PlaySfx(Storage.soundPath.openPopup);
 
-        private void OnDisable() => Context.soundManager.PlaySfx(Storage.soundPath.closePopup);
+        private void OnDisable() => Context.sounds.PlaySfx(Storage.soundPath.closePopup);
 
         public async UniTask CloseAsync()
         {

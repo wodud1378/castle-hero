@@ -130,7 +130,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             repository.inventory.Add(items);
             repository.inventory.Update(leftItem);
             
-            Context.popupManager
+            Context.popups
                 .OpenAsync<PopupReceivedItems>(currency, items)
                 .Forget();
 
@@ -148,7 +148,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             if (!Storage.db.summons.TryFind(x => x.item.Contains(ticketId), out var entity))
                 return;
             
-            Context.popupManager
+            Context.popups
                 .OpenAsync<PopupSummon>(entity)
                 .Forget();
             
