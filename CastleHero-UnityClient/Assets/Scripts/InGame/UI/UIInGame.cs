@@ -39,8 +39,10 @@ namespace RGLabs.InGame.UI
         [SerializeField] private string _healPrefab;
         [SerializeField] private string _shieldPrefab;
         
-        private void Awake()
+        protected override void OnAwake()
         {
+            base.OnAwake();
+            
             this.SubscribeButton(_pause, ()=> SetPause(true));
             this.SubscribeButton(_speedUp, () =>
             {
@@ -56,8 +58,7 @@ namespace RGLabs.InGame.UI
             this.SubscribeMessage<HealResult>(OnHealResult);
             this.SubscribeMessage<ShieldResult>(OnShieldResult);
         }
-
-
+        
         protected override void OnBack() { }
 
         private async void OnAtkResult(AtkResult result)

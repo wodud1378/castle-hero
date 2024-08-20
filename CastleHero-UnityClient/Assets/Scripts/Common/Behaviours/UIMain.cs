@@ -4,7 +4,6 @@ using RGLabs.Common.UI;
 using RGLabs.Data;
 using RGLabs.Utility;
 using UnityEngine;
-using UnityEngine.U2D;
 using UnityEngine.UI;
 
 namespace RGLabs.Common.Behaviours
@@ -23,11 +22,13 @@ namespace RGLabs.Common.Behaviours
         private readonly int _openHashId = Animator.StringToHash("Entrance");
         private readonly int _closeHashId = Animator.StringToHash("Exit");
 
-        private void Awake()
+        protected virtual void OnAwake()
         {
             if(_back != null)
                 this.SubscribeButton(_back, OnBack, Storage.soundPath.back);
         }
+
+        private void Awake() => OnAwake();
 
         public void Open()
         {

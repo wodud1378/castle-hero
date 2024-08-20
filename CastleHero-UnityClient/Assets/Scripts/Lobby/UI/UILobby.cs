@@ -30,9 +30,11 @@ namespace RGLabs.Lobby.UI
         // Test.
         [SerializeField] private UITest _uiTest;
         [SerializeField] private Button _cheatButton;
-
-        private void Awake()
+        
+        protected override void OnAwake()
         {
+            base.OnAwake();
+            
             this.SubscribeButton(_cheatButton, ()=> _uiTest.Open());
             this.SubscribeButton(_characters, OpenPopup<PopupCharacterList>);
             this.SubscribeButton(_inventory, OpenPopup<PopupInventory>);

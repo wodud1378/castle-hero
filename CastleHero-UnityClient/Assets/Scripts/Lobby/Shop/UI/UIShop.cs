@@ -14,7 +14,6 @@ namespace RGLabs.Lobby.Shop.UI
     {
         [SerializeField] private UIShopCategoryList _itemList;
         [SerializeField] private RectTransform _withdrawalRoot;
-        
 
         protected override void OnBack()
         {

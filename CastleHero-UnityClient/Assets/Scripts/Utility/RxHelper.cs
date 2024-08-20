@@ -80,7 +80,7 @@ namespace RGLabs.Utility
                 .ThrottleFirst(TimeSpan.FromSeconds(clickThreshold))
                 .Subscribe(_ =>
                 {
-                    if(!string.IsNullOrEmpty(clickSfx))
+                    if(!string.IsNullOrEmpty(clickSfx) && Context.sounds != null)
                         Context.sounds.PlaySfx(clickSfx);
                     
                     onClick.Invoke();

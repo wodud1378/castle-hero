@@ -23,8 +23,10 @@ namespace RGLabs.Castle
 
         private UserRepository _repository;
         
-        private void Awake()
+        protected override void OnAwake()
         {
+            base.OnAwake();
+            
             _repository = Storage.userRepository;
             _repository.currency.gold
                 .Subscribe(OnUpdateGold)
