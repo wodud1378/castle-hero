@@ -6,7 +6,6 @@ using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Data;
 using RGLabs.InGame.Behaviours;
-using RGLabs.Network.Shared;
 using RGLabs.Prepare.UI;
 using RGLabs.Utility;
 using UnityEngine;
@@ -49,7 +48,6 @@ namespace RGLabs.InGame.UI
         public async UniTaskVoid Open(GameResult result)
         {
             var data = result.data;
-            var transitions = GetTransition(data);
 
             UpdateUI(result);
 
@@ -58,8 +56,8 @@ namespace RGLabs.InGame.UI
                 Context.sounds.PlaySfx(Storage.soundPath.gameClear);
                 
                 await UniTask.WhenAll(
-                    _growthList.Init(transitions),
-                    _rewardList.Init(result.data.GetRewardsForDisplay()));
+                    _growthList.Init(data.transitions),
+                    _rewardList.Init(data.GetRewardsForDisplay()));
 
                 Activate();
 
@@ -81,24 +79,6 @@ namespace RGLabs.InGame.UI
         {
             gameObject.SetActive(true);
             _animtor.SetTrigger(EntranceHash);
-        }
-
-        private List<UnitTransition> GetTransition(GameCleared data)
-        {
-            List<UnitTransition> transitions = null;
-            if (data is StageCleared stageResult)
-            {
-                transitions = stageResult.transitions;
-            }
-
-            if (transitions == null)
-            {
-                transitions = Storage.inGameRepository.characters
-                    .Select(unit => UnitTransition.Create(unit.Info))
-                    .ToList();
-            }
-
-            return transitions;
         }
 
         private async void CloseWith(Action onClose)

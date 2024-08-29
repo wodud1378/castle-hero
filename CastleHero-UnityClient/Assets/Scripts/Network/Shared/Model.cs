@@ -3,18 +3,9 @@ using System.Collections.Generic;
 using RGLabs.Common;
 using RGLabs.Data;
 using RGLabs.Prepare.UI;
-using RGLabs.Utility;
 
 namespace RGLabs.Network.Shared
 {
-    public class ProfileDto
-    {
-        public int iconId;
-        public int stage;
-        public int focusedStage;
-        public int castleLv;
-    }
-
     public class ActDto
     {
         public int point;
@@ -317,8 +308,6 @@ namespace RGLabs.Network.Shared
 
     public class Summon
     {
-        public CurrencyDto leftCurrency;
-        public IItem leftItem;
         public List<ISummoned> list;
     }
 
@@ -455,14 +444,6 @@ namespace RGLabs.Network.Shared
 
             return rewards;
         }
-    }
-
-    public class DungeonCleared : GameCleared
-    {
-    }
-
-    public class StageCleared : GameCleared
-    {
     }
 
     #endregion
