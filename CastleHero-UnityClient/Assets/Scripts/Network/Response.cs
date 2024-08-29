@@ -1,3 +1,4 @@
+using System;
 using BackEnd;
 using LitJson;
 using RGLabs.Utility;
@@ -13,42 +14,66 @@ namespace RGLabs.Network
         ServerError,
         UnknownError,
         Maintenance,
-        InvalidRequest
+    }
+    
+    public enum Error
+    {
+        None,
+        FromNetwork,
+        Unauthorized,
+        Maintenance,
+        Unknown,
+        FromServer,
+        InvalidRequest,
+        
+        // Common.
+        ChartLoadFailed,
+        DBReadFailed,
+        DBWriteFailed,
+        DataNotFound,
+        InvalidData,
+        NotEnoughCurrency,
+        NotEnoughItem,
+        UnitNotFound,
+
+        // InGame.
+        NotEnoughAp,
+        NotOpened,
+        InvalidDayOfWeek,
+
+        // Character.
+        AlreadyEquipped,
+        NotEquipped,
+
+        // Unit (Castle, Character).
+        AlreadyMaxLv,
+
+        // Shop.
+        SoldOut,
+        SoldOutByType,
+        InvalidPaymentType,
+        InvalidDate,
+        NotOpenedProduct,
     }
 
     public class Response
     {
-        public bool IsSuccess => result == ResultCode.Success;
+        public bool IsSuccess => error == Error.None;
 
-        public int statusCode;
-        public ResultCode result;
-        public JsonData rawData;
+        public readonly int statusCode;
+        public readonly Error error;
+        public readonly BackendReturnObject raw;
 
-        public Response(BackendReturnObject raw)
+        public Response(BackendReturnObject raw, Error error = Error.None)
         {
-            result = GetResult(raw);
             statusCode = int.Parse(raw.GetStatusCode());
-            rawData = raw.HasReturnValue()
-                ? raw.FlattenRows()
-                : null;
+            this.error = error;
+
+            this.raw = raw;
 
             Debug.Log(raw.HasReturnValue()
                 ? raw.GetReturnValuetoJSON().ToJson()
                 : raw.GetMessage());
-        }
-
-        private ResultCode GetResult(BackendReturnObject obj)
-        {
-            return obj.IsSuccess()
-                ? ResultCode.Success
-                : obj.GetErrorCode() switch
-                {
-                    "NetworkError" => ResultCode.NetworkError,
-                    "UnauthorizedException" => ResultCode.AuthenticationError,
-                    "ServerException" => ResultCode.ServerError,
-                    "Maintenance" => ResultCode.Maintenance,
-                    _ => ResultCode.UnknownError
-                };
         }
     }
 
@@ -67,12 +92,12 @@ namespace RGLabs.Network
         
         public Response(BackendReturnObject raw, Convert convert = null) : base(raw)
         {
-            if (result != ResultCode.Success)
+            if (!IsSuccess)
                 return;
 
             if (convert == null)
             {
-                var str = JsonMapper.ToJson(rawData);
+                var str = JsonMapper.ToJson(base.raw);
                 data = JsonMapper.ToObject<T>(str);
             }
             else

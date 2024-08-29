@@ -98,7 +98,7 @@ namespace RGLabs.Data.DB
             {
                 if (!predicate.Invoke(x))
                     return;
-                
+
                 list.Add(x);
             });
 
@@ -138,6 +138,52 @@ namespace RGLabs.Data.DB
             {
                 action.Invoke(entity);
             }
+        }
+
+        public void BinarySearch(Action<T> onFound)
+            => BinarySearch(onFound, 0, Length);
+        
+        public T BinarySearch(Predicate<T> predicate)
+            => BinarySearch(predicate, 0, Length);
+
+        private void BinarySearch(Action<T> action, int startIndex, int count)
+        {
+            if (count == 0)
+                return;
+
+            int midIndex = startIndex + count / 2;
+            T midData = entities[midIndex];
+
+            // 중간 데이터에 대해 Action 실행
+            action(midData);
+
+            // 왼쪽 절반 탐색
+            BinarySearch(action, startIndex, count / 2);
+
+            // 오른쪽 절반 탐색
+            BinarySearch(action, midIndex + 1, count - (count / 2) - 1);
+        }
+        
+        private T BinarySearch(Predicate<T> predicate, int startIndex, int count)
+        {
+            if (count == 0)
+                return FallBackEntity();
+
+            int midIndex = startIndex + count / 2;
+            T midData = entities[midIndex];
+
+            if (predicate(midData))
+            {
+                return midData;
+            }
+
+            var leftResult = BinarySearch(predicate, startIndex, count / 2);
+            if (leftResult != null)
+            {
+                return leftResult;
+            }
+
+            return BinarySearch(predicate, midIndex + 1, (count - 1) / 2);
         }
 
         public void ClearCache()
@@ -182,7 +228,7 @@ namespace RGLabs.Data.DB
 
         public T FallBackEntity()
         {
-            return new() { IsValid = true };
+            return new() { IsValid = false };
         }
 
         protected virtual void Convert(object from, ref T to)

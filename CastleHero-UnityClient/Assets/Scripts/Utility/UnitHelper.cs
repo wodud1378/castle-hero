@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Network.Shared;
 using RGLabs.Unit;
@@ -96,6 +97,90 @@ namespace RGLabs.Utility
     
     public static class UnitHelper
     {
+        public static void CalculateLvUp(int startLv, int startExp, ItemEntity item, int quantity, 
+            out int lv, out int exp, out int leftItem, out int price)
+        {
+            lv = startLv;
+            exp = startExp;
+            leftItem = quantity;
+            price = 0;
+
+            var option = item.GetConsumableOption();
+            if (option.type != ConsumeType.Exp)
+                return;
+            
+            var db = Storage.db.levels;
+            int maxLv = db[^1].Id;
+            var itemValue = (int)option.value;
+            while (leftItem > 0 && db.TryFind(lv, out var entity))
+            {
+                int forNext = entity.exp;
+                int requireExp = forNext - exp;
+                int requireCount = Mathf.CeilToInt((float)requireExp / itemValue);
+                int consume = Mathf.Min(leftItem, requireCount);
+                exp += consume * itemValue;
+                leftItem -= consume;
+
+                int remain = exp - forNext;
+                if (remain >= 0)
+                {
+                    ++lv;
+                    exp = lv >= maxLv ? 0 : remain;
+                }
+            }
+        }
+
+        public static void CalculateLvUp(int startLv, int startExp, int expAmount, out int lv, out int exp)
+        {
+            lv = startLv;
+            exp = startExp;
+            
+            var db = Storage.db.levels;
+            int maxLv = db[^1].Id;
+
+            while (db.TryFind(lv, out var entity) && expAmount > 0)
+            {
+                int forNext = entity.exp;
+                int requireExp = forNext - exp;
+                int add = Mathf.Min(requireExp, expAmount);
+                exp += add;
+                expAmount -= add;
+
+                int remain = exp - forNext;
+                if (remain >= 0)
+                {
+                    ++lv;
+                    exp = lv >= maxLv ? 0 : remain;
+                }
+            }
+        }
+
+        public static void CalculateUpgrade(int unitId, int startRate, ItemEntity item, int quantity,
+            out int rate,
+            out int leftItem,
+            out int price)
+        {
+            rate = startRate;
+            leftItem = quantity;
+            price = 0;
+
+            if (!Storage.db.units.TryFind(unitId, out var unitEntity) ||
+                unitEntity.soulItemId != item.Id)
+                return;
+            
+            var db = Storage.db.rates;
+            
+            while (leftItem > 0 && db.TryFind(rate, out var entity))
+            {
+                int requireSoul = entity.soul;
+                if (leftItem < requireSoul)
+                    break;
+
+                leftItem -= requireSoul;
+                price += entity.gold;
+            }
+        }
+        
         public static void AdditionalStatus(this UnitBalanceEntity balanceData, int lv, int rate, out Dictionary<Status.Type, float> stats, out int skillLv)
         {
             skillLv = 1;

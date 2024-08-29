@@ -21,7 +21,7 @@ namespace RGLabs.Lobby.UI.Popup
 {
     public interface IGrowthTask
     {
-        public UniTask<GrowthResult> GrowthTask { get; }
+        public UniTask<UnitGrowth> GrowthTask { get; }
     }
 
     [PrefabPath("Lobby/UI/Prefabs/Popup_CharInfo.prefab")]
@@ -168,9 +168,9 @@ namespace RGLabs.Lobby.UI.Popup
             HandleGrowthTask(popup).Forget();
         }
 
-        private async UniTaskVoid HandleGrowthTask(IGrowthTask task)
+        private async UniTaskVoid HandleGrowthTask(PopupGrowth popup)
         {
-            var growth = await task.GrowthTask;
+            var growth = await popup.GrowthTask;
 
             if (growth == null)
                 return;

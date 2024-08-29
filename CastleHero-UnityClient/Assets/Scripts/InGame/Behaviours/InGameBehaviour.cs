@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BackEnd;
@@ -80,16 +81,24 @@ namespace RGLabs.InGame.Behaviours
         
         private async void OnFinished(GameFinished finished)
         {
-            var data = finished.isCleared
-                ? await NetworkService.Game.Clear(finished.type, finished.id)
-                : null;
+            // var data = finished.isCleared
+            //     ? await NetworkService.Game.Clear(finished.type, finished.id)
+            //     : null;
+            //
+            // new GameResult
+            // {
+            //     isCleared = finished.isCleared,
+            //     type = finished.type,
+            //     data = data
+            // }.Publish();
             
-            new GameResult
+            await UniTask.Delay(TimeSpan.FromSeconds(1f));
+            
+            Exit(new ExitGame
             {
-                isCleared = finished.isCleared,
-                type = finished.type,
-                data = data
-            }.Publish();
+                code = ExitCode.Exit,
+                link = Entrance.Link.None
+            });
         }
 
         private void InitGlobalSkills()
@@ -101,6 +110,7 @@ namespace RGLabs.InGame.Behaviours
 
         private void Exit(ExitGame exit)
         {
+            
             _handler.OnExit(exit);
 
             var task = NetworkService.User.GetUserData()

@@ -38,6 +38,12 @@ namespace RGLabs.Data.Model
 
         public int Exp => exp;
 
+        [DataField("Stage_Rwd_First")] 
+        public int firstClearRewardId;
+        
+        [DataField("Stage_Rwd_First_Value")] 
+        public int firstClearRewardQty;
+
         [DataField("Stage_Rwd_Exp")]
         public int exp; 
 
@@ -50,7 +56,7 @@ namespace RGLabs.Data.Model
         [DataField("Stage_Rwd_Item_Value")]
         public int propItemQty;
 
-        public List<Reward> GetRewardItems()
+        public List<Reward> GetRewardsForDisplay()
         {
             var rewards = new List<Reward>();
 

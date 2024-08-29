@@ -25,6 +25,9 @@ namespace RGLabs.Common.Behaviours
                 .Subscribe(OnPopupCollectionChanged)
                 .AddTo(this);
         }
+
+        public void Open<T>(params object[] parameters) where T : PopupBase
+            => OpenAsync<T>(parameters).Forget();
         
         public async UniTask<T> OpenAsync<T>(params object[] parameters) where T : PopupBase
         {

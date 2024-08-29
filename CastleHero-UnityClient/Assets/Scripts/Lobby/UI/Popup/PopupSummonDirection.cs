@@ -75,11 +75,11 @@ namespace RGLabs.Lobby.UI.Popup
         {
             _close.gameObject.SetActive(false);
 
-            var data = (SummonResult)parameters[0];
+            var data = (Summon)parameters[0];
             _completionSource = new();
 
             var tasks = new List<UniTask>();
-            using var itr = data.summoneds.GetEnumerator();
+            using var itr = data.list.GetEnumerator();
             int index = 0;
             while (index.IsValidIndex(_slots))
             {

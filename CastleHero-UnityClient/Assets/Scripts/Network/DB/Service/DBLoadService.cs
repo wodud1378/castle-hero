@@ -65,7 +65,7 @@ namespace RGLabs.Network.DB.Service
         private async UniTask<(string chartName, int id, JsonData rawData)> GetChartContent(string chartName, int id)
         {
             var response = await _service.GetChartContent(id.ToString());
-            var raw = response.rawData;
+            var raw = response.raw.FlattenRows();
 
             return (chartName, id, raw);
         }

@@ -17,7 +17,7 @@ using UnityEngine.UI;
 namespace RGLabs.Lobby.UI.Popup
 {
     [PrefabPath("Lobby/UI/Prefabs/Popup_LevelUp.prefab")]
-    public class PopupLevelUp : PopupBase, IGrowthTask
+    public class PopupLevelUp : PopupGrowth
     {
         private const int ExpSmallId = 52001;
         private const int ExpMediumId = 52002;
@@ -33,24 +33,13 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private TMP_Text _maxCount;
         [SerializeField] private TMP_Text _gold;
 
-        [SerializeField] private UIItemSlot _goldSlot;
-        [SerializeField] private Button _confirm;
-
-        public UniTask<GrowthResult> GrowthTask => _completionSource.Task;
-
-        private UniTaskCompletionSource<GrowthResult> _completionSource;
-        private GrowthResult _result;
-
-        private readonly ReactiveProperty<UnitInfo> _unit = new();
         private readonly ReactiveProperty<UIItemSlot> _selected = new();
+
+        protected override CharacterService.GrowthAction Action => CharacterService.GrowthAction.Lv;
 
         protected override void OnAwake()
         {
             base.OnAwake();
-
-            Storage.userRepository.currency.gold
-                .Subscribe(UpdateGoldSlot)
-                .AddTo(this);
 
             _slider.onValueChanged
                 .AsObservable()
@@ -60,43 +49,28 @@ namespace RGLabs.Lobby.UI.Popup
             _selected
                 .Subscribe(OnSlotSelected)
                 .AddTo(this);
-
-            _unit
-                .Subscribe(OnUnitChanged)
+            
+            Storage.userRepository.inventory.items
+                .ChangeAsObservable()
+                .ThrottleFrame(1)
+                .Subscribe(_ =>
+                {
+                    InitItemSlots()
+                        .ContinueWith(()=> _selected.Value = _selected.Value)
+                        .Forget();
+                })
                 .AddTo(this);
 
             _expSlotS.OnClick += (x) => _selected.Value = (UIItemSlot)x;
             _expSlotM.OnClick += (x) => _selected.Value = (UIItemSlot)x;
             _expSlotL.OnClick += (x) => _selected.Value = (UIItemSlot)x;
-
-            this.SubscribeButton(_confirm, () => Confirm().Forget());
         }
 
-        public override async UniTask Open(params object[] parameters)
+        public override UniTask Open(params object[] parameters)
         {
-            _completionSource = new();
-            await InitItemSlots();
-
-            if (parameters.Length > 0 && parameters[0] is UnitInfo unit)
-                _unit.Value = unit;
-
             _gold.text = "0";
-        }
 
-        protected override void OnClose()
-        {
-            base.OnClose();
-
-            _completionSource.TrySetResult(_result);
-        }
-
-        private void UpdateGoldSlot(int gold)
-        {
-            _goldSlot.Init(new Item
-            {
-                ItemId = Constants.GoldId,
-                Quantity = gold
-            });
+            return UniTask.WhenAll(base.Open(parameters), InitItemSlots());
         }
 
         private UniTask InitItemSlots()
@@ -123,15 +97,20 @@ namespace RGLabs.Lobby.UI.Popup
                    ?? new Item { ItemId = id, };
         }
 
-        private void OnUnitChanged(UnitInfo unit)
+        protected override void OnUnitChanged(UnitInfo unit)
         {
-            if (unit == null)
-                return;
-
             _level.Set(unit);
 
             _slider.value = 0;
             _selected.Value = _expSlotS;
+        }
+
+        protected override (int id, int quantity) ConsumeItem()
+        {
+            var selected = _selected.Value;
+            return selected != null 
+                ? (selected.Item.ItemId, (int)_slider.value) 
+                : default;
         }
 
         private void OnSliderValueChanged(float value)
@@ -143,40 +122,26 @@ namespace RGLabs.Lobby.UI.Popup
             if (count == 0)
             {
                 _level.ReleaseOverride();
+                _gold.text = "0";
                 return;
             }
 
             var unit = _unit.Value;
-            Calculate(unit.lv, unit.exp, out int lv, out int exp, out int gold);
+            int itemQty = (int)_slider.value;
+            UnitHelper.CalculateLvUp(unit.lv, unit.exp, _selected.Value.Entity, itemQty,
+                out int lv, out int exp, out int leftItem, out int price);
 
-            bool hasEnoughGold = gold <= Storage.userRepository.currency.gold.Value;
+            bool hasEnoughGold = price <= Storage.userRepository.currency.gold.Value;
             _goldSlot.QuantityLabelColor = hasEnoughGold 
                 ? Color.white
                 : StringHelper.NegativeColor;
 
-            _gold.text = gold.CurrencyText();
+            _gold.text = price.CurrencyText();
             _level.SetOverride(lv, exp);
             _confirm.interactable = hasEnoughGold;
-        }
-
-        private void Calculate(int startLv, int startExp, out int endLv, out int endExp, out int requireGold)
-        {
-            endLv = startLv;
-            endExp = startExp;
-            requireGold = 0;
-
-            var option = _selected.Value.Entity.GetConsumableOption();
-
-            endExp = (int)(_slider.value * option.value);
-            var db = Storage.db.levels;
-            int lv = startLv;
-            while (db.TryFind(lv++, out var entity) && endExp - entity.exp > 0)
-            {
-                endLv = entity.Id + 1;
-                requireGold += entity.gold;
-
-                endExp -= entity.exp;
-            }
+            
+            // 루프 방지를 위해 WithoutNotify 사용.
+            _slider.SetValueWithoutNotify(itemQty - leftItem);
         }
 
         private void OnSlotSelected(UIItemSlot slot)
@@ -188,36 +153,6 @@ namespace RGLabs.Lobby.UI.Popup
             _slider.maxValue = slot.Item.Quantity;
 
             _maxCount.text = _slider.maxValue.ToString();
-        }
-
-        private async UniTaskVoid Confirm()
-        {
-            if (_selected.Value.Item is not Item item)
-                return;
-
-            var result = await NetworkService.Character.LevelUp(_unit.Value.id, item.ItemId, (int)_slider.value);
-            var unit = result.transition.unit;
-
-            var slot = new List<UIItemSlot>
-            {
-                _expSlotS,
-                _expSlotM,
-                _expSlotL
-            }.FirstOrDefault(x => x.Item.ItemId == result.leftItem.ItemId)!;
-
-            slot.Init(result.leftItem)
-                .Forget();
-
-            var repository = Storage.userRepository;
-            repository.currency.Update(result.leftCurrency);
-            repository.inventory.Update(result.leftItem);
-            repository.characters.Update(unit);
-
-            _unit.Value = unit;
-            _selected.Value = slot;
-            _result = result;
-            
-            Context.sounds.PlaySfx(Storage.soundPath.levelUp);
         }
     }
 }

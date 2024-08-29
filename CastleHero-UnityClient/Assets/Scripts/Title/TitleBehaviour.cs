@@ -39,9 +39,9 @@ namespace RGLabs.Title
         public UniTask OnError(Response response)
         {
             Debug.LogError(
-                $"[result] :{response.result}\n" +
+                $"[result] :{response.error}\n" +
                 $"[code] : {response.statusCode}" +
-            $"[raw] : {response.rawData.ToJson()}");
+            $"[raw] : {response.raw.GetFlattenJSON().ToJson()}");
             
             return UniTask.CompletedTask;
         }

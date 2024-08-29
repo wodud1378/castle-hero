@@ -59,7 +59,7 @@ namespace RGLabs.InGame.UI
                 
                 await UniTask.WhenAll(
                     _growthList.Init(transitions),
-                    _rewardList.Init(result.data.GetRewardItems()));
+                    _rewardList.Init(result.data.GetRewardsForDisplay()));
 
                 Activate();
 

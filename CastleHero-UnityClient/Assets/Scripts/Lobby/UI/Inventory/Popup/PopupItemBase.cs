@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
@@ -21,9 +22,34 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         public ItemEntity Entity { get; private set; }
 
-        public readonly ReactiveProperty<TItem> item = new();
+        public TItem Item => _item.Value;
+
+        private readonly ReactiveProperty<TItem> _item = new();
 
         private UniTask _updateTask;
+        
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+
+            Storage.userRepository.inventory.items
+                .ChangeAsObservable()
+                .ThrottleFrame(1)
+                .Subscribe(items =>
+                {
+                    var item = _item.Value;
+                    if (item == null)
+                        return;
+                    
+                    _item.Value = items.FirstOrDefault(x => x.ItemId == item.ItemId) as TItem;
+                })
+                .AddTo(this);
+            
+            _item.Subscribe(OnDataInitialized)
+                .AddTo(this);
+            
+            this.SubscribeButton(_sell, Sell);
+        }
         
         public override UniTask Open(params object[] parameters)
         {
@@ -39,12 +65,14 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 return UniTask.FromException(exception);
             }
 
-            item.Value = data;
+            
+
+            _item.Value = data;
             
             return _updateTask;
         }
 
-        private void OnDataInitializedInternal(TItem data)
+        protected virtual void OnDataInitialized(TItem data)
         {
             if (data == null)
                 return;
@@ -58,22 +86,9 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             Entity = entity;
             _sell.gameObject.SetActive(Entity.sellPrice > 0);
             _updateTask = InitSlot(_itemSlot);
-            OnDataInitialized(data);
         }
 
-        protected virtual UniTask InitSlot(TSlot slot) => slot.Init(item.Value, Entity);
-
-        protected abstract void OnDataInitialized(TItem data);
-        
-        protected override void OnAwake()
-        {
-            base.OnAwake();
-
-            item.Subscribe(OnDataInitializedInternal)
-                .AddTo(this);
-            
-            this.SubscribeButton(_sell, Sell);
-        }
+        protected virtual UniTask InitSlot(TSlot slot) => slot.Init(_item.Value, Entity);
         
         private void Sell()
         {

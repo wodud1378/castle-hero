@@ -8,7 +8,7 @@ namespace RGLabs.Network.Service.Login
         public async UniTask<Response> Login()
         {
             Response response = null;
-            for (int i = 0; i < 3 && response is not { result: ResultCode.Success }; ++i)
+            for (int i = 0; i < 3 && response is not { IsSuccess: true }; ++i)
             {
                 response = await Call(Backend.BMember.GuestLogin);
             }

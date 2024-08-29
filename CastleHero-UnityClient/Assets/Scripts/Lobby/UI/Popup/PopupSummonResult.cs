@@ -14,9 +14,9 @@ namespace RGLabs.Lobby.UI.Popup
 
         public override UniTask Open(params object[] parameters)
         {
-            var data = (SummonResult)parameters[0];
+            var data = (Summon)parameters[0];
 
-            return _summonedList.Init(data.summoneds);
+            return _summonedList.Init(data.list);
         }
     }
 }

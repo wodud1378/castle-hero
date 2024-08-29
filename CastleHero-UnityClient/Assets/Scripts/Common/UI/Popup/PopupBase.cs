@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
@@ -23,7 +24,15 @@ namespace RGLabs.Common.UI.Popup
         [SerializeField] protected Animator _animator;
         [SerializeField] protected Button _close;
 
-        private void Awake() => OnAwake();
+        private readonly List<IDisposable> _disposables = new();
+        private bool _onClose;
+        
+        private void Awake()
+        {
+            _onClose = false;
+            
+            OnAwake();
+        }
 
         protected virtual void OnAwake()
         {
@@ -40,6 +49,17 @@ namespace RGLabs.Common.UI.Popup
         public virtual UniTask Open(params object[] parameters) => Open();
 
         public virtual UniTask Open() => UniTask.CompletedTask;
+
+        public void DisposeOnClose(IDisposable disposable)
+        {
+            if (_onClose)
+            {
+                disposable.Dispose();
+                return;
+            }
+            
+            _disposables.Add(disposable);
+        }
 
         private void OnEnable() => PlaySfx(Storage.soundPath.openPopup);
 
@@ -63,8 +83,14 @@ namespace RGLabs.Common.UI.Popup
             Closed();
         }
 
+        public void Close() => CloseAsync().Forget();
+
         protected virtual void OnClose()
         {
+            _onClose = true;
+            
+            _disposables.ForEach(x => x.Dispose());
+            _disposables.Clear();
         }
 
         private UniTask CloseAnimationTask() => TaskHelper.OnAnimationEnd(_animator, CloseTrigger);

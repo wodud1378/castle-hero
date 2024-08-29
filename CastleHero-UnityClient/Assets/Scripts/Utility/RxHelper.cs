@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RGLabs.Common.Behaviours;
+using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using UniRx;
 using UnityEngine;
@@ -55,7 +56,9 @@ namespace RGLabs.Utility
                 });
             });
         }
-
+        
+        public static void AddTo<T>(this T disposable, PopupBase popup) where T : IDisposable => popup.DisposeOnClose(disposable);
+        
         public static void SubscribeMessage<T>(this MonoBehaviour behaviour, Action<T> onReceive)
         {
             MessageBroker.Default
@@ -66,6 +69,21 @@ namespace RGLabs.Utility
 
         public static void Publish<T>(this T data) => MessageBroker.Default.Publish(data);
 
+        public static void SubscribeButton(this PopupBase popup, Button button, Action onClick,
+            float clickThreshold = 0.25f)
+        {
+            SubscribeButton(popup, button, onClick, Storage.soundPath.button, clickThreshold);
+        }
+        
+        public static void SubscribeButton(this PopupBase popup, Button button, Action onClick,
+            string clickSfx, float clickThreshold = 0.25f)
+        {
+            var subscription = ButtonSubscription(button, onClick, clickSfx, clickThreshold);
+            
+            popup.DisposeOnClose(subscription);
+        }
+
+
         public static void SubscribeButton(this MonoBehaviour behaviour, Button button, Action onClick,
             float clickThreshold = 0.25f)
         {
@@ -75,17 +93,21 @@ namespace RGLabs.Utility
         public static void SubscribeButton(this MonoBehaviour behaviour, Button button, Action onClick,
             string clickSfx, float clickThreshold = 0.25f)
         {
-            button
+            ButtonSubscription(button, onClick, clickSfx, clickThreshold).AddTo(behaviour);
+        }
+
+        private static IDisposable ButtonSubscription(Button button, Action onClick, string clickSfx, float clickThreshold)
+        {
+            return button
                 .OnClickAsObservable()
                 .ThrottleFirst(TimeSpan.FromSeconds(clickThreshold))
                 .Subscribe(_ =>
                 {
-                    if(!string.IsNullOrEmpty(clickSfx) && Context.sounds != null)
+                    if (!string.IsNullOrEmpty(clickSfx) && Context.sounds != null)
                         Context.sounds.PlaySfx(clickSfx);
-                    
+
                     onClick.Invoke();
-                })
-                .AddTo(behaviour);
+                });
         }
     }
 }

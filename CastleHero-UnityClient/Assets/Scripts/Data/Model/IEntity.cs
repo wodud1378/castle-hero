@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RGLabs.Network.Shared;
 using RGLabs.Prepare.UI;
 
 namespace RGLabs.Data.Model
@@ -29,6 +30,6 @@ namespace RGLabs.Data.Model
         public int MinGold { get; set; }
         public int MaxGold { get; set; }
 
-        public List<Reward> GetRewardItems();
+        public List<Reward> GetRewardsForDisplay();
     }
 }

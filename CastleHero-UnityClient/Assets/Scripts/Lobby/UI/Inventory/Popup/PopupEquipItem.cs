@@ -40,7 +40,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         {
             var popup = await Context.popups.OpenAsync<PopupCharacterList>();
             popup.clickMethod = PopupCharacterList.ClickMethod.Equip;
-            popup.equipmentId = item.Value.ItemId;
+            popup.equipmentId = Item.ItemId;
         }
 
         private void Release()
@@ -49,6 +49,8 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         protected override void OnDataInitialized(EquipItem data)
         {
+            base.OnDataInitialized(data);
+            
             foreach (var label in _mainStat)
             {
                 var main = data.main;
