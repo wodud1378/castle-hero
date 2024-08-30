@@ -134,26 +134,26 @@ namespace RGLabs.Network.Service
                 : Result<int>.Error(update.error);
         }
 
-        private async UniTask<Result<ActDto>> AddAp(UserDataDto userData, int id, int amount)
+        private async UniTask<Result<StaminaDto>> AddStamina(UserDataDto userData, int id, int amount)
         {
             var inventory = userData.inventory;
-            var act = userData.act;
+            var stamina = userData.stamina;
 
             if (!Storage.db.items.TryFind(id, out var entity))
-                return Result<ActDto>.Error(Error.DataNotFound);
+                return Result<StaminaDto>.Error(Error.DataNotFound);
 
             var option = entity.GetConsumableOption();
             if (option.type != ConsumeType.Ap || !inventory.items.TryConsumeItem(id, amount))
-                return Result<ActDto>.Error(Error.InvalidRequest);
+                return Result<StaminaDto>.Error(Error.InvalidRequest);
 
-            var add = await AddAp(act, amount * (int)option.value);
+            var add = await AddStamina(stamina, amount * (int)option.value);
             if (!add.IsSuccess)
-                return Result<ActDto>.Error(add.error);
+                return Result<StaminaDto>.Error(add.error);
 
             var update = await UpdateTables(userData);
             return update.IsSuccess
-                ? Result<ActDto>.Complete(act)
-                : Result<ActDto>.Error(update.error);
+                ? Result<StaminaDto>.Complete(stamina)
+                : Result<StaminaDto>.Error(update.error);
         }
     }
 }

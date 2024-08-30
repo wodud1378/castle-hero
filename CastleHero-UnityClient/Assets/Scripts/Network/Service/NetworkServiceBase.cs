@@ -14,7 +14,7 @@ namespace RGLabs.Network.Service
 {
     public enum Table
     {
-        Act,
+        Stamina,
         Currency,
         Character,
         Formation,
@@ -121,7 +121,7 @@ namespace RGLabs.Network.Service
 
         protected static readonly Dictionary<Table, string> TableNames = new()
         {
-            { Table.Act, "act" },
+            { Table.Stamina, "stamina" },
             { Table.Currency, "currency" },
             { Table.Character, "characters" },
             { Table.Formation, "formation" },
@@ -255,7 +255,7 @@ namespace RGLabs.Network.Service
                     var jsonData = raw.GetFlattenJSON();
                     return new UserDataDto
                     {
-                        act = FromTransaction<ActDto>(jsonData, TableNames[Table.Act]),
+                        stamina = FromTransaction<StaminaDto>(jsonData, TableNames[Table.Stamina]),
                         currency = FromTransaction<CurrencyDto>(jsonData, TableNames[Table.Currency]),
                         characters = FromTransaction<CharactersDto>(jsonData, TableNames[Table.Character]),
                         formation = FromTransaction<FormationDto>(jsonData, TableNames[Table.Formation]),
@@ -290,7 +290,7 @@ namespace RGLabs.Network.Service
                     var jsonData = raw.GetFlattenJSON();
                     return new UserDataDto
                     {
-                        act = FromTransaction<ActDto>(jsonData, TableNames[Table.Act]),
+                        stamina = FromTransaction<StaminaDto>(jsonData, TableNames[Table.Stamina]),
                         currency = FromTransaction<CurrencyDto>(jsonData, TableNames[Table.Currency]),
                         characters = FromTransaction<CharactersDto>(jsonData, TableNames[Table.Character]),
                         formation = FromTransaction<FormationDto>(jsonData, TableNames[Table.Formation]),
@@ -317,8 +317,8 @@ namespace RGLabs.Network.Service
         protected UniTask<Result> UpdateTables(UserDataDto userData, bool updateStorage = true)
         {
             var tables = new Dictionary<Table, object>();
-            if (userData.act != null)
-                tables.Add(Table.Act, userData.act);
+            if (userData.stamina != null)
+                tables.Add(Table.Stamina, userData.stamina);
 
             if (userData.currency != null)
                 tables.Add(Table.Currency, userData.currency);
@@ -367,55 +367,55 @@ namespace RGLabs.Network.Service
             return Result.Complete();
         }
 
-        protected async UniTask<Result<bool>> HasEnoughAp(ActDto act, int point)
+        protected async UniTask<Result<bool>> HasEnoughAp(StaminaDto stamina, int point)
         {
-            var update = await UpdateAct(act);
+            var update = await UpdateStamina(stamina);
             if (!update.IsSuccess)
                 return Result<bool>.Error(update.error);
 
-            return Result<bool>.Complete(act.point >= point);
+            return Result<bool>.Complete(stamina.point >= point);
         }
 
-        protected async UniTask<Result> UpdateAct(ActDto act)
+        protected async UniTask<Result> UpdateStamina(StaminaDto stamina)
         {
             const int intervalMinute = 10;
             const int amountPerMinute = 1;
 
-            if (act.point < act.pointLimit)
+            if (stamina.point < stamina.pointLimit)
             {
                 var serverTime = await GetServerTime();
                 if (!serverTime.IsSuccess)
                     return Result.Error(serverTime.error);
 
                 var now = serverTime.data;
-                int cycle = (int)((now - act.lastUpdate).TotalMinutes / intervalMinute);
+                int cycle = (int)((now - stamina.lastUpdate).TotalMinutes / intervalMinute);
                 if (cycle > 0)
                 {
                     int amount = cycle * amountPerMinute;
-                    act.point = Mathf.Min(act.point + amount, act.pointLimit);
-                    act.lastUpdate = now.AddMinutes(cycle * intervalMinute);
+                    stamina.point = Mathf.Min(stamina.point + amount, stamina.pointLimit);
+                    stamina.lastUpdate = now.AddMinutes(cycle * intervalMinute);
                 }
             }
 
             return Result.Complete();
         }
 
-        protected async UniTask<Result> UpdateAct()
+        protected async UniTask<Result> UpdateStamina()
         {
-            var read = await GetTable<ActDto>(Table.Act);
+            var read = await GetTable<StaminaDto>(Table.Stamina);
             if (!read.IsSuccess)
                 return Result.Error(read.error);
 
-            return await UpdateAct(read.data);
+            return await UpdateStamina(read.data);
         }
 
-        protected async UniTask<Result> AddAp(ActDto act, int amount)
+        protected async UniTask<Result> AddStamina(StaminaDto stamina, int amount)
         {
-            var update = await UpdateAct(act);
+            var update = await UpdateStamina(stamina);
             if (!update.IsSuccess)
-                return Result<ActDto>.Error(update.error);
+                return Result<StaminaDto>.Error(update.error);
 
-            act.point += amount * amount;
+            stamina.point += amount * amount;
             return Result.Complete();
         }
 

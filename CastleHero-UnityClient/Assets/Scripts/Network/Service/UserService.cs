@@ -55,7 +55,7 @@ namespace RGLabs.Network.Service
             int baseCharacterId = defaultData["Base_Character"].ToInt();
             var data = new UserDataDto
             {
-                act = new ActDto
+                stamina = new StaminaDto
                 {
                     point = ap,
                     pointLimit = ap,
@@ -91,7 +91,7 @@ namespace RGLabs.Network.Service
             }
             
             var write = new PlayerDataTransactionWrite();
-            AddInsertQuery(write, Table.Act, data.act);
+            AddInsertQuery(write, Table.Stamina, data.stamina);
             AddInsertQuery(write, Table.Currency, data.currency);
             AddInsertQuery(write, Table.Character, data.characters);
             AddInsertQuery(write, Table.Formation, data.formation);

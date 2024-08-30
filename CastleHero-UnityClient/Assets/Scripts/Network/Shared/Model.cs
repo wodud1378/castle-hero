@@ -6,7 +6,7 @@ using RGLabs.Prepare.UI;
 
 namespace RGLabs.Network.Shared
 {
-    public class ActDto
+    public class StaminaDto
     {
         public int point;
         public int pointLimit;
@@ -129,7 +129,7 @@ namespace RGLabs.Network.Shared
 
     public class UserDataDto
     {
-        public ActDto act;
+        public StaminaDto stamina;
         public CurrencyDto currency;
         public CharactersDto characters;
         public FormationDto formation;

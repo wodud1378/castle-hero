@@ -26,7 +26,7 @@ namespace RGLabs.Data.Repositories
             private set => PlayerPrefs.SetInt(StageFocusKey, value);
         }
 
-        public readonly Act act;
+        public readonly Stamina stamina;
         public readonly Currency currency;
         public readonly Inventory inventory;
         public readonly Characters characters;
@@ -40,7 +40,7 @@ namespace RGLabs.Data.Repositories
         {
             this.nickname = nickname;
 
-            act = new(dto.act);
+            stamina = new(dto.stamina);
             currency = new(dto.currency);
             inventory = new(dto.inventory);
             characters = new(dto.characters);
@@ -66,8 +66,8 @@ namespace RGLabs.Data.Repositories
 
         public void Update(UserDataDto dto)
         {
-            if (dto.act != null)
-                act.Update(dto.act);
+            if (dto.stamina != null)
+                stamina.Update(dto.stamina);
 
             if (dto.currency != null)
                 currency.Update(dto.currency);
@@ -98,7 +98,7 @@ namespace RGLabs.Data.Repositories
         public void Dispose()
         {
             entrance?.Dispose();
-            act?.Dispose();
+            stamina?.Dispose();
             currency?.Dispose();
             inventory?.Dispose();
             characters?.Dispose();

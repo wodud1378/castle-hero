@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using RGLabs.Network.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
@@ -12,16 +11,8 @@ using UnityEngine;
 
 namespace RGLabs.Data.Repositories
 {
-    public class Act : IDisposable
+    public class Stamina : IDisposable
     {
-        // TODO : 행동력 계산 로직 UIAct에서 이 클래스로 이관
-        private struct Calculation
-        {
-            public int point;
-            public int pointLimit;
-            public DateTime lastUpdate;
-        }
-        
         public readonly ReactiveProperty<int> point;
         public readonly ReactiveProperty<int> pointLimit;
         public readonly ReactiveProperty<DateTime> lastUpdate;
@@ -32,7 +23,7 @@ namespace RGLabs.Data.Repositories
         private IDisposable _update;
         private CancellationTokenSource _ctSource;
         
-        public Act(ActDto dto)
+        public Stamina(StaminaDto dto)
         {
             point = new(dto.point);
             pointLimit = new(dto.pointLimit);
@@ -41,7 +32,7 @@ namespace RGLabs.Data.Repositories
             RunLocalUpdate();
         }
 
-        public void Update(ActDto dto)
+        public void Update(StaminaDto dto)
         {
             point.Value = dto.point;
             pointLimit.Value = dto.pointLimit;

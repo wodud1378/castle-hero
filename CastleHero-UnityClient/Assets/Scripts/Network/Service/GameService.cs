@@ -43,11 +43,11 @@ namespace RGLabs.Network.Service
             if (!Storage.db.TryLoadGameEntity(type, id, out var entity))
                 return Error.DataNotFound;
 
-            var get = await GetTables(Table.Act, Table.GameRecord);
+            var get = await GetTables(Table.Stamina, Table.GameRecord);
             if (!get.IsSuccess)
                 return get.error;
 
-            var checkProcess = await HasEnoughAp(get.data.act, entity.Ap);
+            var checkProcess = await HasEnoughAp(get.data.stamina, entity.Ap);
             if (!checkProcess.IsSuccess)
                 return checkProcess.error;
 
@@ -75,7 +75,7 @@ namespace RGLabs.Network.Service
             if (error != Error.None)
                 return Result<GameCleared>.Error(error);
 
-            userData.act.point -= entity.Ap;
+            userData.stamina.point -= entity.Ap;
 
             var result = new GameCleared
             {
@@ -105,7 +105,7 @@ namespace RGLabs.Network.Service
 
             bool updateCurrency = !reward.currency.IsEmpty();
             bool updateInventory = reward.items.Count > 0;
-            var tables = new Dictionary<Table, object> { { Table.Act, userData.act } };
+            var tables = new Dictionary<Table, object> { { Table.Stamina, userData.stamina } };
             if (updateCurrency)
             {
                 userData.currency += reward.currency;
@@ -222,12 +222,12 @@ namespace RGLabs.Network.Service
 
         private async UniTask<Error> CanClear(UserDataDto userData, IGameEntity entity)
         {
-            var act = userData.act;
-            var update = await UpdateAct(act);
+            var stamina = userData.stamina;
+            var update = await UpdateStamina(stamina);
             if (!update.IsSuccess)
                 return update.error;
 
-            if (act.point < entity.Ap)
+            if (stamina.point < entity.Ap)
                 return Error.NotEnoughAp;
 
             var record = userData.gameRecord;
