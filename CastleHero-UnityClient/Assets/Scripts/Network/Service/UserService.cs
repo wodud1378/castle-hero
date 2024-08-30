@@ -11,7 +11,7 @@ namespace RGLabs.Network.Service
     {
         public UniTask SaveFormation(FormationDto formation) => UpdateTable(Table.Formation, formation);
         
-        public UniTask<Response> UpdateNickname(string nickname)
+        public UniTask<Result> UpdateNickname(string nickname)
             => Call(onResult => Backend.BMember.UpdateNickname(nickname, onResult.Invoke));
         
         public UniTask<Result<UserDataDto>> GetUserData() => GetTables();
@@ -48,7 +48,7 @@ namespace RGLabs.Network.Service
 
             var response = await Call(onResult => Backend.Chart.GetChartContents(129116.ToString(), onResult.Invoke));
             if (!response.IsSuccess)
-                return Result<UserDataDto>.FromError(Error.FromServer);
+                return Result<UserDataDto>.Error(Error.FromServer);
 
             var defaultData = response.raw.FlattenRows()[0];
             int ap = defaultData["Base_Act"].ToInt();
@@ -103,8 +103,8 @@ namespace RGLabs.Network.Service
                 Backend.PlayerData.TransactionWrite(write, onResult.Invoke));
 
             return insert.IsSuccess 
-                ? Result<UserDataDto>.From(data) 
-                : Result<UserDataDto>.FromError(insert.error);
+                ? Result<UserDataDto>.Complete(data) 
+                : Result<UserDataDto>.Error(insert.error);
         }
     }
 }

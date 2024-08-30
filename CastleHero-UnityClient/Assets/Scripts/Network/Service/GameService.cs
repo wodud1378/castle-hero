@@ -12,13 +12,6 @@ namespace RGLabs.Network.Service
 {
     public class GameService : NetworkServiceBase
     {
-        public async UniTask<List<int>> GetOpenDungeonTypes()
-        {
-            var response = await InvokeFunc("GetOpenDungeonTypes", null, ConvertFunctionResponse<List<int>>());
-
-            return response.data;
-        }
-        
         public List<DungeonType> GetOpenedDungeonTypes()
         {
             var map = new Dictionary<DungeonType, List<DayOfWeek>>();
@@ -36,13 +29,13 @@ namespace RGLabs.Network.Service
                 .Select(x => x.Key).ToList();
         }
 
-        public async UniTask<Result<bool>> Start(GameType type, int id)
+        public async UniTask<Result> Start(GameType type, int id)
         {
             var error = await CanEntrance(type, id);
             if (error != Error.None)
-                return Result<bool>.FromError(error);
+                return Result.Error(error);
 
-            return Result<bool>.From(true);
+            return Result.Complete();
         }
 
         private async UniTask<Error> CanEntrance(GameType type, int id)
@@ -71,16 +64,16 @@ namespace RGLabs.Network.Service
         public async UniTask<Result<GameCleared>> Clear(GameType type, int id)
         {
             if (!Storage.db.TryLoadGameEntity(type, id, out var entity))
-                return Result<GameCleared>.FromError(Error.DataNotFound);
+                return Result<GameCleared>.Error(Error.DataNotFound);
 
             var get = await GetTables();
             if (!get.IsSuccess)
-                return Result<GameCleared>.FromError(get.error);
+                return Result<GameCleared>.Error(get.error);
 
             var userData = get.data;
             var error = await CanClear(userData, entity);
             if (error != Error.None)
-                return Result<GameCleared>.FromError(error);
+                return Result<GameCleared>.Error(error);
 
             userData.act.point -= entity.Ap;
 
@@ -104,7 +97,7 @@ namespace RGLabs.Network.Service
                     reward = GetDungeonRewards(dungeon);
                     break;
                 default:
-                    return Result<GameCleared>.FromError(Error.Unknown);
+                    return Result<GameCleared>.Error(Error.Unknown);
             }
 
             result.currency = reward.currency;
@@ -132,8 +125,8 @@ namespace RGLabs.Network.Service
 
             var update = await UpdateTables(tables);
             return update.IsSuccess 
-                ? Result<GameCleared>.From(result) 
-                : Result<GameCleared>.FromError(update.error);
+                ? Result<GameCleared>.Complete(result) 
+                : Result<GameCleared>.Error(update.error);
         }
         
         private (CurrencyDto currency, List<IItem> items) GetStageRewards(StageEntity entity, bool isFirstClear)
@@ -229,11 +222,11 @@ namespace RGLabs.Network.Service
 
         private async UniTask<Error> CanClear(UserDataDto userData, IGameEntity entity)
         {
-            var update = await UpdateAct(userData.act);
+            var act = userData.act;
+            var update = await UpdateAct(act);
             if (!update.IsSuccess)
                 return update.error;
 
-            var act = update.data;
             if (act.point < entity.Ap)
                 return Error.NotEnoughAp;
 

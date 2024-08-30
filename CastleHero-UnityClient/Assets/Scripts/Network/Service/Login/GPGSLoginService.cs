@@ -7,7 +7,7 @@ namespace RGLabs.Network.Service.Login
 {
     public class GPGSLoginService : NetworkServiceBase, ILoginService
     {
-        public async UniTask<Response> Login()
+        public async UniTask<Result> Login()
         {
             var config = new PlayGamesClientConfiguration.Builder()
                 .RequestServerAuthCode(false)

@@ -60,11 +60,34 @@ namespace RGLabs.Utility
 
         public static bool TryConsumeItem(this List<IItem> items, int id, int quantity)
         {
-            var exist = items.FirstOrDefault(x => x.ItemId == id);
+            var item = items.FirstOrDefault(x => x.ItemId == id);
+            if (item == null || item.Quantity < quantity)
+                return false;
+
+            if (item.Quantity == quantity)
+                items.Remove(item);
+            else
+                item.Quantity -= quantity;
+            
+            return true;
+        }
+        
+        public static bool TryConsumeItem(this List<IItem> items, IItem item) => items.TryConsumeItem(item, item.Quantity);
+
+        public static bool TryConsumeItem(this List<IItem> items, IItem item, int quantity)
+        {
+            var exist = items.Contains(item)
+                ? item
+                : items.FirstOrDefault(x => x.ItemId == item.ItemId);
+            
             if (exist == null || exist.Quantity < quantity)
                 return false;
 
-            exist.Quantity -= quantity;
+            if (exist.Quantity == quantity)
+                items.Remove(exist);
+            else
+                exist.Quantity -= quantity;
+            
             return true;
         }
 

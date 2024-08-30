@@ -15,7 +15,7 @@ namespace RGLabs.Network.Service
         {
             var get = await GetTables(Table.Currency, Table.Inventory, Table.Character, Table.ShopRecord);
             if (!get.IsSuccess)
-                return Result<Pack>.FromError(get.error);
+                return Result<Pack>.Error(get.error);
 
             var userData = get.data;
             var currentTime = NetworkService.CurrentTime();
@@ -45,7 +45,7 @@ namespace RGLabs.Network.Service
                 .ToList();
 
             if (packs == null)
-                return Result<Pack>.FromError(Error.InvalidRequest);
+                return Result<Pack>.Error(Error.InvalidRequest);
             
             var total = new Pack
             {
@@ -95,15 +95,15 @@ namespace RGLabs.Network.Service
 
             var update = await UpdateTables(tables);
             return update.IsSuccess
-                ? Result<Pack>.From(total)
-                : Result<Pack>.FromError(update.error);
+                ? Result<Pack>.Complete(total)
+                : Result<Pack>.Error(update.error);
         }
 
         public async UniTask<Result<ItemBought>> BuyItem(int type, int id, int quantity)
         {
             if (!Storage.db.shop.TryFind(id, out var entity) ||
                 !Storage.db.shopGroup.TryFind(entity.groupId, out var groupEntity))
-                return Result<ItemBought>.FromError(Error.DataNotFound);
+                return Result<ItemBought>.Error(Error.DataNotFound);
 
             var pack = GetPack(groupEntity);
             bool hasUnit = pack.unitIds.Count > 0;
@@ -120,14 +120,14 @@ namespace RGLabs.Network.Service
 
             var get = await GetTables(readTables);
             if (!get.IsSuccess)
-                return Result<ItemBought>.FromError(get.error);
+                return Result<ItemBought>.Error(get.error);
 
             var userData = get.data;
             var currency = userData.currency;
             var inventory = userData.inventory;
             var record = userData.shopRecord;
             if (!HasPrevItem(record, entity))
-                return Result<ItemBought>.FromError(Error.NotOpenedProduct);
+                return Result<ItemBought>.Error(Error.NotOpenedProduct);
 
             var currentTime = NetworkService.CurrentTime();
             var product = record.products?.Find(x => x.shopId == entity.Id)
@@ -135,7 +135,7 @@ namespace RGLabs.Network.Service
 
             if (!TryPurchase(currency, inventory, product, entity, currentTime, type, quantity,
                     out var error, out var history))
-                return Result<ItemBought>.FromError(error);
+                return Result<ItemBought>.Error(error);
 
             if (entity.duration > 0)
                 product.expireDate = currentTime.AddDays(entity.duration);
@@ -172,12 +172,12 @@ namespace RGLabs.Network.Service
 
             var update = await UpdateTables(tables);
             return update.IsSuccess
-                ? Result<ItemBought>.From(new()
+                ? Result<ItemBought>.Complete(new()
                 {
                     shopId = entity.Id,
                     pack = pack,
                 })
-                : Result<ItemBought>.FromError(update.error);
+                : Result<ItemBought>.Error(update.error);
         }
 
         private bool HasPrevItem(ShopRecordDto record, ShopItemEntity entity) =>

@@ -6,7 +6,7 @@ namespace RGLabs.Network.Service.Boot
 {
     public interface IBootServiceHandler
     {
-        public UniTask OnError(Response response);
+        public UniTask OnError(Result response);
 
         public UniTask OnMaintenance();
         public UniTask OnForceUpdate();

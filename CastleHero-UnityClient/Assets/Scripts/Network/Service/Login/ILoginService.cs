@@ -13,6 +13,6 @@ namespace RGLabs.Network.Service.Login
     
     public interface ILoginService
     {
-        public UniTask<Response> Login();
+        public UniTask<Result> Login();
     }
 }

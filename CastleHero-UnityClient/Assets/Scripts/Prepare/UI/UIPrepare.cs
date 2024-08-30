@@ -93,7 +93,7 @@ namespace RGLabs.Prepare.UI
                 Context.popups.Open<PopupCommon>(result.error);
                 return;
             }
-            if (!result.data)
+            if (!result.IsSuccess)
                 return;
 
             Context.Transition.CurrentState = State.InGame;

@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using RGLabs.Network.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using UniRx;
+using UnityEngine;
 
 namespace RGLabs.Data.Repositories
 {
@@ -24,16 +26,19 @@ namespace RGLabs.Data.Repositories
         public readonly ReactiveProperty<int> pointLimit;
         public readonly ReactiveProperty<DateTime> lastUpdate;
 
-        private const int ApAddIntervalMinute = 10;
-        private const int ApAddPerOnce = 1;
+        private const int Interval = 10;
+        private const int PerOnce = 1;
 
         private IDisposable _update;
+        private CancellationTokenSource _ctSource;
         
         public Act(ActDto dto)
         {
             point = new(dto.point);
             pointLimit = new(dto.pointLimit);
             lastUpdate = new(dto.lastUpdate);
+            
+            RunLocalUpdate();
         }
 
         public void Update(ActDto dto)
@@ -41,57 +46,66 @@ namespace RGLabs.Data.Repositories
             point.Value = dto.point;
             pointLimit.Value = dto.pointLimit;
             lastUpdate.Value = dto.lastUpdate;
+            
+            RunLocalUpdate();
         }
 
         public void Dispose()
         {
             _update?.Dispose();
+            _ctSource?.Cancel();
             point?.Dispose();
             pointLimit?.Dispose();
             lastUpdate?.Dispose();
         }
-        
-        private async UniTaskVoid UpdateTask()
+
+        private void RunLocalUpdate()
         {
-            while (true)
-            {
-                // 계산은 스레드 풀에서 진행.
-                var result = await UniTask.RunOnThreadPool(Calculate);
-
-                await UniTask.SwitchToMainThread();
-
-                // UI 갱신 가능성이 있는 스트림은 메인 스레드에서 업데이트.
-                point.Value = result.point;
-                pointLimit.Value = result.pointLimit;
-                lastUpdate.Value = result.lastUpdate;
-
-                await UniTask.SwitchToThreadPool();
-            }
+            _ctSource?.Cancel();
+            _ctSource = new();
+            
+            LocalUpdate(_ctSource.Token).Forget();
         }
-        
-        private Calculation Calculate()
+
+        private DateTime Now => DateTime.UtcNow.AddDays(3);
+
+        private async UniTaskVoid LocalUpdate(CancellationToken token)
         {
-            var now = NetworkService.CurrentTime();
-            int limit = pointLimit.Value;
-            var calculation = new Calculation
+            try
             {
-                pointLimit = limit,
-                lastUpdate = now
-            };
+                while (point.Value < pointLimit.Value && !token.IsCancellationRequested)
+                {
+                    var nextUpdate = lastUpdate.Value.AddMinutes(Interval);
+                    var now = Now;
+                    var totalMs = (nextUpdate - now).TotalMilliseconds;
+                    if (totalMs > 0)
+                        await UniTask
+                            .Delay((int)totalMs, true, cancellationToken: token)
+                            .SuppressCancellationThrow();
+                
+                    await UniTask.SwitchToMainThread(cancellationToken:token);
+                
+                    UpdateValues();
 
-            if (point.Value >= limit)
-            {
-                calculation.point = point.Value;
+                    await UniTask.SwitchToThreadPool();
+                }
             }
-            else
-            {
-                var minutes = (now - lastUpdate.Value).Minutes;
-                int amount = minutes / ApAddIntervalMinute * ApAddPerOnce;
-                int total = point.Value + amount;
-                calculation.point = total < limit ? total : limit;
-            }
+            catch (OperationCanceledException) { }
+        }
 
-            return calculation;
+        private void UpdateValues()
+        {
+            if (point.Value < pointLimit.Value)
+            {
+                var now = Now;
+                int cycle = (int)((now - lastUpdate.Value).TotalMinutes / Interval);
+                if (cycle > 0)
+                {
+                    int amount = cycle * PerOnce;
+                    point.Value = Mathf.Min(point.Value + amount, pointLimit.Value);
+                    lastUpdate.Value = now.AddMinutes(cycle * Interval);
+                }
+            }
         }
     }
 

@@ -5,15 +5,15 @@ namespace RGLabs.Network.Service.Login
 {
     public class GuestLoginService : NetworkServiceBase, ILoginService
     {
-        public async UniTask<Response> Login()
+        public async UniTask<Result> Login()
         {
-            Response response = null;
-            for (int i = 0; i < 3 && response is not { IsSuccess: true }; ++i)
+            Result result = null;
+            for (int i = 0; i < 3 && result is not { IsSuccess: true }; ++i)
             {
-                response = await Call(Backend.BMember.GuestLogin);
+                result = await Call(Backend.BMember.GuestLogin);
             }
 
-            return response;
+            return result;
         }
     }
 }

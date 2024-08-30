@@ -5,6 +5,6 @@ namespace RGLabs.Network.Service.Login
 {
     public class AutoLoginService : NetworkServiceBase, ILoginService
     {
-        public UniTask<Response> Login() => Call(Backend.BMember.LoginWithTheBackendToken);
+        public UniTask<Result> Login() => Call(Backend.BMember.LoginWithTheBackendToken);
     }
 }

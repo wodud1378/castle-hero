@@ -11,14 +11,14 @@ namespace RGLabs.Network.Service
         {
             var read = await GetTables(Table.GameRecord, Table.Currency);
             if(read.error != Error.None)
-                return Result<CastleGrowth>.FromError(Error.DBReadFailed);
+                return Result<CastleGrowth>.Error(Error.DBReadFailed);
 
             var record = read.data.gameRecord;
             var currency = read.data.currency;
             
             ProcessLevelUp(record, currency, out var lv, out var error);
             if (error != Error.None)
-                return Result<CastleGrowth>.FromError(error);
+                return Result<CastleGrowth>.Error(error);
             
             var write = await UpdateTables(new Dictionary<Table, object>
             {
@@ -27,8 +27,8 @@ namespace RGLabs.Network.Service
             });
 
             return write.IsSuccess
-                ? Result<CastleGrowth>.From(new() { lv = lv, })
-                : Result<CastleGrowth>.FromError(write.error);
+                ? Result<CastleGrowth>.Complete(new() { lv = lv, })
+                : Result<CastleGrowth>.Error(write.error);
         }
 
         private void ProcessLevelUp(GameRecordDto record, CurrencyDto currency, out int lv, out Error error)

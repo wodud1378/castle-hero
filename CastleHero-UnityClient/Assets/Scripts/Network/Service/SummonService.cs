@@ -19,14 +19,14 @@ namespace RGLabs.Network.Service
         private async UniTask<Result<Summon>> Summon(int eventId, int costIndex, int count)
         {
             if (!Storage.db.summons.TryFind(eventId, out var entity))
-                return Result<Summon>.FromError(Error.DataNotFound);
+                return Result<Summon>.Error(Error.DataNotFound);
 
             if (!costIndex.IsValidIndex(entity.costItems, entity.valuePerOnce, entity.valuePerTenth))
-                return Result<Summon>.FromError(Error.InvalidRequest);
+                return Result<Summon>.Error(Error.InvalidRequest);
 
             var groupEntities = Storage.db.summonGroups.Map(entity.groupId);
             if(groupEntities == null || groupEntities.Length == 0)
-                return Result<Summon>.FromError(Error.InvalidRequest);
+                return Result<Summon>.Error(Error.InvalidRequest);
 
             var costId = entity.costItems[costIndex];
             var costValue = count switch
@@ -37,11 +37,11 @@ namespace RGLabs.Network.Service
             };
 
             if (costValue == -1)
-                return Result<Summon>.FromError(Error.InvalidRequest);
+                return Result<Summon>.Error(Error.InvalidRequest);
 
             var get = await GetTables(Table.Currency, Table.Inventory, Table.Character);
             if (!get.IsSuccess)
-                return Result<Summon>.FromError(get.error);
+                return Result<Summon>.Error(get.error);
 
             var userData = get.data;
             bool updateCurrency = false;
@@ -51,20 +51,20 @@ namespace RGLabs.Network.Service
                 case Constants.PaidDiaId:
                 case Constants.FreeDiaId:
                     if(!userData.currency.TryConsumeDia(costValue))
-                        return Result<Summon>.FromError(Error.NotEnoughCurrency);
+                        return Result<Summon>.Error(Error.NotEnoughCurrency);
 
                     updateCurrency = true;
                     break;
                 case Constants.GoldId:
                     if(userData.currency.gold < costValue)
-                        return Result<Summon>.FromError(Error.NotEnoughCurrency);
+                        return Result<Summon>.Error(Error.NotEnoughCurrency);
 
                     userData.currency.gold -= costValue;
                     updateCurrency = true;
                     break;
                 default:
                     if(!userData.inventory.items.TryConsumeItem(costId, costValue))
-                        return Result<Summon>.FromError(Error.NotEnoughItem);
+                        return Result<Summon>.Error(Error.NotEnoughItem);
 
                     updateInventory = true;
                     break;
@@ -120,8 +120,8 @@ namespace RGLabs.Network.Service
 
             var update = await UpdateTables(tables);
             return update.IsSuccess 
-                ? Result<Summon>.From(new Summon { list = summonResult })
-                : Result<Summon>.FromError(update.error); 
+                ? Result<Summon>.Complete(new Summon { list = summonResult })
+                : Result<Summon>.Error(update.error); 
         }
 
         private List<int> GetSummonResult(SummonGroupEntity[] entities, int count)

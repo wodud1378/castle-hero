@@ -4,6 +4,6 @@ namespace RGLabs.Network.Service.Boot
 {
     public interface IBootErrorHandler
     {
-        public UniTask OnInitFailed(Response response);
+        public UniTask OnInitFailed(Result result);
     }
 }

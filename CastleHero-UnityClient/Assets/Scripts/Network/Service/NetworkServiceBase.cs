@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using BackEnd;
 using Cysharp.Threading.Tasks;
 using LitJson;
 using RGLabs.Data;
-using RGLabs.Data.Repositories;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using UnityEngine;
@@ -32,26 +30,85 @@ namespace RGLabs.Network.Service
         public void OnError(Error code);
     }
 
-    public class Result<T>
+    public class Result
     {
-        public bool IsSuccess => error == Error.None;
+        public bool IsSuccess => error == Network.Error.None;
 
-        public T data;
+        public bool fromBackend;
+        public int statusCode;
         public Error error;
         public string errorMessage;
+        public BackendReturnObject raw;
+        
+        public static Result Complete(BackendReturnObject raw)
+        {
+            return new Result
+            {
+                fromBackend = true,
+                statusCode = int.Parse(raw.GetStatusCode()),
+                error = ToError(raw),
+                raw = raw
+            };
+        }
 
-        public static Result<T> From(T data)
+        public static Result Complete() => new() { error = Network.Error.None };
+
+        public static Result Error(Error error) => Error(error, string.Empty);
+
+        public static Result Error(Error error, string errorMessage) =>
+            new() { error = error, errorMessage = errorMessage };
+
+        protected static Error ToError(BackendReturnObject obj) =>
+            obj.IsSuccess()
+                ? Network.Error.None
+                : obj.GetErrorCode() switch
+                {
+                    "NetworkError" => Network.Error.FromNetwork,
+                    "UnauthorizedException" => Network.Error.Unauthorized,
+                    "ServerException" => Network.Error.FromServer,
+                    "Maintenance" => Network.Error.Maintenance,
+                    _ => Network.Error.Unknown
+                };
+    }
+
+    public class Result<T> : Result
+    {
+        public delegate T Convert(BackendReturnObject jsonData);
+
+        public T data;
+
+        public static Result<T> Complete(T data)
         {
             return new Result<T>
             {
                 data = data,
-                error = Error.None
+                error = Network.Error.None
             };
         }
 
-        public static Result<T> FromError(Error error) => FromError(error, string.Empty);
+        public static Result<T> Complete(BackendReturnObject raw, Convert convert = null)
+        {
+            var result = new Result<T>
+            {
+                fromBackend = true,
+                error = ToError(raw),
+                statusCode = int.Parse(raw.GetStatusCode()),
+                raw = raw
+            };
 
-        public static Result<T> FromError(Error error, string errorMessage) =>
+            if (!result.IsSuccess)
+                return result;
+
+            result.data = convert != null
+                ? convert.Invoke(raw)
+                : JsonMapper.ToObject<T>(JsonMapper.ToJson(raw));
+
+            return result;
+        }
+
+        public new static Result<T> Error(Error error) => Error(error, string.Empty);
+
+        public new static Result<T> Error(Error error, string errorMessage) =>
             new() { error = error, errorMessage = errorMessage };
     }
 
@@ -92,13 +149,6 @@ namespace RGLabs.Network.Service
         protected void PublishError(string error) => _errorHandlers.ForEach(x => x.OnError(error));
 
 
-        protected UniTask<Response<T>> InvokeFunc<T>(string functionName,
-            List<KeyValuePair<string, object>> parameters, Response<T>.Convert convert)
-        {
-            var param = FunctionParam(functionName, parameters);
-            return Call(onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke), convert);
-        }
-
         protected T FromTransaction<T>(JsonData data, string tableName)
         {
             JsonData result = null;
@@ -113,48 +163,20 @@ namespace RGLabs.Network.Service
             return result != null ? result.Cast<T>() : default;
         }
 
-        protected Response<T>.Convert ConvertFunctionResponse<T>() =>
-            raw =>
-            {
-                var dto = raw.GetFlattenJSON()["result"].Cast<ResponseDto<T>>();
-                var error = dto.error;
-                if (!string.IsNullOrEmpty(error))
-                {
-                    Debug.LogError($"{error}, detail={dto.errorDetail}");
-                    return default;
-                }
-
-                return dto.data;
-            };
-
-        protected Param FunctionParam(string functionName, List<KeyValuePair<string, object>> parameters = null)
+        protected async UniTask<Result> Call(Api api)
         {
-            var param = new Param { { "functionName", functionName } };
-            if (parameters == null)
-                return param;
-
-            foreach (var kvp in parameters)
-            {
-                param.Add(kvp.Key, kvp.Value);
-            }
-
-            return param;
-        }
-
-        protected async UniTask<Response> Call(Api api)
-        {
-            var src = new UniTaskCompletionSource<Response>();
-            api.Invoke(result =>
+            var src = new UniTaskCompletionSource<Result>();
+            api.Invoke(raw =>
             {
                 --LeftRequestCount;
 
                 try
                 {
-                    var response = new Response(result);
-                    if (response.error != Error.None)
-                        PublishError(response.error);
+                    var result = Result.Complete(raw);
+                    if (!result.IsSuccess)
+                        PublishError(result.error);
 
-                    src.TrySetResult(response);
+                    src.TrySetResult(result);
                 }
                 catch (Exception e)
                 {
@@ -171,17 +193,17 @@ namespace RGLabs.Network.Service
             return await src.Task;
         }
 
-        protected UniTask<Response<T>> Call<T>(Api api, Response<T>.Convert convert = null)
+        protected UniTask<Result<T>> Call<T>(Api api, Result<T>.Convert convert = null)
         {
-            var src = new UniTaskCompletionSource<Response<T>>();
-            api.Invoke(result =>
+            var src = new UniTaskCompletionSource<Result<T>>();
+            api.Invoke(raw =>
             {
                 --LeftRequestCount;
 
                 try
                 {
-                    var response = new Response<T>(result, convert);
-                    src.TrySetResult(response);
+                    var result = Result<T>.Complete(raw, convert);
+                    src.TrySetResult(result);
                 }
                 catch (Exception e)
                 {
@@ -209,8 +231,8 @@ namespace RGLabs.Network.Service
                 });
 
             return response.IsSuccess
-                ? Result<T>.From(response.data)
-                : Result<T>.FromError(response.error);
+                ? Result<T>.Complete(response.data)
+                : Result<T>.Error(response.error);
         }
 
         protected async UniTask<Result<UserDataDto>> GetTables(params Table[] tables)
@@ -244,8 +266,8 @@ namespace RGLabs.Network.Service
                 });
 
             return response.IsSuccess
-                ? Result<UserDataDto>.From(response.data)
-                : Result<UserDataDto>.FromError(response.error);
+                ? Result<UserDataDto>.Complete(response.data)
+                : Result<UserDataDto>.Error(response.error);
         }
 
         protected async UniTask<Result<UserDataDto>> GetTables(IEnumerable<Table> tables)
@@ -279,11 +301,11 @@ namespace RGLabs.Network.Service
                 });
 
             return response.IsSuccess
-                ? Result<UserDataDto>.From(response.data)
-                : Result<UserDataDto>.FromError(response.error);
+                ? Result<UserDataDto>.Complete(response.data)
+                : Result<UserDataDto>.Error(response.error);
         }
 
-        protected async UniTask<Response> UpdateTable(Table key, object value)
+        protected async UniTask<Result> UpdateTable(Table key, object value)
         {
             var name = TableNames[key];
             var param = ToParam(name, value);
@@ -292,7 +314,7 @@ namespace RGLabs.Network.Service
                 Backend.PlayerData.UpdateMyLatestData(name, param, onResult.Invoke));
         }
 
-        protected UniTask<Result<bool>> UpdateTables(UserDataDto userData, bool updateStorage = true)
+        protected UniTask<Result> UpdateTables(UserDataDto userData, bool updateStorage = true)
         {
             var tables = new Dictionary<Table, object>();
             if (userData.act != null)
@@ -319,7 +341,7 @@ namespace RGLabs.Network.Service
             return UpdateTables(tables, updateStorage);
         }
 
-        protected async UniTask<Result<bool>> UpdateTables(Dictionary<Table, object> tables, bool updateStorage = true)
+        protected async UniTask<Result> UpdateTables(Dictionary<Table, object> tables, bool updateStorage = true)
         {
             var write = new PlayerDataTransactionWrite();
             foreach (var table in tables)
@@ -333,60 +355,68 @@ namespace RGLabs.Network.Service
                 Backend.PlayerData.TransactionWrite(write, onResult.Invoke));
 
             if (!writeResponse.IsSuccess)
-                return Result<bool>.FromError(writeResponse.error);
+                return Result.Error(writeResponse.error);
 
             var readResponse = await GetTables();
             if (!readResponse.IsSuccess)
-                return Result<bool>.FromError(writeResponse.error);
+                return Result.Error(writeResponse.error);
 
             if (updateStorage)
                 Storage.userRepository.Update(readResponse.data);
 
-            return Result<bool>.From(true);
+            return Result.Complete();
         }
 
         protected async UniTask<Result<bool>> HasEnoughAp(ActDto act, int point)
         {
             var update = await UpdateAct(act);
             if (!update.IsSuccess)
-                return Result<bool>.FromError(update.error);
+                return Result<bool>.Error(update.error);
 
-            return Result<bool>.From(update.data.point >= point);
+            return Result<bool>.Complete(act.point >= point);
         }
 
-        protected async UniTask<Result<ActDto>> UpdateAct(ActDto act)
+        protected async UniTask<Result> UpdateAct(ActDto act)
         {
             const int intervalMinute = 10;
             const int amountPerMinute = 1;
 
-            if (act.pointLimit > act.point)
+            if (act.point < act.pointLimit)
             {
                 var serverTime = await GetServerTime();
                 if (!serverTime.IsSuccess)
-                    return Result<ActDto>.FromError(serverTime.error);
+                    return Result.Error(serverTime.error);
 
                 var now = serverTime.data;
-                var minutes = (now - act.lastUpdate).TotalMinutes;
-                int amount = (int)minutes / (intervalMinute * amountPerMinute);
-                int total = act.point + amount;
-
-                if (total != act.point)
+                int cycle = (int)((now - act.lastUpdate).TotalMinutes / intervalMinute);
+                if (cycle > 0)
                 {
-                    act.point = Mathf.Min(total, act.pointLimit);
-                    act.lastUpdate = now;
+                    int amount = cycle * amountPerMinute;
+                    act.point = Mathf.Min(act.point + amount, act.pointLimit);
+                    act.lastUpdate = now.AddMinutes(cycle * intervalMinute);
                 }
             }
 
-            return Result<ActDto>.From(act);
+            return Result.Complete();
         }
 
-        protected async UniTask<Result<ActDto>> UpdateAct()
+        protected async UniTask<Result> UpdateAct()
         {
             var read = await GetTable<ActDto>(Table.Act);
             if (!read.IsSuccess)
-                return Result<ActDto>.FromError(read.error);
+                return Result.Error(read.error);
 
             return await UpdateAct(read.data);
+        }
+
+        protected async UniTask<Result> AddAp(ActDto act, int amount)
+        {
+            var update = await UpdateAct(act);
+            if (!update.IsSuccess)
+                return Result<ActDto>.Error(update.error);
+
+            act.point += amount * amount;
+            return Result.Complete();
         }
 
         private async UniTask<Result<DateTime>> GetServerTime()
@@ -396,9 +426,9 @@ namespace RGLabs.Network.Service
                 raw => DateTime.Parse(raw.GetFlattenJSON()["utcTime"].ToString()));
 
             if (!getServerTime.IsSuccess)
-                return Result<DateTime>.FromError(getServerTime.error);
+                return Result<DateTime>.Error(getServerTime.error);
 
-            return Result<DateTime>.From(getServerTime.data.AddHours(3));
+            return Result<DateTime>.Complete(getServerTime.data.AddHours(3));
         }
 
         protected Param ToParam(string key, object value) => new() { { key, value.ToJson() } };

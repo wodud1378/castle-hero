@@ -19,7 +19,7 @@ namespace RGLabs.Network.Service
         {
             var read = await GetTables(Table.Character, Table.Inventory, Table.Currency);
             if (!read.IsSuccess)
-                return Result<UnitGrowth>.FromError(read.error);
+                return Result<UnitGrowth>.Error(read.error);
 
             var characters = read.data.characters;
             var inventory = read.data.inventory;
@@ -28,7 +28,7 @@ namespace RGLabs.Network.Service
             var unit = characters.units.Find(x => x.id == unitId);
             var item = inventory.items.Find(x => x.ItemId == itemId);
             if (unit == null || item == null)
-                return Result<UnitGrowth>.FromError(Error.InvalidRequest);
+                return Result<UnitGrowth>.Error(Error.InvalidRequest);
 
             var error = Error.InvalidRequest;
             var transition = action switch
@@ -39,7 +39,7 @@ namespace RGLabs.Network.Service
             };
             
             if (error != Error.None)
-                return Result<UnitGrowth>.FromError(error);
+                return Result<UnitGrowth>.Error(error);
 
             var write = await UpdateTables(new Dictionary<Table, object>
             {
@@ -49,13 +49,13 @@ namespace RGLabs.Network.Service
             });
 
             return write.IsSuccess
-                ? Result<UnitGrowth>.From(new()
+                ? Result<UnitGrowth>.Complete(new()
                 {
                     transition = transition,
                     leftCurrency = currency,
                     leftItem = item
                 })
-                : Result<UnitGrowth>.FromError(write.error);
+                : Result<UnitGrowth>.Error(write.error);
         }
 
         private UnitTransition ProcessUpgrade(UnitInfo unit, IItem item, int quantity, CurrencyDto currency,
@@ -161,7 +161,7 @@ namespace RGLabs.Network.Service
         {
             var get = await GetTables(Table.Character, Table.Inventory);
             if (!get.IsSuccess)
-                return Result<UnitInfo>.FromError(get.error);
+                return Result<UnitInfo>.Error(get.error);
 
             var userData = get.data;
             var characters = userData.characters;
@@ -170,7 +170,7 @@ namespace RGLabs.Network.Service
             var equipItems = inventory.items.OfType<EquipItem>().ToList();
             var item = equipItems.FirstOrDefault(x => x.Guid == guid);
             if (unit == null || item == null || (unit.equipments != null && unit.equipments.Contains(guid)))
-                return Result<UnitInfo>.FromError(Error.InvalidRequest);
+                return Result<UnitInfo>.Error(Error.InvalidRequest);
 
             unit.equipments ??= new();
             
@@ -194,15 +194,15 @@ namespace RGLabs.Network.Service
 
             var update = await UpdateTables(userData);
             return update.IsSuccess
-                ? Result<UnitInfo>.From(unit)
-                : Result<UnitInfo>.FromError(update.error);
+                ? Result<UnitInfo>.Complete(unit)
+                : Result<UnitInfo>.Error(update.error);
         }
 
         public async UniTask<Result<UnitInfo>> Release(int unitId, string guid)
         {
             var get = await GetTables(Table.Character, Table.Inventory);
             if (!get.IsSuccess)
-                return Result<UnitInfo>.FromError(get.error);
+                return Result<UnitInfo>.Error(get.error);
             
             var userData = get.data;
             var characters = userData.characters;
@@ -210,15 +210,15 @@ namespace RGLabs.Network.Service
             var unit = characters.units.Find(x => x.id == unitId);
             var item = inventory.items.OfType<EquipItem>().FirstOrDefault(x => x.Guid == guid);
             if (unit == null || item == null || unit.equipments == null || !unit.equipments.Contains(guid))
-                return Result<UnitInfo>.FromError(Error.InvalidRequest);
+                return Result<UnitInfo>.Error(Error.InvalidRequest);
 
             item.character = 0;
             unit.equipments.Remove(item.Guid);
             
             var update = await UpdateTables(userData);
             return update.IsSuccess
-                ? Result<UnitInfo>.From(unit)
-                : Result<UnitInfo>.FromError(update.error);
+                ? Result<UnitInfo>.Complete(unit)
+                : Result<UnitInfo>.Error(update.error);
         }
     }
 }

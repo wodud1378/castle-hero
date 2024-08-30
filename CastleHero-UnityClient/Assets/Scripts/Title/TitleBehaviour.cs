@@ -4,6 +4,7 @@ using RGLabs.Common.Behaviours;
 using RGLabs.Common.Sound;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Network;
+using RGLabs.Network.Service;
 using RGLabs.Network.Service.Boot;
 using RGLabs.Network.Service.Login;
 using RGLabs.Title.UI.Popup;
@@ -36,7 +37,7 @@ namespace RGLabs.Title
             //Context.sounds = _soundManager;
         }
 
-        public UniTask OnError(Response response)
+        public UniTask OnError(Result response)
         {
             Debug.LogError(
                 $"[result] :{response.error}\n" +
