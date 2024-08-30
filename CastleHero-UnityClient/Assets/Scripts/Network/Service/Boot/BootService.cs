@@ -74,13 +74,17 @@ namespace RGLabs.Network.Service.Boot
                 ? "신규 유저 로그인"
                 : "기존 유저 로그인");
 
-            var userData = newUser
-                ? (await NetworkService.User.Init()).data
-                : (await NetworkService.User.GetUserData()).data;
+            var task = newUser
+                ? NetworkService.User.Init()
+                : NetworkService.User.GetUserData();
+
+            var result = await task;
+            if (!result.IsSuccess)
+                await _handler.OnError(result);
 
             Debug.Log("데이터 불러오기 완료");
 
-            await InitFromServer(nickname, userData);
+            await InitFromServer(nickname, result.data);
 
             _handler.OnInitDone();
 

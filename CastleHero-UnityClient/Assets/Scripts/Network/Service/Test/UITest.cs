@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RGLabs.Data;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using TMPro;
@@ -91,9 +92,9 @@ namespace RGLabs.Network.Service.Test
 
                 var result = await _service.AddCurrency(currency);
                 
-                _addItemLog.text = result.IsSuccess
-                    ? "요청 성공"
-                    : $"에러 발생 [{result.error}]";
+                _addCurrencyLog.text = result.IsSuccess
+                    ? "요청 성공".WithPositiveColor()
+                    : $"에러 발생 [{result.error}]".WithNegativeColor();
             }
         }
 

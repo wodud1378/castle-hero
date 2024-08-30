@@ -108,43 +108,30 @@ namespace RGLabs.Utility
             var option = item.GetConsumableOption();
             if (option.type != ConsumeType.Exp)
                 return;
-            
-            var db = Storage.db.levels;
-            int maxLv = db[^1].Id;
-            var itemValue = (int)option.value;
-            while (leftItem > 0 && db.TryFind(lv, out var entity))
-            {
-                int forNext = entity.exp;
-                int requireExp = forNext - exp;
-                int requireCount = Mathf.CeilToInt((float)requireExp / itemValue);
-                int consume = Mathf.Min(leftItem, requireCount);
-                exp += consume * itemValue;
-                leftItem -= consume;
 
-                int remain = exp - forNext;
-                if (remain >= 0)
-                {
-                    ++lv;
-                    exp = lv >= maxLv ? 0 : remain;
-                }
-            }
+            int amount = (int)option.value;
+            int total = amount  * quantity;
+            CalculateLvUp(startLv, startExp, total, out lv, out exp, out var remainAmount);
+
+            leftItem = remainAmount / amount;
         }
 
-        public static void CalculateLvUp(int startLv, int startExp, int expAmount, out int lv, out int exp)
+        public static void CalculateLvUp(int startLv, int startExp, int expAmount, out int lv, out int exp, out int remainAmount)
         {
             lv = startLv;
             exp = startExp;
+            remainAmount = expAmount;
             
             var db = Storage.db.levels;
-            int maxLv = db[^1].Id;
+            int maxLv = db.MaxLv;
 
-            while (db.TryFind(lv, out var entity) && expAmount > 0)
+            while (db.TryFind(lv, out var entity) && remainAmount > 0)
             {
                 int forNext = entity.exp;
                 int requireExp = forNext - exp;
-                int add = Mathf.Min(requireExp, expAmount);
+                int add = Mathf.Min(requireExp, remainAmount);
                 exp += add;
-                expAmount -= add;
+                remainAmount -= add;
 
                 int remain = exp - forNext;
                 if (remain >= 0)
@@ -178,6 +165,7 @@ namespace RGLabs.Utility
 
                 leftItem -= requireSoul;
                 price += entity.gold;
+                ++rate;
             }
         }
         

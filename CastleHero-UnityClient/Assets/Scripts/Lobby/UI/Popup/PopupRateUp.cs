@@ -126,7 +126,7 @@ namespace RGLabs.Lobby.UI.Popup
 
         protected override void OnGrowthComplete(UnitGrowth growth)
         {
-            if (growth.transition.unit.rate < Storage.db.rates[^1].Id)
+            if (growth.transition.unit.rate < Storage.db.rates.MaxRate)
                 return;
             
             Close();

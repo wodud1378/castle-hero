@@ -33,16 +33,15 @@ namespace RGLabs.Network.Service
 
         private void ProcessLevelUp(GameRecordDto record, CurrencyDto currency, out int lv, out Error error)
         {
-            var chart = Storage.db.castles;
+            var db = Storage.db.castles;
             lv = record.castleLv;
-            int maxLv = chart[^1].Id;
-            if (maxLv <= lv)
+            if (db.MaxLv <= lv)
             {
                 error = Error.AlreadyMaxLv;
                 return;
             }
 
-            if (!chart.TryFind(lv, out var entity))
+            if (!db.TryFind(lv, out var entity))
             {
                 error = Error.DataNotFound;
                 return;

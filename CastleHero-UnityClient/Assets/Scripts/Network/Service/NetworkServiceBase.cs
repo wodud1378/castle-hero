@@ -39,7 +39,7 @@ namespace RGLabs.Network.Service
         public Error error;
         public string errorMessage;
         public BackendReturnObject raw;
-        
+
         public static Result Complete(BackendReturnObject raw)
         {
             return new Result
@@ -99,9 +99,16 @@ namespace RGLabs.Network.Service
             if (!result.IsSuccess)
                 return result;
 
-            result.data = convert != null
-                ? convert.Invoke(raw)
-                : JsonMapper.ToObject<T>(JsonMapper.ToJson(raw));
+            if (convert != null)
+            {
+                result.data = convert.Invoke(raw);
+            }
+            else
+            {
+                var rows = raw.FlattenRows();
+                var json = JsonMapper.ToJson(rows);
+                result.data = JsonMapper.ToObject<T>(json);
+            }
 
             return result;
         }
@@ -207,8 +214,10 @@ namespace RGLabs.Network.Service
                 }
                 catch (Exception e)
                 {
+                    src.TrySetResult(Result<T>.Error(Error.Unknown, e.ToString()));
+#if UNITY_EDITOR
                     Debug.LogError(e.ToString());
-                    throw;
+#endif
                 }
             });
 
@@ -224,7 +233,7 @@ namespace RGLabs.Network.Service
             var response = await Call(onResult => Backend.PlayerData.GetMyData(name, 1, onResult.Invoke),
                 raw =>
                 {
-                    var jsonData = raw.FlattenRows();
+                    var jsonData = raw.FlattenRows()[0];
                     return jsonData.ContainsKey(name)
                         ? jsonData[name].Cast<T>()
                         : null;
@@ -239,7 +248,7 @@ namespace RGLabs.Network.Service
         {
             var read = new PlayerDataTransactionRead();
 
-            var list = tables == null
+            var list = tables.Length == 0
                 ? TableNames.Keys.ToList()
                 : tables.ToList();
 

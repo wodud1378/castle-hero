@@ -204,10 +204,7 @@ namespace RGLabs.Network.Service
             {
                 foreach (var unit in units)
                 {
-                    UnitHelper.CalculateLvUp(unit.lv, unit.exp, addExp, out int lv, out int exp);
-
-                    if (unit.lv == lv && unit.exp == exp)
-                        continue;
+                    UnitHelper.CalculateLvUp(unit.lv, unit.exp, addExp, out int lv, out int exp, out _);
 
                     transitions.Add(UnitTransition.Create(unit, lv, exp));
                     unit.lv = lv;

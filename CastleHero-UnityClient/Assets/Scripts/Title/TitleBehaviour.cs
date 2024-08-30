@@ -3,7 +3,6 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Sound;
 using RGLabs.Common.UI.Popup;
-using RGLabs.Network;
 using RGLabs.Network.Service;
 using RGLabs.Network.Service.Boot;
 using RGLabs.Network.Service.Login;

@@ -45,7 +45,7 @@ namespace RGLabs.Network.Service
             {
                 { Table.Character, characters },
                 { Table.Inventory, inventory },
-                { Table.Inventory, currency },
+                { Table.Currency, currency },
             });
 
             return write.IsSuccess
@@ -61,7 +61,7 @@ namespace RGLabs.Network.Service
         private UnitTransition ProcessUpgrade(UnitInfo unit, IItem item, int quantity, CurrencyDto currency,
             out Error error)
         {
-            if (Storage.db.rates[^1].Id == unit.rate)
+            if (Storage.db.rates.MaxRate == unit.rate)
             {
                 error = Error.AlreadyMaxLv;
                 return null;
@@ -97,7 +97,7 @@ namespace RGLabs.Network.Service
             var transition = UnitTransition.Create(unit, rate);
 
             unit.rate = rate;
-            item.Quantity = leftItem;
+            item.Quantity -= quantity - leftItem;
 
             error = Error.None;
 
@@ -107,7 +107,7 @@ namespace RGLabs.Network.Service
         private UnitTransition ProcessLvUp(UnitInfo unit, IItem item, int quantity, CurrencyDto currency,
             out Error error)
         {
-            if (Storage.db.levels[^1].Id == unit.lv)
+            if (Storage.db.levels.MaxLv == unit.lv)
             {
                 error = Error.AlreadyMaxLv;
                 return null;
@@ -131,7 +131,7 @@ namespace RGLabs.Network.Service
                 return null;
             }
 
-            UnitHelper.CalculateLvUp(unit.id, unit.lv, itemEntity, quantity,
+            UnitHelper.CalculateLvUp(unit.lv, unit.exp, itemEntity, quantity,
                 out int lv, out int exp, out int leftItem, out int price);
 
             if (currency.gold < price)

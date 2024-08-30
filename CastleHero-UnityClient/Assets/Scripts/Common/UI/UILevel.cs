@@ -68,16 +68,22 @@ namespace RGLabs.Common.UI
             bool hasOverride = data.hasOverride;
             _lvText.text = hasOverride && current.lv != next.lv
                 ? $"{ToLvText(current.lv).WithColor(_lvColor)} -> {ToLvText(next.lv).WithPositiveColor()}"
-                : $"{ToLvText(current.lv).WithColor(_lvColor)}"; 
+                : $"{ToLvText(current.lv).WithColor(_lvColor)}";
+
+            int maxLv = Storage.db.levels.MaxLv;
+            bool isMaxLv = hasOverride
+                ? next.lv == maxLv
+                : current.lv == maxLv;
             
             int id = hasOverride ? next.lv : current.lv;
             int currentExp = hasOverride ? next.exp : current.exp;
             int maxExp = !Storage.db.levels.TryFind(id, out var entity) ? next.exp : entity.exp;
-            float ratio = (float)currentExp / maxExp;
-            _gauge.image.overrideSprite = hasOverride ? _overrideGaugeSprite : null;
-            _gauge.value = ratio;
-            _percentage.text = $"{ratio * 100f:F1}%";
-            _value.text = $"{currentExp}/{maxExp}";
+            float ratio = isMaxLv ? 1f : (float)currentExp / maxExp;
+            //_gauge.image.overrideSprite = hasOverride ? _overrideGaugeSprite : null;
+            _gauge.maxValue = maxExp;
+            _gauge.value = currentExp;
+            _percentage.text = isMaxLv ? "Max" : $"{ratio * 100f:F1}%";
+            _value.text = isMaxLv ? "-" : $"{currentExp}/{maxExp}";
         }
 
         private string ToLvText(int lv) => $"Lv.{lv}";
