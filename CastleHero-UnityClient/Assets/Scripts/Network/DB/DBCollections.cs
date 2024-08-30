@@ -19,6 +19,7 @@ namespace RGLabs.Network.DB
         public SummonDB summons;
         public SummonGroupDB summonGroups;
         public ItemDB items;
+        public EquipItemStatDB equipmentStats;
         public ShopDB shop;
         public ShopItemGroupDB shopGroup;
 

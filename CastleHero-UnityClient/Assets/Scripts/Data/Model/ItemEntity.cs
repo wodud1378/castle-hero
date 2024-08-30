@@ -13,7 +13,7 @@ namespace RGLabs.Data.Model
         Rare = 2,
         Common = 3
     }
-    
+
     public enum ConsumeType
     {
         Ap = 1,
@@ -67,36 +67,31 @@ namespace RGLabs.Data.Model
         public int targetId;
         public int forCombine;
     }
-
+    
     public struct ChestOption
     {
-        public int[] items;
+        public List<KeyValuePair<int, List<int>>> itemMap;
+        public int[] Ids => itemMap.Select(x => x.Key).ToArray();
+        public int[] quantities;
     }
 
     public struct ItemEntity : IEntity
     {
-        [DataField("guid")]
-        public int Id { get; set; }
-        
+        [DataField("guid")] public int Id { get; set; }
+
         public bool IsValid { get; set; }
 
-        [DataField("type")]
-        public ItemType type;
-        
-        [DataField("icon")]
-        public string icon;
-        
-        [DataField("name")] 
-        public string name;
-        
-        [DataField("desc")]
-        public string[] desc;
-        
-        [DataField("sell")]
-        public int sellPrice;
-        
-        [DataField("option")]
-        public string[] options;
+        [DataField("type")] public ItemType type;
+
+        [DataField("icon")] public string icon;
+
+        [DataField("name")] public string name;
+
+        [DataField("desc")] public string[] desc;
+
+        [DataField("sell")] public int sellPrice;
+
+        [DataField("option")] public string[] options;
 
         #region Equipment.
 
@@ -106,7 +101,7 @@ namespace RGLabs.Data.Model
             SetStatValue = 1,
             Param,
         }
-        
+
         public enum EquipmentParam
         {
             Grade = 0,
@@ -114,14 +109,14 @@ namespace RGLabs.Data.Model
             Set = 2,
             MainStat = 3,
         }
-        
+
         public EquipmentOption GetEquipmentOption()
         {
             var option = new EquipmentOption();
             var parameters = options[(int)EquipmentOptionIndex.Param]
                 .Trim()
                 .Split(',');
-            
+
             for (var param = EquipmentParam.Grade; param <= EquipmentParam.MainStat; ++param)
             {
                 int index = (int)param;
@@ -129,10 +124,18 @@ namespace RGLabs.Data.Model
 
                 switch (param)
                 {
-                    case EquipmentParam.Grade: option.grade = (EquipmentGrade)value; break;
-                    case EquipmentParam.Slot: option.slot = (EquipmentSlot)value; break;
-                    case EquipmentParam.Set: option.set = value; break;
-                    case EquipmentParam.MainStat: option.mainStat = value; break;
+                    case EquipmentParam.Grade:
+                        option.grade = (EquipmentGrade)value;
+                        break;
+                    case EquipmentParam.Slot:
+                        option.slot = (EquipmentSlot)value;
+                        break;
+                    case EquipmentParam.Set:
+                        option.set = value;
+                        break;
+                    case EquipmentParam.MainStat:
+                        option.mainStat = value;
+                        break;
                 }
             }
 
@@ -143,7 +146,7 @@ namespace RGLabs.Data.Model
                 .Split(',')
                 .Select(int.Parse)
                 .ToArray();
-            
+
             var values = options[(int)EquipmentOptionIndex.SetStatValue]
                 .Trim()
                 .Split(',')
@@ -163,6 +166,7 @@ namespace RGLabs.Data.Model
         #endregion
 
         #region Consumable.
+
         public enum ConsumableOptionIndex
         {
             ConsumeType = 0,
@@ -198,53 +202,43 @@ namespace RGLabs.Data.Model
 
         #region Chest
 
-        public ChestOption GetChestOption()
+        public ChestOption GetChestOption(bool full = true)
         {
-            void FilterItemIds(int id, List<int> result)
+            int[] Convert(string optionString)
             {
-                // a의 각 자릿수
-                int length = (int)Math.Log10(id) + 1;
-                var db = Storage.db.items;
-                db.ForEach(x =>
-                {
-                    if (!MatchesCriteria(id, x.Id, length))
-                        return;
-                    
-                    if(!result.Contains(x.Id))
-                        result.Add(x.Id);
-                });
+                return optionString
+                    .Trim()
+                    .Replace("[", string.Empty)
+                    .Replace("]", string.Empty)
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToArray();
             }
+
+            var option = new ChestOption
+            {
+                itemMap = new(),
+                quantities = Convert(options[1])
+            };
             
-            bool MatchesCriteria(int a, int b, int length)
+            var ids = Convert(options[0]);
+            if (full)
             {
-                for (int i = 0; i < length; i++)
+                foreach (var id in ids)
                 {
-                    int aDigit = a / (int)Math.Pow(10, length - i - 1) % 10;
-                    int idDigit = b / (int)Math.Pow(10, length - i - 1) % 10;
-
-                    if (aDigit != 0 && aDigit != idDigit)
-                    {
-                        return false;
-                    }
+                    var related = id.GetRelatedItemIds();
+                    option.itemMap.Add(new(id, related));
                 }
-                return true;
             }
-
-            var ids = options[0]
-                .Trim()
-                .Replace("[", string.Empty)
-                .Replace("]", string.Empty)
-                .Split(',')
-                .Select(int.Parse);
-
-            var list = new List<int>();
-
-            foreach (var id in ids)
+            else
             {
-                FilterItemIds(id, list);
+                foreach (var id in ids)
+                {
+                    option.itemMap.Add(new(id, null));
+                }
             }
 
-            return new() { items = list.ToArray() };
+            return option;
         }
 
         #endregion

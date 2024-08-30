@@ -4,47 +4,151 @@ using System.Linq;
 using BackEnd;
 using Cysharp.Threading.Tasks;
 using LitJson;
+using RGLabs.Data;
+using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace RGLabs.Network.Service
 {
+    public enum Table
+    {
+        Stamina,
+        Currency,
+        Character,
+        Formation,
+        Inventory,
+        GameRecord,
+        ShopRecord,
+    }
+
+    public interface IErrorHandler
+    {
+        public void OnError(string error);
+
+        public void OnError(Error code);
+    }
+
+    public class Result
+    {
+        public bool IsSuccess => error == Network.Error.None;
+
+        public bool fromBackend;
+        public int statusCode;
+        public Error error;
+        public string errorMessage;
+        public BackendReturnObject raw;
+        
+        public static Result Complete(BackendReturnObject raw)
+        {
+            return new Result
+            {
+                fromBackend = true,
+                statusCode = int.Parse(raw.GetStatusCode()),
+                error = ToError(raw),
+                raw = raw
+            };
+        }
+
+        public static Result Complete() => new() { error = Network.Error.None };
+
+        public static Result Error(Error error) => Error(error, string.Empty);
+
+        public static Result Error(Error error, string errorMessage) =>
+            new() { error = error, errorMessage = errorMessage };
+
+        protected static Error ToError(BackendReturnObject obj) =>
+            obj.IsSuccess()
+                ? Network.Error.None
+                : obj.GetErrorCode() switch
+                {
+                    "NetworkError" => Network.Error.FromNetwork,
+                    "UnauthorizedException" => Network.Error.Unauthorized,
+                    "ServerException" => Network.Error.FromServer,
+                    "Maintenance" => Network.Error.Maintenance,
+                    _ => Network.Error.Unknown
+                };
+    }
+
+    public class Result<T> : Result
+    {
+        public delegate T Convert(BackendReturnObject jsonData);
+
+        public T data;
+
+        public static Result<T> Complete(T data)
+        {
+            return new Result<T>
+            {
+                data = data,
+                error = Network.Error.None
+            };
+        }
+
+        public static Result<T> Complete(BackendReturnObject raw, Convert convert = null)
+        {
+            var result = new Result<T>
+            {
+                fromBackend = true,
+                error = ToError(raw),
+                statusCode = int.Parse(raw.GetStatusCode()),
+                raw = raw
+            };
+
+            if (!result.IsSuccess)
+                return result;
+
+            result.data = convert != null
+                ? convert.Invoke(raw)
+                : JsonMapper.ToObject<T>(JsonMapper.ToJson(raw));
+
+            return result;
+        }
+
+        public new static Result<T> Error(Error error) => Error(error, string.Empty);
+
+        public new static Result<T> Error(Error error, string errorMessage) =>
+            new() { error = error, errorMessage = errorMessage };
+    }
+
     public abstract class NetworkServiceBase
     {
         protected delegate void Api(Backend.BackendCallback onResult);
-        
+
+        protected static readonly ItemGenerator ItemGen = new();
+        protected static readonly UnitGenerator UnitGen = new();
+
+        protected static readonly Dictionary<Table, string> TableNames = new()
+        {
+            { Table.Stamina, "stamina" },
+            { Table.Currency, "currency" },
+            { Table.Character, "characters" },
+            { Table.Formation, "formation" },
+            { Table.Inventory, "inventory" },
+            { Table.GameRecord, "record" },
+            { Table.ShopRecord, "shop" },
+        };
+
         public static int LeftRequestCount { get; private set; }
-        
-        protected const string ACT_TABLE = "act";
-        protected const string CURRENCY_TABLE = "currency";
-        protected const string CHARACTERS_TABLE = "characters";
-        protected const string FORMATION_TABLE = "formation";
-        protected const string INVENTORY_TABLE = "inventory";
-        protected const string GAME_RECORD_TABLE = "record";
-        protected const string SHOP_RECORD_TABLE = "shop";
-        
-        protected UniTask Save(string tableName, object obj)
-        {
-            var param = new Param { { tableName, obj.ToJson() } };
-            var api = new Api(onResult => { Backend.GameData.Update(tableName, new Where(), param, onResult.Invoke); });
 
-            return Call(api);
-        }
-        
-        protected UniTask<Response> InvokeFunc(string functionName,
-            List<KeyValuePair<string, object>> parameters)
+        private readonly List<IErrorHandler> _errorHandlers = new();
+
+        public void AttachErrorHandler(IErrorHandler handler)
         {
-            var param = FunctionParam(functionName, parameters);
-            return Call(onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke));
+            if (!_errorHandlers.Contains(handler))
+                return;
+
+            _errorHandlers.Add(handler);
         }
 
-        protected UniTask<Response<T>> InvokeFunc<T>(string functionName,
-            List<KeyValuePair<string, object>> parameters, Response<T>.Convert convert)
-        {
-            var param = FunctionParam(functionName, parameters);
-            return Call(onResult => Backend.BFunc.InvokeFunction("function", param, onResult.Invoke), convert);
-        }
-        
+        public void DetachErrorHandler(IErrorHandler handler) => _errorHandlers.Remove(handler);
+
+        protected void PublishError(Error error) => _errorHandlers.ForEach(x => x.OnError(error));
+
+        protected void PublishError(string error) => _errorHandlers.ForEach(x => x.OnError(error));
+
+
         protected T FromTransaction<T>(JsonData data, string tableName)
         {
             JsonData result = null;
@@ -58,51 +162,29 @@ namespace RGLabs.Network.Service
 
             return result != null ? result.Cast<T>() : default;
         }
-        
-        protected Response<T>.Convert ConvertFunctionResponse<T>() =>
-            raw =>
-            {
-                var dto = raw.GetFlattenJSON()["result"].Cast<ResponseDto<T>>();
-                var error = dto.error;
-                if (!string.IsNullOrEmpty(error))
-                {
-                    Debug.LogError($"{error}, detail={dto.errorDetail}");
-                    return default;
-                }
 
-                return dto.data;
-            };
-        
-        protected Param FunctionParam(string functionName, List<KeyValuePair<string, object>> parameters = null)
+        protected async UniTask<Result> Call(Api api)
         {
-            var param = new Param { { "functionName", functionName } };
-            if (parameters == null)
-                return param;
-
-            foreach (var kvp in parameters)
-            {
-                param.Add(kvp.Key, kvp.Value);
-            }
-
-            return param;
-        }
-        
-        protected async UniTask<Response> Call(Api api)
-        {
-            var src = new UniTaskCompletionSource<Response>();
-            api.Invoke(result =>
+            var src = new UniTaskCompletionSource<Result>();
+            api.Invoke(raw =>
             {
                 --LeftRequestCount;
 
                 try
                 {
-                    var response = new Response(result);
-                    src.TrySetResult(response);
+                    var result = Result.Complete(raw);
+                    if (!result.IsSuccess)
+                        PublishError(result.error);
+
+                    src.TrySetResult(result);
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError(e.ToString());
-                    throw;
+                    var exception = e.ToString();
+
+                    PublishError(e.ToString());
+
+                    Debug.LogError(exception);
                 }
             });
 
@@ -111,17 +193,17 @@ namespace RGLabs.Network.Service
             return await src.Task;
         }
 
-        protected UniTask<Response<T>> Call<T>(Api api, Response<T>.Convert convert = null)
+        protected UniTask<Result<T>> Call<T>(Api api, Result<T>.Convert convert = null)
         {
-            var src = new UniTaskCompletionSource<Response<T>>();
-            api.Invoke(result =>
+            var src = new UniTaskCompletionSource<Result<T>>();
+            api.Invoke(raw =>
             {
                 --LeftRequestCount;
 
                 try
                 {
-                    var response = new Response<T>(result, convert);
-                    src.TrySetResult(response);
+                    var result = Result<T>.Complete(raw, convert);
+                    src.TrySetResult(result);
                 }
                 catch (Exception e)
                 {
@@ -134,46 +216,221 @@ namespace RGLabs.Network.Service
 
             return src.Task;
         }
-        
-        protected List<TransactionValue> TransactionGet(params string[] tables)
+
+        protected async UniTask<Result<T>> GetTable<T>(Table table) where T : class
         {
-            var list = new List<TransactionValue>();
-            if (tables.Contains(ACT_TABLE))
-                list.Add(TransactionGetAct());
+            string name = TableNames[table];
 
-            if (tables.Contains(CURRENCY_TABLE))
-                list.Add(TransactionGetCurrency());
+            var response = await Call(onResult => Backend.PlayerData.GetMyData(name, 1, onResult.Invoke),
+                raw =>
+                {
+                    var jsonData = raw.FlattenRows();
+                    return jsonData.ContainsKey(name)
+                        ? jsonData[name].Cast<T>()
+                        : null;
+                });
 
-            if (tables.Contains(CHARACTERS_TABLE))
-                list.Add(TransactionGetCharacters());
-
-            if (tables.Contains(FORMATION_TABLE))
-                list.Add(TransactionGetFormation());
-
-            if (tables.Contains(INVENTORY_TABLE))
-                list.Add(TransactionGetInventory());
-            
-            if (tables.Contains(GAME_RECORD_TABLE))
-                list.Add(TransactionGetGameRecord());
-            
-            if (tables.Contains(SHOP_RECORD_TABLE))
-                list.Add(TransactionGetShopRecord());
-
-            return list;
+            return response.IsSuccess
+                ? Result<T>.Complete(response.data)
+                : Result<T>.Error(response.error);
         }
 
-        private TransactionValue TransactionGetShopRecord() => TransactionValue.SetGet(SHOP_RECORD_TABLE, new Where());
-        
-        private TransactionValue TransactionGetGameRecord() => TransactionValue.SetGet(GAME_RECORD_TABLE, new Where());
+        protected async UniTask<Result<UserDataDto>> GetTables(params Table[] tables)
+        {
+            var read = new PlayerDataTransactionRead();
 
-        private TransactionValue TransactionGetInventory() => TransactionValue.SetGet(INVENTORY_TABLE, new Where());
+            var list = tables == null
+                ? TableNames.Keys.ToList()
+                : tables.ToList();
 
-        private TransactionValue TransactionGetCharacters() => TransactionValue.SetGet(CHARACTERS_TABLE, new Where());
+            foreach (var table in list)
+            {
+                read.AddGetMyLatestData(TableNames[table]);
+            }
 
-        private TransactionValue TransactionGetFormation() => TransactionValue.SetGet(FORMATION_TABLE, new Where());
+            var response = await Call(onResult =>
+                    Backend.PlayerData.TransactionRead(read, onResult.Invoke),
+                raw =>
+                {
+                    var jsonData = raw.GetFlattenJSON();
+                    return new UserDataDto
+                    {
+                        stamina = FromTransaction<StaminaDto>(jsonData, TableNames[Table.Stamina]),
+                        currency = FromTransaction<CurrencyDto>(jsonData, TableNames[Table.Currency]),
+                        characters = FromTransaction<CharactersDto>(jsonData, TableNames[Table.Character]),
+                        formation = FromTransaction<FormationDto>(jsonData, TableNames[Table.Formation]),
+                        inventory = FromTransaction<InventoryDto>(jsonData, TableNames[Table.Inventory]),
+                        gameRecord = FromTransaction<GameRecordDto>(jsonData, TableNames[Table.GameRecord]),
+                        shopRecord = FromTransaction<ShopRecordDto>(jsonData, TableNames[Table.ShopRecord]),
+                    };
+                });
 
-        private TransactionValue TransactionGetCurrency() => TransactionValue.SetGet(CURRENCY_TABLE, new Where());
+            return response.IsSuccess
+                ? Result<UserDataDto>.Complete(response.data)
+                : Result<UserDataDto>.Error(response.error);
+        }
 
-        private TransactionValue TransactionGetAct() => TransactionValue.SetGet(ACT_TABLE, new Where());
+        protected async UniTask<Result<UserDataDto>> GetTables(IEnumerable<Table> tables)
+        {
+            var read = new PlayerDataTransactionRead();
+
+            var list = tables == null
+                ? TableNames.Keys.ToList()
+                : tables.ToList();
+
+            foreach (var table in list)
+            {
+                read.AddGetMyLatestData(TableNames[table]);
+            }
+
+            var response = await Call(onResult =>
+                    Backend.PlayerData.TransactionRead(read, onResult.Invoke),
+                raw =>
+                {
+                    var jsonData = raw.GetFlattenJSON();
+                    return new UserDataDto
+                    {
+                        stamina = FromTransaction<StaminaDto>(jsonData, TableNames[Table.Stamina]),
+                        currency = FromTransaction<CurrencyDto>(jsonData, TableNames[Table.Currency]),
+                        characters = FromTransaction<CharactersDto>(jsonData, TableNames[Table.Character]),
+                        formation = FromTransaction<FormationDto>(jsonData, TableNames[Table.Formation]),
+                        inventory = FromTransaction<InventoryDto>(jsonData, TableNames[Table.Inventory]),
+                        gameRecord = FromTransaction<GameRecordDto>(jsonData, TableNames[Table.GameRecord]),
+                        shopRecord = FromTransaction<ShopRecordDto>(jsonData, TableNames[Table.ShopRecord]),
+                    };
+                });
+
+            return response.IsSuccess
+                ? Result<UserDataDto>.Complete(response.data)
+                : Result<UserDataDto>.Error(response.error);
+        }
+
+        protected async UniTask<Result> UpdateTable(Table key, object value)
+        {
+            var name = TableNames[key];
+            var param = ToParam(name, value);
+
+            return await Call(onResult =>
+                Backend.PlayerData.UpdateMyLatestData(name, param, onResult.Invoke));
+        }
+
+        protected UniTask<Result> UpdateTables(UserDataDto userData, bool updateStorage = true)
+        {
+            var tables = new Dictionary<Table, object>();
+            if (userData.stamina != null)
+                tables.Add(Table.Stamina, userData.stamina);
+
+            if (userData.currency != null)
+                tables.Add(Table.Currency, userData.currency);
+
+            if (userData.currency != null)
+                tables.Add(Table.Inventory, userData.inventory);
+
+            if (userData.characters != null)
+                tables.Add(Table.Character, userData.characters);
+
+            if (userData.formation != null)
+                tables.Add(Table.Formation, userData.formation);
+
+            if (userData.gameRecord != null)
+                tables.Add(Table.GameRecord, userData.gameRecord);
+
+            if (userData.shopRecord != null)
+                tables.Add(Table.ShopRecord, userData.shopRecord);
+
+            return UpdateTables(tables, updateStorage);
+        }
+
+        protected async UniTask<Result> UpdateTables(Dictionary<Table, object> tables, bool updateStorage = true)
+        {
+            var write = new PlayerDataTransactionWrite();
+            foreach (var table in tables)
+            {
+                var name = TableNames[table.Key];
+                var param = ToParam(name, table.Value);
+                write.AddUpdateMyLatestData(name, param);
+            }
+
+            var writeResponse = await Call(onResult =>
+                Backend.PlayerData.TransactionWrite(write, onResult.Invoke));
+
+            if (!writeResponse.IsSuccess)
+                return Result.Error(writeResponse.error);
+
+            var readResponse = await GetTables();
+            if (!readResponse.IsSuccess)
+                return Result.Error(writeResponse.error);
+
+            if (updateStorage)
+                Storage.userRepository.Update(readResponse.data);
+
+            return Result.Complete();
+        }
+
+        protected async UniTask<Result<bool>> HasEnoughAp(StaminaDto stamina, int point)
+        {
+            var update = await UpdateStamina(stamina);
+            if (!update.IsSuccess)
+                return Result<bool>.Error(update.error);
+
+            return Result<bool>.Complete(stamina.point >= point);
+        }
+
+        protected async UniTask<Result> UpdateStamina(StaminaDto stamina)
+        {
+            const int intervalMinute = 10;
+            const int amountPerMinute = 1;
+
+            if (stamina.point < stamina.pointLimit)
+            {
+                var serverTime = await GetServerTime();
+                if (!serverTime.IsSuccess)
+                    return Result.Error(serverTime.error);
+
+                var now = serverTime.data;
+                int cycle = (int)((now - stamina.lastUpdate).TotalMinutes / intervalMinute);
+                if (cycle > 0)
+                {
+                    int amount = cycle * amountPerMinute;
+                    stamina.point = Mathf.Min(stamina.point + amount, stamina.pointLimit);
+                    stamina.lastUpdate = now.AddMinutes(cycle * intervalMinute);
+                }
+            }
+
+            return Result.Complete();
+        }
+
+        protected async UniTask<Result> UpdateStamina()
+        {
+            var read = await GetTable<StaminaDto>(Table.Stamina);
+            if (!read.IsSuccess)
+                return Result.Error(read.error);
+
+            return await UpdateStamina(read.data);
+        }
+
+        protected async UniTask<Result> AddStamina(StaminaDto stamina, int amount)
+        {
+            var update = await UpdateStamina(stamina);
+            if (!update.IsSuccess)
+                return Result<StaminaDto>.Error(update.error);
+
+            stamina.point += amount * amount;
+            return Result.Complete();
+        }
+
+        private async UniTask<Result<DateTime>> GetServerTime()
+        {
+            var getServerTime = await Call(
+                Backend.Utils.GetServerTime,
+                raw => DateTime.Parse(raw.GetFlattenJSON()["utcTime"].ToString()));
+
+            if (!getServerTime.IsSuccess)
+                return Result<DateTime>.Error(getServerTime.error);
+
+            return Result<DateTime>.Complete(getServerTime.data.AddHours(3));
+        }
+
+        protected Param ToParam(string key, object value) => new() { { key, value.ToJson() } };
     }
 }

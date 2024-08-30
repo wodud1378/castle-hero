@@ -3,19 +3,10 @@ using System.Collections.Generic;
 using RGLabs.Common;
 using RGLabs.Data;
 using RGLabs.Prepare.UI;
-using RGLabs.Utility;
 
 namespace RGLabs.Network.Shared
 {
-    public class ProfileDto
-    {
-        public int iconId;
-        public int stage;
-        public int focusedStage;
-        public int castleLv;
-    }
-
-    public class ActDto
+    public class StaminaDto
     {
         public int point;
         public int pointLimit;
@@ -59,6 +50,44 @@ namespace RGLabs.Network.Shared
         }
 
         public bool IsEmpty() => gold > 0 || freeDia > 0 || paidDia > 0;
+
+        public bool TryConsumeDia(int amount)
+        {
+            if (freeDia + paidDia < amount)
+                return false;
+
+            if (freeDia > amount)
+            {
+                freeDia -= amount;
+            }
+            else
+            {
+                int remain = amount - freeDia;
+                freeDia = 0;
+                paidDia -= remain;
+            }
+
+            return true;
+        }
+
+        public bool TryConsume(int id, int amount)
+        {
+            switch (id)
+            {
+                case Constants.PaidDiaId:
+                case Constants.FreeDiaId:
+                    return TryConsumeDia(amount);
+                
+                case Constants.GoldId:
+                    if (amount > gold)
+                        return false;
+
+                    gold -= amount;
+                    return true;
+                default:
+                    return false;
+            }
+        }
     }
 
     public class CharactersDto
@@ -100,7 +129,7 @@ namespace RGLabs.Network.Shared
 
     public class UserDataDto
     {
-        public ActDto act;
+        public StaminaDto stamina;
         public CurrencyDto currency;
         public CharactersDto characters;
         public FormationDto formation;
@@ -209,9 +238,9 @@ namespace RGLabs.Network.Shared
 
             return new UnitTransition
             {
-                rateTransition = new int[] { rate, rate },
-                expTransition = new int[] { exp, exp },
-                lvTransition = new int[] { lv, lv },
+                rateTransition = new[] { rate, rate },
+                expTransition = new[] { exp, exp },
+                lvTransition = new[] { lv, lv },
                 unit = unit
             };
         }
@@ -220,9 +249,9 @@ namespace RGLabs.Network.Shared
         {
             return new UnitTransition
             {
-                rateTransition = new int[] { unit.rate, unit.rate },
-                expTransition = new int[] { unit.exp, exp },
-                lvTransition = new int[] { unit.lv, lv },
+                rateTransition = new[] { unit.rate, unit.rate },
+                expTransition = new[] { unit.exp, exp },
+                lvTransition = new[] { unit.lv, lv },
                 unit = unit
             };
         }
@@ -231,15 +260,15 @@ namespace RGLabs.Network.Shared
         {
             return new UnitTransition
             {
-                rateTransition = new int[] { unit.rate, rate },
-                expTransition = new int[] { unit.exp, unit.exp },
-                lvTransition = new int[] { unit.lv, unit.lv },
+                rateTransition = new[] { unit.rate, rate },
+                expTransition = new[] { unit.exp, unit.exp },
+                lvTransition = new[] { unit.lv, unit.lv },
                 unit = unit
             };
         }
     }
 
-    public class GrowthResult
+    public class UnitGrowth
     {
         public UnitTransition transition;
         public CurrencyDto leftCurrency;
@@ -253,7 +282,6 @@ namespace RGLabs.Network.Shared
     public class CastleGrowth
     {
         public int lv;
-        public CurrencyDto leftCurrency;
     }
 
     #endregion
@@ -278,11 +306,9 @@ namespace RGLabs.Network.Shared
         public int quantity;
     }
 
-    public class SummonResult
+    public class Summon
     {
-        public CurrencyDto leftCurrency;
-        public IItem leftItem;
-        public List<ISummoned> summoneds;
+        public List<ISummoned> list;
     }
 
     #endregion
@@ -290,11 +316,10 @@ namespace RGLabs.Network.Shared
 
     #region Item.
 
-    public class OpenBoxResult
+    public class OpenBox
     {
         public CurrencyDto currency;
         public List<IItem> items;
-        public IItem leftItem;
     }
 
     public class Consume
@@ -364,10 +389,12 @@ namespace RGLabs.Network.Shared
     {
         public int id;
         public bool isFirstClear;
+        public int exp;
         public CurrencyDto currency;
         public List<IItem> items;
+        public List<UnitTransition> transitions;
 
-        public virtual List<Reward> GetRewardItems()
+        public virtual List<Reward> GetRewardsForDisplay()
         {
             var rewards = new List<Reward>();
             if (!currency.IsEmpty())
@@ -389,6 +416,17 @@ namespace RGLabs.Network.Shared
                 });
             }
 
+            if (exp > 0)
+            {
+                rewards.Add(new()
+                {
+                    icon = Constants.ExpIcon,
+                    min = exp,
+                    max = exp,
+                    percent = 1f
+                });
+            }
+
             items.ForEach(x =>
             {
                 if (!Storage.db.items.TryFind(x.ItemId, out var entity))
@@ -405,41 +443,6 @@ namespace RGLabs.Network.Shared
             });
 
             return rewards;
-        }
-    }
-
-    public class DungeonCleared : GameCleared
-    {
-    }
-
-    public class StageCleared : GameCleared
-    {
-        public int exp;
-        public List<UnitTransition> transitions;
-
-        public override List<Reward> GetRewardItems()
-        {
-            var list = base.GetRewardItems();
-            if (exp > 0)
-            {
-                int index = list.FindLastIndex(
-                    x => x.id == Constants.GoldId ||
-                         x.id == Constants.FreeDiaId ||
-                         x.id == Constants.PaidDiaId);
-
-                if (!index.IsValidIndex(list))
-                    index = 0;
-
-                list.Insert(index, new()
-                {
-                    icon = Constants.ExpIcon,
-                    min = exp,
-                    max = exp,
-                    percent = 1f
-                });
-            }
-
-            return list;
         }
     }
 

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19d23375cbf643f4849cd7bc1edf6a23, type: 3}
   m_Name: BootConfig
   m_EditorClassIdentifier: 
-  useLocalDatabase: 0
+  deleteGuestId: 1

@@ -15,7 +15,8 @@ using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
-using Cache = System.Collections.Generic.Dictionary<int, (string name, float weight)>;
+
+using Probability = System.Collections.Generic.Dictionary<int, (string name, float weight)>;
 
 namespace RGLabs.Lobby.UI.Popup
 {
@@ -35,11 +36,10 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private Button _x10;
         [SerializeField] private UIItemSlot _itemForX10;
 
-
-        private readonly Dictionary<int, Cache> _propCache = new();
+        private readonly Dictionary<int, Probability> _probabilityCache = new();
         private readonly ReactiveProperty<SummonEntity> _entity = new();
 
-        private SummonResult _result;
+        private Summon _result;
 
         protected override void OnAwake()
         {
@@ -70,7 +70,7 @@ namespace RGLabs.Lobby.UI.Popup
 
         private async UniTaskVoid OpenInfo()
         {
-            var data = GetOrCreateFromCache(_entity.Value.groupId);
+            var data = GetOrCreateProbability(_entity.Value.groupId);
             var infoString = BuildInfoString(data);
 
             var popup = await Context.popups
@@ -119,17 +119,18 @@ namespace RGLabs.Lobby.UI.Popup
             //_desc.text = data.comment;
             //_desc.gameObject.SetActive(!string.IsNullOrEmpty(_desc.text));
 
-            bool TryAssign(int index, int coastId, int coast, Button button, UIItemSlot slot,
-                Action<int, int, int> onClick)
+            bool TryAssign(int index, int costId, int coast, Button button, UIItemSlot slot,
+                Action<int, int> onClick)
             {
-                bool isEnough = CheckInventory(coastId, coast, false);
-                if (isEnough ||
-                    index == 0)
+                bool isEnough = HasEnoughItem(costId, coast, false);
+                if (isEnough || index == 0)
                 {
                     button.onClick.RemoveAllListeners();
-                    button.onClick.AddListener(() => onClick.Invoke(data.Id, coastId, coast));
+                    
+                    if(isEnough)
+                        button.onClick.AddListener(() => onClick.Invoke(data.Id, index));
 
-                    slot.Init(new Item { ItemId = coastId, Quantity = coast })
+                    slot.Init(new Item { ItemId = costId, Quantity = coast })
                         .Forget();
 
                     slot.QuantityLabelColor = isEnough ? Color.white : Color.red;
@@ -142,55 +143,54 @@ namespace RGLabs.Lobby.UI.Popup
 
             bool x1Done = false;
             bool x10Done = false;
-            var coastItems = data.item;
-            var coastPerOnce = data.valuePerOnce;
-            var coastPerTenth = data.valuePerTenth;
-            int i = Mathf.Min(coastItems.Length, coastPerOnce.Length, coastPerTenth.Length) - 1;
+            var costItems = data.costItems;
+            var perOnce = data.valuePerOnce;
+            var perTenth = data.valuePerTenth;
+            int i = Mathf.Min(costItems.Length, perOnce.Length, perTenth.Length) - 1;
             while (i >= 0)
             {
-                int itemId = coastItems[i];
+                int itemId = costItems[i];
                 if (!x1Done)
                 {
-                    x1Done = TryAssign(i, itemId, coastPerOnce[i], _x1, _itemForX1,
-                        (eId, cId, c) => SummonOnce(eId, cId, c).Forget());
+                    x1Done = TryAssign(i, itemId, perOnce[i], _x1, _itemForX1,
+                        (id, index) => SummonOnce(id, index).Forget());
                 }
 
                 if (!x10Done)
                 {
-                    x10Done = TryAssign(i, itemId, coastPerTenth[i], _x10, _itemForX10,
-                        (eid, cId, c) => SummonTenth(eid, cId, c).Forget());
+                    x10Done = TryAssign(i, itemId, perTenth[i], _x10, _itemForX10,
+                        (id, index) => SummonTenth(id, index).Forget());
                 }
 
                 --i;
             }
         }
 
-        private UniTask SummonOnce(int eventId, int coastId, int coast)
-            => Summon(eventId, coastId, coast, OnceTrigger, NetworkService.Summon.SummonOnce);
+        private UniTask SummonOnce(int eventId, int costIndex)
+            => Summon(eventId, costIndex, OnceTrigger, NetworkService.Summon.SummonOnce);
 
-        private UniTask SummonTenth(int eventId, int coastId, int coast)
-            => Summon(eventId, coastId, coast, TenthTrigger, NetworkService.Summon.SummonTenth);
+        private UniTask SummonTenth(int eventId, int costIndex)
+            => Summon(eventId, costIndex, TenthTrigger, NetworkService.Summon.SummonTenth);
 
-        private async UniTask Summon(int eventId, int coastId, int coast, int animationHash,
-            Func<int, int, UniTask<SummonResult>> method)
+        private async UniTask Summon(int eventId, int costIndex, int animationHash,
+            Func<int, int, UniTask<Result<Summon>>> method)
         {
-            if (!CheckInventory(coastId, coast))
+            var result = await method.Invoke(eventId, costIndex);
+            if (!result.IsSuccess)
+            {
+                Context.popups.Open<PopupCommon>(result.error);
                 return;
-
-            var networkTask = SetResult(() => method.Invoke(eventId, coastId));
-            var uiTask = TaskHelper.OnAnimationEnd(_animator, animationHash);
-
-            await UniTask.WhenAll(networkTask, uiTask);
+            }
+            
+            await TaskHelper.OnAnimationEnd(_animator, animationHash);
 
             OnSummoned(_result).Forget();
         }
 
-        private async UniTask SetResult(Func<UniTask<SummonResult>> method) => _result = await method.Invoke();
-
-        private async UniTaskVoid OnSummoned(SummonResult result)
+        private async UniTaskVoid OnSummoned(Summon result)
         {
             var repository = Storage.userRepository;
-            foreach (var summoned in result.summoneds)
+            foreach (var summoned in result.list)
             {
                 switch (summoned)
                 {
@@ -203,7 +203,7 @@ namespace RGLabs.Lobby.UI.Popup
                 }
             }
 
-            if (result.summoneds.Count > 1)
+            if (result.list.Count > 1)
             {
                 var direction = await Context.popups
                     .OpenAsync<PopupSummonDirection>(result);
@@ -211,39 +211,39 @@ namespace RGLabs.Lobby.UI.Popup
                 await direction.DisplayTask;
             }
 
-            Context.popups
-                .OpenAsync<PopupSummonResult>(result)
-                .Forget();
+            Context.popups.Open<PopupSummonResult>(result);
         }
 
-        private bool CheckInventory(int coastId, int coast, bool openPopup = true)
+        private bool HasEnoughItem(int costId, int cost, bool openPopup = true)
         {
             var repo = Storage.userRepository;
             var currency = repo.currency;
             bool isEnough;
-            if (coastId == Constants.GoldId)
-                isEnough = currency.gold.Value >= coast;
-            else if (coastId == Constants.PaidDiaId || coastId == Constants.FreeDiaId)
-                isEnough = currency.paidDia.Value + currency.freeDia.Value >= coast;
-            else
+            switch (costId)
             {
-                var item = repo.inventory.items.FirstOrDefault(x => x.ItemId == coastId);
-                isEnough = item != null && item.Quantity >= coast;
+                case Constants.GoldId:
+                    isEnough = currency.gold.Value >= cost;
+                    break;
+                case Constants.PaidDiaId or Constants.FreeDiaId:
+                    isEnough = currency.paidDia.Value + currency.freeDia.Value >= cost;
+                    break;
+                default:
+                {
+                    var item = repo.inventory.items.FirstOrDefault(x => x.ItemId == costId);
+                    isEnough = item != null && item.Quantity >= cost;
+                    break;
+                }
             }
 
             if (!isEnough && openPopup)
-            {
-                Context.popups
-                    .OpenAsync<PopupCommon>("재화 혹은 아이템 부족해유")
-                    .Forget();
-            }
+                Context.popups.Open<PopupCommon>("재화 혹은 아이템 부족해유");
 
             return isEnough;
         }
 
-        private Cache GetOrCreateFromCache(int groupId)
+        private Probability GetOrCreateProbability(int groupId)
         {
-            if (!_propCache.TryGetValue(groupId, out var data))
+            if (!_probabilityCache.TryGetValue(groupId, out var data))
             {
                 var groupEntities = Storage.db.summonGroups
                     .Map(groupId)
@@ -261,13 +261,13 @@ namespace RGLabs.Lobby.UI.Popup
                     )
                     .ToDictionary(x => x.unitId, x => (x.name, x.weight));
 
-                _propCache[groupId] = data;
+                _probabilityCache[groupId] = data;
             }
 
             return data;
         }
 
-        private string BuildInfoString(Cache cache)
+        private string BuildInfoString(Probability cache)
         {
             bool isFirst = true;
             var sb = new StringBuilder();

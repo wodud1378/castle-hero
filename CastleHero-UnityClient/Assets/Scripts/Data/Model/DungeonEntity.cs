@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RGLabs.Data.DB;
 using RGLabs.Network.Service;
 using RGLabs.Prepare.UI;
 using RGLabs.Utility;
+using Random = UnityEngine.Random;
 
 namespace RGLabs.Data.Model
 {
@@ -87,7 +89,7 @@ namespace RGLabs.Data.Model
             return list;
         }
 
-        public List<Reward> GetRewardItems()
+        public List<Reward> GetRewardsForDisplay()
         {
             var rewards = new List<Reward>();
             if (!Storage.db.dungeonRewards.TryFind(rewardGroup, out var group))

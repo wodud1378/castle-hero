@@ -19,7 +19,7 @@ using UnityEngine.UI;
 namespace RGLabs.Lobby.UI.Popup
 {
     [PrefabPath("Lobby/UI/Prefabs/Popup_Upgrade.prefab")]
-    public class PopupRateUp : PopupBase, IGrowthTask
+    public class PopupRateUp : PopupGrowth
     {
         [SerializeField] private TMP_Text _name;
         [SerializeField] private Image[] _stars;
@@ -28,68 +28,30 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private TMP_Text _requireSoul;
         [SerializeField] private TMP_Text _requireGold;
 
-        [SerializeField] private UIItemSlot _goldSlot;
-        [SerializeField] private Button _confirm;
-
-        public UniTask<GrowthResult> GrowthTask => _completionSource.Task;
-        
-        private UniTaskCompletionSource<GrowthResult> _completionSource;
-        private GrowthResult _result;
-        
-        private readonly ReactiveProperty<UnitInfo> _unit = new();
-        
+            
         private UniTask _updateTask;
+
+        protected override CharacterService.GrowthAction Action => CharacterService.GrowthAction.Rate;
 
         protected override void OnAwake()
         {
             base.OnAwake();
-
-            this.SubscribeButton(_confirm, () => Confirm().Forget());
-
-            Storage.userRepository.currency.gold
-                .Subscribe(UpdateGoldSlot)
-                .AddTo(this);
             
-            _unit
-                .Subscribe(UpdateUI)
+            Storage.userRepository.inventory.items
+                .ChangeAsObservable()
+                .ThrottleFrame(1)
+                .Subscribe(_=> _unit.Value = _unit.Value)
                 .AddTo(this);
         }
 
         public override UniTask Open(params object[] parameters)
         {
-            if (parameters.Length == 0 || parameters[0] is not UnitInfo unitInfo)
-            {
-                var exception = new Exception("파라미터가 잘못되었습니다.");
-                return UniTask.FromException(exception);
-            }
-
-            _completionSource = new();
-            _unit.Value = unitInfo;
-            return _updateTask;
+            return UniTask.WhenAll(base.Open(parameters), _updateTask);
         }
-
-        protected override void OnClose()
+        
+        protected override void OnUnitChanged(UnitInfo unit)
         {
-            base.OnClose();
-
-            _completionSource.TrySetResult(_result);
-        }
-
-        private void UpdateGoldSlot(int gold)
-        {
-            _goldSlot.Init(new Item
-            {
-                ItemId = Constants.GoldId,
-                Quantity = gold
-            });
-        }
-
-        private void UpdateUI(UnitInfo unitInfo)
-        {
-            if (unitInfo == null)
-                return;
-
-            int rate = unitInfo.rate;
+            int rate = unit.rate;
             if (!Storage.db.rates.TryFind(rate, out var rateEntity))
             {
                 var exception = new Exception("데이터를 불러오지 못했습니다.");
@@ -97,7 +59,7 @@ namespace RGLabs.Lobby.UI.Popup
                 return;
             }
 
-            if (!Storage.db.units.TryFind(unitInfo.id, out var unitEntity))
+            if (!Storage.db.units.TryFind(unit.id, out var unitEntity))
             {
                 var exception = new Exception("데이터를 불러오지 못했습니다.");
                 Debug.LogError(exception);
@@ -116,6 +78,7 @@ namespace RGLabs.Lobby.UI.Popup
             {
                 var star = _stars[i];
                 star.DOKill();
+                star.DOFade(1f, 0f);
                 star.gameObject.SetActive((i + 1) <= rate);
             }
 
@@ -147,31 +110,26 @@ namespace RGLabs.Lobby.UI.Popup
 
             _confirm.interactable = hasEnoughGold;
 
-            var unitTask = _unitSlot.Init(unitInfo, unitEntity);
+            var unitTask = _unitSlot.Init(unit, unitEntity);
             var soulTask = _soulSlot.Init(item);
 
             _updateTask = UniTask.WhenAll(unitTask, soulTask);
         }
 
-        private async UniTaskVoid Confirm()
+        protected override (int id, int quantity) ConsumeItem()
         {
-            if (_soulSlot.Item is not Item item)
-                return;
+            if (_soulSlot.Item == null || !Storage.db.rates.TryFind(_unit.Value.rate, out var rateEntity))
+                return default;
 
-            if (!Storage.db.rates.TryFind(_unit.Value.rate, out var rateEntity))
-                return;
+            return (_soulSlot.Item.ItemId, rateEntity.soul);
+        }
 
-            var result = await  NetworkService.Character.Upgrade(_unit.Value.id, item.ItemId, rateEntity.soul);
-            var unit = result.transition.unit;
-            var repository = Storage.userRepository;
-            repository.currency.Update(result.leftCurrency);
-            repository.inventory.Update(result.leftItem);
-            repository.characters.Update(unit);
+        protected override void OnGrowthComplete(UnitGrowth growth)
+        {
+            if (growth.transition.unit.rate < Storage.db.rates[^1].Id)
+                return;
             
-            _unit.Value = unit;
-            _result = result;
-            
-            Context.sounds.PlaySfx(Storage.soundPath.levelUp);
+            Close();
         }
     }
 }

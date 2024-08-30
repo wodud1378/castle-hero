@@ -1,6 +1,7 @@
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
+using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Lobby.UI.Popup;
@@ -36,9 +37,17 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             
             _slider.value = 0f;
         }
-
+        
         protected override void OnDataInitialized(IItem data)
         {
+            if (data == null || data.Quantity == 0)
+            {
+                Close();
+                return;
+            }
+            
+            base.OnDataInitialized(data);
+            
             _description.text = Entity.desc[0];
 
             SetActiveSlider();
@@ -88,7 +97,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
             _useCount.gameObject.SetActive(isActive);
             _slider.gameObject.SetActive(isActive);
-            _slider.maxValue = item.Value.Quantity;
+            _slider.maxValue = Item.Quantity;
         }
 
         private void OnUse()
@@ -119,41 +128,31 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         private async void OpenBox()
         {
-            var result = await NetworkService.Item.OpenBox(item.Value.ItemId, (int)_slider.value);
+            var result = await NetworkService.Item.OpenChest(Item.ItemId, (int)_slider.value);
+            if (!result.IsSuccess)
+            {
+                Context.popups.Open<PopupCommon>(result.error);
+                return;
+            }
 
-            var currency = result.currency;
-            var items = result.items;
-            var leftItem = result.leftItem;
+            var data = result.data;
+            var currency = data.currency;
+            var items = data.items;
 
             var repository = Storage.userRepository;
             repository.currency.Add(currency);
             repository.inventory.Add(items);
-            repository.inventory.Update(leftItem);
-            
-            Context.popups
-                .OpenAsync<PopupReceivedItems>(currency, items)
-                .Forget();
 
-            if (leftItem.Quantity == 0)
-            {
-                CloseAsync().Forget();
-                return;
-            }
-
-            item.Value = leftItem;
+            Context.popups.Open<PopupReceivedItems>(currency, items);
         }
 
         private void MoveToDrawCharacter(int ticketId)
         {
-            if (!Storage.db.summons.TryFind(x => x.item.Contains(ticketId), out var entity))
+            if (!Storage.db.summons.TryFind(x => x.costItems.Contains(ticketId), out var entity))
                 return;
-            
-            Context.popups
-                .OpenAsync<PopupSummon>(entity)
-                .Forget();
-            
-            CloseAsync()
-                .Forget();
+
+            Context.popups.Open<PopupSummon>(entity);
+            Close();
         }
 
         private void MoveToRefine()

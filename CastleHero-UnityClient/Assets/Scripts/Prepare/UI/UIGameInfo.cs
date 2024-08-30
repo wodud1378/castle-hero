@@ -24,7 +24,7 @@ namespace RGLabs.Prepare.UI
                 .Subscribe(OnEntranceChanged)
                 .AddTo(this);
 
-            Storage.userRepository.act.point
+            Storage.userRepository.stamina.point
                 .ThrottleFrame(1)
                 .Subscribe(OnApChanged)
                 .AddTo(this);
@@ -66,7 +66,7 @@ namespace RGLabs.Prepare.UI
             if(_rewardList != null)
                 _rewardList.Init(entity).Forget();
 
-            OnApChanged(Storage.userRepository.act.point.Value);
+            OnApChanged(Storage.userRepository.stamina.point.Value);
         }
     }
 }

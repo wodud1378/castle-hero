@@ -47,7 +47,7 @@ namespace RGLabs.Prepare.UI
                 });
             }
             
-            rewards.AddRange(entity.GetRewardItems());
+            rewards.AddRange(entity.GetRewardsForDisplay());
             
             return base.Init(rewards);
         }
@@ -70,9 +70,9 @@ namespace RGLabs.Prepare.UI
                     case ItemType.Chest:
                         var option = entity.GetChestOption();
                         bool isFirst = true;
-                        foreach (var id in option.items)
+                        foreach (var kvp in option.itemMap)
                         {
-                            if (!Storage.db.items.TryFind(id, out var e))
+                            if (!Storage.db.items.TryFind(kvp.Key, out var e))
                                 continue;
                             
                             if (isFirst)

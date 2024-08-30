@@ -74,7 +74,7 @@ namespace RGLabs.Lobby.UI.Adapter
             _initialized = true;
         }
 
-        public void Open(SummonResult data)
+        public void Open(Summon data)
         {
             Initialize();
 
@@ -85,7 +85,7 @@ namespace RGLabs.Lobby.UI.Adapter
             _directions.Clear();
             _completionSource = new();
 
-            using var itr = data.summoneds.GetEnumerator();
+            using var itr = data.list.GetEnumerator();
             int index = 0;
             while (index.IsValidIndex(_slots))
             {

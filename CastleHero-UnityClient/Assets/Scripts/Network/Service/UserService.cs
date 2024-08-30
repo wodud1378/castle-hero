@@ -1,49 +1,110 @@
+using System.Collections.Generic;
+using System.Linq;
 using BackEnd;
 using Cysharp.Threading.Tasks;
 using RGLabs.Network.Shared;
+using RGLabs.Utility;
 
 namespace RGLabs.Network.Service
 {
     public class UserService : NetworkServiceBase
     {
-        public UniTask SaveFormation(FormationDto formation) => Save(FORMATION_TABLE, formation);
+        public UniTask SaveFormation(FormationDto formation) => UpdateTable(Table.Formation, formation);
         
-        public UniTask<Response> UpdateNickname(string nickname)
+        public UniTask<Result> UpdateNickname(string nickname)
             => Call(onResult => Backend.BMember.UpdateNickname(nickname, onResult.Invoke));
         
-        public UniTask<Response<UserDataDto>> NewUser()
-            => InvokeFunc("DefaultData", null, ConvertFunctionResponse<UserDataDto>());
+        public UniTask<Result<UserDataDto>> GetUserData() => GetTables();
         
-        public async UniTask<Response<UserDataDto>> GetUserData()
+        public async UniTask<Result<UserDataDto>> Init()
         {
-            var read = TransactionGet(
-                ACT_TABLE,
-                CURRENCY_TABLE,
-                CHARACTERS_TABLE,
-                FORMATION_TABLE,
-                INVENTORY_TABLE,
-                GAME_RECORD_TABLE,
-                SHOP_RECORD_TABLE
-            );
+            var ids = new List<int>
+            {
+                10001,
+                10006,
+                10010,
+                10021,
+                10023,
+                10033,
+                10034,
+            };
 
-            return await Call(
-                onResult => Backend.GameData.TransactionReadV2(read, onResult.Invoke),
-                raw =>
+            var units = ids
+                .Select(x => UnitGen.NewUnit(x))
+                .ToList();
+            
+            var items = new List<IItem>{
+                new Item { ItemId = 52001, Quantity = 1000 },
+                new Item { ItemId = 52002, Quantity = 1000 },
+                new Item { ItemId = 52003, Quantity = 1000 },
+                new Item { ItemId = 61001, Quantity = 860 },
+                new Item { ItemId = 61006, Quantity = 860 },
+                new Item { ItemId = 61010, Quantity = 860 },
+                new Item { ItemId = 61021, Quantity = 860 },
+                new Item { ItemId = 61023, Quantity = 860 },
+                new Item { ItemId = 61033, Quantity = 860 },
+                new Item { ItemId = 61034, Quantity = 860 },
+            };
+
+            var response = await Call(onResult => Backend.Chart.GetChartContents(129116.ToString(), onResult.Invoke));
+            if (!response.IsSuccess)
+                return Result<UserDataDto>.Error(Error.FromServer);
+
+            var defaultData = response.raw.FlattenRows()[0];
+            int ap = defaultData["Base_Act"].ToInt();
+            int baseCharacterId = defaultData["Base_Character"].ToInt();
+            var data = new UserDataDto
+            {
+                stamina = new StaminaDto
                 {
-                    var jsonData = raw.GetFlattenJSON();
-                    var userData = new UserDataDto
-                    {
-                        act = FromTransaction<ActDto>(jsonData, ACT_TABLE),
-                        currency = FromTransaction<CurrencyDto>(jsonData, CURRENCY_TABLE),
-                        characters = FromTransaction<CharactersDto>(jsonData, CHARACTERS_TABLE),
-                        formation = FromTransaction<FormationDto>(jsonData, FORMATION_TABLE),
-                        inventory = FromTransaction<InventoryDto>(jsonData, INVENTORY_TABLE),
-                        gameRecord = FromTransaction<GameRecordDto>(jsonData, GAME_RECORD_TABLE),
-                        shopRecord = FromTransaction<ShopRecordDto>(jsonData, SHOP_RECORD_TABLE),
-                    };
+                    point = ap,
+                    pointLimit = ap,
+                    lastUpdate = NetworkService.CurrentTime(),
+                },
+                currency = new CurrencyDto
+                {
+                    gold = 50000000,
+                    freeDia = defaultData["Base_Dia"].ToInt(),
+                    paidDia = 0,
+                },
+                characters = new CharactersDto { units = units },
+                formation = new FormationDto { fieldUnits = new List<FieldUnit>() },
+                inventory = new InventoryDto { items = items },
+                gameRecord = new GameRecordDto
+                {
+                    iconId = baseCharacterId,
+                    lastClearedStage = 200,
+                    castleLv = 1,
+                    dungeon = new List<DungeonRecord>()
+                },
+                shopRecord = new ShopRecordDto
+                {
+                    products = new List<Product>(),
+                    histories = new List<ShopRecordDto.History>()
+                },
+            };
+            
+            void AddInsertQuery(PlayerDataTransactionWrite root, Table table, object obj)
+            {
+                var name = TableNames[table];
+                root.AddInsert(name, ToParam(name, obj));
+            }
+            
+            var write = new PlayerDataTransactionWrite();
+            AddInsertQuery(write, Table.Stamina, data.stamina);
+            AddInsertQuery(write, Table.Currency, data.currency);
+            AddInsertQuery(write, Table.Character, data.characters);
+            AddInsertQuery(write, Table.Formation, data.formation);
+            AddInsertQuery(write, Table.Inventory, data.inventory);
+            AddInsertQuery(write, Table.GameRecord, data.gameRecord);
+            AddInsertQuery(write, Table.ShopRecord, data.shopRecord);
 
-                    return userData;
-                });
+            var insert = await Call(onResult =>
+                Backend.PlayerData.TransactionWrite(write, onResult.Invoke));
+
+            return insert.IsSuccess 
+                ? Result<UserDataDto>.Complete(data) 
+                : Result<UserDataDto>.Error(insert.error);
         }
     }
 }

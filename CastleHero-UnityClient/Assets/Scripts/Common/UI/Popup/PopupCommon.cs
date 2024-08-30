@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI.Utility;
+using RGLabs.Network;
 using RGLabs.Utility;
 using TMPro;
 using UnityEngine;
@@ -55,7 +56,15 @@ namespace RGLabs.Common.UI.Popup
         {
             try
             {
-               _text.text = (string)parameters[0];
+                switch (parameters[0])
+                {
+                    case string text :
+                        _text.text = text;
+                        break;
+                    case Error error :
+                        _text.text = error.Text();
+                        break;
+                }
                
                if (parameters.Length > 1)
                {

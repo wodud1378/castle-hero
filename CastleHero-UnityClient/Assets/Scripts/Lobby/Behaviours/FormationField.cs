@@ -168,10 +168,7 @@ namespace RGLabs.Lobby.Behaviours
                 if (!isBarricade &&
                     placed.Value >= capacity.Value)
                 {
-                    Context.popups
-                        .OpenAsync<PopupCommon>(Storage.localize.Get(593))
-                        .Forget();
-                    
+                    Context.popups.Open<PopupCommon>(Storage.localize.Get(593));
                     return false;
                 }
                 

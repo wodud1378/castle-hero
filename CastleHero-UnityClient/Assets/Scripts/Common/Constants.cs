@@ -27,8 +27,8 @@ namespace RGLabs.Common
         public static string RecoverEffect = "UnitEffect/Recover/Recover.prefab";
         public static string SpawnEffect = "UnitEffect/Spawn/Spawn.prefab";
 
-        public static readonly int PaidDiaId = 1;
-        public static readonly int FreeDiaId = 2;        
-        public static readonly int GoldId = 3;
+        public const int PaidDiaId = 1;
+        public const int FreeDiaId = 2;        
+        public const int GoldId = 3;
     }
 }

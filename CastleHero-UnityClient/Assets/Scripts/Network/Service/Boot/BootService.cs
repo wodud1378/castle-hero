@@ -75,7 +75,7 @@ namespace RGLabs.Network.Service.Boot
                 : "기존 유저 로그인");
 
             var userData = newUser
-                ? (await NetworkService.User.NewUser()).data
+                ? (await NetworkService.User.Init()).data
                 : (await NetworkService.User.GetUserData()).data;
 
             Debug.Log("데이터 불러오기 완료");

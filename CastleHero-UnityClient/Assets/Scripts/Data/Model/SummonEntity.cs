@@ -18,7 +18,7 @@ namespace RGLabs.Data.Model
         public string comment;
 
         [DataField("Summon_Coast_Type")]
-        public int[] item;
+        public int[] costItems;
 
         [DataField("Summon_Coast_Once")]
         public int[] valuePerOnce;

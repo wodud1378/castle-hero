@@ -1,11 +1,11 @@
 using System.Linq;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
+using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Data.Repositories;
 using RGLabs.Network.Service;
-using RGLabs.Unit.Behaviours;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
@@ -87,8 +87,13 @@ namespace RGLabs.Prepare.UI
         private async void StartGame()
         {
             var entrance = Storage.userRepository.entrance.Value;
-            var canEntrance = await NetworkService.Game.Start(entrance.type, entrance.id);
-            if (!canEntrance)
+            var result = await NetworkService.Game.Start(entrance.type, entrance.id);
+            if (!result.IsSuccess)
+            {
+                Context.popups.Open<PopupCommon>(result.error);
+                return;
+            }
+            if (!result.IsSuccess)
                 return;
 
             Context.Transition.CurrentState = State.InGame;

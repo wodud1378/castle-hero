@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Common.UI;
+using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Repositories;
 using RGLabs.Network.Service;
@@ -82,10 +83,12 @@ namespace RGLabs.Castle
 
         private async void OnClickLevelUp()
         {
-            var result = await NetworkService.Castle.LevelUp();
-            
-            _repository.gameRecord.castleLv.Value = result.lv;
-            _repository.currency.Update(result.leftCurrency);
+            var result = await NetworkService.Castle.LvUp();
+            if (!result.IsSuccess)
+            {
+                Context.popups.Open<PopupCommon>(result.error);
+                return;
+            }
             
             Context.sounds.PlaySfx(Storage.soundPath.levelUp);
         }

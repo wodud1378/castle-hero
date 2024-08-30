@@ -45,39 +45,39 @@ namespace RGLabs.Network.Service.Boot
     
     public class InitService : NetworkServiceBase
     {
-        public Response Init(string serverName)
+        public Result Init(string serverName)
         {
             var project = MultiSettingManager.FindByProjectName(serverName);
-            var bro = Backend.InitializeByMultiProject(project);
+            var raw = Backend.InitializeByMultiProject(project);
 
-            return new Response(bro);
+            return Result.Complete(raw);
         }
         
-        public UniTask<Response<VersionInfo>> GetServerVersion()
+        public UniTask<Result<VersionInfo>> GetServerVersion()
             => Call(Backend.Utils.GetLatestVersion, raw =>
             {
                 var jsonData = raw.GetReturnValuetoJSON();
                 return jsonData.Cast<VersionInfo>();
             });
 
-        public UniTask<Response<ServerStatus>> CheckServerStatus()
+        public UniTask<Result<ServerStatus>> CheckServerStatus()
             => Call(Backend.Utils.GetServerStatus, raw =>
             {
                 var jsonData = raw.GetReturnValuetoJSON();
                 return jsonData.Cast<ServerStatus>();
             });
 
-        public UniTask<Response<Policy>> GetPolicy()
+        public UniTask<Result<Policy>> GetPolicy()
             => Call<Policy>(Backend.Policy.GetPolicyV2);
 
-        public UniTask<Response<ChartInfo[]>> GetChartList()
+        public UniTask<Result<ChartInfo[]>> GetChartList()
             => Call(Backend.Chart.GetChartListV2, raw =>
             {
                 var jsonData = raw.FlattenRows();
                 return jsonData.Cast<ChartInfo[]>();
             });
 
-        public UniTask<Response> GetChartContent(string id)
+        public UniTask<Result> GetChartContent(string id)
             => Call(onResult => Backend.Chart.GetChartContents(id, onResult.Invoke));
     }
 }
