@@ -29,7 +29,6 @@ namespace RGLabs.Prepare.UI
         [SerializeField] private Button _auto;
         [SerializeField] private Button _confirm;
         [SerializeField] private TMP_Text _placedUnit;
-        [SerializeField] private float _dragThreshold = 0.3f;
 
         public UniTask ConfigTask => _completionSource.Task;
 

@@ -72,7 +72,8 @@ namespace RGLabs.Data.Model
     {
         public List<KeyValuePair<int, List<int>>> itemMap;
         public int[] Ids => itemMap.Select(x => x.Key).ToArray();
-        public int[] quantities;
+        public int[] min;
+        public int[] max;
     }
 
     public struct ItemEntity : IEntity
@@ -204,24 +205,29 @@ namespace RGLabs.Data.Model
 
         public ChestOption GetChestOption(bool full = true)
         {
-            int[] Convert(string optionString)
+            string[] ToOptionArray(string optionString)
             {
                 return optionString
                     .Trim()
                     .Replace("[", string.Empty)
                     .Replace("]", string.Empty)
-                    .Split(',')
-                    .Select(int.Parse)
-                    .ToArray();
+                    .Split(',');
             }
 
+            var quantities = ToOptionArray(options[1])
+                .Select(x => x.Split(':')
+                    .Select(int.Parse)
+                    .ToArray())
+                .ToList();
+            
             var option = new ChestOption
             {
                 itemMap = new(),
-                quantities = Convert(options[1])
+                min = quantities.Select(x => x[0]).ToArray(),
+                max = quantities.Select(x => x[1]).ToArray(),
             };
             
-            var ids = Convert(options[0]);
+            var ids = ToOptionArray(options[0]).Select(int.Parse).ToArray();
             if (full)
             {
                 foreach (var id in ids)

@@ -14,7 +14,7 @@ namespace RGLabs.Common.UI
         [SerializeField] private Material _material;
 
         public Graphic[] targets;
-        public readonly BoolReactiveProperty enabled = new();
+        public new readonly BoolReactiveProperty enabled = new();
 
         private readonly Dictionary<Graphic, Material> _cache = new();
 

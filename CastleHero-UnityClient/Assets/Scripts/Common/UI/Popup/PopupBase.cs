@@ -37,7 +37,7 @@ namespace RGLabs.Common.UI.Popup
         protected virtual void OnAwake()
         {
             if(_close != null)
-                this.SubscribeButton(_close, () => CloseAsync().Forget());
+                this.SubscribeButton(_close, Close);
             
             if (_animator == null)
                 _animator = GetComponent<Animator>();

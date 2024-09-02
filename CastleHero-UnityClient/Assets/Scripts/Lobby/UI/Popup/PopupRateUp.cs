@@ -44,10 +44,7 @@ namespace RGLabs.Lobby.UI.Popup
                 .AddTo(this);
         }
 
-        public override UniTask Open(params object[] parameters)
-        {
-            return UniTask.WhenAll(base.Open(parameters), _updateTask);
-        }
+        public override UniTask Open(params object[] parameters) => UniTask.WhenAll(base.Open(parameters), _updateTask);
 
         private UniTask DefaultSettingTask(UnitInfo unit, UnitEntity entity)
         {

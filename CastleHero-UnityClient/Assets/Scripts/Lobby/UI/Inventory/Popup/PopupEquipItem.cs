@@ -47,9 +47,9 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         {
         }
 
-        protected override void OnDataInitialized(EquipItem data)
+        protected override void OnDataChanged(EquipItem data)
         {
-            base.OnDataInitialized(data);
+            base.OnDataChanged(data);
             
             foreach (var label in _mainStat)
             {

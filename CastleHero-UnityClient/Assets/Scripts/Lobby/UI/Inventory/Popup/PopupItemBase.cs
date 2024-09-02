@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
@@ -27,6 +26,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         private readonly ReactiveProperty<TItem> _item = new();
 
         private UniTask _updateTask;
+        private bool _hasDataBefore;
         
         protected override void OnAwake()
         {
@@ -38,14 +38,12 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 .Subscribe(items =>
                 {
                     var item = _item.Value;
-                    if (item == null)
-                        return;
                     
                     _item.Value = items.FirstOrDefault(x => x.ItemId == item.ItemId) as TItem;
                 })
                 .AddTo(this);
             
-            _item.Subscribe(OnDataInitialized)
+            _item.Subscribe(OnDataChangedInternal)
                 .AddTo(this);
             
             this.SubscribeButton(_sell, Sell);
@@ -64,19 +62,30 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 var exception = new InvalidCastException("첫 번째 인자를 아이템 데이터로 변환하지 못했습니다.");
                 return UniTask.FromException(exception);
             }
-
             
-
             _item.Value = data;
             
             return _updateTask;
         }
 
-        protected virtual void OnDataInitialized(TItem data)
+        private void OnDataChangedInternal(TItem data)
         {
-            if (data == null)
+            if (data == null || data.Quantity == 0)
+            {
+                if (_hasDataBefore)
+                    OnItemNullOrEmpty();
+                
                 return;
+            }
 
+            _hasDataBefore = true;
+            OnDataChanged(data);
+        }
+
+        protected virtual void OnItemNullOrEmpty() => Close();
+
+        protected virtual void OnDataChanged(TItem data)
+        {
             if (!Storage.db.items.TryFind(data.ItemId, out var entity))
             {
                 var exception = new Exception($"아이템을 찾을 수 없습니다. id={data.ItemId}");

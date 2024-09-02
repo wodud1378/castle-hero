@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace RGLabs.Network.Service
 {
@@ -20,7 +22,11 @@ namespace RGLabs.Network.Service
             (CurrencyDto currency, List<IItem> items) reward = (new(), new());
             for (int i = 0; i < quantity; ++i)
             {
-                var temp = ItemGen.NewItems(option.Ids, option.quantities);
+                var quantities = option.min
+                    .Select((min, index) => Random.Range(min, option.max[index] + 1))
+                    .ToArray();
+                
+                var temp = ItemGen.NewItems(option.Ids, quantities);
                 reward.currency += temp.currency;
                 reward.items.AddOrNew(temp.items);
             }

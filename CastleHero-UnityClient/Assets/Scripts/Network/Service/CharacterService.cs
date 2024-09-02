@@ -27,9 +27,6 @@ namespace RGLabs.Network.Service
 
             var unit = characters.units.Find(x => x.id == unitId);
             var item = inventory.items.Find(x => x.ItemId == itemId);
-            if (unit == null || item == null)
-                return Result<UnitGrowth>.Error(Error.InvalidRequest);
-
             var error = Error.InvalidRequest;
             var transition = action switch
             {
@@ -40,6 +37,9 @@ namespace RGLabs.Network.Service
             
             if (error != Error.None)
                 return Result<UnitGrowth>.Error(error);
+            
+            if(!inventory.items.TryConsumeItem(item, quantity))
+                return Result<UnitGrowth>.Error(Error.NotEnoughItem);
 
             var write = await UpdateTables(new Dictionary<Table, object>
             {
@@ -67,12 +67,6 @@ namespace RGLabs.Network.Service
                 return null;
             }
 
-            if (item.Quantity < quantity)
-            {
-                error = Error.NotEnoughItem;
-                return null;
-            }
-
             if (!Storage.db.items.TryFind(item.ItemId, out var itemEntity))
             {
                 error = Error.DataNotFound;
@@ -97,7 +91,6 @@ namespace RGLabs.Network.Service
             var transition = UnitTransition.Create(unit, rate);
 
             unit.rate = rate;
-            item.Quantity -= quantity - leftItem;
 
             error = Error.None;
 
@@ -110,12 +103,6 @@ namespace RGLabs.Network.Service
             if (Storage.db.levels.MaxLv == unit.lv)
             {
                 error = Error.AlreadyMaxLv;
-                return null;
-            }
-
-            if (item.Quantity < quantity)
-            {
-                error = Error.NotEnoughItem;
                 return null;
             }
 
