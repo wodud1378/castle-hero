@@ -49,14 +49,14 @@ namespace RGLabs.Lobby.UI.Popup
             _selected
                 .Subscribe(OnSlotSelected)
                 .AddTo(this);
-            
+
             Storage.userRepository.inventory.items
                 .ChangeAsObservable()
                 .ThrottleFrame(1)
                 .Subscribe(_ =>
                 {
                     InitItemSlots()
-                        .ContinueWith(()=> _selected.Value = _selected.Value)
+                        .ContinueWith(() => _selected.Value = _selected.Value)
                         .Forget();
                 })
                 .AddTo(this);
@@ -66,11 +66,13 @@ namespace RGLabs.Lobby.UI.Popup
             _expSlotL.OnClick += (x) => _selected.Value = (UIItemSlot)x;
         }
 
-        public override UniTask Open(params object[] parameters)
+        public override async UniTask Open(params object[] parameters)
         {
             _gold.text = "0";
 
-            return UniTask.WhenAll(base.Open(parameters), InitItemSlots());
+            await InitItemSlots();
+
+            await base.Open(parameters);
         }
 
         private UniTask InitItemSlots()
@@ -108,8 +110,8 @@ namespace RGLabs.Lobby.UI.Popup
         protected override (int id, int quantity) ConsumeItem()
         {
             var selected = _selected.Value;
-            return selected != null 
-                ? (selected.Item.ItemId, (int)_slider.value) 
+            return selected != null
+                ? (selected.Item.ItemId, (int)_slider.value)
                 : default;
         }
 
@@ -122,6 +124,7 @@ namespace RGLabs.Lobby.UI.Popup
             if (count == 0)
             {
                 _level.ReleaseOverride();
+                _maxCount.text = string.Empty;
                 _gold.text = "0";
                 return;
             }
@@ -132,16 +135,18 @@ namespace RGLabs.Lobby.UI.Popup
                 out int lv, out int exp, out int leftItem, out int price);
 
             bool hasEnoughGold = price <= Storage.userRepository.currency.gold.Value;
-            _goldSlot.QuantityLabelColor = hasEnoughGold 
+            _goldSlot.QuantityLabelColor = hasEnoughGold
                 ? Color.white
                 : StringHelper.NegativeColor;
 
             _gold.text = price.CurrencyText();
             _level.SetOverride(lv, exp);
             _confirm.interactable = hasEnoughGold;
-            
+
             // 루프 방지를 위해 WithoutNotify 사용.
+            int clamped = itemQty - leftItem;
             _slider.SetValueWithoutNotify(itemQty - leftItem);
+            _maxCount.text = clamped.ToString();
         }
 
         private void OnSlotSelected(UIItemSlot slot)
@@ -152,7 +157,17 @@ namespace RGLabs.Lobby.UI.Popup
             _slider.value = 0;
             _slider.maxValue = slot.Item.Quantity;
 
-            _maxCount.text = _slider.maxValue.ToString();
+            _expSlotS.state.Value = _expSlotS == slot
+                ? UIState.State.Highlighted
+                : default;
+
+            _expSlotM.state.Value = _expSlotM == slot
+                ? UIState.State.Highlighted
+                : default;
+
+            _expSlotL.state.Value = _expSlotL == slot
+                ? UIState.State.Highlighted
+                : default;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace RGLabs.Prepare.UI
 
         [SerializeField] private TMP_Text _title;
         [SerializeField] private UIRewardList _rewardList;
-        
+
         private readonly ReactiveProperty<StageEntity> _stageData = new(default);
 
         private UserRepository _repository;
@@ -38,7 +38,7 @@ namespace RGLabs.Prepare.UI
 
             _subscriptions.Add(_repository.entrance
                 .Subscribe(OnEntranceChanged));
-            
+
             _subscriptions.Add(_stageData
                 .Subscribe(x =>
                 {
@@ -46,10 +46,10 @@ namespace RGLabs.Prepare.UI
                     _rewardList
                         .Init(x)
                         .Forget();
-                    
+
                     UpdateButtonsActive(x);
                 }));
-            
+
             _repository.entrance.Value = new GameEntrance
             {
                 type = GameType.Stage,
@@ -74,7 +74,7 @@ namespace RGLabs.Prepare.UI
         {
             if (entrance.type != GameType.Stage)
                 return;
-            
+
             if (!_db.stages.TryFind(entrance.id, out var entity))
                 return;
 
@@ -95,6 +95,21 @@ namespace RGLabs.Prepare.UI
                 userIndex >= dataIndex &&
                 dataIndex < stages.Length - 1);
         }
+
+#if UNITY_EDITOR
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                AdjustIndex(-10);
+            }
+            
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                AdjustIndex(10);
+            }
+        }
+#endif
 
         #region UI Events.
 

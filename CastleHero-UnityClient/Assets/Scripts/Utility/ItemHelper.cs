@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RGLabs.Common;
 using RGLabs.Data;
+using RGLabs.Data.Model;
 using RGLabs.Network.Shared;
 using RGLabs.Unit;
 
@@ -185,5 +186,7 @@ namespace RGLabs.Utility
             int val = id / 10000;
             return val is >= 1 and <= 4;
         }
+
+        public static bool IsChestItem(this int id) => id / 10000 == 7;
     }
 }

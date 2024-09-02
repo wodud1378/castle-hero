@@ -38,15 +38,9 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             _slider.value = 0f;
         }
         
-        protected override void OnDataInitialized(IItem data)
+        protected override void OnDataChanged(IItem data)
         {
-            if (data == null || data.Quantity == 0)
-            {
-                Close();
-                return;
-            }
-            
-            base.OnDataInitialized(data);
+            base.OnDataChanged(data);
             
             _description.text = Entity.desc[0];
 

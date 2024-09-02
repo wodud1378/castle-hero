@@ -5,6 +5,7 @@ using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace RGLabs.Network.Service
@@ -83,7 +84,7 @@ namespace RGLabs.Network.Service
         {
             var currency = new CurrencyDto();
             var items = new List<IItem>();
-            
+
             int index = 0;
             int count = Math.Min(ids.Length, quantities.Length);
             while (index < count)
@@ -95,7 +96,7 @@ namespace RGLabs.Network.Service
 
                 ++index;
             }
-            
+
             return (currency, items);
         }
 
@@ -103,7 +104,7 @@ namespace RGLabs.Network.Service
         {
             currency ??= new CurrencyDto();
             items ??= new List<IItem>();
-            
+
             Generate(id, quantity, currency, items);
         }
 
@@ -166,7 +167,12 @@ namespace RGLabs.Network.Service
         private IItem CreateItem(int id, int quantity)
         {
             if (!Storage.db.items.TryFind(id, out var data))
+            {
+#if UNITY_EDITOR
+                Debug.LogError($"[{id}] 해당하는 아이템이 존재하지 않습니다.");
+#endif
                 return null;
+            }
 
             var type = data.type;
             return type switch

@@ -39,8 +39,6 @@ namespace RGLabs.Lobby.UI.Popup
         private readonly Dictionary<int, Probability> _probabilityCache = new();
         private readonly ReactiveProperty<SummonEntity> _entity = new();
 
-        private Summon _result;
-
         protected override void OnAwake()
         {
             base.OnAwake();
@@ -184,7 +182,7 @@ namespace RGLabs.Lobby.UI.Popup
             
             await TaskHelper.OnAnimationEnd(_animator, animationHash);
 
-            OnSummoned(_result).Forget();
+            OnSummoned(result.data).Forget();
         }
 
         private async UniTaskVoid OnSummoned(Summon result)

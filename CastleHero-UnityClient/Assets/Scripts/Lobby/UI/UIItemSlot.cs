@@ -33,8 +33,10 @@ namespace RGLabs.Lobby.UI
 
         public ReactiveProperty<QuantityDisplay> quantityDisplay = new();
 
-        private void Awake()
+        protected override void OnAwake()
         {
+            base.OnAwake();
+            
             quantityDisplay
                 .Subscribe()
                 .AddTo(this);

@@ -1,11 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using RGLabs.Common;
-using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI;
-using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Network.Service;
@@ -28,6 +26,8 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private TMP_Text _requireSoul;
         [SerializeField] private TMP_Text _requireGold;
 
+        [SerializeField] private List<GameObject> _enableOnMaxRate;
+        [SerializeField] private List<GameObject> _disableOnMaxRate;
             
         private UniTask _updateTask;
 
@@ -44,36 +44,12 @@ namespace RGLabs.Lobby.UI.Popup
                 .AddTo(this);
         }
 
-        public override UniTask Open(params object[] parameters)
+        public override UniTask Open(params object[] parameters) => UniTask.WhenAll(base.Open(parameters), _updateTask);
+
+        private UniTask DefaultSettingTask(UnitInfo unit, UnitEntity entity)
         {
-            return UniTask.WhenAll(base.Open(parameters), _updateTask);
-        }
-        
-        protected override void OnUnitChanged(UnitInfo unit)
-        {
+            _name.text = entity.name;
             int rate = unit.rate;
-            if (!Storage.db.rates.TryFind(rate, out var rateEntity))
-            {
-                var exception = new Exception("데이터를 불러오지 못했습니다.");
-                Debug.LogError(exception);
-                return;
-            }
-
-            if (!Storage.db.units.TryFind(unit.id, out var unitEntity))
-            {
-                var exception = new Exception("데이터를 불러오지 못했습니다.");
-                Debug.LogError(exception);
-                return;
-            }
-
-            _name.text = unitEntity.name;
-
-            int soulItemId = unitEntity.soulItemId;
-            var item = Storage.userRepository.inventory.items.FirstOrDefault(x => x.ItemId == soulItemId) ?? new Item
-            {
-                ItemId = soulItemId,
-            };
-
             for (int i = 0; i < _stars.Length; ++i)
             {
                 var star = _stars[i];
@@ -81,8 +57,23 @@ namespace RGLabs.Lobby.UI.Popup
                 star.DOFade(1f, 0f);
                 star.gameObject.SetActive((i + 1) <= rate);
             }
+            
+            bool isMaxRate = rate == Storage.db.rates.MaxRate;
+            _enableOnMaxRate.ForEach(x => x.gameObject.SetActive(isMaxRate));
+            _disableOnMaxRate.ForEach(x => x.gameObject.SetActive(!isMaxRate));
+            
+            return _unitSlot.Init(unit, entity);
+        }
 
-            int nextRateIndex = rate + 2;
+        private UniTask SettingIfNotMaxRateTask(UnitInfo unit, UnitEntity unitEntity, UnitRateEntity rateEntity)
+        {
+            int soulItemId = unitEntity.soulItemId;
+            var item = Storage.userRepository.inventory.items.FirstOrDefault(x => x.ItemId == soulItemId) ?? new Item
+            {
+                ItemId = soulItemId,
+            };
+
+            int nextRateIndex = unit.rate;
             if (nextRateIndex.IsValidIndex(_stars))
             {
                 var star = _stars[nextRateIndex];
@@ -109,11 +100,29 @@ namespace RGLabs.Lobby.UI.Popup
                 : StringHelper.NegativeColor;
 
             _confirm.interactable = hasEnoughGold;
+            return _soulSlot.Init(item);
+        }
+        
+        protected override void OnUnitChanged(UnitInfo unit)
+        {
+            if (!Storage.db.units.TryFind(unit.id, out var unitEntity) ||
+                !Storage.db.rates.TryFind(unit.rate, out var rateEntity))
+            {
+                var exception = new Exception("데이터를 불러오지 못했습니다.");
+                Debug.LogError(exception);
+                _updateTask = UniTask.CompletedTask;
+                return;
+            }
 
-            var unitTask = _unitSlot.Init(unit, unitEntity);
-            var soulTask = _soulSlot.Init(item);
+            var defaultTask = DefaultSettingTask(unit, unitEntity);
+            if (unit.rate == Storage.db.rates.MaxRate)
+            {
+                _updateTask = defaultTask;
+                return;
+            }
 
-            _updateTask = UniTask.WhenAll(unitTask, soulTask);
+            var additionalTask = SettingIfNotMaxRateTask(unit, unitEntity, rateEntity);
+            _updateTask = UniTask.WhenAll(defaultTask, additionalTask);
         }
 
         protected override (int id, int quantity) ConsumeItem()
@@ -122,14 +131,6 @@ namespace RGLabs.Lobby.UI.Popup
                 return default;
 
             return (_soulSlot.Item.ItemId, rateEntity.soul);
-        }
-
-        protected override void OnGrowthComplete(UnitGrowth growth)
-        {
-            if (growth.transition.unit.rate < Storage.db.rates[^1].Id)
-                return;
-            
-            Close();
         }
     }
 }

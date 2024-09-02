@@ -4,7 +4,10 @@ using RGLabs.Data.Model;
 namespace RGLabs.Data.DB
 {
     [DB("Castle_Table", "castle")]
-    public class CastleDB : DB<CastleEntity> { }
+    public class CastleDB : DB<CastleEntity>
+    {
+        public int MaxLv => this[^1].Id + 1;
+    }
     
     [DB("Character_Table", "unit")]
     public class UnitDB : DB<UnitEntity>
@@ -45,12 +48,18 @@ namespace RGLabs.Data.DB
             to.rateValues = values.ToArray();
         }
     }
-    
+
     [DB("Rate_Table", "rate")]
-    public class UnitRateDB : DB<UnitRateEntity> { }
-    
+    public class UnitRateDB : DB<UnitRateEntity>
+    {
+        public int MaxRate => this[^1].Id + 1;
+    }
+
     [DB("Level_Table", "level")]
-    public class UnitLevelDB : DB<UnitLevelEntity> { }
+    public class UnitLevelDB : DB<UnitLevelEntity>
+    {
+        public int MaxLv => this[^1].Id + 1;
+    }
 
     
     [DB("Skill_Table", "skill")]

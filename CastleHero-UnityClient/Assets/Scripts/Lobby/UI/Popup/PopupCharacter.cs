@@ -81,7 +81,7 @@ namespace RGLabs.Lobby.UI.Popup
             SetCharacter(unitEntity.uiPrefab).Forget();
             UpdateRate(rate);
 
-            var equipments = Storage.userRepository.EquipItems(info.equipments).ToArray();
+            var equipments = Storage.userRepository.EquipItems(info.equipments).ToList();
 
             UpdateStatusTexts(lv, rate, unitEntity, balanceEntity, equipments);
             UpdateEquipmentSlots(equipments);
@@ -108,21 +108,28 @@ namespace RGLabs.Lobby.UI.Popup
             }
         }
 
-        private void UpdateEquipmentSlots(EquipItem[] equipments)
+        private void UpdateEquipmentSlots(List<EquipItem> equipments)
         {
             if (equipments == null)
                 return;
 
-            int index = 0;
-            while (index.IsValidIndex(equipments, _equipments))
+            for (var slot = EquipmentSlot.Weapon; slot <= EquipmentSlot.Necklace; ++slot)
             {
-                _equipments[index].Init(equipments[index]).Forget();
-                ++index;
+                int index = (int)slot;
+                var item = equipments.Find(x => x.slot == index);
+                var ui = _equipments[index]; 
+                if(item == null)
+                    ui.gameObject.SetActive(false);
+                else
+                {
+                    ui.gameObject.SetActive(true);
+                    ui.Init(item).Forget();
+                }
             }
         }
 
         private void UpdateStatusTexts(int lv, int rate, UnitEntity unit, UnitBalanceEntity balance,
-            EquipItem[] equipments)
+            List<EquipItem> equipments)
         {
             var baseStatus = BaseStatus(lv, rate, unit, balance);
             var equipStatus = equipments.Total();

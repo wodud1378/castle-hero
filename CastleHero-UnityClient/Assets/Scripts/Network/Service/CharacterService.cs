@@ -27,9 +27,6 @@ namespace RGLabs.Network.Service
 
             var unit = characters.units.Find(x => x.id == unitId);
             var item = inventory.items.Find(x => x.ItemId == itemId);
-            if (unit == null || item == null)
-                return Result<UnitGrowth>.Error(Error.InvalidRequest);
-
             var error = Error.InvalidRequest;
             var transition = action switch
             {
@@ -40,12 +37,15 @@ namespace RGLabs.Network.Service
             
             if (error != Error.None)
                 return Result<UnitGrowth>.Error(error);
+            
+            if(!inventory.items.TryConsumeItem(item, quantity))
+                return Result<UnitGrowth>.Error(Error.NotEnoughItem);
 
             var write = await UpdateTables(new Dictionary<Table, object>
             {
                 { Table.Character, characters },
                 { Table.Inventory, inventory },
-                { Table.Inventory, currency },
+                { Table.Currency, currency },
             });
 
             return write.IsSuccess
@@ -61,15 +61,9 @@ namespace RGLabs.Network.Service
         private UnitTransition ProcessUpgrade(UnitInfo unit, IItem item, int quantity, CurrencyDto currency,
             out Error error)
         {
-            if (Storage.db.rates[^1].Id == unit.rate)
+            if (Storage.db.rates.MaxRate == unit.rate)
             {
                 error = Error.AlreadyMaxLv;
-                return null;
-            }
-
-            if (item.Quantity < quantity)
-            {
-                error = Error.NotEnoughItem;
                 return null;
             }
 
@@ -97,7 +91,6 @@ namespace RGLabs.Network.Service
             var transition = UnitTransition.Create(unit, rate);
 
             unit.rate = rate;
-            item.Quantity = leftItem;
 
             error = Error.None;
 
@@ -107,15 +100,9 @@ namespace RGLabs.Network.Service
         private UnitTransition ProcessLvUp(UnitInfo unit, IItem item, int quantity, CurrencyDto currency,
             out Error error)
         {
-            if (Storage.db.levels[^1].Id == unit.lv)
+            if (Storage.db.levels.MaxLv == unit.lv)
             {
                 error = Error.AlreadyMaxLv;
-                return null;
-            }
-
-            if (item.Quantity < quantity)
-            {
-                error = Error.NotEnoughItem;
                 return null;
             }
 
@@ -131,7 +118,7 @@ namespace RGLabs.Network.Service
                 return null;
             }
 
-            UnitHelper.CalculateLvUp(unit.id, unit.lv, itemEntity, quantity,
+            UnitHelper.CalculateLvUp(unit.lv, unit.exp, itemEntity, quantity,
                 out int lv, out int exp, out int leftItem, out int price);
 
             if (currency.gold < price)
