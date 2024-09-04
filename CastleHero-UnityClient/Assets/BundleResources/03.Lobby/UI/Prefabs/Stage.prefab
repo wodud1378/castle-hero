@@ -1466,7 +1466,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemRoot: {fileID: 8671376471221063078}
-  _provideSlotAsset: 0
   _itemPrefab:
     m_AssetGUID: 962e75f93f7d5d749ae9737ff965e8e1
     m_SubObjectName: 
@@ -1479,7 +1478,6 @@ MonoBehaviour:
   _auto: {fileID: 6412204703098733527}
   _confirm: {fileID: 41725882911382213}
   _placedUnit: {fileID: 7143892711469491059}
-  _dragThreshold: 0.3
 --- !u!1 &4806439625363183241
 GameObject:
   m_ObjectHideFlags: 0
@@ -1593,7 +1591,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -260}
-  m_SizeDelta: {x: 1000, y: 635}
+  m_SizeDelta: {x: 1020, y: 635}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &3122789467169446556
 CanvasRenderer:
@@ -3675,10 +3673,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spriteCollection: {fileID: 4859838879178708124}
   _animator: {fileID: 1332606653677324598}
+  _back: {fileID: 884576646772199329}
   _characterList: {fileID: 7025476519332892572}
   _dragField: {fileID: 6733889618417199781}
   _speedUp: {fileID: 2512114017692989993}
-  _back: {fileID: 884576646772199329}
 --- !u!95 &1332606653677324598
 Animator:
   serializedVersion: 5
