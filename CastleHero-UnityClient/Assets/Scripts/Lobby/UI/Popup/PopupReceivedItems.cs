@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace RGLabs.Lobby.UI.Popup
 {
-    [PrefabPath("Lobby/UI/Prefabs/Popups/ReceiveResult.prefab")]
+    [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_Receive.prefab")]
     public class PopupReceivedItems : PopupBase
     {
         [SerializeField] private UIItemList _itemList;
