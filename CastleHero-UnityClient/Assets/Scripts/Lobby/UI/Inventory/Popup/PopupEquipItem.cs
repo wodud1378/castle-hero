@@ -27,6 +27,8 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         [SerializeField] private Button _equip;
         [SerializeField] private Button _release;
 
+        protected override int SellCount => 1;
+
         public UniTask<EquipItem> SelectTask => _ctSource.Task;
         
         private UniTaskCompletionSource<EquipItem> _ctSource;

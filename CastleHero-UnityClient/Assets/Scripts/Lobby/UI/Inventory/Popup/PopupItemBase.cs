@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
+using RGLabs.Network.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using UniRx;
@@ -95,10 +96,14 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         protected virtual UniTask InitSlot(TItem item, TSlot slot) => slot.Init(item, Entity);
         
-        private void Sell()
+        private async void Sell()
         {
             if (Entity.sellPrice <= 0)
                 return;
+
+            await NetworkService.Inventory.Sell(new IItem[] { Item }, new[] { SellCount });
         }
+
+        protected abstract int SellCount { get; }
     }
 }
