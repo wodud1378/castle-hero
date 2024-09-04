@@ -93,7 +93,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8546959688854780240
 RectTransform:
   m_ObjectHideFlags: 0
@@ -165,7 +165,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemRoot: {fileID: 213888344016391742}
-  _provideSlotAsset: 0
   _itemPrefab:
     m_AssetGUID: 6dcdabc819b524a418e2119be8c0aafb
     m_SubObjectName: 

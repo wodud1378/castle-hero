@@ -96,24 +96,28 @@ namespace RGLabs.Data.Model
             }
 
             option.setOptions = new();
-
-            var types = options[(int)EquipmentOptionIndex.SetStat]
-                .Trim()
-                .Split(',')
-                .Select(int.Parse)
-                .ToArray();
-
-            var values = options[(int)EquipmentOptionIndex.SetStatValue]
-                .Trim()
-                .Split(',')
-                .Select(float.Parse)
-                .ToArray();
-
-            int i = 0;
-            while (i.IsValidIndex(types, values))
+            int statIndex = (int)EquipmentOptionIndex.SetStat;
+            if (!string.IsNullOrEmpty(options[statIndex]) &&
+                !string.IsNullOrEmpty(options[statIndex]))
             {
-                option.setOptions.Add(new KeyValuePair<int, float>(types[i], values[i]));
-                ++i;
+                var types = options[statIndex]
+                    .Trim()
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToArray();
+
+                var values = options[(int)EquipmentOptionIndex.SetStatValue]
+                    .Trim()
+                    .Split(',')
+                    .Select(float.Parse)
+                    .ToArray();
+
+                int i = 0;
+                while (i.IsValidIndex(types, values))
+                {
+                    option.setOptions.Add(new KeyValuePair<int, float>(types[i], values[i]));
+                    ++i;
+                }
             }
 
             return option;

@@ -70,7 +70,7 @@ namespace RGLabs.Network.Service.Test
             var result = await _service.AddItems(idList.ToArray(), quantityList.ToArray());
             
             _addItemLog.text = result.IsSuccess
-                ? "요청 성공"
+                ? "요청 성공".WithPositiveColor()
                 : $"에러 발생 [{result.error}]";
         }
 
