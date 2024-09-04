@@ -181,14 +181,14 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.36666667
-    functionName: OnHit
+    functionName: Hit
     data: SpineEvent
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 1
   - time: 1
-    functionName: OnReleaseAttack
+    functionName: Release
     data: SpineEvent
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

@@ -68,6 +68,12 @@ namespace RGLabs.Common.Behaviours
             return popup != null;
         }
 
+        public void ReplaceToTop(PopupBase popup)
+        {
+            popup.transform.SetAsLastSibling();
+            _dim.transform.SetSiblingIndex(_popups.Count - 1);
+        }
+
         private async UniTask<T> LoadPopup<T>() where T : PopupBase
         {
             var path = PrefabPathCache.Load(typeof(T));

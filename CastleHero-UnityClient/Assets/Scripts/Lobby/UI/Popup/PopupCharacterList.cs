@@ -19,8 +19,14 @@ using UnityEngine.UI;
 namespace RGLabs.Lobby.UI.Popup
 {
     [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_Character.prefab")]
-    public class PopupCharacterList : PopupBase
+    public class PopupCharacterList : PopupBase, ISelect<UnitInfo>
     {
+        public struct EquipParam
+        {
+            public EquipItem item;
+            public UnitInfo unit;
+        }
+        
         public enum ClickMethod
         {
             Select,
@@ -92,9 +98,21 @@ namespace RGLabs.Lobby.UI.Popup
         public readonly ReactiveProperty<SortOption> sortOption = new();
 
         public ClickMethod clickMethod;
-        public int equipmentId;
+
+        public EquipParam equipParam;
         
         private UniTask _updateTask;
+        
+        public UniTask<UnitInfo> SelectTask => _ctSource.Task;
+        
+        private UniTaskCompletionSource<UnitInfo> _ctSource;
+        private bool _closeAfterSelect;
+
+        public void BeginSelect(bool closeAfterSelect)
+        {
+            _ctSource = new UniTaskCompletionSource<UnitInfo>();
+            _closeAfterSelect = closeAfterSelect;
+        }
         
         protected override void OnAwake()
         {
@@ -146,6 +164,13 @@ namespace RGLabs.Lobby.UI.Popup
             return _updateTask;
         }
 
+        protected override void OnClose()
+        {
+            base.OnClose();
+
+            TrySelectComplete(null);
+        }
+
         private void UpdateUI()
         { 
             var characters = Characters;
@@ -156,6 +181,14 @@ namespace RGLabs.Lobby.UI.Popup
         
         private void OnClickSlot(UICharacterSlot slot)
         {
+            if (TrySelectComplete(slot.Info))
+            {
+                if(_closeAfterSelect)
+                    Close();
+                
+                return;
+            }
+            
             switch (clickMethod)
             {
                 case ClickMethod.Select:
@@ -167,15 +200,27 @@ namespace RGLabs.Lobby.UI.Popup
             }
         }
 
+        private bool TrySelectComplete(UnitInfo unit)
+        {
+            if (_ctSource == null)
+                return false;
+
+            _ctSource.TrySetResult(unit);
+            _ctSource = null;
+            return true;
+        }
+
         private void OpenEquipmentCompare(UnitInfo unit)
         {
-            var items = Storage.userRepository.inventory.items;
-            var equipItem = items.OfType<EquipItem>().FirstOrDefault(x => x.ItemId == equipmentId);
-            if (equipItem == null)
+            equipParam.unit = unit;
+            if (equipParam.item == null || equipParam.unit == null)
                 return;
             
-            Context.popups.Open<PopupCompareEquipment>(unit, equipItem);
+            Context.popups.Open<PopupCompareEquipment>(equipParam.unit, equipParam.item);
             Close();
+
+            equipParam.item = null;
+            equipParam.unit = null;
         }
     }
 }

@@ -120,7 +120,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                     MoveToDrawCharacter(Item.ItemId);
                     break;
                 case ConsumeType.ElementalStone:
-                    MoveToRefine();
+                    Refine();
                     break;
             }
         }
@@ -171,14 +171,36 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             Close();
         }
 
-        private async void MoveToRefine()
+        private async void Refine()
         {
-            if (!Context.popups.TryGetPopupIfExist(out PopupInventory popup))
-                popup = await Context.popups.OpenAsync<PopupInventory>();
+            if (!Context.popups.TryGetPopupIfExist(out PopupInventory inventory))
+                inventory = await Context.popups.OpenAsync<PopupInventory>();
+            else
+                Context.popups.ReplaceToTop(inventory);
+
+            inventory.customFilter.Value = (x, _) =>
+                x is EquipItem e &&
+                (EquipmentSlot)e.slot is EquipmentSlot.Weapon or EquipmentSlot.Armor;
+
+            bool closed = false;
+            EquipItem equipItem = null;
+            while (!closed && equipItem ==null)
+            {
+                inventory.BeginSelect(false);
+
+                var selected = await inventory.SelectTask;
+                if (selected == null)
+                    closed = true;
+                else
+                {
+                    equipItem = selected is EquipItem e ? e : null;
+                }
+            }
             
-            popup.mode.Value = PopupInventory.Mode.Refine;
-            popup.refineParam.entity = Entity;
-            Close();
+            if (closed)
+                return;
+            
+            Context.popups.Open<PopupRefine>(equipItem, Entity);
         }
     }
 }

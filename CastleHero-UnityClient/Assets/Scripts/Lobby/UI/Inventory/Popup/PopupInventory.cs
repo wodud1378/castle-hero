@@ -20,19 +20,12 @@ using UnityEngine.UI;
 namespace RGLabs.Lobby.UI.Inventory.Popup
 {
     [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_Inventory.prefab")]
-    public class PopupInventory : PopupBase
+    public class PopupInventory : PopupBase, ISelect<IItem>
     {
-        public struct RefineParam
-        {
-            public EquipItem item;
-            public ItemEntity entity;
-        }
-
         public enum Mode
         {
             Default,
             Sell,
-            Refine,
         }
 
         public enum Tab
@@ -79,10 +72,19 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         private readonly Dictionary<Category, Toggle> _categoryToggles = new();
 
         private readonly List<UIItemSlot> _sellTargets = new();
-        
-        public RefineParam refineParam;
 
         private UniTask _updateTask;
+
+        public UniTask<IItem> SelectTask => _ctSource.Task;
+
+        private UniTaskCompletionSource<IItem> _ctSource;
+        private bool _closeAfterSelect;
+
+        public void BeginSelect(bool closeAfterSelect)
+        {
+            _ctSource = new UniTaskCompletionSource<IItem>();
+            _closeAfterSelect = closeAfterSelect;
+        }
 
         protected override void OnAwake()
         {
@@ -134,6 +136,13 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             this.SubscribeButton(_sell, Sell);
         }
 
+        protected override void OnClose()
+        {
+            base.OnClose();
+            
+            TrySelectComplete(null);
+        }
+
         private async void Sell()
         {
             if (mode.Value != Mode.Sell || _sellTargets.Count == 0)
@@ -165,58 +174,38 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                             : UIState.State.Default;
                     });
                     break;
-                case Mode.Refine:
-                    tab.Value = Tab.Equipment;
-                    filter.Clear();
-                    _itemList.items.ForEach(x =>
-                    {
-                        x.state.Value = x.Item is EquipItem
-                            ? UIState.State.Default
-                            : UIState.State.Dim;
-                    });
-                    break;
             }
         }
 
         private void OnClickItemSlot(UIItemSlot slot)
         {
+            if (TrySelectComplete(slot.Item))
+            {
+                if(_closeAfterSelect)
+                    Close();
+                
+                return;
+            }
+            
             switch (mode.Value)
             {
                 case Mode.Default:
-                    OpenPopup(slot);
+                    OnClickSlotByDefault(slot);
                     break;
                 case Mode.Sell:
                     RemoveOrAddSellTarget(slot);
                     break;
-                case Mode.Refine:
-                    OpenRefinePopup(slot);
-                    break;
             }
         }
-
-        private void OpenRefinePopup(UIItemSlot slot)
+        
+        private bool TrySelectComplete(IItem item)
         {
-            switch (slot.Item)
-            {
-                case EquipItem equipItem:
-                    refineParam.item = equipItem;
-                    break;
-                case Item:
-                    var entity = slot.Entity;
-                    if (entity is { type: ItemType.Consumable, optionConsume: { type: ConsumeType.ElementalStone } })
-                    {
-                        refineParam.entity = entity;
-                    }
+            if (_ctSource == null)
+                return false;
 
-                    break;
-            }
-
-            if (refineParam.item == null || !refineParam.entity.IsValid)
-                return;
-
-            Context.popups.Open<PopupRefine>(refineParam.item, refineParam.entity);
-            
-            refineParam.item = null;
+            _ctSource.TrySetResult(item);
+            _ctSource = null;
+            return true;
         }
 
         private void RemoveOrAddSellTarget(UIItemSlot slot)
@@ -234,14 +223,15 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             }
         }
 
-        private void OpenPopup(UIItemSlot slot)
+        private void OnClickSlotByDefault(UIItemSlot slot)
         {
             var item = slot.Item;
             var type = slot.Entity.type;
             switch (type)
             {
                 case ItemType.Equipment:
-                    Context.popups.Open<PopupEquipItem>(item);
+                    if(slot.Item is EquipItem equipItem)
+                        Equip(equipItem);
                     break;
                 case ItemType.Consumable:
                 case ItemType.Ingredient:
@@ -249,6 +239,34 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                     Context.popups.Open<PopupUseItem>(item);
                     break;
             }
+        }
+
+        private async void Equip(EquipItem item)
+        {
+            var equipPopup = await Context.popups.OpenAsync<PopupEquipItem>(item);
+            equipPopup.BeginSelect(true);
+
+            var equipItem = await equipPopup.SelectTask;
+            if (equipItem == null)
+                return;
+
+            var characterList = await Context.popups.OpenAsync<PopupCharacterList>();
+            characterList.BeginSelect(true);
+
+            var unit = await characterList.SelectTask;
+            if (unit == null)
+                return;
+
+            var compare = await Context.popups.OpenAsync<PopupCompareEquipment>(unit, equipItem);
+            compare.BeginSelect(true);
+
+            var confirm = await compare.SelectTask;
+            if (!confirm)
+                return;
+            
+            var result = await NetworkService.Character.Equip(unit.id, equipItem.Guid);
+            if (!result.IsSuccess)
+                Context.popups.Open<PopupCommon>(result.error);
         }
 
         private void UpdateTogglesStatus(ReactiveCollection<Category> categories)
@@ -304,6 +322,8 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 .DistinctUntilChanged()
                 .Subscribe(x =>
                 {
+                    customFilter.Value = null;
+                    
                     if (category == Category.All)
                         filter.Clear();
                     else
