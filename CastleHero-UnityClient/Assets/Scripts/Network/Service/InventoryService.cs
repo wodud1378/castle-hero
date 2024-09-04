@@ -121,12 +121,16 @@ namespace RGLabs.Network.Service
                 }
             }
 
-            var tables = new Dictionary<Table, object>();
-            if (gold > 0)
+            if (gold <= 0)
+                return Result<int>.Error(Error.InvalidRequest);
+
+            currency.gold += gold;
+            
+            var tables = new Dictionary<Table, object>
             {
-                currency.gold += gold;
-                tables.Add(Table.Currency, currency);
-            }
+                { Table.Inventory, inventory },
+                { Table.Currency, currency },
+            };
 
             if (updateCharacters)
             {

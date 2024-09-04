@@ -54,6 +54,8 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         [SerializeField] private TMP_Text _gold;
         [SerializeField] private Button _sell;
+        [SerializeField] private Button _confirmSell;
+        [SerializeField] private Button _cancelSell;
         [SerializeField] private UIInventoryItemList _itemList;
 
         [Header("Tab Sprites")] [SerializeField]
@@ -133,7 +135,9 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 .Subscribe(_ => UpdateList())
                 .AddTo(this);
 
-            this.SubscribeButton(_sell, Sell);
+            this.SubscribeButton(_sell, ()=> mode.Value = Mode.Sell);
+            this.SubscribeButton(_cancelSell, ()=> mode.Value = Mode.Default);
+            this.SubscribeButton(_confirmSell, Sell);
         }
 
         protected override void OnClose()
@@ -160,6 +164,10 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         private void OnModeChanged(Mode value)
         {
+            _sell.gameObject.SetActive(value == Mode.Default);
+            _cancelSell.gameObject.SetActive(value == Mode.Sell);
+            _confirmSell.gameObject.SetActive(value == Mode.Sell);
+            
             switch (value)
             {
                 case Mode.Default:
@@ -169,7 +177,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                     _sellTargets.Clear();
                     _itemList.items.ForEach(x =>
                     {
-                        x.state.Value = x.Entity.sellPrice > 0
+                        x.state.Value = x.Entity.sellPrice <= 0
                             ? UIState.State.Dim
                             : UIState.State.Default;
                     });

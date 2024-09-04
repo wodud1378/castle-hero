@@ -8,8 +8,8 @@ namespace RGLabs.Common.UI
     {
         public enum State
         {
-            Dim,
             Default,
+            Dim,
             Highlighted,
         }
         
