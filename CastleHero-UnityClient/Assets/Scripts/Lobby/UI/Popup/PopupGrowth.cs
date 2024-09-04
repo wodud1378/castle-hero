@@ -103,11 +103,7 @@ namespace RGLabs.Lobby.UI.Popup
 
             _result = result.data;
             Context.sounds.PlaySfx(Storage.soundPath.levelUp);
-            
-            OnGrowthComplete(_result);
         }
-        
-        protected virtual void OnGrowthComplete(UnitGrowth growth) { }
         
         private void UpdateGoldSlot(int gold)
         {

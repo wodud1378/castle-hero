@@ -16,7 +16,7 @@ using UnityEngine.UI;
 
 namespace RGLabs.Lobby.UI.Popup
 {
-    [PrefabPath("Lobby/UI/Prefabs/Popup_Upgrade.prefab")]
+    [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_Upgrade.prefab")]
     public class PopupRateUp : PopupGrowth
     {
         [SerializeField] private TMP_Text _name;
@@ -36,11 +36,9 @@ namespace RGLabs.Lobby.UI.Popup
         protected override void OnAwake()
         {
             base.OnAwake();
-            
-            Storage.userRepository.inventory.items
-                .ChangeAsObservable()
-                .ThrottleFrame(1)
-                .Subscribe(_=> _unit.Value = _unit.Value)
+
+            Storage.userRepository.inventory
+                .WhenUpdate(_ => _unit.Value = _unit.Value)
                 .AddTo(this);
         }
 

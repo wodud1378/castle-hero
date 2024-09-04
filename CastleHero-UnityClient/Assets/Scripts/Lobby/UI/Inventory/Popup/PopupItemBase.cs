@@ -21,9 +21,9 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         public ItemEntity Entity { get; private set; }
 
-        public TItem Item => _item.Value;
+        public TItem Item => item.Value;
 
-        private readonly ReactiveProperty<TItem> _item = new();
+        protected readonly ReactiveProperty<TItem> item = new();
 
         private UniTask _updateTask;
         private bool _hasDataBefore;
@@ -32,18 +32,11 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         {
             base.OnAwake();
 
-            Storage.userRepository.inventory.items
-                .ChangeAsObservable()
-                .ThrottleFrame(1)
-                .Subscribe(items =>
-                {
-                    var item = _item.Value;
-                    
-                    _item.Value = items.FirstOrDefault(x => x.ItemId == item.ItemId) as TItem;
-                })
+            Storage.userRepository.inventory
+                .WhenUpdate(item, x => item.Value = x)
                 .AddTo(this);
             
-            _item.Subscribe(OnDataChangedInternal)
+            item.Subscribe(OnDataChangedInternal)
                 .AddTo(this);
             
             this.SubscribeButton(_sell, Sell);
@@ -63,7 +56,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 return UniTask.FromException(exception);
             }
             
-            _item.Value = data;
+            item.Value = data;
             
             return _updateTask;
         }
@@ -94,17 +87,15 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
             Entity = entity;
             _sell.gameObject.SetActive(Entity.sellPrice > 0);
-            _updateTask = InitSlot(_itemSlot);
+            _updateTask = InitSlot(item.Value, _itemSlot);
         }
 
-        protected virtual UniTask InitSlot(TSlot slot) => slot.Init(_item.Value, Entity);
+        protected virtual UniTask InitSlot(TItem item, TSlot slot) => slot.Init(item, Entity);
         
         private void Sell()
         {
             if (Entity.sellPrice <= 0)
                 return;
-            
-            // TODO 판매 로직.
         }
     }
 }

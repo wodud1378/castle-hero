@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RGLabs.Data;
 
 namespace RGLabs.Unit.Components
 {
@@ -7,79 +8,40 @@ namespace RGLabs.Unit.Components
         public enum Type
         {
             None = 0,
-            Ground,
+            Earth,
             Fire,
             Wind,
             Water,
         }
-        
-        private static readonly Dictionary<Type, Dictionary<Type, float>> Map = new()
+
+        private static readonly Dictionary<Type, (Type forward, Type reverse)> Compatibility = new()
         {
-            {
-                Type.None, new Dictionary<Type, float>
-                {
-                    { Type.None, 1f },
-                    { Type.Ground, 0.8f },
-                    { Type.Fire, 0.8f },
-                    { Type.Wind, 0.8f },
-                    { Type.Water, 0.8f },
-                }
-            },
-            {
-                Type.Ground, new Dictionary<Type, float>
-                {
-                    { Type.None, BaseMultiplier },
-                    { Type.Ground, 1f },
-                    { Type.Fire, 1f },
-                    { Type.Wind, 0.8f },
-                    { Type.Water, 1f },
-                }
-            },
-            {
-                Type.Fire, new Dictionary<Type, float>
-                {
-                    { Type.None, BaseMultiplier },
-                    { Type.Ground, 0.8f },
-                    { Type.Fire, 0.8f },
-                    { Type.Wind, 0.8f },
-                    { Type.Water, 0.8f },
-                }
-            },
-            {
-                Type.Wind, new Dictionary<Type, float>
-                {
-                    { Type.None, BaseMultiplier },
-                    { Type.Ground, 0.8f },
-                    { Type.Fire, 0.8f },
-                    { Type.Wind, 0.8f },
-                    { Type.Water, 0.8f },
-                }
-            },
-            {
-                Type.Water, new Dictionary<Type, float>
-                {
-                    { Type.None, BaseMultiplier },
-                    { Type.Ground, 0.8f },
-                    { Type.Fire, 0.8f },
-                    { Type.Wind, 0.8f },
-                    { Type.Water, 0.8f },
-                }
-            }
+            { Type.Earth, (Type.Water, Type.Wind) },
+            { Type.Fire, (Type.Wind, Type.Water) },
+            { Type.Water, (Type.Fire, Type.Earth) },
+            { Type.Wind, (Type.Earth, Type.Fire) }
         };
 
-        private const float BaseMultiplier = 1.1f;
-        private const float LevelMultiplier = 0.05f;
-        
-        public int level = 1;
+        public int lv;
         public Type atkType;
         public Type defType;
-
-        public static float AtkMultiplier(Elemental elemental)
+        
+        public static float AtkMultiplier(Elemental atk, Elemental def)
         {
-            if (!Map.TryGetValue(elemental.atkType, out var subMap))
-                return 1f;
-
-            return subMap.GetValueOrDefault(elemental.defType, 1f) + (elemental.level * LevelMultiplier);
+            if (atk.atkType == Type.None)
+            {
+                return def.defType != Type.None
+                    ? Storage.db.elements[0].reverse
+                    : 1f;
+            }
+            
+            var entity = Storage.db.elements[atk.lv - 1];
+            var data = Compatibility[atk.atkType];
+            return def.defType == data.forward
+                ? entity.forward
+                : def.defType == data.reverse
+                    ? entity.reverse
+                    : 1f;
         }
     }
 }

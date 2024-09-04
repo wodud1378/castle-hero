@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
@@ -59,6 +60,12 @@ namespace RGLabs.Common.Behaviours
 
             popup.gameObject.SetActive(true);
             return popup;
+        }
+
+        public bool TryGetPopupIfExist<T>(out T popup) where T : PopupBase
+        {
+            popup = _popups.OfType<T>().FirstOrDefault();
+            return popup != null;
         }
 
         private async UniTask<T> LoadPopup<T>() where T : PopupBase

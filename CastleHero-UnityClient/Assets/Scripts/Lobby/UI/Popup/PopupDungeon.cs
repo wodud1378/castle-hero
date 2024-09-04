@@ -16,7 +16,7 @@ using UnityEngine;
 
 namespace RGLabs.Lobby.UI.Popup
 {
-    [PrefabPath("Lobby/UI/Prefabs/Popup_Dungeon.prefab")]
+    [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_Dungeon.prefab")]
     public class PopupDungeon : PopupBase
     {
         [SerializeField] private UIDayOfWeek[] _dayOfWeeks;

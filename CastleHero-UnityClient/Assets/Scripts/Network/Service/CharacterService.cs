@@ -112,7 +112,7 @@ namespace RGLabs.Network.Service
                 return null;
             }
 
-            if (itemEntity.GetConsumableOption().type != ConsumeType.Exp)
+            if (itemEntity.optionConsume.type != ConsumeType.Exp)
             {
                 error = Error.InvalidRequest;
                 return null;

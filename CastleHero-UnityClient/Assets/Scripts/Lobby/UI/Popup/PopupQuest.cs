@@ -3,7 +3,7 @@ using RGLabs.Utility;
 
 namespace RGLabs.Lobby.UI.Popup
 {
-    [PrefabPath("Lobby/UI/Prefabs/Popup_Quest.prefab")]
+    [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_Quest.prefab")]
     public class PopupQuest : PopupBase
     {
         

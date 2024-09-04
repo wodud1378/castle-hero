@@ -40,6 +40,7 @@ namespace RGLabs.Network.DB.Service
             LoadInstance<WaveDB>(map, x => collections.waves = x);
             LoadInstance<CastleDB>(map, x => collections.castles = x);
             LoadInstance<UnitDB>(map, x => collections.units = x);
+            LoadInstance<ElementDB>(map, x=> collections.elements = x);
             LoadInstance<UnitLevelDB>(map, x => collections.levels = x);
             LoadInstance<UnitRateDB>(map, x => collections.rates = x);
             LoadInstance<UnitBalanceDB>(map, x => collections.balances = x);
@@ -47,6 +48,7 @@ namespace RGLabs.Network.DB.Service
             LoadInstance<SummonDB>(map, x => collections.summons = x);
             LoadInstance<SummonGroupDB>(map, x => collections.summonGroups = x);
             LoadInstance<ItemDB>(map, x => collections.items = x);
+            LoadInstance<EquipItemStatDB>(map, x => collections.equipmentStats = x);
             LoadInstance<ShopDB>(map, x => collections.shop = x);
             LoadInstance<ShopItemGroupDB>(map, x => collections.shopGroup = x);
             LoadInstance<DungeonDB>(map, x => collections.dungeons = x);
@@ -76,8 +78,8 @@ namespace RGLabs.Network.DB.Service
             var lastVersion = PlayerPrefs.GetInt(versionKey, -1);
             if (lastVersion == -1 || lastVersion != id)
             {
-                var response = await _service.GetChartContent(id.ToString());
-                var raw = response.rawData;
+                var result = await _service.GetChartContent(id.ToString());
+                var raw = result.raw.FlattenRows();
                 
                 PlayerPrefs.SetInt(versionKey, id);
                 EncryptStore.SetString(chartName, raw.ToJson());

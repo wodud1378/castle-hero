@@ -20,7 +20,6 @@ namespace RGLabs.Lobby.UI
         }
         
         [SerializeField] private TMP_Text _quantity;
-        [SerializeField] private GameObject _portraitRoot;
         
         public Color QuantityLabelColor
         {
@@ -57,33 +56,7 @@ namespace RGLabs.Lobby.UI
 
             UpdateQuantity(quantityDisplay.Value);
             
-            var portraitTask = UpdatePortrait();
-            var initTask = Init(entity.icon, entity.name);
-
-            return UniTask.WhenAll(portraitTask, initTask);
-        }
-        
-        private async UniTask UpdatePortrait()
-        {
-            if (_portraitRoot == null || Item is not EquipItem equipItem)
-                return;
-            
-            _portraitRoot.SetActive(false);
-
-            int character = equipItem.character;
-            if (character == 0)
-                return;
-
-            if (!Storage.db.units.TryFind(character, out var entity))
-                return;
-
-            var image = _portraitRoot.GetComponentInChildren<Image>();
-            if (image == null)
-                return;
-
-            var sprite = await entity.icon.Load<Sprite>();
-            image.sprite = sprite;
-            _portraitRoot.SetActive(sprite != null);
+            return Init(entity.icon, entity.name);
         }
 
         private void UpdateQuantity(QuantityDisplay mode)

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace RGLabs.Lobby.UI.Popup
 {
-    [PrefabPath("Lobby/UI/Prefabs/Summon/PopupSummonResult.prefab")]
+    [PrefabPath("Lobby/UI/Prefabs/Popups/Summon/PopupSummonResult.prefab")]
     public class PopupSummonResult : PopupBase
     {
         [SerializeField] private UISummonedList _summonedList;

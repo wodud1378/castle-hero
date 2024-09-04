@@ -22,13 +22,13 @@ namespace RGLabs.Data.Repositories
 
         private IDisposable _update;
         private CancellationTokenSource _ctSource;
-        
+
         public Stamina(StaminaDto dto)
         {
             point = new(dto.point);
             pointLimit = new(dto.pointLimit);
             lastUpdate = new(dto.lastUpdate);
-            
+
             RunLocalUpdate();
         }
 
@@ -37,7 +37,7 @@ namespace RGLabs.Data.Repositories
             point.Value = dto.point;
             pointLimit.Value = dto.pointLimit;
             lastUpdate.Value = dto.lastUpdate;
-            
+
             RunLocalUpdate();
         }
 
@@ -54,7 +54,7 @@ namespace RGLabs.Data.Repositories
         {
             _ctSource?.Cancel();
             _ctSource = new();
-            
+
             LocalUpdate(_ctSource.Token).Forget();
         }
 
@@ -73,15 +73,17 @@ namespace RGLabs.Data.Repositories
                         await UniTask
                             .Delay((int)totalMs, true, cancellationToken: token)
                             .SuppressCancellationThrow();
-                
-                    await UniTask.SwitchToMainThread(cancellationToken:token);
-                
+
+                    await UniTask.SwitchToMainThread(cancellationToken: token);
+
                     UpdateValues();
 
                     await UniTask.SwitchToThreadPool();
                 }
             }
-            catch (OperationCanceledException) { }
+            catch (OperationCanceledException)
+            {
+            }
         }
 
         private void UpdateValues()
@@ -171,6 +173,25 @@ namespace RGLabs.Data.Repositories
                 items.Add(item);
         }
 
+        public IDisposable WhenUpdate<T>(ReactiveProperty<T> origin, Action<T> action) where T : IItem
+        {
+            return items.ChangeAsObservable()
+                .ThrottleFrame(1)
+                .Subscribe(x =>
+                {
+                    action.Invoke(origin.Value != null
+                        ? x.OfType<T>().FirstOrDefault(item => item.ItemId == origin.Value.ItemId)
+                        : default);
+                });
+        }
+
+        public IDisposable WhenUpdate(Action<ReactiveCollection<IItem>> action)
+        {
+            return items.ChangeAsObservable()
+                .ThrottleFrame(1)
+                .Subscribe(action.Invoke);
+        }
+
         public void Dispose()
         {
             items?.Dispose();
@@ -191,6 +212,25 @@ namespace RGLabs.Data.Repositories
                 return;
 
             units.Add(unit);
+        }
+
+        public IDisposable WhenUpdate(ReactiveProperty<UnitInfo> origin, Action<UnitInfo> action)
+        {
+            return units.ChangeAsObservable()
+                .ThrottleFrame(1)
+                .Subscribe(x =>
+                {
+                    action.Invoke(origin.Value != null
+                        ? x.FirstOrDefault(unit => unit.id == origin.Value.id)
+                        : null);
+                });
+        }
+
+        public IDisposable WhenUpdate(Action<ReactiveCollection<UnitInfo>> action)
+        {
+            return units.ChangeAsObservable()
+                .ThrottleFrame(1)
+                .Subscribe(action.Invoke);
         }
 
         public void Update(UnitInfo unit) => units.Update(unit, x => x.id == unit.id);

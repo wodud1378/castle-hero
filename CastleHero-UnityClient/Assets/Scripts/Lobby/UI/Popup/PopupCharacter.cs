@@ -7,6 +7,7 @@ using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Lobby.UI.Inventory;
+using RGLabs.Lobby.UI.Inventory.Popup;
 using RGLabs.Network.Shared;
 using RGLabs.Unit;
 using RGLabs.Utility;
@@ -24,7 +25,7 @@ namespace RGLabs.Lobby.UI.Popup
         public UniTask<UnitGrowth> GrowthTask { get; }
     }
 
-    [PrefabPath("Lobby/UI/Prefabs/Popup_CharInfo.prefab")]
+    [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_CharInfo.prefab")]
     public class PopupCharacter : PopupBase
     {
         [SerializeField] private TMP_Text _name;
@@ -33,7 +34,7 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private RectTransform _prefabRoot;
         [SerializeField] private UILevel _level;
         [SerializeField] private UIStatusText[] _statusTexts;
-        [SerializeField] private UIEquipmentSlot[] _equipments;
+        [SerializeField] private List<UIEquipmentSlot> _equipments;
 
         [SerializeField] private Button _levelUp;
         [SerializeField] private Button _upgrade;
@@ -45,12 +46,19 @@ namespace RGLabs.Lobby.UI.Popup
         {
             base.OnAwake();
 
-            this.SubscribeButton(_levelUp, () => OnLevelUp().Forget());
-            this.SubscribeButton(_upgrade, () => OnUpgrade().Forget());
+            this.SubscribeButton(_levelUp, OnLevelUp);
+            this.SubscribeButton(_upgrade, OnUpgrade);
+
+            Storage.userRepository.characters
+                .WhenUpdate(_unit, x => _unit.Value = x)
+                .AddTo(this);
 
             _unit
                 .Subscribe(OnUnitChanged)
                 .AddTo(this);
+            
+            _equipments.ForEach(x => 
+                x.OnClick += s => { if (s is UIEquipmentSlot { Item: not null } equipmentSlot) { Context.popups.Open<PopupEquipItem>(equipmentSlot.Item); } });
         }
 
         public override UniTask Open(params object[] parameters)
@@ -161,28 +169,8 @@ namespace RGLabs.Lobby.UI.Popup
             };
         }
 
-        private async UniTaskVoid OnLevelUp()
-        {
-            var popup = await Context.popups.OpenAsync<PopupLevelUp>(_unit.Value);
+        private void OnLevelUp() => Context.popups.Open<PopupLevelUp>(_unit.Value);
 
-            HandleGrowthTask(popup).Forget();
-        }
-
-        private async UniTaskVoid OnUpgrade()
-        {
-            var popup = await Context.popups.OpenAsync<PopupRateUp>(_unit.Value);
-
-            HandleGrowthTask(popup).Forget();
-        }
-
-        private async UniTaskVoid HandleGrowthTask(PopupGrowth popup)
-        {
-            var growth = await popup.GrowthTask;
-
-            if (growth == null)
-                return;
-
-            _unit.Value = growth.transition.unit;
-        }
+        private void OnUpgrade() => Context.popups.Open<PopupRateUp>(_unit.Value);
     }
 }

@@ -2097,6 +2097,11 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
+  _equipItemPrefab:
+    m_AssetGUID: 20ea0077e5907aa408ac85c27942c112
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!1 &4269585707644347752
 GameObject:
   m_ObjectHideFlags: 0
@@ -2306,6 +2311,8 @@ MonoBehaviour:
   - {fileID: 6322578584199960226}
   - {fileID: 8194401926814085535}
   - {fileID: 6873032828376381881}
+  _gold: {fileID: 2443793649322311149}
+  _sell: {fileID: 7778387145105266603}
   _itemList: {fileID: 5475374127242407973}
   _tabSprites:
     m_HighlightedSprite: {fileID: 0}
@@ -4381,7 +4388,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 51.3
+  m_fontSize: 52
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

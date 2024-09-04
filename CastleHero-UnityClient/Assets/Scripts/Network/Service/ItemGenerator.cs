@@ -25,7 +25,7 @@ namespace RGLabs.Network.Service
         public EquipItem NewEquipItem(ItemEntity itemData)
         {
             var db = Storage.db.equipmentStats;
-            var option = itemData.GetEquipmentOption();
+            var option = itemData.optionEquip;
             int mainStatId = option.mainStat;
             int statValueIndex = (int)option.grade;
             var main =
@@ -53,6 +53,7 @@ namespace RGLabs.Network.Service
 
             return new EquipItem
             {
+                ItemId = itemData.Id,
                 Guid = Guid.NewGuid().ToString(),
                 main = main,
                 sub = sub,
@@ -191,7 +192,7 @@ namespace RGLabs.Network.Service
             return new EquipItem.Stat
             {
                 type = status,
-                value = Random.Range(entity.mainMin[index], entity.mainMax[index])
+                value = RandomValue(entity.mainMin[index], entity.mainMax[index])
             };
         }
 
@@ -204,8 +205,14 @@ namespace RGLabs.Network.Service
             return new EquipItem.Stat
             {
                 type = status,
-                value = Random.Range(entity.subMin[index], entity.subMax[index])
+                value = RandomValue(entity.subMin[index], entity.subMax[index])
             };
+        }
+
+        private float RandomValue(float min, float max)
+        {
+            var randomValue = Random.Range(min, max);
+            return Mathf.Round(randomValue * 100000f) / 100000f;
         }
     }
 }

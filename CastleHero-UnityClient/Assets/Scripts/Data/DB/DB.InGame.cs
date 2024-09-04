@@ -3,23 +3,22 @@ using RGLabs.Data.Model;
 
 namespace RGLabs.Data.DB
 {
-    [DB("Stage_Table", "stage")]
+    [DB("stage")]
     public class StageDB : DB<StageEntity> { }
     
-    [DB("Mob_Wave_Table", "wave")]
+    [DB("wave")]
     public class WaveDB : DB<WaveEntity>
     {
         public WaveEntity[] Map(int groupId) => Array.FindAll(entities, (x) => x.groupId == groupId);
     }
 
-    [DB("Dg_Table", "dungeon")]
-    public class DungeonDB : DB<DungeonEntity>
-    {
-    }
+    [DB("dungeon")]
+    public class DungeonDB : DB<DungeonEntity> { }
     
-    
-    [DB("Dg_Rwd_Item_Grp_Table", "dungeon_reward")]
-    public class DungeonRewardDB : DB<DungeonRewardEntity>
-    {
-    }
+    [DB("dungeon_reward")]
+    public class DungeonRewardDB : DB<DungeonRewardEntity> { }
+
+    [DB("elements")]
+
+    public class ElementDB : DB<ElementEntity> { }
 }
