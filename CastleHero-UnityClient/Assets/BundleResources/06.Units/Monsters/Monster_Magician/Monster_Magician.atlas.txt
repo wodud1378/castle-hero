@@ -3,285 +3,347 @@ Monster_Magician.png
 	filter: Linear, Linear
 	scale: 0.5
 Elipse
-	bounds: 330, 2, 65, 65
-Magician_DesertWarrior_Wand/Arm_L
-	bounds: 424, 909, 37, 57
+	bounds: 369, 590, 65, 65
+Magician_DesertWarrior_Staff/Arm_L
+	bounds: 499, 139, 37, 57
 	offsets: 5, 5, 47, 67
-Magician_DesertWarrior_Wand/Arm_L2
-	bounds: 455, 600, 45, 36
+Magician_DesertWarrior_Wand/Arm_L
+	bounds: 499, 139, 37, 57
+	offsets: 5, 5, 47, 67
+Magician_DesertWarrior_Staff/Arm_L2
+	bounds: 518, 328, 45, 36
 	offsets: 4, 5, 55, 47
 	rotate: 90
-Magician_DesertWarrior_Wand/Arm_R
-	bounds: 364, 204, 43, 65
+Magician_DesertWarrior_Wand/Arm_L2
+	bounds: 518, 328, 45, 36
+	offsets: 4, 5, 55, 47
+	rotate: 90
+Magician_DesertWarrior_Staff/Arm_R
+	bounds: 428, 475, 43, 65
 	offsets: 5, 5, 53, 75
-Magician_DesertWarrior_Wand/Arm_R2
-	bounds: 458, 657, 42, 38
+Magician_DesertWarrior_Wand/Arm_R
+	bounds: 428, 475, 43, 65
+	offsets: 5, 5, 53, 75
+Magician_DesertWarrior_Staff/Arm_R2
+	bounds: 522, 925, 42, 38
 	offsets: 9, 6, 59, 48
 	rotate: 90
+Magician_DesertWarrior_Wand/Arm_R2
+	bounds: 522, 925, 42, 38
+	offsets: 9, 6, 59, 48
+	rotate: 90
+Magician_DesertWarrior_Staff/Circle_InnerFade
+	bounds: 469, 913, 51, 51
 Magician_DesertWarrior_Wand/Circle_InnerFade
-	bounds: 409, 218, 51, 51
-Magician_DesertWarrior_Wand/Glow
-	bounds: 388, 150, 52, 52
+	bounds: 469, 913, 51, 51
+Magician_DesertWarrior_Staff/Glow
+	bounds: 447, 705, 52, 52
 	offsets: 2, 2, 56, 56
-Magician_DesertWarrior_Wand/Hand_L
-	bounds: 455, 562, 40, 36
+Magician_DesertWarrior_Wand/Glow
+	bounds: 447, 705, 52, 52
+	offsets: 2, 2, 56, 56
+Magician_DesertWarrior_Staff/Hand_L
+	bounds: 531, 778, 40, 36
 	offsets: 6, 5, 51, 46
+Magician_DesertWarrior_Wand/Hand_L
+	bounds: 531, 778, 40, 36
+	offsets: 6, 5, 51, 46
+Magician_DesertWarrior_Staff/Hand_R
+	bounds: 531, 816, 40, 39
+	offsets: 5, 5, 53, 49
+	rotate: 90
 Magician_DesertWarrior_Wand/Hand_R
-	bounds: 461, 327, 40, 39
+	bounds: 531, 816, 40, 39
 	offsets: 5, 5, 53, 49
 	rotate: 90
 Magician_Gladiator_Wand/Hand_R
-	bounds: 461, 327, 40, 39
+	bounds: 531, 816, 40, 39
 	offsets: 5, 5, 53, 49
 	rotate: 90
 Magician_Mercenary_Wand/Hand_R
-	bounds: 461, 327, 40, 39
+	bounds: 531, 816, 40, 39
 	offsets: 5, 5, 53, 49
 	rotate: 90
+Magician_DesertWarrior_Staff/Hand_R_Grip
+	bounds: 521, 563, 39, 40
+	offsets: 1, 1, 42, 42
+	rotate: 90
 Magician_DesertWarrior_Wand/Hand_R_Grip
-	bounds: 461, 733, 39, 40
+	bounds: 521, 563, 39, 40
 	offsets: 1, 1, 42, 42
+	rotate: 90
 Magician_Gladiator_Wand/Hand_R_Grip
-	bounds: 461, 733, 39, 40
+	bounds: 521, 563, 39, 40
 	offsets: 1, 1, 42, 42
+	rotate: 90
 Magician_Knights_Wand/Hand_R_Grip
-	bounds: 461, 733, 39, 40
+	bounds: 521, 563, 39, 40
 	offsets: 1, 1, 42, 42
+	rotate: 90
 Magician_Mercenary_Wand/Hand_R_Grip
-	bounds: 461, 733, 39, 40
+	bounds: 521, 563, 39, 40
 	offsets: 1, 1, 42, 42
-Magician_DesertWarrior_Wand/Head
-	bounds: 2, 542, 154, 150
+	rotate: 90
+Magician_DesertWarrior_Staff/Head
+	bounds: 100, 682, 154, 150
 	offsets: 0, 1, 157, 152
-Magician_DesertWarrior_Wand/Leg
-	bounds: 375, 871, 48, 75
+	rotate: 90
+Magician_DesertWarrior_Staff/Leg
+	bounds: 442, 758, 48, 75
 	offsets: 2, 3, 53, 80
-	rotate: 180
-Magician_DesertWarrior_Wand/Muffler
-	bounds: 400, 324, 74, 52
+Magician_DesertWarrior_Wand/Leg
+	bounds: 442, 758, 48, 75
+	offsets: 2, 3, 53, 80
+Magician_DesertWarrior_Staff/Muffler
+	bounds: 424, 965, 74, 52
 	offsets: 3, 2, 80, 57
-	rotate: 270
-Magician_DesertWarrior_Wand/Particle
-	bounds: 357, 930, 16, 16
+	rotate: 180
+Magician_DesertWarrior_Staff/Particle
+	bounds: 100, 693, 16, 16
 	offsets: 1, 1, 18, 18
-Magician_DesertWarrior_Wand/RadialWave
-	bounds: 175, 477, 114, 110
+Magician_DesertWarrior_Wand/Particle
+	bounds: 100, 693, 16, 16
+	offsets: 1, 1, 18, 18
+Magician_DesertWarrior_Staff/RadialWave
+	bounds: 246, 788, 114, 110
 	offsets: 9, 10, 128, 128
 	rotate: 90
-Magician_DesertWarrior_Wand/Robe
-	bounds: 268, 626, 91, 125
+Magician_DesertWarrior_Wand/RadialWave
+	bounds: 246, 788, 114, 110
+	offsets: 9, 10, 128, 128
+	rotate: 90
+Magician_DesertWarrior_Staff/Robe
+	bounds: 358, 768, 91, 125
 	offsets: 2, 2, 95, 129
-Magician_DesertWarrior_Wand/Shoulder_L
-	bounds: 442, 105, 43, 41
+Magician_DesertWarrior_Staff/Shoulder_L
+	bounds: 500, 445, 43, 41
 	offsets: 5, 5, 53, 51
 	rotate: 90
+Magician_DesertWarrior_Wand/Shoulder_L
+	bounds: 500, 445, 43, 41
+	offsets: 5, 5, 53, 51
+	rotate: 90
+Magician_DesertWarrior_Staff/Weapon
+	bounds: 2, 776, 97, 242
+	offsets: 5, 5, 107, 252
+Magician_DesertWarrior_Wand/Head
+	bounds: 2, 92, 154, 150
+	offsets: 0, 1, 157, 152
+	rotate: 90
+Magician_DesertWarrior_Wand/Muffler
+	bounds: 445, 614, 74, 52
+	offsets: 3, 2, 80, 57
+	rotate: 90
+Magician_DesertWarrior_Wand/Robe
+	bounds: 353, 75, 91, 125
+	offsets: 2, 2, 95, 129
+	rotate: 180
 Magician_DesertWarrior_Wand/Weapon
-	bounds: 2, 445, 97, 171
+	bounds: 100, 509, 97, 171
 	offsets: 5, 5, 107, 181
-	rotate: 90
 Magician_Gladiator_Wand/Arm_L
-	bounds: 195, 837, 38, 57
+	bounds: 498, 646, 38, 57
 	offsets: 5, 5, 48, 67
-	rotate: 90
 Magician_Gladiator_Wand/Arm_L2
-	bounds: 450, 11, 45, 36
+	bounds: 517, 516, 45, 36
 	offsets: 4, 5, 55, 47
 	rotate: 90
 Magician_Gladiator_Wand/Arm_R
-	bounds: 411, 531, 42, 56
+	bounds: 478, 198, 42, 56
 	offsets: 6, 5, 53, 66
 Magician_Gladiator_Wand/Arm_R2
-	bounds: 456, 775, 42, 38
+	bounds: 522, 225, 42, 38
 	offsets: 9, 6, 59, 48
 	rotate: 90
 Magician_Gladiator_Wand/Cape_Back
-	bounds: 329, 68, 134, 58
+	bounds: 275, 23, 134, 58
 	offsets: 1, 3, 136, 63
-	rotate: 270
 Magician_Gladiator_Wand/Cape_Front
-	bounds: 448, 482, 76, 35
+	bounds: 509, 61, 76, 35
 	offsets: 1, 1, 77, 39
-	rotate: 270
+	rotate: 90
 Magician_Gladiator_Wand/Circle_InnerFade
-	bounds: 405, 647, 51, 51
+	bounds: 456, 8, 51, 51
 Magician_Gladiator_Wand/Eyes
-	bounds: 365, 552, 72, 45
+	bounds: 423, 893, 72, 45
 	offsets: 0, 0, 72, 46
 	rotate: 90
 Magician_Gladiator_Wand/Glow
-	bounds: 388, 69, 52, 52
+	bounds: 446, 367, 52, 52
 	offsets: 2, 2, 56, 56
 Magician_Gladiator_Wand/Hand_L
-	bounds: 454, 444, 40, 36
+	bounds: 531, 286, 40, 36
 	offsets: 6, 5, 51, 46
+	rotate: 90
 Magician_Knights_Wand/Hand_L
-	bounds: 454, 444, 40, 36
+	bounds: 531, 286, 40, 36
 	offsets: 6, 5, 51, 46
+	rotate: 90
 Magician_Mercenary_Wand/Hand_L
-	bounds: 454, 444, 40, 36
+	bounds: 531, 286, 40, 36
 	offsets: 6, 5, 51, 46
+	rotate: 90
 Magician_Gladiator_Wand/Head
-	bounds: 2, 327, 124, 116
+	bounds: 100, 391, 124, 116
 	offsets: 5, 5, 134, 126
 Magician_Knights_Wand/Head
-	bounds: 2, 327, 124, 116
+	bounds: 100, 391, 124, 116
 	offsets: 5, 5, 134, 126
 Magician_Mercenary_Wand/Head
-	bounds: 2, 327, 124, 116
+	bounds: 100, 391, 124, 116
 	offsets: 5, 5, 134, 126
 Magician_Gladiator_Wand/Hood_Back
-	bounds: 357, 913, 15, 15
+	bounds: 101, 802, 15, 15
 Magician_Gladiator_Wand/Hood_Front
-	bounds: 2, 694, 140, 129
+	bounds: 2, 248, 140, 129
 	offsets: 5, 5, 150, 139
+	rotate: 90
 Magician_Gladiator_Wand/Leg
-	bounds: 372, 698, 48, 75
+	bounds: 432, 541, 48, 75
 	offsets: 2, 3, 53, 80
 Magician_Gladiator_Wand/Mouth
-	bounds: 312, 887, 31, 20
+	bounds: 250, 756, 31, 20
 Magician_Mercenary_Wand/Mouth
-	bounds: 312, 887, 31, 20
+	bounds: 250, 756, 31, 20
 Magician_Gladiator_Wand/Particle
-	bounds: 256, 752, 16, 16
+	bounds: 219, 830, 16, 16
 	offsets: 1, 1, 18, 18
 Magician_Gladiator_Wand/RadialWave
-	bounds: 157, 593, 114, 110
+	bounds: 226, 450, 114, 110
 	offsets: 9, 10, 128, 128
 	rotate: 90
 Magician_Gladiator_Wand/Robe
-	bounds: 257, 151, 91, 125
+	bounds: 337, 462, 91, 125
 	offsets: 2, 2, 95, 129
 Magician_Mercenary_Wand/Robe
-	bounds: 257, 151, 91, 125
+	bounds: 337, 462, 91, 125
 	offsets: 2, 2, 95, 129
 Magician_Gladiator_Wand/Weapon
-	bounds: 347, 753, 28, 154
+	bounds: 416, 319, 28, 154
 	offsets: 14, 12, 56, 176
 Magician_Knights_Wand/Arm_L
-	bounds: 421, 701, 38, 57
+	bounds: 491, 776, 38, 57
 	offsets: 5, 5, 48, 67
 Magician_Knights_Wand/Arm_L2
-	bounds: 450, 58, 45, 37
+	bounds: 509, 15, 45, 37
 	offsets: 5, 5, 55, 47
 	rotate: 90
 Magician_Knights_Wand/Arm_R
-	bounds: 411, 589, 42, 56
+	bounds: 474, 309, 42, 56
 	offsets: 6, 5, 53, 66
 Magician_Knights_Wand/Arm_R2
-	bounds: 436, 276, 49, 38
+	bounds: 499, 969, 49, 38
 	offsets: 5, 5, 59, 48
 	rotate: 90
 Magician_Knights_Wand/Cape_Back
-	bounds: 324, 262, 134, 58
+	bounds: 2, 35, 134, 58
 	offsets: 1, 3, 136, 63
-	rotate: 270
 Magician_Knights_Wand/Cape_Front
-	bounds: 446, 149, 76, 35
+	bounds: 504, 835, 76, 35
 	offsets: 1, 1, 77, 39
-	rotate: 270
+	rotate: 90
 Magician_Knights_Wand/Circle_InnerFade
-	bounds: 403, 968, 51, 51
+	bounds: 456, 61, 51, 51
 Magician_Knights_Wand/Eyes
-	bounds: 359, 626, 72, 45
+	bounds: 410, 2, 72, 45
 	offsets: 0, 0, 72, 46
 	rotate: 90
 Magician_Knights_Wand/Glow
-	bounds: 382, 271, 52, 52
+	bounds: 446, 421, 52, 52
 	offsets: 2, 2, 56, 56
 Magician_Knights_Wand/Hair_Back
-	bounds: 2, 97, 113, 123
+	bounds: 133, 266, 113, 123
 	offsets: 5, 5, 123, 133
-	rotate: 90
 Magician_Knights_Wand/Hair_Front_01
-	bounds: 195, 877, 142, 82
+	bounds: 248, 306, 142, 82
 	offsets: 5, 5, 152, 92
 	rotate: 90
 Magician_Knights_Wand/Hair_Front_02
-	bounds: 287, 514, 110, 76
+	bounds: 369, 657, 110, 76
 	offsets: 5, 5, 120, 86
 	rotate: 90
 Magician_Knights_Wand/Hand_R
-	bounds: 456, 979, 40, 40
+	bounds: 521, 604, 40, 40
 	offsets: 5, 5, 53, 50
 Magician_Knights_Wand/Hat_Back
-	bounds: 2, 25, 194, 70
+	bounds: 224, 70, 194, 70
+	rotate: 90
 Magician_Knights_Wand/Hat_Front
-	bounds: 2, 825, 191, 96
+	bounds: 2, 390, 191, 96
 	offsets: 2, 0, 193, 96
+	rotate: 90
 Magician_Knights_Wand/Leg
-	bounds: 366, 374, 48, 75
+	bounds: 432, 243, 48, 75
 	offsets: 2, 3, 53, 80
 Magician_Knights_Wand/Mouth
-	bounds: 279, 887, 31, 20
+	bounds: 101, 819, 31, 20
 Magician_Knights_Wand/Particle
-	bounds: 124, 676, 16, 16
+	bounds: 228, 868, 16, 16
 	offsets: 1, 1, 18, 18
 Magician_Knights_Wand/RadialWave
-	bounds: 144, 709, 114, 110
+	bounds: 216, 904, 114, 110
 	offsets: 9, 10, 128, 128
 	rotate: 90
 Magician_Knights_Wand/Robe
-	bounds: 255, 752, 91, 125
+	bounds: 333, 893, 91, 125
 	offsets: 2, 2, 95, 129
 Magician_Knights_Wand/Weapon
-	bounds: 257, 277, 56, 198
+	bounds: 311, 588, 56, 198
 Magician_Mercenary_Wand/Arm_L
-	bounds: 416, 760, 38, 57
+	bounds: 481, 563, 38, 57
 	offsets: 5, 5, 48, 67
 Magician_Mercenary_Wand/Arm_L2
-	bounds: 431, 819, 45, 37
+	bounds: 501, 729, 45, 37
 	offsets: 5, 5, 55, 47
+	rotate: 90
 Magician_Mercenary_Wand/Arm_R
-	bounds: 410, 435, 42, 56
+	bounds: 473, 490, 42, 56
 	offsets: 6, 5, 53, 66
 Magician_Mercenary_Wand/Arm_R2
-	bounds: 431, 858, 49, 38
+	bounds: 480, 269, 49, 38
 	offsets: 5, 5, 59, 48
-	rotate: 90
 Magician_Mercenary_Wand/Cape_Back
-	bounds: 315, 378, 134, 58
+	bounds: 101, 835, 134, 58
 	offsets: 1, 3, 136, 63
-	rotate: 90
 Magician_Mercenary_Wand/Cape_Front
-	bounds: 445, 365, 76, 35
+	bounds: 500, 367, 76, 35
 	offsets: 1, 1, 77, 39
 	rotate: 90
 Magician_Mercenary_Wand/Circle_InnerFade
-	bounds: 397, 16, 51, 51
+	bounds: 451, 835, 51, 51
 Magician_Mercenary_Wand/Eyes
-	bounds: 357, 947, 72, 45
+	bounds: 246, 682, 72, 45
 	offsets: 0, 0, 72, 46
 	rotate: 90
 Magician_Mercenary_Wand/Glow
-	bounds: 377, 819, 52, 52
+	bounds: 445, 114, 52, 52
 	offsets: 2, 2, 56, 56
 Magician_Mercenary_Wand/Hair_Back
-	bounds: 2, 212, 113, 123
+	bounds: 101, 895, 113, 123
 	offsets: 5, 5, 123, 133
-	rotate: 90
 Magician_Mercenary_Wand/Hair_Front_01
-	bounds: 198, 45, 82, 130
+	bounds: 332, 318, 82, 130
 	offsets: 5, 5, 92, 140
-	rotate: 90
 Magician_Mercenary_Wand/Hair_Front_02
-	bounds: 279, 909, 110, 76
+	bounds: 354, 206, 110, 76
 	offsets: 5, 5, 120, 86
 	rotate: 90
 Magician_Mercenary_Wand/Hat_Back
-	bounds: 127, 131, 194, 70
+	bounds: 152, 70, 194, 70
 	rotate: 90
 Magician_Mercenary_Wand/Hat_Front
-	bounds: 2, 923, 191, 96
+	bounds: 2, 583, 191, 96
 	offsets: 2, 0, 193, 96
+	rotate: 90
 Magician_Mercenary_Wand/Leg
-	bounds: 363, 475, 48, 75
+	bounds: 430, 166, 48, 75
 	offsets: 2, 3, 53, 80
 Magician_Mercenary_Wand/Particle
-	bounds: 2, 676, 16, 16
+	bounds: 216, 886, 16, 16
 	offsets: 1, 1, 18, 18
 Magician_Mercenary_Wand/RadialWave
-	bounds: 128, 329, 114, 110
+	bounds: 199, 566, 114, 110
 	offsets: 9, 10, 128, 128
 	rotate: 90
 Magician_Mercenary_Wand/Weapon
-	bounds: 199, 129, 56, 198
+	bounds: 296, 106, 56, 198
