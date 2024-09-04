@@ -3,13 +3,13 @@ using RGLabs.Data.Model;
 
 namespace RGLabs.Data.DB
 {
-    [DB("Castle_Table", "castle")]
+    [DB("castle")]
     public class CastleDB : DB<CastleEntity>
     {
         public int MaxLv => this[^1].Id + 1;
     }
     
-    [DB("Character_Table", "unit")]
+    [DB("unit")]
     public class UnitDB : DB<UnitEntity>
     {
         public readonly Dictionary<int, float> sizeCache = new();
@@ -23,7 +23,7 @@ namespace RGLabs.Data.DB
         }
     }
 
-    [DB("Character_Upgrade_Table", "balance")]
+    [DB("balance")]
     public class UnitBalanceDB : DB<UnitBalanceEntity>
     {
         protected override void Convert(object from, ref UnitBalanceEntity to)
@@ -49,19 +49,19 @@ namespace RGLabs.Data.DB
         }
     }
 
-    [DB("Rate_Table", "rate")]
+    [DB("rate")]
     public class UnitRateDB : DB<UnitRateEntity>
     {
         public int MaxRate => this[^1].Id + 1;
     }
 
-    [DB("Level_Table", "level")]
+    [DB("level")]
     public class UnitLevelDB : DB<UnitLevelEntity>
     {
         public int MaxLv => this[^1].Id + 1;
     }
 
     
-    [DB("Skill_Table", "skill")]
+    [DB("skill")]
     public class SkillDB : DB<SkillEntity> { }
 }

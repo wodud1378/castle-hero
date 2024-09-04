@@ -29,13 +29,10 @@ namespace RGLabs.Data.DB
 
     public class DBAttribute : Attribute
     {
-        public string LocalFile { get; }
         public string ChartName { get; }
-        public string Path => $"LocalDB/{LocalFile}";
 
-        public DBAttribute(string localFile, string chartName = "")
+        public DBAttribute(string chartName)
         {
-            LocalFile = localFile;
             ChartName = chartName;
         }
     }

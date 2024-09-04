@@ -1,18 +1,22 @@
 using System;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI;
+using RGLabs.Common.UI.Popup;
+using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Lobby.UI.Popup;
+using RGLabs.Network.Service;
 using RGLabs.Network.Shared;
-using RGLabs.Unit;
 using RGLabs.Utility;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace RGLabs.Lobby.UI.Inventory.Popup
 {
-    [PrefabPath("Lobby/UI/Prefabs/Popup_Equipment.prefab")]
+    [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_Equipment.prefab")]
 
     public class PopupEquipItem : PopupItemBase<UIEquipmentSlot, EquipItem>
     {
@@ -32,24 +36,48 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             this.SubscribeButton(_release, Release);
         }
 
-        private void OpenElementalStoneList()
+        private async void OpenElementalStoneList()
         {
+            if (!Context.popups.TryGetPopupIfExist(out PopupInventory inventory))
+                inventory = await Context.popups.OpenAsync<PopupInventory>();
+            
+            inventory.filter.Clear();
+            inventory.filter.Add(PopupInventory.Category.Ingredient);
+            inventory.customFilter.Value = (_, entity) => entity.optionConsume.type == ConsumeType.ElementalStone;
+            inventory.refineParam.item = Item;
         }
-        
+
+        protected override UniTask InitSlot(EquipItem item, UIEquipmentSlot slot) => slot.Init(item);
+
         private async void OpenCharacterList()
         {
             var popup = await Context.popups.OpenAsync<PopupCharacterList>();
             popup.clickMethod = PopupCharacterList.ClickMethod.Equip;
             popup.equipmentId = Item.ItemId;
+            
+            Close();
         }
 
-        private void Release()
+        private async void Release()
         {
+            var unit = Storage.userRepository.characters.units.FirstOrDefault(x => x.id == Item.character);
+            if (unit == null)
+                return;
+
+            var result = await NetworkService.Character.Release(unit.id, Item.Guid);
+            if (!result.IsSuccess)
+            {
+                Context.popups.Open<PopupCommon>(result.error);
+            }
         }
 
         protected override void OnDataChanged(EquipItem data)
         {
             base.OnDataChanged(data);
+
+            bool onUse = data.character != 0;
+            _equip.gameObject.SetActive(!onUse);
+            _release.gameObject.SetActive(onUse);
             
             foreach (var label in _mainStat)
             {

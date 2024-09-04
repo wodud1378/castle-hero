@@ -8,6 +8,8 @@ using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Lobby.UI.Adapter;
+using RGLabs.Lobby.UI.Popup;
+using RGLabs.Network.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using TMPro;
@@ -17,15 +19,22 @@ using UnityEngine.UI;
 
 namespace RGLabs.Lobby.UI.Inventory.Popup
 {
-    [PrefabPath("Lobby/UI/Prefabs/Popup_Inventory.prefab")]
+    [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_Inventory.prefab")]
     public class PopupInventory : PopupBase
     {
+        public struct RefineParam
+        {
+            public EquipItem item;
+            public ItemEntity entity;
+        }
+
         public enum Mode
         {
             Default,
-            Sell
+            Sell,
+            Refine,
         }
-        
+
         public enum Tab
         {
             All,
@@ -44,30 +53,34 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             Consumable,
             Chest,
         }
-        
+
         public Toggle all;
         public Toggle equipment;
         public Toggle other;
-
         public Toggle[] categoryToggles;
 
-        [SerializeField] private TMP_Text _sellGold;
+        [SerializeField] private TMP_Text _gold;
         [SerializeField] private Button _sell;
         [SerializeField] private UIInventoryItemList _itemList;
 
-        [Header("Tab Sprites")]
-        [SerializeField] private SpriteState _tabSprites;
-        [Header("Category Colors")]
-        [SerializeField] private ColorBlock _categoryColors;
-        
+        [Header("Tab Sprites")] [SerializeField]
+        private SpriteState _tabSprites;
+
+        [Header("Category Colors")] [SerializeField]
+        private ColorBlock _categoryColors;
+
         public readonly ReactiveProperty<Tab> tab = new();
         public readonly ReactiveCollection<Category> filter = new();
+        public readonly ReactiveProperty<Mode> mode = new();
+
+        public readonly ReactiveProperty<Func<IItem, ItemEntity, bool>> customFilter = new();
 
         private readonly Dictionary<Tab, Toggle> _tabToggles = new();
         private readonly Dictionary<Category, Toggle> _categoryToggles = new();
-        
-        private readonly ReactiveProperty<Mode> _mode = new();
+
         private readonly List<UIItemSlot> _sellTargets = new();
+        
+        public RefineParam refineParam;
 
         private UniTask _updateTask;
 
@@ -77,10 +90,15 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
             _itemList.OnSlotClickEvent -= OnClickItemSlot;
             _itemList.OnSlotClickEvent += OnClickItemSlot;
-            _mode
-                .Subscribe(_=> _itemList.items.ForEach(x=>x.state.Value = UIState.State.Default))
+
+            Storage.userRepository.currency.gold
+                .Subscribe(x => _gold.text = x.CurrencyText())
                 .AddTo(this);
-            
+
+            mode
+                .Subscribe(OnModeChanged)
+                .AddTo(this);
+
             BindTabToggle(Tab.All, all);
             BindTabToggle(Tab.Equipment, equipment);
             BindTabToggle(Tab.Other, other);
@@ -89,7 +107,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             {
                 BindCategoryToggle((Category)i, categoryToggles[i]);
             }
-            
+
             filter
                 .ChangeAsObservable()
                 .Subscribe(UpdateTogglesStatus)
@@ -104,36 +122,65 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 .Merge(
                     filter
                         .ChangeAsObservable()
-                        .Select(_ => UniRx.Unit.Default), 
-                    
+                        .Select(_ => UniRx.Unit.Default),
                     Storage.userRepository.inventory.items
                         .ChangeAsObservable()
-                        .Select(_=> UniRx.Unit.Default))
+                        .ThrottleFrame(1)
+                        .Select(_ => UniRx.Unit.Default))
                 .ThrottleFrame(1)
                 .Subscribe(_ => UpdateList())
                 .AddTo(this);
+
+            this.SubscribeButton(_sell, Sell);
+        }
+
+        private async void Sell()
+        {
+            if (mode.Value != Mode.Sell || _sellTargets.Count == 0)
+                return;
+
+            var selected = _sellTargets.Select(x => (x.Item, x.Item.Quantity)).ToArray();
+
+            var result = await NetworkService.Inventory.Sell(
+                selected.Select(x => x.Item).ToArray(),
+                selected.Select(x => x.Quantity).ToArray());
+
+            if (!result.IsSuccess)
+                Context.popups.Open<PopupCommon>(result.error);
         }
 
         private void OnModeChanged(Mode value)
         {
-            if (value == Mode.Default)
-                _itemList.items.ForEach(x => x.state.Value = UIState.State.Default);
-
-            else
+            switch (value)
             {
-                _sellTargets.Clear();
-                _itemList.items.ForEach(x =>
-                {
-                    x.state.Value = x.Entity.sellPrice > 0
-                        ? UIState.State.Dim
-                        : UIState.State.Default;
-                });
+                case Mode.Default:
+                    _itemList.items.ForEach(x => x.state.Value = UIState.State.Default);
+                    break;
+                case Mode.Sell:
+                    _sellTargets.Clear();
+                    _itemList.items.ForEach(x =>
+                    {
+                        x.state.Value = x.Entity.sellPrice > 0
+                            ? UIState.State.Dim
+                            : UIState.State.Default;
+                    });
+                    break;
+                case Mode.Refine:
+                    tab.Value = Tab.Equipment;
+                    filter.Clear();
+                    _itemList.items.ForEach(x =>
+                    {
+                        x.state.Value = x.Item is EquipItem
+                            ? UIState.State.Default
+                            : UIState.State.Dim;
+                    });
+                    break;
             }
         }
-        
+
         private void OnClickItemSlot(UIItemSlot slot)
         {
-            switch (_mode.Value)
+            switch (mode.Value)
             {
                 case Mode.Default:
                     OpenPopup(slot);
@@ -141,7 +188,35 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 case Mode.Sell:
                     RemoveOrAddSellTarget(slot);
                     break;
+                case Mode.Refine:
+                    OpenRefinePopup(slot);
+                    break;
             }
+        }
+
+        private void OpenRefinePopup(UIItemSlot slot)
+        {
+            switch (slot.Item)
+            {
+                case EquipItem equipItem:
+                    refineParam.item = equipItem;
+                    break;
+                case Item:
+                    var entity = slot.Entity;
+                    if (entity is { type: ItemType.Consumable, optionConsume: { type: ConsumeType.ElementalStone } })
+                    {
+                        refineParam.entity = entity;
+                    }
+
+                    break;
+            }
+
+            if (refineParam.item == null || !refineParam.entity.IsValid)
+                return;
+
+            Context.popups.Open<PopupRefine>(refineParam.item, refineParam.entity);
+            
+            refineParam.item = null;
         }
 
         private void RemoveOrAddSellTarget(UIItemSlot slot)
@@ -182,14 +257,14 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             {
                 if (pair.Key == Category.All)
                     continue;
-                        
+
                 var toggle = pair.Value;
-                var color = categories.Contains(pair.Key)? _categoryColors.selectedColor : _categoryColors.normalColor;
+                var color = categories.Contains(pair.Key) ? _categoryColors.selectedColor : _categoryColors.normalColor;
                 toggle.image.CrossFadeColor(color, _categoryColors.fadeDuration, true, true);
             }
-                    
+
             _categoryToggles[Category.All].image
-                .CrossFadeColor(categories.Any() 
+                .CrossFadeColor(categories.Any()
                         ? _categoryColors.normalColor
                         : _categoryColors.selectedColor,
                     _categoryColors.fadeDuration,
@@ -203,7 +278,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 var toggle = pair.Value;
                 toggle.image.overrideSprite = tab == pair.Key ? _tabSprites.selectedSprite : null;
             }
-                    
+
             UpdateTogglesActive(tab);
         }
 
@@ -273,8 +348,8 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             }
 
             tab.Value = tabParam;
-            
-            if(category != Category.All)
+
+            if (category != Category.All)
                 filter.Add(category);
             else
                 UpdateTogglesStatus(filter);
@@ -289,12 +364,12 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             var items = Storage.userRepository.inventory.items
                 .Where(CompareMethod(tab.Value).Invoke);
 
-            if(filter.Count > 0)
+            if (filter.Count > 0)
                 items = items.Where(Filter);
-            
+
             _updateTask = _itemList.Init(items);
         }
-        
+
         private void UpdateTogglesActive(Tab val)
         {
             if (val == Tab.All)
@@ -339,6 +414,9 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 return false;
             }
 
+            if (customFilter.Value != null && !customFilter.Value.Invoke(item, entity))
+                return false;
+
             var type = entity.type;
             if (type == ItemType.Equipment)
             {
@@ -381,8 +459,10 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             return tabValue switch
             {
                 Tab.All => _ => true,
-                Tab.Equipment => x=> Storage.db.items.TryFind(x.ItemId, out var entity) && entity.type == ItemType.Equipment,
-                Tab.Other => x => Storage.db.items.TryFind(x.ItemId, out var entity) && entity.type != ItemType.Equipment,
+                Tab.Equipment => x =>
+                    Storage.db.items.TryFind(x.ItemId, out var entity) && entity.type == ItemType.Equipment,
+                Tab.Other => x =>
+                    Storage.db.items.TryFind(x.ItemId, out var entity) && entity.type != ItemType.Equipment,
                 _ => null
             };
         }

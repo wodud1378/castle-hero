@@ -68,7 +68,7 @@ namespace RGLabs.Prepare.UI
                 switch (entity.type)
                 {
                     case ItemType.Chest:
-                        var option = entity.GetChestOption();
+                        var option = entity.optionChestFull;
                         bool isFirst = true;
                         foreach (var kvp in option.itemMap)
                         {

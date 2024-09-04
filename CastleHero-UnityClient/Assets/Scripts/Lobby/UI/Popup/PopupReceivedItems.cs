@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace RGLabs.Lobby.UI.Popup
 {
-    [PrefabPath("Lobby/UI/Prefabs/ReceiveResult.prefab")]
+    [PrefabPath("Lobby/UI/Prefabs/Popups/ReceiveResult.prefab")]
     public class PopupReceivedItems : PopupBase
     {
         [SerializeField] private UIItemList _itemList;
@@ -22,8 +22,11 @@ namespace RGLabs.Lobby.UI.Popup
             {
                 switch (parameter)
                 {
-                    case IEnumerable<IItem> i:
-                        items.AddRange(i);
+                    case IItem item:
+                        items.Add(item);
+                        break;
+                    case IEnumerable<IItem> list:
+                        items.AddRange(list);
                         break;
                     case CurrencyDto c:
                         currency += c;

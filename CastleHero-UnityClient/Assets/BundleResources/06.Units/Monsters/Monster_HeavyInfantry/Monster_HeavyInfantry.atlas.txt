@@ -1,85 +1,154 @@
 Monster_HeavyInfantry.png
-	size: 512, 512
+	size: 1024, 1024
 	filter: Linear, Linear
 	scale: 0.5
 Effect_Slash
-	bounds: 246, 310, 50, 50
+	bounds: 263, 959, 50, 50
 Elipse
-	bounds: 71, 27, 65, 65
-HeavyInfantry_DarkKnight_Flail/Arm_L
-	bounds: 342, 78, 64, 78
+	bounds: 244, 325, 65, 65
+HeavyInfantry_DarkKnightLord_Flail/Arm_L
+	bounds: 188, 752, 64, 78
 	offsets: 5, 5, 74, 88
-HeavyInfantry_DarkKnight_Flail/Arm_L2
-	bounds: 267, 158, 77, 69
+HeavyInfantry_DarkKnight_Flail/Arm_L
+	bounds: 188, 752, 64, 78
+	offsets: 5, 5, 74, 88
+HeavyInfantry_DarkKnightLord_Flail/Arm_L2
+	bounds: 188, 476, 77, 69
 	offsets: 5, 5, 87, 79
-HeavyInfantry_DarkKnight_Flail/Arm_R
-	bounds: 387, 325, 56, 84
+HeavyInfantry_DarkKnight_Flail/Arm_L2
+	bounds: 188, 476, 77, 69
+	offsets: 5, 5, 87, 79
+HeavyInfantry_DarkKnightLord_Flail/Arm_R
+	bounds: 188, 617, 56, 84
 	offsets: 5, 5, 66, 94
-HeavyInfantry_DarkKnight_Flail/Arm_R2_Back
-	bounds: 188, 312, 56, 49
+	rotate: 90
+HeavyInfantry_DarkKnight_Flail/Arm_R
+	bounds: 188, 617, 56, 84
+	offsets: 5, 5, 66, 94
+	rotate: 90
+HeavyInfantry_DarkKnightLord_Flail/Arm_R2_Back
+	bounds: 255, 677, 56, 49
 	offsets: 5, 5, 66, 59
-HeavyInfantry_DarkKnight_Flail/Arm_R2_Front
-	bounds: 320, 381, 78, 65
+HeavyInfantry_DarkKnight_Flail/Arm_R2_Back
+	bounds: 255, 677, 56, 49
+	offsets: 5, 5, 66, 59
+HeavyInfantry_DarkKnightLord_Flail/Arm_R2_Front
+	bounds: 188, 547, 78, 65
 	offsets: 5, 5, 88, 75
-	rotate: 90
-HeavyInfantry_DarkKnight_Flail/Finger_R
-	bounds: 138, 18, 62, 66
+HeavyInfantry_DarkKnight_Flail/Arm_R2_Front
+	bounds: 188, 547, 78, 65
+	offsets: 5, 5, 88, 75
+HeavyInfantry_DarkKnightLord_Flail/Finger_R
+	bounds: 254, 795, 62, 66
 	offsets: 9, 5, 76, 76
-	rotate: 90
+HeavyInfantry_DarkKnight_Flail/Finger_R
+	bounds: 254, 795, 62, 66
+	offsets: 9, 5, 76, 76
+HeavyInfantry_DarkKnightLord_Flail/Flail_Chain
+	bounds: 268, 499, 26, 116
 HeavyInfantry_DarkKnight_Flail/Flail_Chain
-	bounds: 206, 50, 26, 116
-	rotate: 90
-HeavyInfantry_DarkKnight_Flail/Flail_Grip
-	bounds: 206, 23, 26, 103
+	bounds: 268, 499, 26, 116
+HeavyInfantry_DarkKnightLord_Flail/Flail_Grip
+	bounds: 282, 394, 26, 103
 	offsets: 5, 5, 36, 113
-	rotate: 90
-HeavyInfantry_DarkKnight_Flail/Flail_Head
-	bounds: 2, 94, 136, 131
+HeavyInfantry_DarkKnight_Flail/Flail_Grip
+	bounds: 282, 394, 26, 103
+	offsets: 5, 5, 36, 113
+HeavyInfantry_DarkKnightLord_Flail/Flail_Head
+	bounds: 2, 15, 136, 131
 	offsets: 7, 14, 150, 150
+HeavyInfantry_DarkKnightLord_Flail/Foot
+	bounds: 188, 932, 73, 77
 HeavyInfantry_DarkKnight_Flail/Foot
-	bounds: 267, 79, 73, 77
-HeavyInfantry_DarkKnight_Flail/Hand_L
-	bounds: 2, 28, 67, 64
+	bounds: 188, 932, 73, 77
+HeavyInfantry_DarkKnightLord_Flail/Hand_L
+	bounds: 246, 863, 67, 64
 	offsets: 5, 5, 77, 74
-HeavyInfantry_DarkKnight_Flail/Hand_R
-	bounds: 387, 426, 66, 66
+	rotate: 90
+HeavyInfantry_DarkKnight_Flail/Hand_L
+	bounds: 246, 863, 67, 64
+	offsets: 5, 5, 77, 74
+	rotate: 90
+HeavyInfantry_DarkKnightLord_Flail/Hand_R
+	bounds: 230, 2, 66, 66
 	offsets: 5, 5, 76, 76
-HeavyInfantry_DarkKnight_Flail/Head
-	bounds: 140, 78, 127, 149
-	offsets: 0, 1, 128, 152
-	rotate: 180
-HeavyInfantry_DarkKnight_Flail/Hip
-	bounds: 301, 281, 98, 56
+HeavyInfantry_DarkKnight_Flail/Hand_R
+	bounds: 230, 2, 66, 66
+	offsets: 5, 5, 76, 76
+HeavyInfantry_DarkKnightLord_Flail/Head
+	bounds: 2, 280, 159, 194
+	offsets: 0, 1, 159, 195
+HeavyInfantry_DarkKnightLord_Flail/Hip
+	bounds: 188, 832, 98, 56
 	offsets: 5, 5, 108, 66
 	rotate: 90
-HeavyInfantry_DarkKnight_Flail/Leg
-	bounds: 408, 74, 54, 82
-	offsets: 5, 5, 64, 92
-HeavyInfantry_DarkKnight_Flail/Shield
-	bounds: 2, 226, 184, 266
-HeavyInfantry_DarkKnight_Flail/Shoulder_L
-	bounds: 215, 229, 84, 78
-	offsets: 5, 5, 94, 88
-HeavyInfantry_DarkKnight_Flail/Shoulder_R_Back
-	bounds: 416, 257, 45, 66
-	offsets: 5, 5, 55, 76
-HeavyInfantry_DarkKnight_Flail/Shoulder_R_Front
-	bounds: 346, 158, 65, 75
-	offsets: 5, 5, 75, 85
-HeavyInfantry_DarkKnight_Flail/Skirt
-	bounds: 359, 235, 88, 55
-	offsets: 5, 5, 98, 65
+HeavyInfantry_DarkKnight_Flail/Hip
+	bounds: 188, 832, 98, 56
+	offsets: 5, 5, 108, 66
 	rotate: 90
-HeavyInfantry_DarkKnight_Flail/Skirt_C
-	bounds: 445, 373, 47, 51
+HeavyInfantry_DarkKnightLord_Flail/Leg
+	bounds: 226, 392, 54, 82
+	offsets: 5, 5, 64, 92
+HeavyInfantry_DarkKnight_Flail/Leg
+	bounds: 226, 392, 54, 82
+	offsets: 5, 5, 64, 92
+HeavyInfantry_DarkKnightLord_Flail/Shield
+	bounds: 2, 476, 184, 266
+HeavyInfantry_DarkKnightLord_Flail/Shoulder_L
+	bounds: 140, 396, 84, 78
+	offsets: 5, 5, 94, 88
+HeavyInfantry_DarkKnight_Flail/Shoulder_L
+	bounds: 140, 396, 84, 78
+	offsets: 5, 5, 94, 88
+HeavyInfantry_DarkKnightLord_Flail/Shoulder_R_Back
+	bounds: 260, 164, 45, 66
+	offsets: 5, 5, 55, 76
+HeavyInfantry_DarkKnight_Flail/Shoulder_R_Back
+	bounds: 260, 164, 45, 66
+	offsets: 5, 5, 55, 76
+HeavyInfantry_DarkKnightLord_Flail/Shoulder_R_Front
+	bounds: 188, 675, 65, 75
+	offsets: 5, 5, 75, 85
+HeavyInfantry_DarkKnight_Flail/Shoulder_R_Front
+	bounds: 188, 675, 65, 75
+	offsets: 5, 5, 75, 85
+HeavyInfantry_DarkKnightLord_Flail/Skirt
+	bounds: 140, 7, 88, 55
+	offsets: 5, 5, 98, 65
+HeavyInfantry_DarkKnight_Flail/Skirt
+	bounds: 140, 7, 88, 55
+	offsets: 5, 5, 98, 65
+HeavyInfantry_DarkKnightLord_Flail/Skirt_C
+	bounds: 267, 232, 47, 51
 	offsets: 5, 5, 57, 61
-HeavyInfantry_DarkKnight_Flail/Skirt_L
-	bounds: 413, 168, 58, 65
+HeavyInfantry_DarkKnight_Flail/Skirt_C
+	bounds: 267, 232, 47, 51
+	offsets: 5, 5, 57, 61
+HeavyInfantry_DarkKnightLord_Flail/Skirt_L
+	bounds: 255, 728, 58, 65
 	offsets: 5, 5, 68, 75
-HeavyInfantry_DarkKnight_Flail/Skirt_R
-	bounds: 455, 435, 32, 57
+HeavyInfantry_DarkKnight_Flail/Skirt_L
+	bounds: 255, 728, 58, 65
+	offsets: 5, 5, 68, 75
+HeavyInfantry_DarkKnightLord_Flail/Skirt_R
+	bounds: 270, 70, 32, 57
 	offsets: 5, 5, 42, 67
-HeavyInfantry_DarkKnight_Flail/Torso
-	bounds: 188, 360, 132, 131
+HeavyInfantry_DarkKnight_Flail/Skirt_R
+	bounds: 270, 70, 32, 57
+	offsets: 5, 5, 42, 67
+HeavyInfantry_DarkKnightLord_Flail/Torso
+	bounds: 140, 63, 132, 131
 	offsets: 1, 0, 134, 131
 	rotate: 90
+HeavyInfantry_DarkKnight_Flail/Torso
+	bounds: 140, 63, 132, 131
+	offsets: 1, 0, 134, 131
+	rotate: 90
+HeavyInfantry_DarkKnight_Flail/Flail_Head
+	bounds: 2, 148, 136, 131
+	offsets: 7, 14, 150, 150
+HeavyInfantry_DarkKnight_Flail/Head
+	bounds: 140, 196, 127, 149
+	offsets: 0, 1, 128, 152
+HeavyInfantry_DarkKnight_Flail/Shield
+	bounds: 2, 743, 184, 266

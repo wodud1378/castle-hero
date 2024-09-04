@@ -1,6 +1,4 @@
-using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using Cysharp.Threading.Tasks;
 using RGLabs.Data.DB;
 using UnityEngine;
@@ -19,7 +17,7 @@ namespace RGLabs.Data.Load
         
         public async UniTask<string> LoadCsvText(DBAttribute attribute)
         {
-            var asset = await Resources.LoadAsync<TextAsset>(attribute.Path);
+            var asset = await Resources.LoadAsync<TextAsset>(string.Empty);
             if (asset == null)
                 return string.Empty;
 

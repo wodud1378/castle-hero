@@ -1,5 +1,4 @@
 using System.Linq;
-using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
@@ -15,7 +14,7 @@ using UnityEngine.UI;
 
 namespace RGLabs.Lobby.UI.Inventory.Popup
 {
-    [PrefabPath("Lobby/UI/Prefabs/Popup_Use.prefab")]
+    [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_Use.prefab")]
     public class PopupUseItem : PopupItemBase<UIItemSlot, IItem>
     {
         [SerializeField] private Slider _slider;
@@ -37,7 +36,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             
             _slider.value = 0f;
         }
-        
+
         protected override void OnDataChanged(IItem data)
         {
             base.OnDataChanged(data);
@@ -81,7 +80,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             {
                 case ItemType.Consumable:
                     var option = (ConsumeType)int.Parse(Entity.options[0]);
-                    isActive = option is ConsumeType.Ap;
+                    isActive = option is ConsumeType.Stamina;
                     break;
                 case ItemType.Ingredient:
                 case ItemType.Chest:
@@ -96,33 +95,51 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         private void OnUse()
         {
-            if (Entity.type == ItemType.Consumable)
+            switch (Entity.type)
             {
-                var option = (ConsumeType)int.Parse(Entity.options[0]);
-                switch (option)
-                {
-                    case ConsumeType.SummonTicket:
-                        MoveToDrawCharacter(Entity.Id);
-                        break;
-                    default:
-                        Use();
-                        break;
-                }
+                case ItemType.Consumable:
+                    Consume(Entity.optionConsume);
+                    break;
+                case ItemType.Ingredient:
+                    Combine();
+                    break;
+                case ItemType.Chest:
+                    OpenBox();
+                    break;
             }
-            else if (Entity.type == ItemType.Ingredient)
-                Use();
-            else if (Entity.type == ItemType.Chest)
-                OpenBox();
         }
 
-        private void Use()
+        private void Consume(ConsumableOption option)
         {
-            // TODO 사용 로직.
+            switch (option.type)
+            {
+                case ConsumeType.Stamina:
+                    AddStamina();
+                    break;
+                case ConsumeType.SummonTicket:
+                    MoveToDrawCharacter(Item.ItemId);
+                    break;
+                case ConsumeType.ElementalStone:
+                    MoveToRefine();
+                    break;
+            }
+        }
+
+        private async void Combine()
+        {
+            var result = await NetworkService.Inventory.Combine(Item.ItemId, (int)_slider.value);
+            if (!result.IsSuccess)
+            {
+                Context.popups.Open<PopupCommon>(result.error);
+                return;
+            }
+            
+            Context.popups.Open<PopupReceivedItems>(result.data);
         }
 
         private async void OpenBox()
         {
-            var result = await NetworkService.Item.OpenChest(Item.ItemId, (int)_slider.value);
+            var result = await NetworkService.Inventory.OpenChest(Item.ItemId, (int)_slider.value);
             if (!result.IsSuccess)
             {
                 Context.popups.Open<PopupCommon>(result.error);
@@ -132,12 +149,17 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             var data = result.data;
             var currency = data.currency;
             var items = data.items;
-
-            var repository = Storage.userRepository;
-            repository.currency.Add(currency);
-            repository.inventory.Add(items);
-
+            
             Context.popups.Open<PopupReceivedItems>(currency, items);
+        }
+
+        private async void AddStamina()
+        {
+            var result = await NetworkService.Inventory.AddStamina(Item.ItemId, (int)_slider.value);
+            if (!result.IsSuccess)
+            {
+                Context.popups.Open<PopupCommon>(result.error);
+            }
         }
 
         private void MoveToDrawCharacter(int ticketId)
@@ -149,9 +171,14 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             Close();
         }
 
-        private void MoveToRefine()
+        private async void MoveToRefine()
         {
-            // TODO 재련 페이지로 이동.
+            if (!Context.popups.TryGetPopupIfExist(out PopupInventory popup))
+                popup = await Context.popups.OpenAsync<PopupInventory>();
+            
+            popup.mode.Value = PopupInventory.Mode.Refine;
+            popup.refineParam.entity = Entity;
+            Close();
         }
     }
 }

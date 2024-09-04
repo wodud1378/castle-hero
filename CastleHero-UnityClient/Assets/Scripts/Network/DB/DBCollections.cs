@@ -10,6 +10,7 @@ namespace RGLabs.Network.DB
         public WaveDB waves;
         public DungeonDB dungeons;
         public DungeonRewardDB dungeonRewards;
+        public ElementDB elements;
         public CastleDB castles;
         public UnitDB units;
         public UnitLevelDB levels;

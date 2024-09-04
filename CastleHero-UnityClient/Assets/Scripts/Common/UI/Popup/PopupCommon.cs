@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using RGLabs.Common.UI.Utility;
 using RGLabs.Network;
 using RGLabs.Utility;
 using TMPro;
@@ -10,7 +9,7 @@ using UnityEngine.UI;
 
 namespace RGLabs.Common.UI.Popup
 {
-    [PrefabPath("Common/Prefabs/Popup_Common.prefab")]
+    [PrefabPath("Common/Prefabs/Popups/Popup_Common.prefab")]
     public class PopupCommon : PopupBase
     {
         public struct ButtonParam

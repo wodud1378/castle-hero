@@ -16,7 +16,7 @@ using UnityEngine.UI;
 
 namespace RGLabs.Lobby.UI.Popup
 {
-    [PrefabPath("Lobby/UI/Prefabs/Popup_LevelUp.prefab")]
+    [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_LevelUp.prefab")]
     public class PopupLevelUp : PopupGrowth
     {
         private const int ExpSmallId = 52001;
@@ -50,16 +50,13 @@ namespace RGLabs.Lobby.UI.Popup
                 .Subscribe(OnSlotSelected)
                 .AddTo(this);
 
-            Storage.userRepository.inventory.items
-                .ChangeAsObservable()
-                .ThrottleFrame(1)
-                .Subscribe(_ =>
+            Storage.userRepository.inventory
+                .WhenUpdate(_ =>
                 {
                     InitItemSlots()
                         .ContinueWith(() => _selected.Value = _selected.Value)
                         .Forget();
-                })
-                .AddTo(this);
+                });
 
             _expSlotS.OnClick += (x) => _selected.Value = (UIItemSlot)x;
             _expSlotM.OnClick += (x) => _selected.Value = (UIItemSlot)x;

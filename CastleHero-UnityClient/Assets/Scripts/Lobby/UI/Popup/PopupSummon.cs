@@ -20,7 +20,7 @@ using Probability = System.Collections.Generic.Dictionary<int, (string name, flo
 
 namespace RGLabs.Lobby.UI.Popup
 {
-    [PrefabPath("Lobby/UI/Prefabs/Summon/PopupSummon.prefab")]
+    [PrefabPath("Lobby/UI/Prefabs/Popups/Summon/PopupSummon.prefab")]
     public class PopupSummon : PopupBase
     {
         private static readonly int OnceTrigger = Animator.StringToHash("Action_1");

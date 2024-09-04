@@ -105,7 +105,7 @@ namespace RGLabs.Utility
             leftItem = quantity;
             price = 0;
 
-            var option = item.GetConsumableOption();
+            var option = item.optionConsume;
             if (option.type != ConsumeType.Exp)
                 return;
 

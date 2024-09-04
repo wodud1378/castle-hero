@@ -67,7 +67,7 @@ namespace RGLabs.InGame.System
                 {
                     critical = from.status.critical;
                     criticalMul = from.status.criticalAtk;
-                    elementalMul = Elemental.AtkMultiplier(from.Core.elemental);
+                    elementalMul = Elemental.AtkMultiplier(from.Core.elemental, to.Core.elemental);
                 }
 
                 damage = CalcAmount(ev.Amount, critical, criticalMul, elementalMul, out isCritical);

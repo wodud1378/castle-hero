@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RGLabs.Data.DB;
+using RGLabs.Unit.Components;
 using RGLabs.Utility;
 
 namespace RGLabs.Data.Model
@@ -16,7 +17,7 @@ namespace RGLabs.Data.Model
 
     public enum ConsumeType
     {
-        Ap = 1,
+        Stamina = 1,
         Exp = 2,
         PlayTicket = 3,
         SummonTicket = 4,
@@ -46,37 +47,7 @@ namespace RGLabs.Data.Model
         Chest,
     }
 
-    public struct EquipmentOption
-    {
-        public EquipmentGrade grade;
-        public EquipmentSlot slot;
-        public int set;
-        public int mainStat;
-        public List<KeyValuePair<int, float>> setOptions;
-    }
-
-    public struct ConsumableOption
-    {
-        public ConsumeType type;
-        public float value;
-    }
-
-    public struct IngredientOption
-    {
-        public IngredientType type;
-        public int targetId;
-        public int forCombine;
-    }
-    
-    public struct ChestOption
-    {
-        public List<KeyValuePair<int, List<int>>> itemMap;
-        public int[] Ids => itemMap.Select(x => x.Key).ToArray();
-        public int[] min;
-        public int[] max;
-    }
-
-    public struct ItemEntity : IEntity
+    public partial struct ItemEntity : IEntity
     {
         [DataField("guid")] public int Id { get; set; }
 
@@ -93,160 +64,5 @@ namespace RGLabs.Data.Model
         [DataField("sell")] public int sellPrice;
 
         [DataField("option")] public string[] options;
-
-        #region Equipment.
-
-        public enum EquipmentOptionIndex
-        {
-            SetStat = 0,
-            SetStatValue = 1,
-            Param,
-        }
-
-        public enum EquipmentParam
-        {
-            Grade = 0,
-            Slot = 1,
-            Set = 2,
-            MainStat = 3,
-        }
-
-        public EquipmentOption GetEquipmentOption()
-        {
-            var option = new EquipmentOption();
-            var parameters = options[(int)EquipmentOptionIndex.Param]
-                .Trim()
-                .Split(',');
-
-            for (var param = EquipmentParam.Grade; param <= EquipmentParam.MainStat; ++param)
-            {
-                int index = (int)param;
-                int value = int.Parse(parameters[index]);
-
-                switch (param)
-                {
-                    case EquipmentParam.Grade:
-                        option.grade = (EquipmentGrade)value;
-                        break;
-                    case EquipmentParam.Slot:
-                        option.slot = (EquipmentSlot)value;
-                        break;
-                    case EquipmentParam.Set:
-                        option.set = value;
-                        break;
-                    case EquipmentParam.MainStat:
-                        option.mainStat = value;
-                        break;
-                }
-            }
-
-            option.setOptions = new();
-
-            var types = options[(int)EquipmentOptionIndex.SetStat]
-                .Trim()
-                .Split(',')
-                .Select(int.Parse)
-                .ToArray();
-
-            var values = options[(int)EquipmentOptionIndex.SetStatValue]
-                .Trim()
-                .Split(',')
-                .Select(float.Parse)
-                .ToArray();
-
-            int i = 0;
-            while (i.IsValidIndex(types, values))
-            {
-                option.setOptions.Add(new KeyValuePair<int, float>(types[i], values[i]));
-                ++i;
-            }
-
-            return option;
-        }
-
-        #endregion
-
-        #region Consumable.
-
-        public enum ConsumableOptionIndex
-        {
-            ConsumeType = 0,
-            Value = 1,
-        }
-
-        public ConsumableOption GetConsumableOption() =>
-            new()
-            {
-                type = (ConsumeType)int.Parse(options[(int)ConsumableOptionIndex.ConsumeType]),
-                value = float.Parse(options[(int)ConsumableOptionIndex.Value])
-            };
-
-        #endregion
-
-        #region Ingredient
-
-        public enum IngredientOptionIndex
-        {
-            TargetId = 0,
-            ForCombine = 1,
-        }
-
-        public IngredientOption GetIngredientOption() =>
-            new()
-            {
-                type = (IngredientType)((Id - Id / 10000) / 1000),
-                targetId = int.Parse(options[(int)IngredientOptionIndex.TargetId]),
-                forCombine = int.Parse(options[(int)IngredientOptionIndex.ForCombine])
-            };
-
-        #endregion
-
-        #region Chest
-
-        public ChestOption GetChestOption(bool full = true)
-        {
-            string[] ToOptionArray(string optionString)
-            {
-                return optionString
-                    .Trim()
-                    .Replace("[", string.Empty)
-                    .Replace("]", string.Empty)
-                    .Split(',');
-            }
-
-            var quantities = ToOptionArray(options[1])
-                .Select(x => x.Split(':')
-                    .Select(int.Parse)
-                    .ToArray())
-                .ToList();
-            
-            var option = new ChestOption
-            {
-                itemMap = new(),
-                min = quantities.Select(x => x[0]).ToArray(),
-                max = quantities.Select(x => x[1]).ToArray(),
-            };
-            
-            var ids = ToOptionArray(options[0]).Select(int.Parse).ToArray();
-            if (full)
-            {
-                foreach (var id in ids)
-                {
-                    var related = id.GetRelatedItemIds();
-                    option.itemMap.Add(new(id, related));
-                }
-            }
-            else
-            {
-                foreach (var id in ids)
-                {
-                    option.itemMap.Add(new(id, null));
-                }
-            }
-
-            return option;
-        }
-
-        #endregion
     }
 }

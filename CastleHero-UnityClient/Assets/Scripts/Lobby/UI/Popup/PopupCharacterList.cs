@@ -18,7 +18,7 @@ using UnityEngine.UI;
 
 namespace RGLabs.Lobby.UI.Popup
 {
-    [PrefabPath("Lobby/UI/Prefabs/Popup_Character.prefab")]
+    [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_Character.prefab")]
     public class PopupCharacterList : PopupBase
     {
         public enum ClickMethod
@@ -170,21 +170,12 @@ namespace RGLabs.Lobby.UI.Popup
         private void OpenEquipmentCompare(UnitInfo unit)
         {
             var items = Storage.userRepository.inventory.items;
-            var item = items.FirstOrDefault(x => x.ItemId == equipmentId);
-
-            if (item is not EquipItem right)
+            var equipItem = items.OfType<EquipItem>().FirstOrDefault(x => x.ItemId == equipmentId);
+            if (equipItem == null)
                 return;
-
-            EquipItem left;
-            if (unit.equipments != null)
-            {
-                var equipments = Storage.userRepository.EquipItems(unit.equipments).ToList();
-                left = equipments.Find(x => x.slot == right.slot);
-            }
-            else
-                left = null;
             
-            Context.popups.Open<PopupCompareEquipment>(left, right);
+            Context.popups.Open<PopupCompareEquipment>(unit, equipItem);
+            Close();
         }
     }
 }

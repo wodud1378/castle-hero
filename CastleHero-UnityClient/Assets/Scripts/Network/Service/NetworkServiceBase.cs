@@ -332,7 +332,7 @@ namespace RGLabs.Network.Service
             if (userData.currency != null)
                 tables.Add(Table.Currency, userData.currency);
 
-            if (userData.currency != null)
+            if (userData.inventory != null)
                 tables.Add(Table.Inventory, userData.inventory);
 
             if (userData.characters != null)
