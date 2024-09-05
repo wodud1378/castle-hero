@@ -20,7 +20,7 @@ using UnityEngine.UI;
 namespace RGLabs.Lobby.UI.Inventory.Popup
 {
     [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_Inventory.prefab")]
-    public class PopupInventory : PopupBase, ISelect<IItem>
+    public class PopupInventory : PopupBase
     {
         public enum Mode
         {
@@ -68,26 +68,13 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         public readonly ReactiveCollection<Category> filter = new();
         public readonly ReactiveProperty<Mode> mode = new();
 
-        public readonly ReactiveProperty<Func<IItem, ItemEntity, bool>> customFilter = new();
-
         private readonly Dictionary<Tab, Toggle> _tabToggles = new();
         private readonly Dictionary<Category, Toggle> _categoryToggles = new();
 
         private readonly List<UIItemSlot> _sellTargets = new();
 
         private UniTask _updateTask;
-
-        public UniTask<IItem> SelectTask => _ctSource.Task;
-
-        private UniTaskCompletionSource<IItem> _ctSource;
-        private bool _closeAfterSelect;
-
-        public void BeginSelect(bool closeAfterSelect)
-        {
-            _ctSource = new UniTaskCompletionSource<IItem>();
-            _closeAfterSelect = closeAfterSelect;
-        }
-
+        
         protected override void OnAwake()
         {
             base.OnAwake();
@@ -114,6 +101,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
             filter
                 .ChangeAsObservable()
+                .ThrottleFrame(1)
                 .Subscribe(UpdateTogglesStatus)
                 .AddTo(this);
 
@@ -138,13 +126,6 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             this.SubscribeButton(_sell, ()=> mode.Value = Mode.Sell);
             this.SubscribeButton(_cancelSell, ()=> mode.Value = Mode.Default);
             this.SubscribeButton(_confirmSell, Sell);
-        }
-
-        protected override void OnClose()
-        {
-            base.OnClose();
-            
-            TrySelectComplete(null);
         }
 
         private async void Sell()
@@ -187,14 +168,6 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         private void OnClickItemSlot(UIItemSlot slot)
         {
-            if (TrySelectComplete(slot.Item))
-            {
-                if(_closeAfterSelect)
-                    Close();
-                
-                return;
-            }
-            
             switch (mode.Value)
             {
                 case Mode.Default:
@@ -204,16 +177,6 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                     RemoveOrAddSellTarget(slot);
                     break;
             }
-        }
-        
-        private bool TrySelectComplete(IItem item)
-        {
-            if (_ctSource == null)
-                return false;
-
-            _ctSource.TrySetResult(item);
-            _ctSource = null;
-            return true;
         }
 
         private void RemoveOrAddSellTarget(UIItemSlot slot)
@@ -330,8 +293,6 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 .DistinctUntilChanged()
                 .Subscribe(x =>
                 {
-                    customFilter.Value = null;
-                    
                     if (category == Category.All)
                         filter.Clear();
                     else
@@ -441,9 +402,6 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             {
                 return false;
             }
-
-            if (customFilter.Value != null && !customFilter.Value.Invoke(item, entity))
-                return false;
 
             var type = entity.type;
             if (type == ItemType.Equipment)
