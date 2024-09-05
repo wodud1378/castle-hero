@@ -16,6 +16,14 @@ namespace RGLabs.Data.Model
         Raid,
         Invasion
     }
+    
+    public enum DungeonDetailType
+    {
+        None, Executor, Ground = 0,
+        Slaughterer, Fire = 1,
+        Punisher, Wind = 2,
+        Transcendent, Water = 3,
+    }
 
     public struct DungeonEntity : IGameEntity
     {
@@ -27,9 +35,8 @@ namespace RGLabs.Data.Model
         public int Lv => lv;
 
         [DataField("Dg_Bg")] public string Map { get; set; }
-        
-        [DataField("Dg_Sound")]
-        public string Bgm { get; set; }
+
+        [DataField("Dg_Sound")] public string Bgm { get; set; }
 
         [DataField("Dg_Act")] public int Ap { get; set; }
 
@@ -48,6 +55,8 @@ namespace RGLabs.Data.Model
         [DataField("Dg_Name")] public string name;
 
         [DataField("Dg_Type")] public DungeonType type;
+
+        [DataField("Dg_DetailType")] public DungeonDetailType detailType;
 
         [DataField("Dg_Week")] public int dayOfWeek;
 
@@ -78,10 +87,10 @@ namespace RGLabs.Data.Model
             {
                 var dow = (DayOfWeek)dayOfWeek;
                 list.Add(dow);
-                
+
                 if (dow != DayOfWeek.Sunday)
                     list.Add(DayOfWeek.Sunday);
-                
+
                 if (dow != DayOfWeek.Saturday)
                     list.Add(DayOfWeek.Saturday);
             }

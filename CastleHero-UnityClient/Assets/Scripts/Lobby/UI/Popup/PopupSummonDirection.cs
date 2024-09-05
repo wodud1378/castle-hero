@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace RGLabs.Lobby.UI.Popup
 {
-    [PrefabPath("Lobby/UI/Prefabs/Popups/Summon/PopupSummonDirection.prefab")]
+    [PrefabPath("Lobby/UI/Prefabs/Popups/PopupSummonDirection.prefab")]
     public class PopupSummonDirection : PopupBase
     {
         private class OpenDirection
