@@ -207,32 +207,30 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         private async void Refine()
         {
-            if (!Context.popups.TryGetPopupIfExist(out PopupInventory inventory))
-                inventory = await Context.popups.OpenAsync<PopupInventory>();
-            else
-                Context.popups.ReplaceToTop(inventory);
-
-            inventory.customFilter.Value = (x, _) =>
-                x is EquipItem e &&
-                (EquipmentSlot)e.slot is EquipmentSlot.Weapon or EquipmentSlot.Armor;
-
+            var items = Storage.userRepository.inventory.items
+                .OfType<EquipItem>();
+            
+            var selection = await Context.popups.OpenAsync<PopupSelectItem>(items);
+            
             bool closed = false;
             EquipItem equipItem = null;
             while (!closed && equipItem ==null)
             {
-                inventory.BeginSelect(false);
+                selection.BeginSelect(false);
 
-                var selected = await inventory.SelectTask;
+                var selected = await selection.SelectTask;
                 if (selected == null)
                     closed = true;
                 else
                 {
-                    equipItem = selected is EquipItem e ? e : null;
+                    equipItem = selected as EquipItem;
                 }
             }
             
             if (closed)
                 return;
+            
+            selection.Close();
             
             Context.popups.Open<PopupRefine>(equipItem, Entity);
         }

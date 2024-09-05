@@ -73,22 +73,20 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         private async void Refine()
         {
-            if (!Context.popups.TryGetPopupIfExist(out PopupInventory inventory))
-                inventory = await Context.popups.OpenAsync<PopupInventory>();
-            else
-                Context.popups.ReplaceToTop(inventory);
+            var items = Storage.userRepository.inventory.items
+                .OfType<Item>()
+                .Where(x => Storage.db.items.TryFind(x.ItemId, out var entity) &&
+                            entity is { type: ItemType.Consumable, optionConsume: { type: ConsumeType.ElementalStone } });
             
-            inventory.filter.Clear();
-            inventory.customFilter.Value = (_, entity) 
-                => entity is { type: ItemType.Consumable, optionConsume: { type: ConsumeType.ElementalStone } };
+            var selection = await Context.popups.OpenAsync<PopupSelectItem>(items);
 
             bool closed = false;
             var entity = Storage.db.items.FallBackEntity();
             while (!closed && !entity.IsValid)
             {
-                inventory.BeginSelect(false);
+                selection.BeginSelect(false);
 
-                var selected = await inventory.SelectTask;
+                var selected = await selection.SelectTask;
                 if (selected == null)
                     closed = true;
                 else
@@ -103,6 +101,8 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
             if (closed)
                 return;
+            
+            selection.Close();
             
             Context.popups.Open<PopupRefine>(Item, entity);
         }

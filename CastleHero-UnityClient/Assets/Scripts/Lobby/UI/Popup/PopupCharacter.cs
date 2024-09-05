@@ -121,30 +121,20 @@ namespace RGLabs.Lobby.UI.Popup
 
         private async void Equip(EquipmentSlot slot)
         {
-            if (!Context.popups.TryGetPopupIfExist(out PopupInventory inventory))
-                inventory = await Context.popups.OpenAsync<PopupInventory>();
-
-            var category = slot switch
-            {
-                EquipmentSlot.Weapon => PopupInventory.Category.Weapon,
-                EquipmentSlot.Armor => PopupInventory.Category.Armor,
-                EquipmentSlot.Ring => PopupInventory.Category.Ring,
-                EquipmentSlot.Necklace => PopupInventory.Category.Necklace,
-                _ => default
-            };
+            var items = Storage.userRepository.inventory.items
+                .OfType<EquipItem>()
+                .Where(x => x.slot == (int)slot);
             
-            inventory.mode.Value = PopupInventory.Mode.Default;
-            inventory.filter.Clear();
-            inventory.filter.Add(category);
+            var selection = await Context.popups.OpenAsync<PopupSelectItem>(items);
             
             bool closeWithNoSelection = false;
             bool confirm = false;
             EquipItem equipItem = null;
             while (!closeWithNoSelection && !confirm)
             {
-                inventory.BeginSelect(false);
+                selection.BeginSelect(false);
 
-                var selected = await inventory.SelectTask;
+                var selected = await selection.SelectTask;
                 if (selected != null)
                 {
                     if (selected is EquipItem e && e.slot == (int)slot)
@@ -167,7 +157,7 @@ namespace RGLabs.Lobby.UI.Popup
             if (closeWithNoSelection)
                 return;
             
-            inventory.Close();
+            selection.Close();
             
             var result = await NetworkService.Character.Equip(_unit.Value.id, equipItem.Guid);
             if (!result.IsSuccess)
