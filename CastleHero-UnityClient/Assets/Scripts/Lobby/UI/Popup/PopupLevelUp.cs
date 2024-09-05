@@ -28,6 +28,9 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private UIItemSlot _expSlotL;
 
         [SerializeField] private UILevel _level;
+       
+        [SerializeField] private Button _increase;
+        [SerializeField] private Button _decrease;
         [SerializeField] private Slider _slider;
         [SerializeField] private TMP_Text _minCount;
         [SerializeField] private TMP_Text _maxCount;
@@ -40,6 +43,9 @@ namespace RGLabs.Lobby.UI.Popup
         protected override void OnAwake()
         {
             base.OnAwake();
+            
+            this.SubscribeButton(_increase, ()=> _slider.value = Mathf.Min(_slider.value + 1, _slider.maxValue) );
+            this.SubscribeButton(_decrease, ()=> _slider.value = Mathf.Min(_slider.value - 1, _slider.minValue) );
 
             _slider.onValueChanged
                 .AsObservable()

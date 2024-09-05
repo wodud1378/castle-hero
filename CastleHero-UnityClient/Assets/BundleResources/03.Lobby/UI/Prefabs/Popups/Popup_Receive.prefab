@@ -25697,7 +25697,7 @@ GameObject:
   - component: {fileID: 5975500520798702586}
   - component: {fileID: 3427470707085317358}
   m_Layer: 5
-  m_Name: ReceiveResult
+  m_Name: Popup_Receive
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

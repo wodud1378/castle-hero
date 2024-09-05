@@ -14,7 +14,7 @@ using UnityEngine.UI;
 namespace RGLabs.Lobby.UI.Inventory.Popup
 {
     [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_EquipmentCompare.prefab")]
-    public class PopupCompareEquipment : PopupBase
+    public class PopupCompareEquipment : PopupBase, ISelect<bool>
     {
         [SerializeField] private UIEquipmentSlot _left;
         [SerializeField] private UIEquipmentSlot _right;
@@ -24,6 +24,12 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         private UnitInfo _unit;
         private EquipItem _leftItem;
         private EquipItem _rightItem;
+        
+        public UniTask<bool> SelectTask => _ctSource.Task;
+        
+        private UniTaskCompletionSource<bool> _ctSource;
+
+        public void BeginSelect(bool _) => _ctSource = new();
 
         protected override void OnAwake()
         {
@@ -73,6 +79,12 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
             _left.Dispose();
             _right.Dispose();
+            
+            if (_ctSource != null)
+            {
+                _ctSource.TrySetResult(false);
+                _ctSource = null;
+            }
         }
 
         private async void OnEquip()
@@ -80,11 +92,19 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             if (_unit == null)
                 return;
 
-            var result = await NetworkService.Character.Equip(_unit.id, _rightItem.Guid);
-            if (!result.IsSuccess)
+            if (_ctSource != null)
             {
-                Context.popups.Open<PopupCommon>(result.error);
-                return;
+                _ctSource.TrySetResult(true);
+                _ctSource = null;
+            }
+            else
+            {
+                var result = await NetworkService.Character.Equip(_unit.id, _rightItem.Guid);
+                if (!result.IsSuccess)
+                {
+                    Context.popups.Open<PopupCommon>(result.error);
+                    return;
+                }
             }
 
             Close();

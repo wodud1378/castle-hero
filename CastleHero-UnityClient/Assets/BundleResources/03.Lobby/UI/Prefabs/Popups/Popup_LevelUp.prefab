@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5692873574175882117}
   - component: {fileID: 3411854445353061551}
   m_Layer: 5
-  m_Name: GameObject
+  m_Name: Items
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2932,6 +2932,8 @@ MonoBehaviour:
   _expSlotM: {fileID: 2689254376728862560}
   _expSlotL: {fileID: 4936090724983332450}
   _level: {fileID: 8554037391687601611}
+  _increase: {fileID: 4562329561116033565}
+  _decrease: {fileID: 4482845031977773371}
   _slider: {fileID: 6431916786251375932}
   _minCount: {fileID: 74057335016265629}
   _maxCount: {fileID: 5634600269533642015}
@@ -3115,8 +3117,8 @@ RectTransform:
   m_Children:
   - {fileID: 7998206536691750915}
   - {fileID: 4299874069979880880}
-  - {fileID: 8964177404833169481}
   - {fileID: 9097492021451954404}
+  - {fileID: 8964177404833169481}
   m_Father: {fileID: 5825543834737164325}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -3591,7 +3593,6 @@ MonoBehaviour:
   icon: {fileID: 8650584393374820404}
   label: {fileID: 0}
   _quantity: {fileID: 9131962316363330592}
-  _portraitRoot: {fileID: 0}
   quantityDisplay:
     value: 1
 --- !u!1 &8416817627035173150

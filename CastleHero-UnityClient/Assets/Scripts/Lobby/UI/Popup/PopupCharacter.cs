@@ -8,10 +8,11 @@ using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Lobby.UI.Inventory;
 using RGLabs.Lobby.UI.Inventory.Popup;
+using RGLabs.Network;
+using RGLabs.Network.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Unit;
 using RGLabs.Utility;
-using Spine.Unity;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -20,11 +21,6 @@ using UnityEngine.UI;
 
 namespace RGLabs.Lobby.UI.Popup
 {
-    public interface IGrowthTask
-    {
-        public UniTask<UnitGrowth> GrowthTask { get; }
-    }
-
     [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_CharInfo.prefab")]
     public class PopupCharacter : PopupBase
     {
@@ -34,6 +30,7 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private RectTransform _prefabRoot;
         [SerializeField] private UILevel _level;
         [SerializeField] private UIStatusText[] _statusTexts;
+        [SerializeField] private List<Button> _emptySlotButtons;
         [SerializeField] private List<UIEquipmentSlot> _equipments;
 
         [SerializeField] private Button _levelUp;
@@ -56,6 +53,12 @@ namespace RGLabs.Lobby.UI.Popup
             _unit
                 .Subscribe(OnUnitChanged)
                 .AddTo(this);
+
+            for (var slot = EquipmentSlot.Weapon; slot <= EquipmentSlot.Necklace; ++slot)
+            {
+                var inner = slot;
+                this.SubscribeButton(_emptySlotButtons[(int)slot], () => Equip(inner));
+            }
             
             _equipments.ForEach(x => 
                 x.OnClick += s => { if (s is UIEquipmentSlot { Item: not null } equipmentSlot) { Context.popups.Open<PopupEquipItem>(equipmentSlot.Item); } });
@@ -114,6 +117,61 @@ namespace RGLabs.Lobby.UI.Popup
             {
                 _stars[i].SetActive((i + 1) <= rate);
             }
+        }
+
+        private async void Equip(EquipmentSlot slot)
+        {
+            if (!Context.popups.TryGetPopupIfExist(out PopupInventory inventory))
+                inventory = await Context.popups.OpenAsync<PopupInventory>();
+
+            var category = slot switch
+            {
+                EquipmentSlot.Weapon => PopupInventory.Category.Weapon,
+                EquipmentSlot.Armor => PopupInventory.Category.Armor,
+                EquipmentSlot.Ring => PopupInventory.Category.Ring,
+                EquipmentSlot.Necklace => PopupInventory.Category.Necklace,
+                _ => default
+            };
+            
+            inventory.mode.Value = PopupInventory.Mode.Default;
+            inventory.filter.Clear();
+            inventory.filter.Add(category);
+            
+            bool closeWithNoSelection = false;
+            bool confirm = false;
+            EquipItem equipItem = null;
+            while (!closeWithNoSelection && !confirm)
+            {
+                inventory.BeginSelect(false);
+
+                var selected = await inventory.SelectTask;
+                if (selected != null)
+                {
+                    if (selected is EquipItem e && e.slot == (int)slot)
+                    {
+                        var compare = await Context.popups.OpenAsync<PopupCompareEquipment>(_unit.Value, e);
+                        compare.BeginSelect(true);
+
+                        confirm = await compare.SelectTask;
+
+                        if (confirm)
+                            equipItem = e;
+                    }
+                }
+                else
+                {
+                    closeWithNoSelection = true;
+                }
+            }
+
+            if (closeWithNoSelection)
+                return;
+            
+            inventory.Close();
+            
+            var result = await NetworkService.Character.Equip(_unit.Value.id, equipItem.Guid);
+            if (!result.IsSuccess)
+                Context.popups.Open<PopupCommon>(result.error);
         }
 
         private void UpdateEquipmentSlots(List<EquipItem> equipments)

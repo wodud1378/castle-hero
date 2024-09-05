@@ -2313,6 +2313,8 @@ MonoBehaviour:
   - {fileID: 6873032828376381881}
   _gold: {fileID: 2443793649322311149}
   _sell: {fileID: 7778387145105266603}
+  _confirmSell: {fileID: 5053947977105973606}
+  _cancelSell: {fileID: 5332901103878096030}
   _itemList: {fileID: 5475374127242407973}
   _tabSprites:
     m_HighlightedSprite: {fileID: 0}

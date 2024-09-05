@@ -150,7 +150,7 @@ namespace RGLabs.Data.Model
         private IngredientOption GetIngredientOption() =>
             new()
             {
-                type = (IngredientType)((Id - Id / 10000) / 1000),
+                type = (IngredientType)(Id / 1000 % 10),
                 targetId = int.Parse(options[0]),
                 forCombine = int.Parse(options[1])
             };

@@ -12,11 +12,22 @@ using UniRx;
 namespace RGLabs.Lobby.UI.Popup
 {
     [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_Refine.prefab")]
-    public class PopupRefine : PopupLeftToRight<EquipItem, UIEquipmentSlot>
+    public class PopupRefine : PopupLeftToRight<EquipItem, UIEquipmentSlot>, ISelect<bool>
     {
         private readonly ReactiveProperty<EquipItem> _equipItem = new();
         private readonly ReactiveProperty<ItemEntity> _stoneItem = new();
 
+        public UniTask<bool> SelectTask => _ctSource.Task;
+        
+        private UniTaskCompletionSource<bool> _ctSource;
+        private bool _closeAfterSelect;
+
+        public void BeginSelect(bool closeAfterSelect = true)
+        {
+            _ctSource = new UniTaskCompletionSource<bool>();
+            _closeAfterSelect = closeAfterSelect;
+        }
+        
         protected override void OnAwake()
         {
             base.OnAwake();
@@ -35,6 +46,17 @@ namespace RGLabs.Lobby.UI.Popup
 
             if (parameters[1] is ItemEntity entity)
                 _stoneItem.Value = entity;
+        }
+
+        protected override void OnClose()
+        {
+            base.OnClose();
+            
+            if (_ctSource != null)
+            {
+                _ctSource.TrySetResult(false);
+                _ctSource = null;
+            }
         }
 
         private void OnDataChanged()
@@ -68,11 +90,19 @@ namespace RGLabs.Lobby.UI.Popup
 
         protected override async void OnSubmit()
         {
-            var result = await NetworkService.Inventory.Refine(_equipItem.Value.Guid, _stoneItem.Value.Id);
-            if (!result.IsSuccess)
+            if (_ctSource != null)
             {
-                Context.popups.Open<PopupCommon>(result.error);
-                return;
+                _ctSource.TrySetResult(true);
+                _ctSource = null;
+            }
+            else
+            {
+                var result = await NetworkService.Inventory.Refine(_equipItem.Value.Guid, _stoneItem.Value.Id);
+                if (!result.IsSuccess)
+                {
+                    Context.popups.Open<PopupCommon>(result.error);
+                    return;
+                }
             }
 
             Close();

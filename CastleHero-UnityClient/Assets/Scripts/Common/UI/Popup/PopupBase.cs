@@ -12,6 +12,12 @@ using UnityEngine.UI;
 
 namespace RGLabs.Common.UI.Popup
 {
+    public interface ISelect<T>
+    {
+        public UniTask<T> SelectTask { get; }
+        public void BeginSelect(bool closeAfterSelect);
+    }
+    
     public abstract class PopupBase : MonoBehaviour, IBackButtonListener
     {
         public event Action<PopupBase> OnCloseEvent;

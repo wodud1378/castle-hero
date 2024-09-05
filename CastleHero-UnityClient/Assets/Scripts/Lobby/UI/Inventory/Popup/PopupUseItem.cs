@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI.Popup;
@@ -17,16 +18,24 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
     [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_Use.prefab")]
     public class PopupUseItem : PopupItemBase<UIItemSlot, IItem>
     {
+        [SerializeField] private GameObject _countRoot;
+        [SerializeField] private Button _increase;
+        [SerializeField] private Button _decrease;
         [SerializeField] private Slider _slider;
+        
         [SerializeField] private Button _use;
         [SerializeField] private TMP_Text _description;
         [SerializeField] private TMP_Text _useCount;
         [SerializeField] private TMP_Text _effect;
-        
+
+        protected override int SellCount => (int)_slider.value;
+
         protected override void OnAwake()
         {
             base.OnAwake();
 
+            this.SubscribeButton(_increase, ()=> _slider.value = Mathf.Min(_slider.value + 1, _slider.maxValue) );
+            this.SubscribeButton(_decrease, ()=> _slider.value = Mathf.Min(_slider.value - 1, _slider.minValue) );
             this.SubscribeButton(_use, OnUse);
 
             _slider.onValueChanged
@@ -74,22 +83,26 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         private void SetActiveSlider()
         {
-            bool isActive = false;
+            bool hasPrice = Entity.sellPrice > 0;
+            bool hasUseOption = false;
             var type = Entity.type;
             switch (type)
             {
                 case ItemType.Consumable:
-                    var option = (ConsumeType)int.Parse(Entity.options[0]);
-                    isActive = option is ConsumeType.Stamina;
+                    hasUseOption = Entity.optionConsume.type == ConsumeType.Stamina;
                     break;
                 case ItemType.Ingredient:
+                    hasUseOption =
+                        Entity.optionIngredient.type is IngredientType.ElementalPiece or IngredientType.EquipmentPiece; 
+                    break;
                 case ItemType.Chest:
-                    isActive = true;
+                    hasUseOption = true;
                     break;
             }
-
+            
+            bool isActive = hasPrice || hasUseOption;
             _useCount.gameObject.SetActive(isActive);
-            _slider.gameObject.SetActive(isActive);
+            _countRoot.gameObject.SetActive(isActive);
             _slider.maxValue = Item.Quantity;
         }
 
@@ -101,7 +114,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                     Consume(Entity.optionConsume);
                     break;
                 case ItemType.Ingredient:
-                    Combine();
+                    UseIngredient(Entity.optionIngredient);
                     break;
                 case ItemType.Chest:
                     OpenBox();
@@ -120,7 +133,25 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                     MoveToDrawCharacter(Item.ItemId);
                     break;
                 case ConsumeType.ElementalStone:
-                    MoveToRefine();
+                    Refine();
+                    break;
+            }
+        }
+
+        private void UseIngredient(IngredientOption option)
+        {
+            switch (option.type)
+            {
+                case IngredientType.Soul:
+                    int unitId = (Entity.Id % 1000) + 10000;
+                    var unit = Storage.userRepository.characters.units.FirstOrDefault(x => x.id == unitId);
+                    
+                    if(unit != null)
+                        Context.popups.Open<PopupRateUp>(unit);
+                    break;
+                case IngredientType.ElementalPiece:
+                case IngredientType.EquipmentPiece:
+                    Combine();
                     break;
             }
         }
@@ -171,14 +202,36 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             Close();
         }
 
-        private async void MoveToRefine()
+        private async void Refine()
         {
-            if (!Context.popups.TryGetPopupIfExist(out PopupInventory popup))
-                popup = await Context.popups.OpenAsync<PopupInventory>();
+            if (!Context.popups.TryGetPopupIfExist(out PopupInventory inventory))
+                inventory = await Context.popups.OpenAsync<PopupInventory>();
+            else
+                Context.popups.ReplaceToTop(inventory);
+
+            inventory.customFilter.Value = (x, _) =>
+                x is EquipItem e &&
+                (EquipmentSlot)e.slot is EquipmentSlot.Weapon or EquipmentSlot.Armor;
+
+            bool closed = false;
+            EquipItem equipItem = null;
+            while (!closed && equipItem ==null)
+            {
+                inventory.BeginSelect(false);
+
+                var selected = await inventory.SelectTask;
+                if (selected == null)
+                    closed = true;
+                else
+                {
+                    equipItem = selected is EquipItem e ? e : null;
+                }
+            }
             
-            popup.mode.Value = PopupInventory.Mode.Refine;
-            popup.refineParam.entity = Entity;
-            Close();
+            if (closed)
+                return;
+            
+            Context.popups.Open<PopupRefine>(equipItem, Entity);
         }
     }
 }

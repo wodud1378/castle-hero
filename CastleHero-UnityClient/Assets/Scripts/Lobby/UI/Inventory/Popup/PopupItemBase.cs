@@ -1,9 +1,9 @@
 using System;
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
+using RGLabs.Network.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using UniRx;
@@ -32,33 +32,37 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         {
             base.OnAwake();
 
-            Storage.userRepository.inventory
-                .WhenUpdate(item, x => item.Value = x)
-                .AddTo(this);
+            SubscribeUpdate();
             
             item.Subscribe(OnDataChangedInternal)
                 .AddTo(this);
             
             this.SubscribeButton(_sell, Sell);
         }
+
+        protected virtual void SubscribeUpdate()
+        {
+            Storage.userRepository.inventory
+                .WhenUpdate(item, x => item.Value = x)
+                .AddTo(this);
+        }
         
         public override UniTask Open(params object[] parameters)
         {
-            if (parameters == null || parameters.Length < 1)
-            {
-                var exception = new Exception("파라미터가 잘못되었습니다.");
-                return UniTask.FromException(exception);
-            }
-            
-            if (parameters[0] is not TItem data)
-            {
-                var exception = new InvalidCastException("첫 번째 인자를 아이템 데이터로 변환하지 못했습니다.");
-                return UniTask.FromException(exception);
-            }
-            
-            item.Value = data;
+            HandleParameters(parameters);
             
             return _updateTask;
+        }
+
+        protected virtual void HandleParameters(params object[] parameters)
+        {
+            if (parameters == null || parameters.Length < 1)
+                return;
+
+            if (parameters[0] is not TItem data)
+                return;
+            
+            item.Value = data;
         }
 
         private void OnDataChangedInternal(TItem data)
@@ -92,10 +96,14 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
 
         protected virtual UniTask InitSlot(TItem item, TSlot slot) => slot.Init(item, Entity);
         
-        private void Sell()
+        private async void Sell()
         {
             if (Entity.sellPrice <= 0)
                 return;
+
+            await NetworkService.Inventory.Sell(new IItem[] { Item }, new[] { SellCount });
         }
+
+        protected abstract int SellCount { get; }
     }
 }
