@@ -138,7 +138,7 @@ namespace RGLabs.Network.Service
                     {
                         var item = CreateItem(related[0], quantity);
                         if (item != null)
-                            items.Add(item);
+                            items.AddOrNew(item);
                     }
                     else
                     {
@@ -147,17 +147,11 @@ namespace RGLabs.Network.Service
                             int rand = Random.Range(0, related.Count);
                             id = related[rand];
 
-                            var exist = id.IsEquipItem() ? null : items.Find(x => x.ItemId == id);
-                            if (exist == null)
-                            {
-                                var item = CreateItem(id, 1);
-                                if (item != null)
-                                    items.Add(item);
-                            }
+                            var item = CreateItem(id, 1);
+                            if (id.IsEquipItem())
+                                items.Add(item);
                             else
-                            {
-                                exist.Quantity += 1;
-                            }
+                                items.AddOrNew(item);
                         }
                     }
 
