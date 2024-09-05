@@ -138,7 +138,7 @@ namespace RGLabs.Network.Service
                     {
                         var item = CreateItem(related[0], quantity);
                         if (item != null)
-                            items.AddOrNew(item);
+                            items.Join(item);
                     }
                     else
                     {
@@ -151,7 +151,7 @@ namespace RGLabs.Network.Service
                             if (id.IsEquipItem())
                                 items.Add(item);
                             else
-                                items.AddOrNew(item);
+                                items.Join(item);
                         }
                     }
 

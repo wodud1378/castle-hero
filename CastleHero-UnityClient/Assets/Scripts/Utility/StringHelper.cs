@@ -23,7 +23,7 @@ namespace RGLabs.Utility
             return string.Format(ColoredStringTag, color.Hex(), stripped);
         }
 
-        public static string ToLeftTimeText(this double seconds)
+        public static string ToLeftTimeForResetText(this double seconds)
         {
             int totalSeconds = (int)seconds;
             int days = totalSeconds / 86400;
@@ -34,6 +34,36 @@ namespace RGLabs.Utility
             return days > 0 
                 ? $"{days}d:{hours:D2}h:{minutes:D2}m:{secs:D2}s" 
                 : $"{hours:D2}h:{minutes:D2}m:{secs:D2}s";
+        }
+
+        public static string ToLeftTimeForExpireText(this double seconds)
+        {
+            int totalSeconds = (int)seconds;
+            int days = totalSeconds / 86400;
+            if (days > 0)
+            {
+                return $"{days}일 후 만료";
+            }
+            
+            int hours = (totalSeconds % 86400) / 3600;
+            if (hours > 0)
+            {
+                return $"{hours}시간 후 만료";
+            }
+            
+            int minutes = (totalSeconds % 3600) / 60;
+            if (minutes > 0)
+            {
+                return $"{minutes}분 후 만료";
+            }
+            
+            int secs = totalSeconds % 60;
+            if (secs > 0)
+            {
+                return $"{secs}초 후 만료";
+            }
+
+            return string.Empty;
         }
 
         private static string Hex(this Color color)

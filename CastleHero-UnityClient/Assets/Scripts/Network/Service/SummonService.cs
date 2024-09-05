@@ -80,7 +80,7 @@ namespace RGLabs.Network.Service
             var soulResult = new List<ISummoned>();
             if (itemAdded)
             {
-                userData.inventory.items.AddOrNew(souls);
+                userData.inventory.items.Join(souls);
                 foreach (var soul in souls)
                 {
                     soulResult.Add(new SummonedSoul

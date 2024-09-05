@@ -15,6 +15,6 @@ namespace RGLabs.Network.Service
         
         public static readonly TestService Test = new();
         
-        public static DateTime CurrentTime() => DateTime.UtcNow.AddHours(3);
+        public static DateTime CurrentTimeByLocal() => DateTime.UtcNow.AddHours(3);
     }
 }

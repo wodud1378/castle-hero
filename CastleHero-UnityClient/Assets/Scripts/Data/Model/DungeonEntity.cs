@@ -58,7 +58,7 @@ namespace RGLabs.Data.Model
         public bool IsOpened()
         {
             var openDays = OpenDaysOfWeek();
-            var dow = NetworkService.CurrentTime().DayOfWeek;
+            var dow = NetworkService.CurrentTimeByLocal().DayOfWeek;
 
             return openDays.Contains(dow);
         }

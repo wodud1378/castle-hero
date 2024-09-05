@@ -30,7 +30,7 @@ namespace RGLabs.Network.Service
 
                     var item = new Item { ItemId = entity.soulItemId, Quantity = 10 };
                     if (mergeSameSoulItem)
-                        items.AddOrNew(item);
+                        items.Join(item);
                     else
                         items.Add(item);
 

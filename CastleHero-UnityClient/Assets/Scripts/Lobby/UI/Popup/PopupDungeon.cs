@@ -57,7 +57,7 @@ namespace RGLabs.Lobby.UI.Popup
 
         public override UniTask Open()
         {
-            _dayOfWeek.Value = NetworkService.CurrentTime().DayOfWeek;
+            _dayOfWeek.Value = NetworkService.CurrentTimeByLocal().DayOfWeek;
 
             return _updateTask;
         }

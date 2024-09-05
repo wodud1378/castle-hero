@@ -23,7 +23,7 @@ namespace RGLabs.Lobby.Shop.UI
         public async void Init()
         {
             var categoryMap = new Dictionary<ShopCategory, List<ShopItemEntity>>();
-            var currentTime = NetworkService.CurrentTime();
+            var currentTime = NetworkService.CurrentTimeByLocal();
             Storage.db.shop.ForEach(x =>
             {
                 if (x.category == ShopCategory.Limited)

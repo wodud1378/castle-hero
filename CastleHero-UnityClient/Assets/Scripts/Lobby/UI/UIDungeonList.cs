@@ -10,7 +10,7 @@ namespace RGLabs.Lobby.UI
         protected override UniTask SetItem(UIDungeonSlot slot, DungeonEntity data)
         {
             var openDays = data.OpenDaysOfWeek();
-            var dow = NetworkService.CurrentTime().DayOfWeek;
+            var dow = NetworkService.CurrentTimeByLocal().DayOfWeek;
             
             return slot.Init(data, openDays.Contains(dow)
                 ? UIState.State.Default
