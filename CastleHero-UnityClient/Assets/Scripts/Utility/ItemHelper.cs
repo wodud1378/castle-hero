@@ -6,6 +6,7 @@ using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Network.Shared;
 using RGLabs.Unit;
+using UnityEngine;
 
 namespace RGLabs.Utility
 {
@@ -69,18 +70,19 @@ namespace RGLabs.Utility
                 items.Remove(item);
             else
                 item.Quantity -= quantity;
-            
+
             return true;
         }
-        
-        public static bool TryConsumeItem(this List<IItem> items, IItem item) => items.TryConsumeItem(item, item.Quantity);
+
+        public static bool TryConsumeItem(this List<IItem> items, IItem item) =>
+            items.TryConsumeItem(item, item.Quantity);
 
         public static bool TryConsumeItem(this List<IItem> items, IItem item, int quantity)
         {
             var exist = items.Contains(item)
                 ? item
                 : items.FirstOrDefault(x => x.ItemId == item.ItemId);
-            
+
             if (exist == null || exist.Quantity < quantity)
                 return false;
 
@@ -88,37 +90,62 @@ namespace RGLabs.Utility
                 items.Remove(exist);
             else
                 exist.Quantity -= quantity;
-            
+
             return true;
         }
 
         private static void FilterItemIds(int id, List<int> result)
         {
-            // a의 각 자릿수
-            int length = (int)Math.Log10(id) + 1;
-            Storage.db.items.BinarySearch(x =>
+            Storage.db.items.ForEach(x =>
             {
-                if (MatchesCriteria(id, x.Id, length))
+                if (!IsRelated(id, x.Id))
                     return;
 
                 result.Add(x.Id);
             });
         }
 
-        private static bool MatchesCriteria(int a, int b, int length)
+        private static bool IsRelated(int a, int b)
         {
-            for (int i = 0; i < length; i++)
-            {
-                int aDigit = a / (int)Math.Pow(10, length - i - 1) % 10;
-                int idDigit = b / (int)Math.Pow(10, length - i - 1) % 10;
+            var splitA = Split(a);
+            var splitB = Split(b);
 
-                if (aDigit != 0 && aDigit != idDigit)
+            int length = splitA.Length;
+            if (length != splitB.Length)
+                return false;
+
+            bool isMatch = true;
+            for (int i = 0; i < length && isMatch; ++i)
+            {
+                if (splitA[i] != 0)
                 {
-                    return false;
+                    isMatch = splitA[i] == splitB[i];
+#if UNITY_EDITOR
+                    if(!isMatch)
+                        Debug.Log($"{a}/{b} not matches in index{i}, values are {splitA[i]}, {splitB[i]}");
+#endif
                 }
             }
+            
+#if UNITY_EDITOR
+            if(isMatch)
+                Debug.Log($"{a}/{b} matches");
+#endif
 
-            return true;
+            return isMatch;
+        }
+
+        private static int[] Split(int value)
+        {
+            int digitCount = Mathf.FloorToInt(Mathf.Log10(value)) + 1;
+            var array = new int[digitCount];
+            for (int i = digitCount - 1; i >= 0; --i)
+            {
+                array[i] = value % 10;
+                value /= 10;
+            }
+
+            return array;
         }
 
         public static bool IsCurrency(this int id)

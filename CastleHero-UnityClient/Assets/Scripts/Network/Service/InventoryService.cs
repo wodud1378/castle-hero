@@ -143,7 +143,7 @@ namespace RGLabs.Network.Service
                 : Result<int>.Error(update.error);
         }
 
-        public async UniTask<Result<List<IItem>>> Combine(int id, int amount)
+        public async UniTask<Result<List<IItem>>> Combine(int id, int quantity)
         {
             var error = TryGetIngredientData(id, out _, out var option);
             if(error != Error.None)
@@ -158,7 +158,6 @@ namespace RGLabs.Network.Service
 
             var userData = get.data;
             var inventory = userData.inventory;
-            int quantity = amount / option.forCombine;
             int consume = quantity * option.forCombine; 
             if(quantity == 0 || !inventory.items.TryConsumeItem(id, consume))
                 return Result<List<IItem>>.Error(Error.NotEnoughItem);
