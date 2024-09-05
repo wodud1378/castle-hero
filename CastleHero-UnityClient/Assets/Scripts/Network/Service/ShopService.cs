@@ -55,33 +55,35 @@ namespace RGLabs.Network.Service
                 return Result<Pack>.Error(get.error);
 
             var userData = get.data;
-            var currentTime = NetworkService.CurrentTimeByLocal();
-            var packs = userData.shopRecord?.products?
-                // 만료, 최근 수령일 체크.
-                .Where(x =>
-                {
-                    if (x.expireDate <= currentTime)
-                        return false;
+            var getServerTime = await GetServerTime();
+            if (!getServerTime.IsSuccess)
+                return Result<Pack>.Error(getServerTime.error);
 
-                    return (currentTime.Date - x.updatedAt.Date).TotalDays > 0;
-                })
-                // 팩으로 변환.
-                .Select(x =>
-                {
-                    x.updatedAt = currentTime;
-                    if (Storage.db.shop.TryFind(x.shopId, out var entity) &&
-                        Storage.db.shopGroup.TryFind(entity.groupId, out var groupEntity))
-                    {
-                        return GetPack(groupEntity);
-                    }
+            var currentTime = getServerTime.data;
+            if (userData.shopRecord?.products == null || userData.shopRecord.products.Count == 0)
+                return Result<Pack>.Error(Error.InvalidRequest);
 
-                    return null;
-                })
-                // null 필터링.
-                .Where(x => x != null)
-                .ToList();
+            var products = userData.shopRecord.products;
+            var packs = new List<Pack>();
+            products.ForEach(x =>
+            {
+                if (x.expireDate <= currentTime)
+                    return;
 
-            if (packs == null)
+                if ((currentTime.Date - x.updatedAt.Date).TotalDays <= 0)
+                    return;
+
+                if (!Storage.db.shop.TryFind(x.shopId, out var entity))
+                    return;
+
+                if (!Storage.db.shopGroup.TryFind(entity.groupId, out var groupEntity))
+                    return;
+
+                x.updatedAt = currentTime;
+                packs.Add(GetPack(groupEntity));
+            });
+
+            if (packs.Count == 0)
                 return Result<Pack>.Error(Error.InvalidRequest);
 
             var total = new Pack
@@ -102,7 +104,7 @@ namespace RGLabs.Network.Service
                     total.unitIds.AddRange(x.unitIds);
             });
 
-            var tables = new Dictionary<Table, object>();
+            var tables = new Dictionary<Table, object> { { Table.ShopRecord, userData.shopRecord } };
             if (!total.currency.IsEmpty())
             {
                 userData.currency += total.currency;
@@ -182,8 +184,14 @@ namespace RGLabs.Network.Service
                     out var error, out var history))
                 return Result<ItemBought>.Error(error);
 
-            if (entity.duration > 0)
-                product.expireDate = currentTime.AddDays(entity.duration);
+            int duration = entity.duration;
+            if (duration > 0)
+            {
+                var expire = product.expireDate;
+                product.expireDate = expire > currentTime
+                    ? expire.AddDays(duration)
+                    : currentTime.AddDays(entity.duration);
+            }
 
             record.histories ??= new();
             record.histories.Add(history);
@@ -304,7 +312,7 @@ namespace RGLabs.Network.Service
                 error = Error.None;
                 return true;
             }
-            
+
             if (id.IsCurrency())
             {
                 if (!currency.TryConsume(id, amount))

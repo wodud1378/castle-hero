@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using RGLabs.Common;
 using RGLabs.Data;
 using RGLabs.Prepare.UI;
@@ -159,6 +160,7 @@ namespace RGLabs.Network.Shared
             public int byAd;
             public int byDefault;
 
+            [JsonIgnore]
             public int Sum => byFree + byAd + byDefault;
         }
         
