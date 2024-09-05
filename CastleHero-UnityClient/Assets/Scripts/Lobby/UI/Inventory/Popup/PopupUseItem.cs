@@ -86,14 +86,17 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             bool hasPrice = Entity.sellPrice > 0;
             bool hasUseOption = false;
             var type = Entity.type;
+            int maxCount = Item.Quantity;
             switch (type)
             {
                 case ItemType.Consumable:
                     hasUseOption = Entity.optionConsume.type == ConsumeType.Stamina;
                     break;
                 case ItemType.Ingredient:
-                    hasUseOption =
-                        Entity.optionIngredient.type is IngredientType.ElementalPiece or IngredientType.EquipmentPiece; 
+                    var option = Entity.optionIngredient;
+                    bool isPiece = option.type is IngredientType.ElementalPiece or IngredientType.EquipmentPiece;
+                    hasUseOption = isPiece;
+                    maxCount = isPiece ? Item.Quantity / option.forCombine : maxCount; 
                     break;
                 case ItemType.Chest:
                     hasUseOption = true;
@@ -103,7 +106,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             bool isActive = hasPrice || hasUseOption;
             _useCount.gameObject.SetActive(isActive);
             _countRoot.gameObject.SetActive(isActive);
-            _slider.maxValue = Item.Quantity;
+            _slider.maxValue = maxCount;
         }
 
         private void OnUse()
