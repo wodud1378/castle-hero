@@ -18,7 +18,6 @@ namespace RGLabs.Data.DB
     [DB("dungeon_reward")]
     public class DungeonRewardDB : DB<DungeonRewardEntity> { }
 
-    [DB("elements")]
-
+    [DB("element")]
     public class ElementDB : DB<ElementEntity> { }
 }

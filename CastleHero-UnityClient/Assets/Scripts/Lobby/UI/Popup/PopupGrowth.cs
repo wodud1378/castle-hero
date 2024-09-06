@@ -46,8 +46,6 @@ namespace RGLabs.Lobby.UI.Popup
 
                     var updated = units.FirstOrDefault(x => x.id == unit.id);
                     _unit.Value = updated;
-                    
-                    Storage.inGameRepository.UpdateIfInField(updated);
                 })
                 .AddTo(this);
             

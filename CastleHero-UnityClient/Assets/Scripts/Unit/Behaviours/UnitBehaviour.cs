@@ -83,7 +83,7 @@ namespace RGLabs.Unit.Behaviours
                     .AddTo(this);
             }
             
-            Core.SetData(info, entity, balance);
+            Core.Init(info, entity, balance);
             if (Hit != null)
                 Hit.Init();
 

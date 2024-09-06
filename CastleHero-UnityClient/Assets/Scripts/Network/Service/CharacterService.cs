@@ -41,21 +41,23 @@ namespace RGLabs.Network.Service
             if(!inventory.items.TryConsumeItem(item, quantity))
                 return Result<UnitGrowth>.Error(Error.NotEnoughItem);
 
-            var write = await UpdateTables(new Dictionary<Table, object>
+            var update = await UpdateTables(new Dictionary<Table, object>
             {
                 { Table.Character, characters },
                 { Table.Inventory, inventory },
                 { Table.Currency, currency },
             });
 
-            return write.IsSuccess
-                ? Result<UnitGrowth>.Complete(new()
-                {
-                    transition = transition,
-                    leftCurrency = currency,
-                    leftItem = item
-                })
-                : Result<UnitGrowth>.Error(write.error);
+            if (!update.IsSuccess) 
+                return Result<UnitGrowth>.Error(update.error);
+            
+            return Result<UnitGrowth>.Complete(new()
+            {
+                transition = transition,
+                leftCurrency = currency,
+                leftItem = item
+            });
+
         }
 
         private UnitTransition ProcessUpgrade(UnitInfo unit, IItem item, int quantity, CurrencyDto currency,
@@ -180,9 +182,10 @@ namespace RGLabs.Network.Service
             unit.equipments.Add(item.Guid);
 
             var update = await UpdateTables(userData);
-            return update.IsSuccess
-                ? Result<UnitInfo>.Complete(unit)
-                : Result<UnitInfo>.Error(update.error);
+            if (!update.IsSuccess) 
+                return Result<UnitInfo>.Error(update.error);
+
+            return Result<UnitInfo>.Complete(unit);
         }
 
         public async UniTask<Result<UnitInfo>> Release(int unitId, string guid)
@@ -203,9 +206,10 @@ namespace RGLabs.Network.Service
             unit.equipments.Remove(item.Guid);
             
             var update = await UpdateTables(userData);
-            return update.IsSuccess
-                ? Result<UnitInfo>.Complete(unit)
-                : Result<UnitInfo>.Error(update.error);
+            if (!update.IsSuccess) 
+                return Result<UnitInfo>.Error(update.error);
+
+            return Result<UnitInfo>.Complete(unit);
         }
     }
 }

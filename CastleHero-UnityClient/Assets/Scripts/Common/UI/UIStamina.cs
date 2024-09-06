@@ -41,46 +41,29 @@ namespace RGLabs.Common.UI
             var pointLimit = _stamina.pointLimit.Value;
             var lastUpdate = _stamina.lastUpdate.Value;
 
-            int minutesForNext = pointLimit < point
-                ? 1
-                : 0;
+            if (point >= pointLimit)
+                return;
 
-            int minutesForMax = Mathf.Max(0, pointLimit - point);
+            int minutesForNext = Stamina.INTERVAL;
+            int minutesForMax = (pointLimit - point) / Stamina.PER_ONCE * Stamina.INTERVAL;
+            var now = NetworkService.CurrentTimeByLocal();
+            var toNext = (float)(lastUpdate.AddMinutes(minutesForNext) - now).TotalSeconds;
+            var toMax = (float)(lastUpdate.AddMinutes(minutesForMax) - now).TotalSeconds;
 
-            var toNext =
-                new ReactiveProperty<float>((float)(lastUpdate.AddMinutes(minutesForNext) - lastUpdate).TotalSeconds);
-
-            var toMax =
-                new ReactiveProperty<float>((float)(lastUpdate.AddMinutes(minutesForMax) - lastUpdate).TotalSeconds);
-
-            string ToTimeText(float time)
-            {
-                return time > 0f
-                    ? $"{(int)(time / 60):D2}:{(int)(time % 60):D2}"
-                    : "-:-";
-            }
+            string ToTimeText(float time) => $"{(int)(time / 60):D2}:{(int)(time % 60):D2}";
 
             var toolTip = Context.toolTip;
-            var subscription = Observable.Merge(
-                    toNext,
-                    toMax)
-                .ThrottleFrame(1)
-                .Subscribe(_ => { toolTip.Text = $"{ToTimeText(toNext.Value)} / {ToTimeText(toMax.Value)}"; });
-
             var update = Observable.EveryUpdate()
                 .Select(_ => Time.deltaTime)
                 .Subscribe(x =>
                 {
-                    toNext.Value = Mathf.Max(0, toNext.Value - x);
-                    toMax.Value = Mathf.Max(0, toMax.Value - x);
+                    toNext = Mathf.Max(0, toNext - x);
+                    toMax = Mathf.Max(0, toMax - x);
+                    toolTip.Text = $"{ToTimeText(toNext)} / {ToTimeText(toMax)}";
                 });
-            
+
             toolTip.Open(string.Empty, transform as RectTransform, 0.5f, 1f);
-            toolTip.onClosedQueue.Enqueue(() =>
-            {
-                subscription.Dispose();
-                update.Dispose();
-            });
+            toolTip.onClosedQueue.Enqueue(() => update.Dispose());
         }
     }
 }

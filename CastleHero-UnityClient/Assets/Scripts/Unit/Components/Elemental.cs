@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using RGLabs.Data;
+using UnityEngine;
 
 namespace RGLabs.Unit.Components
 {
@@ -22,7 +23,8 @@ namespace RGLabs.Unit.Components
             { Type.Wind, (Type.Earth, Type.Fire) }
         };
 
-        public int lv;
+        public int atkLv;
+        public int defLv;
         public Type atkType;
         public Type defType;
         
@@ -35,7 +37,7 @@ namespace RGLabs.Unit.Components
                     : 1f;
             }
             
-            var entity = Storage.db.elements[atk.lv - 1];
+            var entity = Storage.db.elements[Mathf.Clamp(def.atkLv - atk.defLv, 0, 2)];
             var data = Compatibility[atk.atkType];
             return def.defType == data.forward
                 ? entity.forward

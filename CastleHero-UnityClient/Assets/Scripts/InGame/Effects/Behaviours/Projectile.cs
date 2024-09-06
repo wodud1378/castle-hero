@@ -92,10 +92,16 @@ namespace RGLabs.InGame.Effects.Behaviours
                 Stop();
                 return;
             }
+            
+            float moveDistance = _speed * Time.deltaTime;
+            float distanceToTarget = diff.magnitude;
+
+            // 목표 지점까지의 거리보다 더 많이 이동하지 않도록 보정
+            float distanceToMove = Mathf.Min(moveDistance, distanceToTarget);
 
             var direction = diff.normalized;
             transform.localRotation = Quaternion.Euler(0, 0, 180f - direction.ToFloat());
-            transform.Translate(direction * (_speed * Time.deltaTime), Space.World);
+            transform.Translate(direction * distanceToMove, Space.World);
         }
 
         private void OnValidate()

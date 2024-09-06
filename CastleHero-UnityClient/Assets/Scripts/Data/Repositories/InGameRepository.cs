@@ -19,17 +19,6 @@ namespace RGLabs.Data.Repositories
         public readonly ReactiveCollection<UnitBehaviour> deadCharacters = new();
         public readonly ReactiveCollection<WaitRecover> recovers = new();
         public readonly ReactiveProperty<float> leftTime = new();
-
-        public void UpdateIfInField(UnitInfo unit)
-        {
-            var inField = characters.FirstOrDefault(x => x.Data.Id == unit.id);
-            if (inField != null &&
-                Storage.db.units.TryFind(unit.id, out var entity) &&
-                Storage.db.balances.TryFind(unit.id, out var balance))
-            {
-                inField.Init(unit, entity, balance);
-            }
-        }
         
         public void Dispose()
         {

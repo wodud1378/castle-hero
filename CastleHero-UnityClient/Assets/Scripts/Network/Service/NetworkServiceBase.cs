@@ -402,7 +402,7 @@ namespace RGLabs.Network.Service
                 {
                     int amount = cycle * amountPerMinute;
                     stamina.point = Mathf.Min(stamina.point + amount, stamina.pointLimit);
-                    stamina.lastUpdate = now.AddMinutes(cycle * intervalMinute);
+                    stamina.lastUpdate = now;
                 }
             }
 
@@ -415,7 +415,17 @@ namespace RGLabs.Network.Service
             if (!read.IsSuccess)
                 return Result.Error(read.error);
 
-            return await UpdateStamina(read.data);
+            var stamina = read.data;
+            var result = await UpdateStamina(stamina);
+            if (!result.IsSuccess)
+                return Result.Error(result.error);
+
+            var update = await UpdateTable(Table.Stamina, stamina);
+            if (!update.IsSuccess)
+                return Result.Error(update.error);
+            
+            Storage.userRepository.stamina.Update(stamina);
+            return Result.Complete();
         }
 
         protected async UniTask<Result> AddStamina(StaminaDto stamina, int amount)

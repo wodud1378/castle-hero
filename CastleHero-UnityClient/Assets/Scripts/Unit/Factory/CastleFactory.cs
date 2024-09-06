@@ -12,7 +12,7 @@ namespace RGLabs.Unit.Factory
 {
     public class CastleFactory : IUnitFactory
     {
-        private const string CastlePrefab = "Castle_01/Castle_01.prefab";
+        public const string DEFAULT_CASTLE_PREFAB = "Castle_01/Castle_01.prefab";
         
         private readonly CastleDB _db = Storage.db.castles;
         private readonly PoolContainer _container = Context.poolContainer;
@@ -29,27 +29,29 @@ namespace RGLabs.Unit.Factory
             return await Create(info, position);
         }
 
-        public async UniTask<UnitBehaviour> Create(UnitInfo info, Vector2 position)
+        public UniTask<UnitBehaviour> Create(UnitInfo info, Vector2 position) => Create(DEFAULT_CASTLE_PREFAB, info, position);
+        
+        public async UniTask<UnitBehaviour> Create(string prefab, UnitInfo info, Vector2 position)
         {
             if (!_db.TryFind(info.lv, out var entity))
                 return null;
 
             var unitEntity = entity.ToUnitEntity();
             
-            var unit = await CreateInternal(position);
+            var unit = await CreateInternal(prefab, position);
             unit.Init(info, unitEntity, default);
             unit.position = position;
 
             return unit;
         }
         
-        private async UniTask<UnitBehaviour> CreateInternal(Vector2 position)
+        private async UniTask<UnitBehaviour> CreateInternal(string prefab, Vector2 position)
         {
-            var unit = await _container.GetItem<UnitBehaviour>(CastlePrefab, position);
+            var unit = await _container.GetItem<UnitBehaviour>(prefab, position);
             if (unit == null)
             {
 #if UNITY_EDITOR
-                Debug.LogError($"[{CastlePrefab}] 리소스가 존재하지 않습니다.");
+                Debug.LogError($"[{DEFAULT_CASTLE_PREFAB}] 리소스가 존재하지 않습니다.");
 #endif
                 return null;
             }

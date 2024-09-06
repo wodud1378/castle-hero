@@ -6,6 +6,7 @@ using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Network.Shared;
 using RGLabs.Unit;
+using RGLabs.Unit.Components;
 using UnityEngine;
 
 namespace RGLabs.Utility
@@ -171,13 +172,31 @@ namespace RGLabs.Utility
                 exist.Quantity += item.Quantity;
         }
 
-        public static Dictionary<Status.Type, float> Total(this IEnumerable<EquipItem> equipments)
+        public static Dictionary<Status.Type, float> Total(this IEnumerable<EquipItem> equipments, ref Elemental elemental)
         {
             var dic = new Dictionary<Status.Type, float>();
+            elemental ??= new Elemental
+            {
+                atkType = Elemental.Type.None,
+                defType = Elemental.Type.None
+            };
+            
             if (equipments != null)
             {
                 foreach (var equipment in equipments)
                 {
+                    switch ((EquipmentSlot)equipment.slot)
+                    {
+                        case EquipmentSlot.Armor:
+                            elemental.defType = (Elemental.Type)equipment.element.type;
+                            elemental.defLv = equipment.element.lv;
+                            break;
+                        case EquipmentSlot.Weapon:
+                            elemental.atkType = (Elemental.Type)equipment.element.type;
+                            elemental.atkLv = equipment.element.lv;
+                            break;
+                    }
+                    
                     var main = equipment.main;
                     var type = (Status.Type)main.type;
                     var value = main.value;
@@ -204,6 +223,13 @@ namespace RGLabs.Utility
             }
 
             return dic;
+        }
+        
+        public static Dictionary<Status.Type, float> Total(this IEnumerable<EquipItem> equipments)
+        {
+            var _ = new Elemental();
+            
+            return equipments.Total(ref _);
         }
 
         public static bool IsRandomItem(this int id) => id % 10 == 0;

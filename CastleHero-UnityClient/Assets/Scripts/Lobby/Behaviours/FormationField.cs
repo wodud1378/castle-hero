@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -6,6 +7,7 @@ using RGLabs.Common;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
+using RGLabs.Data.Model;
 using RGLabs.Data.Repositories;
 using RGLabs.Network;
 using RGLabs.Network.Service;
@@ -28,7 +30,7 @@ namespace RGLabs.Lobby.Behaviours
 
         private readonly Collider2D[] _buffer = new Collider2D[Constants.BufferSize];
 
-        private IUnitFactory _castleFactory;
+        private CastleFactory _castleFactory;
         private UnitFactory _unitFactory;
 
         private UserRepository _userRepo;
@@ -58,6 +60,18 @@ namespace RGLabs.Lobby.Behaviours
                 .Subscribe(OnCastleLevelChanged)
                 .AddTo(this);
 
+            _userRepo.characters
+                .WhenUpdate(UpdateUnits)
+                .AddTo(this);
+
+            _userRepo.inventory
+                .WhenUpdate(UpdateUnitsWhereHasEquipments)
+                .AddTo(this);
+
+            _userRepo.entrance
+                .Subscribe(ReloadCastle)
+                .AddTo(this);
+
             if (Storage.db.castles.TryFind(_userRepo.gameRecord.castleLv.Value, out var entity))
             {
                 capacity.Value = entity.maxCharacter;
@@ -70,16 +84,80 @@ namespace RGLabs.Lobby.Behaviours
             var barricades = _gameRepo.characters
                 .Where(x => x.Id == Constants.BarricadeId)
                 .ToArray();
-            
+
             if (barricades.Length > 0)
             {
                 foreach (var barricade in barricades)
                 {
                     _map.AddObstacle(barricade, false);
                 }
-                
+
                 _map.GenerateMap();
             }
+        }
+
+        private void UpdateUnits(ReactiveCollection<UnitInfo> units)
+        {
+            foreach (var unit in units)
+            {
+                var inField = _gameRepo.characters.FirstOrDefault(x => x.Id == unit.id);
+                if (inField != null &&
+                    Storage.db.units.TryFind(unit.id, out var entity) &&
+                    Storage.db.balances.TryFind(unit.id, out var balance))
+                {
+                    inField.Core.Update(unit, entity, balance);
+                }
+            }
+        }
+
+        private void UpdateUnitsWhereHasEquipments(ReactiveCollection<IItem> items)
+        {
+            var ids = items.OfType<EquipItem>()
+                .Select(x => x.character)
+                .Where(x => x != 0)
+                .Distinct();
+
+            foreach (var id in ids)
+            {
+                var unit = _userRepo.characters.units.FirstOrDefault(x => x.id == id);
+                var inField = _gameRepo.characters.FirstOrDefault(x => x.Id == id);
+
+                if (unit != null &&
+                    inField != null &&
+                    Storage.db.units.TryFind(unit.id, out var entity) &&
+                    Storage.db.balances.TryFind(unit.id, out var balance))
+                {
+                    inField.Core.Update(unit, entity, balance);
+                }
+            }
+        }
+
+        private void ReloadCastle(GameEntrance entrance)
+        {
+            string prefab;
+            if (entrance.type == GameType.Dungeon)
+            {
+                prefab = Storage.db.dungeons.TryFind(entrance.id, out var dungeonEntity)
+                    ? dungeonEntity.castlePrefab
+                    : string.Empty;
+            }
+            else
+            {
+                prefab = CastleFactory.DEFAULT_CASTLE_PREFAB;
+            }
+
+            var exist = _gameRepo.castle.Value;
+            if (exist != null && exist.ResourcePath != prefab)
+            {
+                exist.DestroySelf();
+                
+                _gameRepo.castle.Value = null;
+            }
+
+            if (string.IsNullOrEmpty(prefab))
+                return;
+            
+            LoadCastle(prefab).Forget();
         }
 
         private void OnCastleLevelChanged(int lv)
@@ -88,6 +166,13 @@ namespace RGLabs.Lobby.Behaviours
             {
                 capacity.Value = entity.maxCharacter;
                 _barricadeCountMax = entity.barricadeCount;
+
+                var castle = _gameRepo.castle.Value;
+                if (castle != null)
+                {
+                    var unitInfo = new UnitInfo { id = 1, lv = lv, };
+                    castle.Init(unitInfo, entity.ToUnitEntity(), default);
+                }
             }
         }
 
@@ -111,7 +196,7 @@ namespace RGLabs.Lobby.Behaviours
             }
 
             await UniTask.WhenAll(tasks);
-            
+
             _formation.Set(_gameRepo.characters);
 
             Save();
@@ -136,15 +221,15 @@ namespace RGLabs.Lobby.Behaviours
             if (unit == _gameRepo.castle.Value)
                 return;
 
-            if(unit.Id == Constants.BarricadeId)
+            if (unit.Id == Constants.BarricadeId)
                 _map.RemoveObstacle(unit);
-                
+
             var characters = _gameRepo.characters;
             characters.Remove(unit);
             unit.DestroySelf();
-            
+
             _formation.Set(_gameRepo.characters);
-            
+
             Save();
         }
 
@@ -152,7 +237,7 @@ namespace RGLabs.Lobby.Behaviours
         {
             if (unit == null)
                 return false;
-            
+
             if (!IsValid(unit.Collider, layer))
                 return false;
 
@@ -171,18 +256,18 @@ namespace RGLabs.Lobby.Behaviours
                     Context.popups.Open<PopupCommon>(Storage.localize.Get(593));
                     return false;
                 }
-                
+
                 RemoveIfLimited(unit);
-                characters.Add(unit);   
+                characters.Add(unit);
             }
-            
+
             _formation.Set(characters);
-            
-            if(isBarricade)
+
+            if (isBarricade)
                 _map.AddObstacle(unit);
 
             Save();
-            
+
             Context.sounds.PlaySfx(Storage.soundPath.modifyFormation);
 
             return true;
@@ -236,10 +321,10 @@ namespace RGLabs.Lobby.Behaviours
             }
         }
 
-        private async UniTask LoadCastle()
+        private async UniTask LoadCastle(string prefab = CastleFactory.DEFAULT_CASTLE_PREFAB)
         {
             int lv = _userRepo.gameRecord.castleLv.Value;
-            var unit = await _castleFactory.Create(1, lv, 0, Vector2.zero);
+            var unit = await _castleFactory.Create(prefab, new UnitInfo { id = 1, lv = lv, }, Vector2.zero);
             _gameRepo.castle.Value = unit;
         }
 
@@ -251,7 +336,7 @@ namespace RGLabs.Lobby.Behaviours
                 var character = _userRepo.characters.units.FirstOrDefault(x => x.id == data.id);
                 if (character == null)
                     continue;
-                
+
                 var position = new Vector2(data.x, data.y);
                 tasks.Add(CreateCharacter(character, position));
             }
@@ -272,7 +357,7 @@ namespace RGLabs.Lobby.Behaviours
 
             unit.Core.movement.Default = position;
             unit.Core.onRest.Value = true;
-            
+
             _gameRepo.characters.Add(unit);
         }
 

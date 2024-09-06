@@ -1,4 +1,5 @@
 using RGLabs.Data.DB;
+using RGLabs.Unit.Components;
 
 namespace RGLabs.Data.Model
 {
@@ -79,10 +80,10 @@ namespace RGLabs.Data.Model
         public float moveRange;
 
         [DataField("Character_Property_Atk")] 
-        public int elementalAtk;
+        public Elemental.Type elementalAtk;
             
         [DataField("Character_Property_Def")]
-        public int elementalDef;
+        public Elemental.Type  elementalDef;
 
         [DataField("Character_Parts_Item")]
         public int soulItemId;

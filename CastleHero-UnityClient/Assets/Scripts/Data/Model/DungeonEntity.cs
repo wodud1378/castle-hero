@@ -50,6 +50,8 @@ namespace RGLabs.Data.Model
 
         public int Exp => 0;
 
+        [DataField("Dg_Castle")] public string castlePrefab;
+        
         [DataField("Dg_Image")] public string image;
 
         [DataField("Dg_Name")] public string name;
