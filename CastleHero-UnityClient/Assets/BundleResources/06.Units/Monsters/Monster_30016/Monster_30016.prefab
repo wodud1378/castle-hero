@@ -8,14 +8,58 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 135214278878135265, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.050921112
+      objectReference: {fileID: 0}
+    - target: {fileID: 135214278878135265, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5.976684
+      objectReference: {fileID: 0}
+    - target: {fileID: 955834530629895259, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
+      propertyPath: m_Radius
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 955834530629895259, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
+      propertyPath: m_Offset.x
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 955834530629895259, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.37
+      objectReference: {fileID: 0}
+    - target: {fileID: 3529228683580960345, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
+      propertyPath: avoidRadius
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3529228683580960345, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
+      propertyPath: centerOffset.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6391860083955039845, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
       propertyPath: m_Name
       value: Monster_30016
+      objectReference: {fileID: 0}
+    - target: {fileID: 6729772277759493457, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6729772277759493457, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 7174810689259680027, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 57d65c7812c369d45a02f810d6083cd0, type: 2}
+    - target: {fileID: 7206904893868982020, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.012498564
+      objectReference: {fileID: 0}
+    - target: {fileID: 7206904893868982020, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.7579203
+      objectReference: {fileID: 0}
     - target: {fileID: 7405764224175786417, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
       propertyPath: initialSkinName
       value: Archer_NorthernNoble_Bow
