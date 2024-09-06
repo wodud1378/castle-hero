@@ -78,7 +78,6 @@ namespace RGLabs.Lobby.Behaviours
                 _barricadeCountMax = entity.barricadeCount;
             }
 
-            await LoadCastle();
             await LoadSavedUnits();
 
             var barricades = _gameRepo.characters

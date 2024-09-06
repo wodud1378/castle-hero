@@ -110,7 +110,9 @@ namespace RGLabs.Unit.Components
 
             var skeleton = this.owner.GetComponentInChildren<SkeletonMecanim>();
             var animator = this.owner.GetComponentInChildren<Animator>();
-            look = new Look(animator.transform);
+            if(animator != null)
+                look = new Look(animator.transform);
+            
             renderController = new RenderController(skeleton, animator, enableAnimation);
             animationEvent = this.owner.GetComponentInChildren<AnimationEvents>();
 

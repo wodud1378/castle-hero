@@ -144,8 +144,8 @@ namespace RGLabs.Network.Shared
     public class DungeonRecord
     {
         public int type;
-        public int lv;
-        public DateTime lastTime;
+        public int detailType;
+        public int lastClearedLv;
     }
 
     #endregion

@@ -40,7 +40,7 @@ namespace RGLabs.Lobby.UI
                     .FirstOrDefault(x => x.type == (int)Type);
 
                 return record != null
-                    ? Mathf.Min(record.lv + 1, _listOfSameType[^1].Lv)
+                    ? Mathf.Min(record.lastClearedLv + 1, _listOfSameType[^1].Lv)
                     : 1;
             }
         }

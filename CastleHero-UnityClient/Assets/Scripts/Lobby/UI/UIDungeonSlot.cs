@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.UI;
@@ -23,10 +25,22 @@ namespace RGLabs.Lobby.UI
             DetailType = detailType;
 
             var data = Storage.db.dungeons.Where(x => x.type == type).First();
-            var openDays = data.OpenDaysOfWeek();
-            var dow = NetworkService.CurrentTimeByLocal().DayOfWeek;
+            //var openDays = data.OpenDaysOfWeek();
+            var openDays = new List<DayOfWeek>
+            {
+                DayOfWeek.Sunday,
+                DayOfWeek.Monday,
+                DayOfWeek.Tuesday,
+                DayOfWeek.Wednesday,
+                DayOfWeek.Thursday,
+                DayOfWeek.Friday,
+                DayOfWeek.Saturday,
+            };
             
-            state.Value = openDays.Contains(dow)
+            var dow = NetworkService.CurrentTimeByLocal().DayOfWeek;
+
+            bool isOpened = openDays.Contains(dow);
+            state.Value = isOpened
                 ? State.Default
                 : State.Dim;
 
