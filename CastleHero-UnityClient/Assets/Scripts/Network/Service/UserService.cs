@@ -10,7 +10,9 @@ namespace RGLabs.Network.Service
     public class UserService : NetworkServiceBase
     {
         public UniTask SaveFormation(FormationDto formation) => UpdateTable(Table.Formation, formation);
-        
+
+        public new UniTask<Result> UpdateStamina() => base.UpdateStamina();
+
         public UniTask<Result> UpdateNickname(string nickname)
             => Call(onResult => Backend.BMember.UpdateNickname(nickname, onResult.Invoke));
         

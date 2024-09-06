@@ -12,6 +12,7 @@ using RGLabs.Network;
 using RGLabs.Network.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Unit;
+using RGLabs.Unit.Components;
 using RGLabs.Utility;
 using TMPro;
 using UniRx;
@@ -24,6 +25,15 @@ namespace RGLabs.Lobby.UI.Popup
     [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_CharInfo.prefab")]
     public class PopupCharacter : PopupBase
     {
+        private static readonly Dictionary<Elemental.Type, string> ElementalIcons = new()
+        {
+            { Elemental.Type.None, "Sprites/Global/UI/Symbol_Elemental_Earth.png" },
+            { Elemental.Type.Earth, "Sprites/Global/UI/Symbol_Elemental_Earth.png" },
+            { Elemental.Type.Fire, "Sprites/Global/UI/Symbol_Elemental_Fire.png" },
+            { Elemental.Type.Water, "Sprites/Global/UI/Symbol_Elemental_Water.png" },
+            { Elemental.Type.Wind, "Sprites/Global/UI/Symbol_Elemental_Wind.png" },
+        };
+
         [SerializeField] private TMP_Text _name;
         [SerializeField] private TMP_Text _lv;
         [SerializeField] private GameObject[] _stars;
@@ -32,6 +42,14 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private UIStatusText[] _statusTexts;
         [SerializeField] private List<Button> _emptySlotButtons;
         [SerializeField] private List<UIEquipmentSlot> _equipments;
+        
+        [SerializeField] private GameObject _atkElementRoot;
+        [SerializeField] private AddressableImage _atkElement;
+        [SerializeField] private TMP_Text _atkElementLv;
+        
+        [SerializeField] private GameObject _defElementRoot;
+        [SerializeField] private AddressableImage _defElement;
+        [SerializeField] private TMP_Text _defElementLv;
 
         [SerializeField] private Button _levelUp;
         [SerializeField] private Button _upgrade;
@@ -59,9 +77,15 @@ namespace RGLabs.Lobby.UI.Popup
                 var inner = slot;
                 this.SubscribeButton(_emptySlotButtons[(int)slot], () => Equip(inner));
             }
-            
-            _equipments.ForEach(x => 
-                x.OnClick += s => { if (s is UIEquipmentSlot { Item: not null } equipmentSlot) { Context.popups.Open<PopupEquipItem>(equipmentSlot.Item); } });
+
+            _equipments.ForEach(x =>
+                x.OnClick += s =>
+                {
+                    if (s is UIEquipmentSlot { Item: not null } equipmentSlot)
+                    {
+                        Context.popups.Open<PopupEquipItem>(equipmentSlot.Item);
+                    }
+                });
         }
 
         public override UniTask Open(params object[] parameters)
@@ -94,7 +118,7 @@ namespace RGLabs.Lobby.UI.Popup
 
             var equipments = Storage.userRepository.EquipItems(info.equipments).ToList();
 
-            UpdateStatusTexts(lv, rate, unitEntity, balanceEntity, equipments);
+            UpdateUI(lv, rate, unitEntity, balanceEntity, equipments);
             UpdateEquipmentSlots(equipments);
         }
 
@@ -102,7 +126,7 @@ namespace RGLabs.Lobby.UI.Popup
         {
             if (_character != null)
                 Addressables.ReleaseInstance(_character);
-            
+
             _prefabRoot.gameObject.SetActive(false);
 
             _character = await Addressables.InstantiateAsync(dataPath, _prefabRoot);
@@ -124,9 +148,9 @@ namespace RGLabs.Lobby.UI.Popup
             var items = Storage.userRepository.inventory.items
                 .OfType<EquipItem>()
                 .Where(x => x.slot == (int)slot);
-            
+
             var selection = await Context.popups.OpenAsync<PopupSelectItem>(items);
-            
+
             bool closeWithNoSelection = false;
             bool confirm = false;
             EquipItem equipItem = null;
@@ -156,9 +180,9 @@ namespace RGLabs.Lobby.UI.Popup
 
             if (closeWithNoSelection)
                 return;
-            
+
             selection.Close();
-            
+
             var result = await NetworkService.Character.Equip(_unit.Value.id, equipItem.Guid);
             if (!result.IsSuccess)
                 Context.popups.Open<PopupCommon>(result.error);
@@ -173,8 +197,8 @@ namespace RGLabs.Lobby.UI.Popup
             {
                 int index = (int)slot;
                 var item = equipments.Find(x => x.slot == index);
-                var ui = _equipments[index]; 
-                if(item == null)
+                var ui = _equipments[index];
+                if (item == null)
                     ui.gameObject.SetActive(false);
                 else
                 {
@@ -184,12 +208,12 @@ namespace RGLabs.Lobby.UI.Popup
             }
         }
 
-        private void UpdateStatusTexts(int lv, int rate, UnitEntity unit, UnitBalanceEntity balance,
+        private void UpdateUI(int lv, int rate, UnitEntity unit, UnitBalanceEntity balance,
             List<EquipItem> equipments)
         {
+            var elemental = new Elemental();
             var baseStatus = BaseStatus(lv, rate, unit, balance);
-            var equipStatus = equipments.Total();
-
+            var equipStatus = equipments.Total(ref elemental);
             foreach (var label in _statusTexts)
             {
                 var type = label.type;
@@ -198,6 +222,26 @@ namespace RGLabs.Lobby.UI.Popup
 
                 label.SetText(baseVal, equip);
             }
+
+            _atkElementLv.text = $"LV.{elemental.atkLv}";
+            bool hasAtkType = elemental.atkType != Elemental.Type.None;
+            if (hasAtkType)
+            {
+                _atkElementRoot.SetActive(true);
+                _atkElement.Set(ElementalIcons[elemental.atkType]).Forget();
+            }
+            else
+                _atkElementRoot.SetActive(false);
+            
+            _defElementLv.text = $"LV.{elemental.defLv}";
+            bool hasDefType = elemental.defType != Elemental.Type.None;
+            if (hasDefType)
+            {
+                _defElementRoot.SetActive(true);
+                _defElement.Set(ElementalIcons[elemental.defType]).Forget();
+            }
+            else
+                _defElementRoot.SetActive(false);
         }
 
         private Dictionary<Status.Type, float> BaseStatus(int lv, int rate, UnitEntity unit, UnitBalanceEntity balance)

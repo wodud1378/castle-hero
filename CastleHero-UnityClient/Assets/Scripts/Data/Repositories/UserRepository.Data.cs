@@ -17,8 +17,8 @@ namespace RGLabs.Data.Repositories
         public readonly ReactiveProperty<int> pointLimit;
         public readonly ReactiveProperty<DateTime> lastUpdate;
 
-        private const int Interval = 10;
-        private const int PerOnce = 1;
+        public const int INTERVAL = 10;
+        public const int PER_ONCE = 1;
 
         private IDisposable _update;
         private CancellationTokenSource _ctSource;
@@ -49,7 +49,6 @@ namespace RGLabs.Data.Repositories
             pointLimit?.Dispose();
             lastUpdate?.Dispose();
         }
-
         private void RunLocalUpdate()
         {
             _ctSource?.Cancel();
@@ -58,7 +57,7 @@ namespace RGLabs.Data.Repositories
             LocalUpdate(_ctSource.Token).Forget();
         }
 
-        private DateTime Now => DateTime.UtcNow.AddDays(3);
+        private DateTime Now => DateTime.UtcNow.AddHours(3);
 
         private async UniTaskVoid LocalUpdate(CancellationToken token)
         {
@@ -66,7 +65,7 @@ namespace RGLabs.Data.Repositories
             {
                 while (point.Value < pointLimit.Value && !token.IsCancellationRequested)
                 {
-                    var nextUpdate = lastUpdate.Value.AddMinutes(Interval);
+                    var nextUpdate = lastUpdate.Value.AddMinutes(INTERVAL);
                     var now = Now;
                     var totalMs = (nextUpdate - now).TotalMilliseconds;
                     if (totalMs > 0)
@@ -91,12 +90,12 @@ namespace RGLabs.Data.Repositories
             if (point.Value < pointLimit.Value)
             {
                 var now = Now;
-                int cycle = (int)((now - lastUpdate.Value).TotalMinutes / Interval);
+                int cycle = (int)((now - lastUpdate.Value).TotalMinutes / INTERVAL);
                 if (cycle > 0)
                 {
-                    int amount = cycle * PerOnce;
+                    int amount = cycle * PER_ONCE;
                     point.Value = Mathf.Min(point.Value + amount, pointLimit.Value);
-                    lastUpdate.Value = now.AddMinutes(cycle * Interval);
+                    lastUpdate.Value = now;
                 }
             }
         }

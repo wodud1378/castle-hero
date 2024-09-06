@@ -62,7 +62,6 @@ namespace RGLabs.Unit.Components
         public readonly ReactiveProperty<States> state;
         public readonly Status status;
         public readonly PolyNavAgent navAgent;
-        public readonly Elemental elemental;
 
         public readonly UnitBehaviour owner;
         public readonly Look look;
@@ -77,6 +76,7 @@ namespace RGLabs.Unit.Components
         private readonly bool _enableAttack;
         private readonly bool _enableMove;
 
+        public Elemental elemental;
         public LayerMask enemyLayerMask;
         public LayerMask alleyLayerMask;
 
@@ -156,21 +156,18 @@ namespace RGLabs.Unit.Components
             // TODO : 이펙트?
         }
 
-        public void SetData(UnitInfo info, UnitEntity data, UnitBalanceEntity balance)
+        public void Init(UnitInfo info, UnitEntity data, UnitBalanceEntity balance)
         {
             for (var i = 0; i < restrictions.Length; i++)
             {
                 restrictions[i] = 0f;
             }
-
-            status.Init(data);
-
-            elemental.atkType = (Elemental.Type)data.elementalAtk;
-            elemental.defType = (Elemental.Type)data.elementalDef;
-
+            
             Team = data.Id / 10000 == 1 ? Teams.Character : Teams.Monster;
             enemyLayerMask = UnitHelper.EnemyLayerMask(data.Id, data.atkLayer);
             alleyLayerMask = UnitHelper.AlleyLayerMask(data.Id);
+            
+            Update(info, data, balance);
 
             if (_enableAttack)
             {
@@ -183,34 +180,44 @@ namespace RGLabs.Unit.Components
 
             renderController.ApplySkin(data.skinName);
             UpdateLookDirection(movement.Default);
-
-            ApplyBalance(info.lv, info.rate, balance, out int skillLv);
-
-            if (info.equipments != null)
-            {
-                var equipments = Storage.userRepository.inventory.items
-                    .OfType<EquipItem>()
-                    .Where(x => info.equipments.Contains(x.Guid));
-
-                ApplyEquipmentBonus(equipments);
-            }
-
-            if (data.skill != 0)
-            {
-                _skill = this.Attach(data.skill, skillLv);
-            }
-
+            
             state.Value = States.Prepare;
-
+            
+            _update?.Dispose();
             _update = owner
                 .UpdateAsObservable()
                 .Subscribe(_ => OnUpdateOwner())
                 .AddTo(owner);
         }
 
-        private void ApplyEquipmentBonus(IEnumerable<EquipItem> equipments)
+        public void Update(UnitInfo info, UnitEntity data, UnitBalanceEntity balance)
         {
-            var dic = equipments.Total();
+            status.Init(data);
+            
+            elemental.atkType = data.elementalAtk;
+            elemental.defType = data.elementalDef;
+            
+            ApplyBalance(info.lv, info.rate, balance, out int skillLv);
+            
+            if (info.equipments != null)
+            {
+                var equipments = Storage.userRepository.inventory.items
+                    .OfType<EquipItem>()
+                    .Where(x => info.equipments.Contains(x.Guid))
+                    .ToList();
+
+                ApplyEquipment(equipments);
+            }
+
+            if (data.skill != 0)
+            {
+                _skill = this.Attach(data.skill, skillLv);
+            }
+        }
+        
+        private void ApplyEquipment(List<EquipItem> equipments)
+        {
+            var dic = equipments.Total(ref elemental);
             foreach (var kvp in dic)
             {
                 var type = kvp.Key;

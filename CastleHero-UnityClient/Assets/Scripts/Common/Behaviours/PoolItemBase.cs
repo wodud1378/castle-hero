@@ -29,12 +29,6 @@ namespace RGLabs.Common.Behaviours
 
         public void Inactivate() => OnInactivate();
 
-        public void DestroySelf()
-        {
-            if (Container == null)
-                return;
-            
-            Container.Release(this);
-        }
+        public void DestroySelf() => Container?.Release(this);
     }
 }

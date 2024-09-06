@@ -43,6 +43,8 @@ namespace RGLabs.Lobby.Behaviours
             await _formation.Init();
 
             _uiPrepare.Init();
+            
+            UpdateStamina();
 
             Context.Transition.StateObserver
                 .DistinctUntilChanged()
@@ -53,6 +55,14 @@ namespace RGLabs.Lobby.Behaviours
             {
                 ReceiveSubscribeProducts();
             }
+        }
+
+        private async void UpdateStamina()
+        {
+            var result = await NetworkService.User.UpdateStamina();
+
+            if (!result.IsSuccess)
+                Context.popups.Open<PopupCommon>(result.error);
         }
 
         private async void ReceiveSubscribeProducts()
