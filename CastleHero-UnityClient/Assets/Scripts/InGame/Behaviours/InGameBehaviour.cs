@@ -123,9 +123,17 @@ namespace RGLabs.InGame.Behaviours
 
         private void InitGlobalSkills()
         {
-            _uiInGame.GlobalSkill
-                .Init(_handler.GetCastleSkills())
-                .Forget();
+            if (Storage.inGameRepository.castle.Value != null)
+            {
+                _uiInGame.gameObject.SetActive(true);
+                _uiInGame.GlobalSkill
+                    .Init(_handler.GetCastleSkills())
+                    .Forget();
+            }
+            else
+            {
+                _uiInGame.gameObject.SetActive(false);
+            }
         }
 
         private void Exit(ExitGame exit)

@@ -29,7 +29,6 @@ namespace RGLabs.InGame.UI
             _rangeDrawer.Color = _rangeColor;
             
             var parameters = collection as CastleSkillParameter[] ?? collection.ToArray();
-
             await base.Init(parameters);
             
             int length = parameters.Length;
