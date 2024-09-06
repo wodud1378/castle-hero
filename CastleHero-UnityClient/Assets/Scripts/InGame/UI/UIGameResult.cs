@@ -4,6 +4,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
+using RGLabs.Common.UI;
 using RGLabs.Data;
 using RGLabs.InGame.Behaviours;
 using RGLabs.Prepare.UI;
@@ -98,21 +99,25 @@ namespace RGLabs.InGame.UI
 
             foreach (var obj in _failedObjects)
                 obj.SetActive(!isCleared);
+            
+            var retryGrayScale = _retryButton.GetComponent<UIGrayScale>();
+            var nextGrayScale = _nextButton.GetComponent<UIGrayScale>();
+            int apForRetry = Storage.db.TryLoadGameEntity(result.type, result.id, out var retry)
+                ? retry.Ap
+                : int.MaxValue;
+            
+            int apForNext = Storage.db.TryLoadNextGameEntity(result.type, result.id, out var next)
+                ? next.Ap
+                : int.MaxValue;
 
-            if (!isCleared)
-            {
-                _retryButton.gameObject.SetActive(false);
-                _nextButton.gameObject.SetActive(false);
-                return;
-            }
+            int ap = Storage.userRepository.stamina.point.Value;
 
-            // TODO : 행동력 체크.
-
-            if (Storage.db.TryLoadNextGameEntity(result.type, result.data.id, out var entity))
-            {
-                _retryButton.gameObject.SetActive(true);
-                _nextButton.gameObject.SetActive(true);
-            }
+            bool activeRetry = ap >= apForRetry;
+            bool activeNext = ap >= apForNext && isCleared;
+            _retryButton.interactable =  activeRetry;
+            _nextButton.interactable = activeNext;
+            retryGrayScale.enabled.Value = !activeRetry;
+            nextGrayScale.enabled.Value = !activeNext;
         }
 
         private void Exit(Entrance.Link link = Entrance.Link.None) => CloseWith(() =>

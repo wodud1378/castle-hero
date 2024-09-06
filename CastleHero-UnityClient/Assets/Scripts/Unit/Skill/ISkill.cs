@@ -137,7 +137,7 @@ namespace RGLabs.Unit.Skill
             {
                 From = Owner,
                 To = unit,
-                Type = UnitCore.Restrictions.Move,
+                Type =  type,
                 Duration = duration,
                 Effect = effect,
             }.Publish();

@@ -35,6 +35,9 @@ namespace RGLabs.Common.UI
 
             foreach (var tuple in result)
             {
+                if (tuple.slot == null) 
+                    continue;
+                
                 tuple.slot.transform.SetAsLastSibling();
             }
         }

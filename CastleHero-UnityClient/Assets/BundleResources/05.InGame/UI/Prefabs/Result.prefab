@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8427759356983982735}
   - component: {fileID: 7950751384987856881}
   - component: {fileID: 2367895923815970586}
+  - component: {fileID: 667672833195593738}
   m_Layer: 5
   m_Name: Button_Next
   m_TagString: Untagged
@@ -144,6 +145,22 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &667672833195593738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 356276233021204920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79270c6e7da94852ae11eee026e752a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _material: {fileID: 2100000, guid: 52eba2c552de3cd41b4c17d693e7619c, type: 2}
+  targets:
+  - {fileID: 7759394364305629575}
+  _preview: 0
 --- !u!1 &356673824193623123
 GameObject:
   m_ObjectHideFlags: 0
@@ -2100,6 +2117,7 @@ GameObject:
   - component: {fileID: 9025129829134361518}
   - component: {fileID: 2572686077694765971}
   - component: {fileID: 7149444109931723474}
+  - component: {fileID: 7796001016334545499}
   m_Layer: 5
   m_Name: Button_Restart
   m_TagString: Untagged
@@ -2231,6 +2249,22 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7796001016334545499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6851863250208800088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79270c6e7da94852ae11eee026e752a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _material: {fileID: 2100000, guid: 52eba2c552de3cd41b4c17d693e7619c, type: 2}
+  targets:
+  - {fileID: 2367695496137815471}
+  _preview: 0
 --- !u!1 &6869164805278847305
 GameObject:
   m_ObjectHideFlags: 0
@@ -8368,7 +8402,7 @@ MonoBehaviour:
   _clearObjects:
   - {fileID: 4211861524136671738}
   - {fileID: 8131585449673468124}
-  - {fileID: 7668271918177169090}
+  - {fileID: 356276233021204920}
   - {fileID: 9164115020429324805}
   - {fileID: 6949266709710210393}
   _failedObjects:

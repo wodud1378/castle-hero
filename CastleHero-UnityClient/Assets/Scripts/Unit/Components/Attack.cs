@@ -75,6 +75,13 @@ namespace RGLabs.Unit.Components
             IsRunning = true;
         }
 
+        public void Stop()
+        {
+            _renderController.SetAnimation(UnitCore.AnimationsHash[UnitCore.States.Idle]);
+
+            Clear();
+        }
+
         public void Clear() => IsRunning = false;
 
         private void ProcessHit()

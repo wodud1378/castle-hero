@@ -38,6 +38,7 @@ namespace RGLabs.InGame.Behaviours
     public struct GameResult
     {
         public bool isCleared;
+        public int id;
         public GameType type;
         public GameCleared data;
     }
@@ -103,7 +104,7 @@ namespace RGLabs.InGame.Behaviours
                             });
                         }
                     };
-                        
+
                     Context.popups.Open<PopupCommon>(result.error, param);
                     return;
                 }
@@ -114,6 +115,7 @@ namespace RGLabs.InGame.Behaviours
             new GameResult
             {
                 isCleared = isCleared,
+                id = id,
                 type = type,
                 data = data
             }.Publish();

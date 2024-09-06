@@ -52,6 +52,7 @@ namespace RGLabs.InGame.UI
                 return;
             
             _selected = slot;
+            _rangeDrawer.UpdateSize(skill.radius);
             _rangeDrawer.gameObject.SetActive(true);
         }
 

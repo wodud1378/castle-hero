@@ -1,10 +1,12 @@
 using System;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Data.Model;
 using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
+using RGLabs.Unit.Components;
 using RGLabs.Unit.Skill.Components;
 using RGLabs.Unit.Skill.Components.Factory;
 using RGLabs.Utility;
@@ -27,6 +29,7 @@ namespace RGLabs.Unit.Skill.Global
 
         private readonly UnitBehaviour _castle;
         private readonly CircleBound _bound;
+        private readonly int _targetId;
 
         public GlobalSkill(UnitBehaviour castle, CastleSkillParameter parameter)
         {
@@ -74,9 +77,14 @@ namespace RGLabs.Unit.Skill.Global
             if (action == null)
                 return;
 
-            var units = _bound.UnitsInBound(position, default);
-            units.ForEach(action);
+            var units = _bound.UnitsInBound(position, default)
+                .Where(x => x != _castle);
 
+            foreach (var unit in units)
+            {
+                action.Invoke(unit);
+            }
+            
             Context.sounds.PlaySfx(_sfx);
             Effect.Builder.Run(_centerEffect, position);
             
@@ -97,13 +105,31 @@ namespace RGLabs.Unit.Skill.Global
 
         private void Stun(UnitBehaviour unit)
         {
-            new ShieldEvent
+            new RestrictionEvent
             {
                 From = _castle,
                 To = unit,
-                Amount = _value,
+                Type = UnitCore.Restrictions.Attack,
                 Effect = _unitEffect,
-                Duration = 0
+                Duration = _value
+            }.Publish();
+            
+            new RestrictionEvent
+            {
+                From = _castle,
+                To = unit,
+                Type = UnitCore.Restrictions.Move,
+                Effect = _unitEffect,
+                Duration = _value
+            }.Publish();
+            
+            new RestrictionEvent
+            {
+                From = _castle,
+                To = unit,
+                Type = UnitCore.Restrictions.Skill,
+                Effect = _unitEffect,
+                Duration = _value
             }.Publish();
         }
 

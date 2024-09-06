@@ -34,6 +34,13 @@ namespace RGLabs.Lobby.Behaviours
             UpdateMesh();
             _initialized = true;
         }
+
+        public void UpdateSize(float size)
+        {
+            this.size = size;
+            
+            UpdateMesh();
+        }
     
         private void ApplyColor(Color color)
         {

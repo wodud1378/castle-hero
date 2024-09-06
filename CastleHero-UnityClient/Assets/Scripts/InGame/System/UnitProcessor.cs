@@ -17,7 +17,7 @@ namespace RGLabs.InGame.System
     public class UnitProcessor : IDisposable
     {
         private readonly CompositeDisposable _disposables = new();
-        
+
         public UnitProcessor()
         {
             SubscribeMessage<AtkEvent>(OnReceiveAtkEvent);
@@ -82,7 +82,7 @@ namespace RGLabs.InGame.System
                 to.Hit.Play();
 
             Context.sounds.PlaySfx(to.Data.hitSfx);
-            
+
             PlayEffect(ev)
                 .Forget();
 
@@ -110,8 +110,8 @@ namespace RGLabs.InGame.System
                 return;
 
             var shield = to.status.shield;
-            var effect = await PlayEffect(ev);
-            
+            var effect = await PlayEffect(ev, ev.Duration == 0f ? 999f : ev.Duration);
+
             if (ev.Duration == 0f)
                 shield.Increase(ev.Amount, effect);
             else
@@ -125,7 +125,7 @@ namespace RGLabs.InGame.System
             var to = ev.To;
             if (!to.IsValid())
                 return;
-            
+
             var ability = to.status[ev.Type];
             var adjust = ev.IsMultiplier ? ability.multiplyAdjust : ability.fixedAdjust;
             if (ev.IsIncrease)
@@ -136,15 +136,15 @@ namespace RGLabs.InGame.System
             PlayEffect(ev, ev.Duration)
                 .Forget();
         }
-        
+
         private void OnReceiveRestrictionEvent(RestrictionEvent ev)
         {
             var to = ev.To;
             if (!to.IsValid())
                 return;
 
-            to.Core.restrictions[(int)ev.Type] += ev.Duration;
-            
+            to.Core.SetRestriction(ev.Type, ev.Duration);
+
             PlayEffect(ev, ev.Duration)
                 .Forget();
         }
@@ -154,9 +154,9 @@ namespace RGLabs.InGame.System
             var unit = unitDead.unit;
             if (unit.Core.Team != UnitCore.Teams.Character || unit.Type == UnitBehaviour.BehaviourType.Barricade)
                 return;
-            
+
             Storage.inGameRepository.deadCharacters.Add(unit);
-            
+
             float recoverTime = unit.status.recovery;
             if (!unit.Core.enableRecover || recoverTime <= 0f)
                 return;
@@ -167,7 +167,7 @@ namespace RGLabs.InGame.System
                 position = unit.Core.movement.Default,
                 time = recoverTime
             };
-            
+
             var subscription = ReserveRecover(recover);
             var collection = Storage.inGameRepository.recovers;
             collection.Add(recover);
@@ -217,17 +217,17 @@ namespace RGLabs.InGame.System
         }
 
         private async void Recovery(WaitRecover recover)
-        { 
+        {
             var behaviour = recover.behaviour;
             behaviour.position = recover.position;
-            
+
             Effect.Builder.Run(Constants.SpawnEffect, behaviour.transform.position);
 
             for (int i = 0; i < 6; ++i)
             {
                 await UniTask.Yield(PlayerLoopTiming.Update);
             }
-            
+
             recover.behaviour.Recovery();
             recover.Dispose();
         }

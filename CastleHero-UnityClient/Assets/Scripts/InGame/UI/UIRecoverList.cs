@@ -15,6 +15,7 @@ namespace RGLabs.InGame.UI
             var recovers = Storage.inGameRepository.recovers;
             recovers
                 .ChangeAsObservable()
+                .ThrottleFrame(1)
                 .Subscribe(x => base.Init(x).Forget())
                 .AddTo(this);
         }

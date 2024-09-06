@@ -80,15 +80,15 @@ namespace RGLabs.Unit.Components
         public LayerMask enemyLayerMask;
         public LayerMask alleyLayerMask;
 
-        public readonly float[] restrictions;
+        private readonly float[] _restrictions;
 
         public Teams Team { get; private set; }
 
         public bool Invincible => _leftInvincible > 0f;
 
-        private bool AllowSkill => restrictions[(int)Restrictions.Skill] <= 0f;
-        private bool AllowMove => _enableMove && restrictions[(int)Restrictions.Move] <= 0f;
-        private bool AllowAttack => _enableAttack && restrictions[(int)Restrictions.Attack] <= 0f;
+        private bool AllowSkill => _restrictions[(int)Restrictions.Skill] <= 0f;
+        private bool AllowMove => _enableMove && _restrictions[(int)Restrictions.Move] <= 0f;
+        private bool AllowAttack => _enableAttack && _restrictions[(int)Restrictions.Attack] <= 0f;
 
         private ISkill _skill;
         private Action _updateMethod;
@@ -97,7 +97,7 @@ namespace RGLabs.Unit.Components
 
         public UnitCore(UnitBehaviour owner, bool enableAttack, bool enableMove, bool enableAnimation)
         {
-            restrictions = new float[(int)Restrictions.Count];
+            _restrictions = new float[(int)Restrictions.Count];
 
             status = new();
 
@@ -151,6 +151,21 @@ namespace RGLabs.Unit.Components
                 .AddTo(this.owner);
         }
 
+        public void SetRestriction(Restrictions type, float duration)
+        {
+            _restrictions[(int)type] += duration;
+
+            switch (type)
+            {
+                case Restrictions.Move:
+                    movement.Stop();
+                    break;
+                case Restrictions.Attack:
+                    attack?.Stop();
+                    break;
+            }
+        }
+        
         public void SetInvincible(float duration)
         {
             _leftInvincible += duration;
@@ -160,9 +175,9 @@ namespace RGLabs.Unit.Components
 
         public void Init(UnitInfo info, UnitEntity data, UnitBalanceEntity balance)
         {
-            for (var i = 0; i < restrictions.Length; i++)
+            for (var i = 0; i < _restrictions.Length; i++)
             {
-                restrictions[i] = 0f;
+                _restrictions[i] = 0f;
             }
             
             Team = data.Id / 10000 == 1 ? Teams.Character : Teams.Monster;
@@ -301,8 +316,8 @@ namespace RGLabs.Unit.Components
             int count = (int)Restrictions.Count;
             for (int i = 0; i < count; ++i)
             {
-                float val = restrictions[i] - Time.deltaTime;
-                restrictions[i] -= Mathf.Clamp(val, 0f, float.MaxValue);
+                float val = _restrictions[i] - Time.deltaTime;
+                _restrictions[i] = Mathf.Clamp(val, 0f, float.MaxValue);
             }
         }
 
