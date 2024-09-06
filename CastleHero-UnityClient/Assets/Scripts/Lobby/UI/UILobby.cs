@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
+using RGLabs.Common.UI;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
@@ -10,6 +12,7 @@ using RGLabs.Lobby.UI.Inventory.Popup;
 using RGLabs.Lobby.UI.Popup;
 using RGLabs.Network.Service;
 using RGLabs.Network.Service.Test;
+using RGLabs.Network.Shared;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
@@ -30,11 +33,9 @@ namespace RGLabs.Lobby.UI
         [SerializeField] private Button _summon;
         [SerializeField] private Button _dungeon;
         [SerializeField] private Button _castle;
-
-
-        [SerializeField] private GameObject _noAdsMark;
-        [SerializeField] private GameObject _contractMark01;
-        [SerializeField] private GameObject _contractMark02;
+        
+        [SerializeField] private Button _noAdsMark;
+        [SerializeField] private Button[] _contractMarks;
 
         // Test.
         [SerializeField] private UITest _uiTest;
@@ -54,23 +55,25 @@ namespace RGLabs.Lobby.UI
             this.SubscribeButton(_summon, OpenPopup<PopupSummon>);
             this.SubscribeButton(_castle, () => Context.Transition.CurrentState = State.Castle);
             this.SubscribeButton(_shop, () => Context.Transition.CurrentState = State.Shop);
-
-            Storage.userRepository.shopRecord.products
+            this.SubscribeButton(_noAdsMark, () =>
+            {
+                var noAds = Storage.db.shop.Find(x => x.category == ShopCategory.NoAds);
+                if(!noAds.IsValid)
+                    return;
+                
+                OpenToolTip(noAds.name, _noAdsMark);
+            });
+            
+            SubScribeContractMark(0);
+            SubScribeContractMark(1);
+            
+            var products = Storage.userRepository.shopRecord.products;
+            products
                 .ChangeAsObservable()
-                .Subscribe(products =>
-                {
-                    bool HasProduct(int id, DateTime currentTime) =>
-                        products.Any(p => p.shopId == id && p.expireDate > currentTime);
-
-                    var currentTime = NetworkService.CurrentTimeByLocal();
-                    var noAds = Storage.db.shop.Find(x => x.category == ShopCategory.NoAds);
-                    var contracts = Storage.db.shop.FindAll(x => x.category == ShopCategory.Contract);
-
-                    _noAdsMark.SetActive(noAds.IsValid && HasProduct(noAds.Id, currentTime));
-                    _contractMark01.SetActive(contracts.Count > 0 && HasProduct(contracts[0].Id, currentTime));
-                    _contractMark02.SetActive(contracts.Count > 1 && HasProduct(contracts[1].Id, currentTime));
-                })
+                .Subscribe(UpdateMarks)
                 .AddTo(this);
+            
+            UpdateMarks(products);
         }
 
         public void ProcessLink(Entrance.Link link)
@@ -83,6 +86,36 @@ namespace RGLabs.Lobby.UI
                     OpenPopup<PopupCharacterList>();
                     break;
             }
+        }
+        
+        private void SubScribeContractMark(int index)
+        {
+            if (!index.IsValidIndex(_contractMarks))
+                return;
+            
+            var contracts = Storage.db.shop.FindAll(x => x.category == ShopCategory.Contract);
+            if (contracts.Count < index + 1)
+                return;
+
+            var mark = _contractMarks[index];
+            this.SubscribeButton(mark, ()=> OpenToolTip(contracts[index].name, mark));
+        }
+
+        private void OpenToolTip(string text, Button root) => Context.toolTip.Open(text, root.transform as RectTransform, 0.5f, 1f);
+
+        private void UpdateMarks(IEnumerable<Product> collection)
+        {
+            var products = collection.ToList();
+            bool HasProduct(int id, DateTime currentTime) =>
+                products.Any(p => p.shopId == id && p.expireDate > currentTime);
+
+            var currentTime = NetworkService.CurrentTimeByLocal();
+            var noAds = Storage.db.shop.Find(x => x.category == ShopCategory.NoAds);
+            var contracts = Storage.db.shop.FindAll(x => x.category == ShopCategory.Contract);
+
+            _noAdsMark.gameObject.SetActive(noAds.IsValid && HasProduct(noAds.Id, currentTime));
+            _contractMarks[0].gameObject.SetActive(contracts.Count > 0 && HasProduct(contracts[0].Id, currentTime));
+            _contractMarks[1].gameObject.SetActive(contracts.Count > 1 && HasProduct(contracts[1].Id, currentTime));
         }
 
         protected override void OnBack()
