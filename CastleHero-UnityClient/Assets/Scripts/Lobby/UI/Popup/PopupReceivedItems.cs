@@ -22,6 +22,10 @@ namespace RGLabs.Lobby.UI.Popup
             {
                 switch (parameter)
                 {
+                    case Pack pack:
+                        items.AddRange(pack.items);
+                        currency += pack.currency;
+                        break;
                     case IItem item:
                         items.Add(item);
                         break;

@@ -27,7 +27,7 @@ namespace RGLabs.Network.Service
 
                 var temp = ItemGen.NewItems(option.Ids, quantities);
                 reward.currency += temp.currency;
-                reward.items.AddOrNew(temp.items);
+                reward.items.Join(temp.items);
             }
 
             var readTables = new List<Table> { Table.Inventory };
@@ -35,7 +35,7 @@ namespace RGLabs.Network.Service
             Action<UserDataDto> onAfterRead = null;
             if (reward.items.Count > 0)
             {
-                onAfterRead += (userData) => { userData.inventory.items.AddOrNew(reward.items); };
+                onAfterRead += (userData) => { userData.inventory.items.Join(reward.items); };
             }
 
             if (!reward.currency.IsEmpty())
@@ -163,7 +163,7 @@ namespace RGLabs.Network.Service
                 return Result<List<IItem>>.Error(Error.NotEnoughItem);
 
             var result = ItemGen.NewItems(option.targetId, quantity).items;
-            inventory.items.AddOrNew(result);
+            inventory.items.Join(result);
             
             var update = await UpdateTables(userData);
             return update.IsSuccess

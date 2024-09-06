@@ -13,6 +13,7 @@ using RGLabs.Network.Service;
 using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace RGLabs.Lobby.UI.Popup
 {
@@ -21,6 +22,8 @@ namespace RGLabs.Lobby.UI.Popup
     {
         [SerializeField] private UIDayOfWeek[] _dayOfWeeks;
         [SerializeField] private UIDungeonList _dungeonList;
+        [SerializeField] private ScrollRect _scroll;
+        [SerializeField] private UIDungeonSelect _select;
 
         private readonly ReactiveProperty<DayOfWeek> _dayOfWeek = new();
         private UniTask _updateTask;
@@ -38,26 +41,54 @@ namespace RGLabs.Lobby.UI.Popup
                 .AddTo(this);
         }
 
-        private void OnClickSlot(UIDungeonSlot slot)
+        private async void OnClickSlot(UIDungeonSlot slot)
         {
             if (slot.state.Value == UIState.State.Dim)
+                return;
+
+            if (_select.IsOpened)
+            {
+                _select.Close();
+                
+                if (slot.Type == _select.Type && slot.DetailType == _select.DetailType)
+                    return;
+            }
+            
+            _select.Open(slot.Type, slot.DetailType);
+            var rectTr = (_select.transform as RectTransform)!;
+            rectTr.SetSiblingIndex(slot.transform.GetSiblingIndex() + 1);
+            Reposition(rectTr);
+
+            var selected = await _select.SelectTask;
+            if (!selected.IsValid)
                 return;
 
             Storage.userRepository.entrance.Value = new GameEntrance
             {
                 type = GameType.Dungeon,
-                id = slot.Entity.Id
+                id = selected.Id
             };
 
             Context.Transition.CurrentState = State.Prepare;
             
-            CloseAsync()
-                .Forget();
+            Close();
+        }
+
+        private void Reposition(RectTransform targetItem)
+        {
+            Vector2 contentSize = _scroll.content.rect.size;
+            Vector2 viewportSize = _scroll.viewport.rect.size;
+
+            // 타겟 아이템의 로컬 좌표에서 Content 기준의 위치를 계산
+            Vector3 itemLocalPosition = targetItem.localPosition;
+            
+            // 타겟 아이템이 중앙에 오도록 스크롤 뷰의 normalizedPosition을 계산
+            _scroll.verticalNormalizedPosition = Mathf.Clamp01(1 - (itemLocalPosition.y + (targetItem.rect.height / 2)) / (contentSize.y - viewportSize.y));
         }
 
         public override UniTask Open()
         {
-            _dayOfWeek.Value = NetworkService.CurrentTime().DayOfWeek;
+            _dayOfWeek.Value = NetworkService.CurrentTimeByLocal().DayOfWeek;
 
             return _updateTask;
         }
@@ -82,36 +113,24 @@ namespace RGLabs.Lobby.UI.Popup
 
         private UniTask UpdateList(DayOfWeek dow)
         {
-            var dungeonRecords = Storage.userRepository.gameRecord.dungeon;
+            var hashSet = new HashSet<(DungeonType main, DungeonDetailType sub)>();
+            Storage.db.dungeons.ForEach(x => hashSet.Add((x.type, x.detailType)));
+
+            var list = hashSet.ToList();
             var db = Storage.db.dungeons;
-
-            var list = new List<DungeonEntity>();
-            for (var t = DungeonType.Assault; t <= DungeonType.Invasion; ++t)
-            {
-                var type = t;
-                var record = dungeonRecords.FirstOrDefault(x => x.type == (int)type);
-
-                var byType = db.FindAll(x => x.type == type);
-                byType.Sort((x, y) => x.lv.CompareTo(y.lv));
-
-                int lv = record != null
-                    ? Mathf.Min(record.lv + 1, byType[^1].lv)
-                    : 1;
-
-                var index = byType.FindIndex(x => x.lv == lv);
-                if (index.IsValidIndex(byType))
-                    list.Add(byType[index]);
-            }
-
             list.Sort((x, y) =>
             {
-                var openDaysX = x.OpenDaysOfWeek();
-                var openDaysY = y.OpenDaysOfWeek();
+                var openDaysX = db.Where(e => e.type == x.main).First().OpenDaysOfWeek();
+                var openDaysY = db.Where(e => e.type == y.main).First().OpenDaysOfWeek();
                 int compareDow = (openDaysX.Contains(dow) ? 0 : 1).CompareTo(openDaysY.Contains(dow) ? 0 : 1);
                 if (compareDow != 0)
                     return compareDow;
 
-                return x.type.CompareTo(y.type);
+                var compareMain = x.main.CompareTo(y.main);
+                if (compareMain != 0)
+                    return compareMain;
+
+                return x.sub.CompareTo(y.sub);
             });
 
             return _dungeonList.Init(list);

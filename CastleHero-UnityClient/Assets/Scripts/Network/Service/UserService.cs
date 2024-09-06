@@ -53,13 +53,17 @@ namespace RGLabs.Network.Service
             var defaultData = response.raw.FlattenRows()[0];
             int ap = defaultData["Base_Act"].ToInt();
             int baseCharacterId = defaultData["Base_Character"].ToInt();
+            var getTime = await GetServerTime();
+            if (!getTime.IsSuccess)
+                return Result<UserDataDto>.Error(getTime.error);
+            
             var data = new UserDataDto
             {
                 stamina = new StaminaDto
                 {
                     point = ap,
                     pointLimit = ap,
-                    lastUpdate = NetworkService.CurrentTime(),
+                    lastUpdate = getTime.data,
                 },
                 currency = new CurrencyDto
                 {

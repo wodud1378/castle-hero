@@ -12,7 +12,7 @@ namespace RGLabs.Network.Service
 {
     public class GameService : NetworkServiceBase
     {
-        public List<DungeonType> GetOpenedDungeonTypes()
+        public async UniTask<Result<List<DungeonType>>> GetOpenedDungeonTypes()
         {
             var map = new Dictionary<DungeonType, List<DayOfWeek>>();
             Storage.db.dungeons.BinarySearch(x =>
@@ -23,10 +23,16 @@ namespace RGLabs.Network.Service
                 map.Add(x.type, x.OpenDaysOfWeek());
             });
 
-            var dow = NetworkService.CurrentTime().DayOfWeek;
-            return map
+            var getTime = await GetServerTime();
+            if (!getTime.IsSuccess)
+                return Result<List<DungeonType>>.Error(getTime.error);
+            
+            var dow = getTime.data.DayOfWeek;
+            var list = map
                 .Where(x => x.Value.Contains(dow))
                 .Select(x => x.Key).ToList();
+
+            return Result<List<DungeonType>>.Complete(list);
         }
 
         public async UniTask<Result> Start(GameType type, int id)
@@ -55,10 +61,50 @@ namespace RGLabs.Network.Service
                 return Error.NotEnoughAp;
 
             var record = get.data.gameRecord;
-            if (!IsOpened(record, entity))
-                return Error.NotOpened;
+            var checkIsOpened = await CheckIsOpened(record, entity);
+            return !checkIsOpened.IsSuccess ? checkIsOpened.error : Error.None;
+        }
+        
+        private async UniTask<Error> CanClear(UserDataDto userData, IGameEntity entity)
+        {
+            var stamina = userData.stamina;
+            var update = await UpdateStamina(stamina);
+            if (!update.IsSuccess)
+                return update.error;
 
-            return Error.None;
+            if (stamina.point < entity.Ap)
+                return Error.NotEnoughAp;
+
+            var record = userData.gameRecord;
+            var checkIsOpened = await CheckIsOpened(record, entity);
+            return !checkIsOpened.IsSuccess ? checkIsOpened.error : Error.None;
+        }
+        
+        private async UniTask<Result> CheckIsOpened(GameRecordDto record, IGameEntity entity)
+        {
+            int lv = entity.Type switch
+            {
+                GameType.Stage => GetLatestStageLv(record),
+                GameType.Dungeon => GetLatestDungeonLv(record, ((DungeonEntity)entity).type),
+                _ => -1
+            };
+
+            if (lv + 1 < entity.Lv)
+            {
+                return Result.Error(Error.NotOpened);
+            }
+
+            if (entity is DungeonEntity dungeonEntity)
+            {
+                var getOpenedTypes = await GetOpenedDungeonTypes();
+                if(!getOpenedTypes.IsSuccess)
+                    return Result.Error(getOpenedTypes.error);
+
+                if(!getOpenedTypes.data.Contains(dungeonEntity.type))
+                    return Result.Error(Error.NotOpened);
+            }
+
+            return Result.Complete();
         }
 
         public async UniTask<Result<GameCleared>> Clear(GameType type, int id)
@@ -114,7 +160,7 @@ namespace RGLabs.Network.Service
 
             if (updateInventory)
             {
-                userData.inventory.items.AddOrNew(reward.items);
+                userData.inventory.items.Join(reward.items);
                 tables.Add(Table.Inventory, userData.inventory);
             }
 
@@ -215,35 +261,6 @@ namespace RGLabs.Network.Service
             }
 
             return transitions;
-        }
-
-        private async UniTask<Error> CanClear(UserDataDto userData, IGameEntity entity)
-        {
-            var stamina = userData.stamina;
-            var update = await UpdateStamina(stamina);
-            if (!update.IsSuccess)
-                return update.error;
-
-            if (stamina.point < entity.Ap)
-                return Error.NotEnoughAp;
-
-            var record = userData.gameRecord;
-            if (!IsOpened(record, entity))
-                return Error.NotOpened;
-
-            return Error.None;
-        }
-
-        private bool IsOpened(GameRecordDto record, IGameEntity entity)
-        {
-            int lv = entity.Type switch
-            {
-                GameType.Stage => GetLatestStageLv(record),
-                GameType.Dungeon => GetLatestDungeonLv(record, ((DungeonEntity)entity).type),
-                _ => -1
-            };
-
-            return lv + 1 >= entity.Lv;
         }
 
         private bool IsFirstClear(GameRecordDto record, IGameEntity entity)

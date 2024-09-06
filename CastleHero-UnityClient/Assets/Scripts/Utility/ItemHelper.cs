@@ -153,15 +153,15 @@ namespace RGLabs.Utility
             return id is Constants.GoldId or Constants.FreeDiaId or Constants.PaidDiaId;
         }
 
-        public static void AddOrNew(this List<IItem> exists, List<IItem> targets)
+        public static void Join(this List<IItem> exists, List<IItem> targets)
         {
             foreach (var item in targets)
             {
-                exists.AddOrNew(item);
+                exists.Join(item);
             }
         }
 
-        public static void AddOrNew(this List<IItem> items, IItem item)
+        public static void Join(this List<IItem> items, IItem item)
         {
             var exist = item is EquipItem ? null : items.Find(x => x.ItemId == item.ItemId);
 

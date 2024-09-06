@@ -61,7 +61,8 @@ namespace RGLabs.Common.UI
             _ctSource?.Dispose();
             _ctSource = null;
 
-            icon.sprite = null;
+            if (icon != null)
+                icon.sprite = null;
         }
 
         public void OnPointerClick(PointerEventData eventData)

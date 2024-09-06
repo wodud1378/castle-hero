@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common;
+using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI;
 using RGLabs.Data;
 using RGLabs.Data.Model;
+using RGLabs.Lobby.Shop.Popup;
 using RGLabs.Network.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Utility;
@@ -15,24 +18,46 @@ namespace RGLabs.Lobby.Shop.UI
 {
     public class UIShopItemSlot : UISlot
     {
-        public UISlot price;
-        public TMP_Text leftTime;
+        public UIPrice price;
+        public TMP_Text leftTimeForReset;
+        public TMP_Text leftTimeForExpire;
         public TMP_Text leftCount;
 
         public readonly ReactiveProperty<ShopItemEntity> data = new();
         public readonly ReactiveProperty<Product> product = new();
 
-        private readonly Timer _timer = new();
-        private IDisposable _timerSubscription;
+        private readonly Timer _resetTimer = new();
+        private readonly Timer _expireTimer = new();
 
-        private void Awake()
+        private IDisposable _resetSubscription;
+        private IDisposable _expireSubscription;
+
+        private bool _isSoldOut;
+
+        protected override void OnAwake()
         {
+            base.OnAwake();
+
             Observable.Merge(
                     data.Select(_ => UniRx.Unit.Default),
                     product.Select(_ => UniRx.Unit.Default))
                 .ThrottleFrame(1)
                 .Subscribe(_ => UpdateUI())
                 .AddTo(this);
+
+            Storage.userRepository.shopRecord.products
+                .ChangeAsObservable()
+                .ThrottleFrame(1)
+                .Subscribe(x =>
+                {
+                    if (!data.Value.IsValid)
+                        return;
+
+                    product.Value = x.FirstOrDefault(p => p.shopId == data.Value.Id);
+                })
+                .AddTo(this);
+
+            OnClick += OnClickSlot;
         }
 
         public UniTask Init(ShopItemEntity entity)
@@ -50,70 +75,106 @@ namespace RGLabs.Lobby.Shop.UI
             if (!entity.IsValid)
                 return;
 
+            var paymentType = ShopHelper.GetPaymentType(data.Value, product.Value, out int left, out int limit);
             if (leftCount != null)
             {
-                int limit = entity.count;
-                leftCount.text = product.Value == null
-                    ? $"{limit}/{limit}"
-                    : $"{limit - product.Value.byDefault}/{limit}";
+                leftCount.text = left == 0 && limit == 0
+                    ? string.Empty
+                    : $"{left}/{limit}";
             }
 
-            string spritePath = entity.costId switch
-            {
-                1 or 2 => Constants.DiaIcon,
-                3 => Constants.GoldIcon,
-                _ => string.Empty
-            };
-
-            string text = entity.costId == 0
-                ? $"\uffe6 {entity.costValue:N0}"
-                : $"{entity.costValue:N0}";
-
-            price.Init(spritePath, text)
+            price.Init(paymentType, entity.costId, entity.costValue)
                 .Forget();
 
-            SetTimer();
+            _isSoldOut = ShopHelper.IsSoldOut(data.Value, product.Value, out _, out _, out _);
+
+            state.Value = _isSoldOut
+                ? State.Dim
+                : State.Default;
+
+            price.gameObject.SetActive(!_isSoldOut);
+
+            SetSchedule();
         }
 
-        private void SetTimer()
+        private void OnClickSlot(UISlot _)
         {
-            if (leftTime == null)
-                return;
+            var paymentType = ShopHelper.GetPaymentType(data.Value, product.Value, out int _, out int _);
+
+            Context.popups.Open<PopupPurchase>(paymentType, data.Value);
+        }
+
+        private void SetSchedule()
+        {
+            if (leftTimeForReset != null)
+                leftTimeForReset.gameObject.SetActive(false);
             
-            var entity = data.Value;
-            if (entity.endDate == default)
-            {
-                leftTime.gameObject.SetActive(false);
+            if (leftTimeForExpire != null)
+                leftTimeForExpire.gameObject.SetActive(false);
+
+            if (product.Value == null)
                 return;
-            }
 
-            leftTime.gameObject.SetActive(true);
-
-            var currentTime = NetworkService.CurrentTime();
-            var endTime = entity.endDate;
-            var seconds = (endTime - currentTime).TotalSeconds;
-
-            _timer.Run(seconds);
-            _timerSubscription = _timer.leftTime
-                .Subscribe(OnTimerUpdate);
+            SetResetSchedule();
+            SetExpireSchedule();
         }
 
-        private void OnTimerUpdate(double seconds)
+        private void SetResetSchedule()
         {
-            if (seconds > 0)
-            {
-                leftTime.text = seconds.ToLeftTimeText();
+            if (leftTimeForReset == null)
                 return;
-            }
 
-            _timerSubscription.Dispose();
-            SetTimer();
+            _resetSubscription?.Dispose();
+            _resetSubscription = null;
+
+            var currentTime = NetworkService.CurrentTimeByLocal();
+            var nextReset = product.Value.nextReset;
+            if (_isSoldOut && nextReset != DateTime.MinValue)
+            {
+                leftTimeForReset.gameObject.SetActive(true);
+                _resetTimer.Run((nextReset - currentTime).TotalSeconds);
+                _resetSubscription =
+                    _resetTimer.leftTime.Subscribe(s => leftTimeForReset.text = s.ToLeftTimeForResetText());
+
+                _resetTimer.OnFinished -= SetResetSchedule;
+                _resetTimer.OnFinished += SetResetSchedule;
+            }
+            else
+            {
+                leftTimeForReset.gameObject.SetActive(false);
+            }
+        }
+
+        private void SetExpireSchedule()
+        {
+            if (leftTimeForExpire == null)
+                return;
+
+            _expireSubscription?.Dispose();
+            _expireSubscription = null;
+
+            var currentTime = NetworkService.CurrentTimeByLocal();
+            var expire = product.Value.expireDate;
+            if (expire != DateTime.MinValue)
+            {
+                leftTimeForExpire.gameObject.SetActive(true);
+                _expireTimer.Run((expire - currentTime).TotalSeconds);
+                _expireSubscription = _expireTimer.leftTime.Subscribe(
+                    s => leftTimeForExpire.text = s.ToLeftTimeForExpireText());
+
+                _expireTimer.OnFinished -= SetExpireSchedule;
+                _expireTimer.OnFinished += SetExpireSchedule;
+            }
+            else
+            {
+                leftTimeForExpire.gameObject.SetActive(false);
+            }
         }
 
         private void OnDestroy()
         {
-            _timerSubscription?.Dispose();
-            _timer.Dispose();
+            _expireTimer.Dispose();
+            _resetTimer.Dispose();
         }
     }
 }

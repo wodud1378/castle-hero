@@ -53,7 +53,7 @@ namespace RGLabs.Data.Model
         [DataField("Shop_Count_Ad")]
         public int countForAd;
         [DataField("Shop_Count")]
-        public int count;
+        public int totalCount;
         [DataField("Shop_Count_Reset")]
         public int resetDays;
         [DataField("Shop_Link_Front" )]

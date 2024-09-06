@@ -1051,8 +1051,9 @@ MonoBehaviour:
   highlight: {fileID: 0}
   icon: {fileID: 0}
   label: {fileID: 1503334170346676253}
-  price: {fileID: 7370632432258290091}
-  leftTime: {fileID: 0}
+  price: {fileID: 6923701075795967897}
+  leftTimeForReset: {fileID: 0}
+  leftTimeForExpire: {fileID: 1142855982485945834}
   leftCount: {fileID: 2414523704486081406}
 --- !u!114 &4002347135984738199
 MonoBehaviour:
@@ -1422,7 +1423,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7080848488262371058}
   - component: {fileID: 3163634715045422215}
-  - component: {fileID: 7370632432258290091}
+  - component: {fileID: 6923701075795967897}
   m_Layer: 5
   m_Name: Price
   m_TagString: Untagged
@@ -1478,7 +1479,7 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &7370632432258290091
+--- !u!114 &6923701075795967897
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1487,7 +1488,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6033553816290917668}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3f07f0f215140e4b18744387695e10c, type: 3}
+  m_Script: {fileID: 11500000, guid: 2f052347cf4546ff9d59b08ff7d79851, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _grayScaleOnDim: 0

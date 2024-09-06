@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using RGLabs.Common;
 using RGLabs.Data;
 using RGLabs.Prepare.UI;
@@ -49,7 +50,7 @@ namespace RGLabs.Network.Shared
             };
         }
 
-        public bool IsEmpty() => gold > 0 || freeDia > 0 || paidDia > 0;
+        public bool IsEmpty() => gold == 0 && freeDia == 0 && paidDia == 0;
 
         public bool TryConsumeDia(int amount)
         {
@@ -137,27 +138,7 @@ namespace RGLabs.Network.Shared
         public GameRecordDto gameRecord;
         public ShopRecordDto shopRecord;
     }
-
-    #region Shop
-
-    public class Purchase
-    {
-        public struct History
-        {
-            public int type;
-            public DateTime at;
-        }
-
-        public int shopId;
-        public int byDefault;
-        public int byAd;
-        public int byFree;
-        public DateTime nextReset;
-        public List<History> histories;
-    }
-
-    #endregion
-
+    
     #region Dungeon
 
     public class DungeonRecord
@@ -173,10 +154,19 @@ namespace RGLabs.Network.Shared
 
     public class Product
     {
+        public struct BuyCount
+        {
+            public int byFree;
+            public int byAd;
+            public int byDefault;
+
+            [JsonIgnore]
+            public int Sum => byFree + byAd + byDefault;
+        }
+        
         public int shopId;
-        public int byDefault;
-        public int byAd;
-        public int byFree;
+        public BuyCount total;
+        public BuyCount current;
         public DateTime nextReset;
         public DateTime expireDate;
         public DateTime updatedAt;
@@ -191,15 +181,7 @@ namespace RGLabs.Network.Shared
 
     public class ItemBought
     {
-        public int shopId;
         public Pack pack;
-        public ShopRecordDto record;
-    }
-
-    public class ItemsSold
-    {
-        public CurrencyDto currency;
-        public List<IItem> items;
     }
 
     #endregion

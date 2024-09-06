@@ -1,11 +1,15 @@
 using System;
+using System.Linq;
 using RGLabs.Castle;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
+using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Lobby.Shop.UI;
 using RGLabs.Lobby.UI;
+using RGLabs.Lobby.UI.Popup;
+using RGLabs.Network.Service;
 using RGLabs.Prepare.UI;
 using RGLabs.Utility;
 using UniRx;
@@ -22,7 +26,7 @@ namespace RGLabs.Lobby.Behaviours
     public class LobbyBehaviour : SceneBehaviour, IBackButtonListener
     {
         [SerializeField] private AssetReference _bgm;
-        
+
         [SerializeField] private UILobby _uiLobby;
         [SerializeField] private UIPrepare _uiPrepare;
         [SerializeField] private UIShop _uiShop;
@@ -39,11 +43,51 @@ namespace RGLabs.Lobby.Behaviours
             await _formation.Init();
 
             _uiPrepare.Init();
-            
+
             Context.Transition.StateObserver
                 .DistinctUntilChanged()
                 .Subscribe(OnNextState)
                 .AddTo(this);
+
+            if (Context.Transition.CurrentState == State.Lobby)
+            {
+                ReceiveSubscribeProducts();
+            }
+        }
+
+        private async void ReceiveSubscribeProducts()
+        {
+            var products = Storage.userRepository.shopRecord.products;
+            if (products == null || products.Count == 0)
+                return;
+
+            var currentTime = NetworkService.CurrentTimeByLocal();
+            var hasProducts = products
+                .Any(x =>
+                {
+                    if (x.expireDate <= currentTime)
+                        return false;
+
+                    if ((currentTime.Date - x.updatedAt.Date).TotalDays <= 0)
+                        return false;
+                    
+                    if (!Storage.db.shop.TryFind(x.shopId, out var entity))
+                        return false;
+
+                    if (!Storage.db.shopGroup.TryFind(entity.groupId, out var groupEntity))
+                        return false;
+
+                    return groupEntity is { ids: { Length: > 0 }, quantities: { Length: > 0 } };
+                });
+
+            if (!hasProducts)
+                return;
+            
+            var result = await NetworkService.Shop.ReceiveSubscribedItems();
+            if (!result.IsSuccess)
+                Context.popups.Open<PopupCommon>(result.error);
+            else
+                Context.popups.Open<PopupReceivedItems>(result.data);
         }
 
         private void OnNextState(State state)
@@ -56,7 +100,7 @@ namespace RGLabs.Lobby.Behaviours
                     Context.Back.Remove(this);
                     break;
                 case State.Shop:
-                    TransitionTo(_current, _uiShop, ()=> _uiShop.Init());
+                    TransitionTo(_current, _uiShop, () => _uiShop.Init());
                     Context.startButton.enabled = false;
                     Context.Back.Add(this);
                     break;
@@ -119,10 +163,10 @@ namespace RGLabs.Lobby.Behaviours
             var entrance = Storage.userRepository.entrance.Value;
             if (!Storage.db.TryLoadGameEntity(entrance.type, entrance.id, out var entity))
                 return;
-            
+
             _uiLobby.Dispose();
             _uiPrepare.Dispose();
-            
+
             new StartGame { entity = entity }.Publish();
 
             Context.Back.Clear();

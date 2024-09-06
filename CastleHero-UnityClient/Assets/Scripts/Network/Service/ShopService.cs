@@ -11,6 +11,43 @@ namespace RGLabs.Network.Service
 {
     public class ShopService : NetworkServiceBase
     {
+        public async UniTask<Result> RefreshProducts()
+        {
+            var get = await GetTable<ShopRecordDto>(Table.ShopRecord);
+            if (!get.IsSuccess)
+                return Result.Error(get.error);
+
+            var shopRecord = get.data;
+            var products = shopRecord.products;
+            if (products == null || products.Count == 0)
+                return Result.Complete();
+
+            var getTime = await GetServerTime();
+            if (!getTime.IsSuccess)
+                return Result.Error(getTime.error);
+
+            var currentTime = getTime.data;
+            products.ForEach(product =>
+            {
+                if (!Storage.db.shop.TryFind(product.shopId, out var entity))
+                    return;
+
+                if (entity.totalCount <= 0 || product.nextReset > currentTime)
+                    return;
+
+                product.current.byFree = 0;
+                product.current.byAd = 0;
+                product.current.byDefault = 0;
+            });
+
+            var update = await UpdateTable(Table.ShopRecord, shopRecord);
+            if (!update.IsSuccess)
+                return Result.Error(update.error);
+
+            Storage.userRepository.shopRecord.Update(shopRecord);
+            return Result.Complete();
+        }
+
         public async UniTask<Result<Pack>> ReceiveSubscribedItems()
         {
             var get = await GetTables(Table.Currency, Table.Inventory, Table.Character, Table.ShopRecord);
@@ -18,35 +55,37 @@ namespace RGLabs.Network.Service
                 return Result<Pack>.Error(get.error);
 
             var userData = get.data;
-            var currentTime = NetworkService.CurrentTime();
-            var packs = userData.shopRecord?.products?
-                // 만료, 최근 수령일 체크.
-                .Where(x =>
-                {
-                    if (x.expireDate <= currentTime)
-                        return false;
+            var getServerTime = await GetServerTime();
+            if (!getServerTime.IsSuccess)
+                return Result<Pack>.Error(getServerTime.error);
 
-                    return (currentTime.Date - x.updatedAt.Date).TotalDays > 0;
-                })
-                // 팩으로 변환.
-                .Select(x =>
-                {
-                    x.updatedAt = currentTime;
-                    if (Storage.db.shop.TryFind(x.shopId, out var entity) &&
-                        Storage.db.shopGroup.TryFind(entity.groupId, out var groupEntity))
-                    {
-                        return GetPack(groupEntity);
-                    }
-
-                    return null;
-                })
-                // null 필터링.
-                .Where(x => x != null)
-                .ToList();
-
-            if (packs == null)
+            var currentTime = getServerTime.data;
+            if (userData.shopRecord?.products == null || userData.shopRecord.products.Count == 0)
                 return Result<Pack>.Error(Error.InvalidRequest);
-            
+
+            var products = userData.shopRecord.products;
+            var packs = new List<Pack>();
+            products.ForEach(x =>
+            {
+                if (x.expireDate <= currentTime)
+                    return;
+
+                if ((currentTime.Date - x.updatedAt.Date).TotalDays <= 0)
+                    return;
+
+                if (!Storage.db.shop.TryFind(x.shopId, out var entity))
+                    return;
+
+                if (!Storage.db.shopGroup.TryFind(entity.groupId, out var groupEntity))
+                    return;
+
+                x.updatedAt = currentTime;
+                packs.Add(GetPack(groupEntity));
+            });
+
+            if (packs.Count == 0)
+                return Result<Pack>.Error(Error.InvalidRequest);
+
             var total = new Pack
             {
                 currency = new(),
@@ -57,15 +96,15 @@ namespace RGLabs.Network.Service
             packs.ForEach(x =>
             {
                 total.currency += x.currency;
-                
-                if(x.items != null)
-                    total.items.AddOrNew(x.items);
-                
-                if(x.unitIds != null)
+
+                if (x.items != null)
+                    total.items.Join(x.items);
+
+                if (x.unitIds != null)
                     total.unitIds.AddRange(x.unitIds);
             });
 
-            var tables = new Dictionary<Table, object>();
+            var tables = new Dictionary<Table, object> { { Table.ShopRecord, userData.shopRecord } };
             if (!total.currency.IsEmpty())
             {
                 userData.currency += total.currency;
@@ -86,10 +125,10 @@ namespace RGLabs.Network.Service
                 if (newUnitStartIndex != -1)
                     tables.Add(Table.Character, userData.characters);
             }
-            
+
             if (hasPackItem || hasSoulItem)
             {
-                inventory.items.AddOrNew(total.items);
+                inventory.items.Join(total.items);
                 tables.Add(Table.Inventory, inventory);
             }
 
@@ -99,7 +138,7 @@ namespace RGLabs.Network.Service
                 : Result<Pack>.Error(update.error);
         }
 
-        public async UniTask<Result<ItemBought>> BuyItem(int type, int id, int quantity)
+        public async UniTask<Result<ItemBought>> BuyItem(PaymentType type, int id)
         {
             if (!Storage.db.shop.TryFind(id, out var entity) ||
                 !Storage.db.shopGroup.TryFind(entity.groupId, out var groupEntity))
@@ -107,7 +146,6 @@ namespace RGLabs.Network.Service
 
             var pack = GetPack(groupEntity);
             bool hasUnit = pack.unitIds.Count > 0;
-
             var readTables = new List<Table>
             {
                 Table.Currency,
@@ -129,22 +167,36 @@ namespace RGLabs.Network.Service
             if (!HasPrevItem(record, entity))
                 return Result<ItemBought>.Error(Error.NotOpenedProduct);
 
-            var currentTime = NetworkService.CurrentTime();
-            var product = record.products?.Find(x => x.shopId == entity.Id)
-                          ?? new Product { shopId = id, };
+            var getTime = await GetServerTime();
+            if (!getTime.IsSuccess)
+                return Result<ItemBought>.Error(getTime.error);
 
-            if (!TryPurchase(currency, inventory, product, entity, currentTime, type, quantity,
+            var currentTime = getTime.data;
+            record.products ??= new();
+            var product = record.products.Find(x => x.shopId == id);
+            if (product == null)
+            {
+                product = new Product { shopId = id };
+                record.products.Add(product);
+            }
+
+            if (!TryPurchase(currency, inventory, product, entity, currentTime, type,
                     out var error, out var history))
                 return Result<ItemBought>.Error(error);
 
-            if (entity.duration > 0)
-                product.expireDate = currentTime.AddDays(entity.duration);
+            int duration = entity.duration;
+            if (duration > 0)
+            {
+                var expire = product.expireDate;
+                product.expireDate = expire > currentTime
+                    ? expire.AddDays(duration)
+                    : currentTime.AddDays(entity.duration);
+            }
 
-
-            record.histories ??= new List<ShopRecordDto.History>();
+            record.histories ??= new();
             record.histories.Add(history);
 
-            var tables = new Dictionary<Table, object>();
+            var tables = new Dictionary<Table, object> { { Table.ShopRecord, record } };
             if (!pack.currency.IsEmpty())
             {
                 currency += pack.currency;
@@ -166,17 +218,13 @@ namespace RGLabs.Network.Service
 
             if (hasPackItem || hasSoulItem)
             {
-                inventory.items.AddOrNew(pack.items);
+                inventory.items.Join(pack.items);
                 tables.Add(Table.Inventory, inventory);
             }
 
             var update = await UpdateTables(tables);
             return update.IsSuccess
-                ? Result<ItemBought>.Complete(new()
-                {
-                    shopId = entity.Id,
-                    pack = pack,
-                })
+                ? Result<ItemBought>.Complete(new() { pack = pack })
                 : Result<ItemBought>.Error(update.error);
         }
 
@@ -185,7 +233,7 @@ namespace RGLabs.Network.Service
             record.products?.Find(x => x.shopId == entity.prevItem) != null;
 
         private bool TryPurchase(CurrencyDto currency, InventoryDto inventory, Product product, ShopItemEntity entity,
-            DateTime currentTime, int type, int quantity, out Error error, out ShopRecordDto.History history)
+            DateTime currentTime, PaymentType type, out Error error, out ShopRecordDto.History history)
         {
             history = null;
 
@@ -197,14 +245,14 @@ namespace RGLabs.Network.Service
 
             product.updatedAt = currentTime;
 
-            if (IsSoldOut(product, entity, out bool byDefault, out bool byAd, out bool byFree))
+            if (ShopHelper.IsSoldOut(entity, product, out bool byDefault, out bool byAd, out bool byFree))
             {
                 error = Error.SoldOut;
                 return false;
             }
 
             bool soldOutByType = true;
-            switch ((PaymentType)type)
+            switch (type)
             {
                 case PaymentType.Default:
                     soldOutByType = byDefault;
@@ -212,17 +260,27 @@ namespace RGLabs.Network.Service
                         !Purchase(currency, inventory, entity.costId, entity.costValue, out error))
                         return false;
 
-                    product.byDefault = soldOutByType
-                        ? product.byDefault
-                        : product.byDefault + 1;
+                    product.current.byDefault = soldOutByType
+                        ? product.current.byDefault
+                        : product.current.byDefault + 1;
+
+                    ++product.total.byDefault;
                     break;
                 case PaymentType.Ad:
                     soldOutByType = byAd;
-                    product.byAd = soldOutByType ? product.byAd : product.byAd + 1;
+                    product.current.byAd = soldOutByType
+                        ? product.current.byAd
+                        : product.current.byAd + 1;
+
+                    ++product.total.byAd;
                     break;
                 case PaymentType.Free:
                     soldOutByType = byFree;
-                    product.byFree = soldOutByType ? product.byFree : product.byFree + 1;
+                    product.current.byFree = soldOutByType
+                        ? product.current.byFree
+                        : product.current.byFree + 1;
+
+                    ++product.total.byFree;
                     break;
             }
 
@@ -232,14 +290,14 @@ namespace RGLabs.Network.Service
                 return false;
             }
 
-            if (IsSoldOut(product, entity, out _, out _, out _))
+            if (ShopHelper.IsSoldOut(entity, product, out _, out _, out _))
                 product.nextReset = currentTime.AddDays(entity.resetDays);
 
             error = Error.None;
             history = new ShopRecordDto.History
             {
                 id = entity.Id,
-                type = type,
+                type = (int)type,
                 time = currentTime
             };
 
@@ -248,6 +306,13 @@ namespace RGLabs.Network.Service
 
         private bool Purchase(CurrencyDto currency, InventoryDto inventory, int id, int amount, out Error error)
         {
+            // 임시 인앱 결제 성공처리.
+            if (id == 0)
+            {
+                error = Error.None;
+                return true;
+            }
+
             if (id.IsCurrency())
             {
                 if (!currency.TryConsume(id, amount))
@@ -260,23 +325,13 @@ namespace RGLabs.Network.Service
             {
                 if (!inventory.items.TryConsumeItem(id, amount))
                 {
-                    error = Error.NotEnoughAp;
+                    error = Error.NotEnoughItem;
                     return false;
                 }
             }
 
             error = Error.None;
             return true;
-        }
-
-        private bool IsSoldOut(Product product, ShopItemEntity entity, out bool byDefault, out bool byAd,
-            out bool byFree)
-        {
-            byDefault = product.byDefault >= entity.count;
-            byAd = product.byAd >= entity.countForAd;
-            byFree = product.byDefault >= entity.countForFree;
-
-            return byDefault && byAd && byFree;
         }
 
         private bool IsProductTImeValid(DateTime time, ShopItemEntity entity)
@@ -306,6 +361,8 @@ namespace RGLabs.Network.Service
                     unitIds.Add(id);
                 else
                     ItemGen.NewItems(id, quantity, currency, items);
+
+                ++index;
             }
 
             return new Pack

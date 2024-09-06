@@ -6,6 +6,8 @@ namespace RGLabs.Common
 {
     public class Timer : IDisposable
     {
+        public event Action OnFinished;
+        
         public readonly ReactiveProperty<double> leftTime = new();
 
         private IDisposable _update;
@@ -26,6 +28,8 @@ namespace RGLabs.Common
                         return;
                     
                     Stop();
+                    
+                    OnFinished?.Invoke();
                 });
         }
 
@@ -35,6 +39,7 @@ namespace RGLabs.Common
         {
             leftTime?.Dispose();
             _update?.Dispose();
+            OnFinished = null;
         }
     }
 }

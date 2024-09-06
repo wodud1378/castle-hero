@@ -428,7 +428,7 @@ namespace RGLabs.Network.Service
             return Result.Complete();
         }
 
-        private async UniTask<Result<DateTime>> GetServerTime()
+        protected async UniTask<Result<DateTime>> GetServerTime()
         {
             var getServerTime = await Call(
                 Backend.Utils.GetServerTime,
