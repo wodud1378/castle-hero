@@ -88,6 +88,8 @@ namespace RGLabs.Data.DB
             return true;
         }
 
+        public T Find(Predicate<T> predicate) => Array.Find(entities, predicate);
+        
         public List<T> FindAll(Predicate<T> predicate)
         {
             var list = new List<T>();

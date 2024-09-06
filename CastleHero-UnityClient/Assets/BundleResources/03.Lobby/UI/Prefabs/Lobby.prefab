@@ -347,6 +347,9 @@ MonoBehaviour:
   _summon: {fileID: 3001186427410011717}
   _dungeon: {fileID: 6869267406591306359}
   _castle: {fileID: 7885171645262743727}
+  _noAdsMark: {fileID: 4467565613342905390}
+  _contractMark01: {fileID: 900726144319400856}
+  _contractMark02: {fileID: 8522857586658386683}
   _uiTest: {fileID: 0}
   _cheatButton: {fileID: 7978864756319733444}
 --- !u!95 &7883919529514807641
@@ -544,7 +547,6 @@ MonoBehaviour:
   icon: {fileID: 3635119234370594762}
   label: {fileID: 0}
   _quantity: {fileID: 1537285339014581057}
-  _portraitRoot: {fileID: 0}
   quantityDisplay:
     value: 1
 --- !u!1 &418368037246130784
@@ -3550,7 +3552,6 @@ MonoBehaviour:
   icon: {fileID: 45046701311510595}
   label: {fileID: 0}
   _quantity: {fileID: 7173573718352012159}
-  _portraitRoot: {fileID: 0}
   quantityDisplay:
     value: 1
 --- !u!1 &2490416574135692394
