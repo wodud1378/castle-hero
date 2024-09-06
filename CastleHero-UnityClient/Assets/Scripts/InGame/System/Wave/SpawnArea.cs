@@ -49,7 +49,7 @@ namespace RGLabs.InGame.System.Wave
             var position = request.position;
             var unit = await _factory.Create(request.id, request.lv, 0, position);
             unit.Core.onRest.Value = false;
-            unit.Core.movement.Default = _castle.position;
+            unit.Core.movement.Default = Vector2.zero;
             unit.autoRelease = false;
             unit.OnDead += OnUnitDead;
 

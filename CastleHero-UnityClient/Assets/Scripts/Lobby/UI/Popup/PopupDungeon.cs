@@ -57,7 +57,7 @@ namespace RGLabs.Lobby.UI.Popup
             _select.Open(slot.Type, slot.DetailType);
             var rectTr = (_select.transform as RectTransform)!;
             rectTr.SetSiblingIndex(slot.transform.GetSiblingIndex() + 1);
-            Reposition(rectTr);
+            //Reposition(rectTr);
 
             var selected = await _select.SelectTask;
             if (!selected.IsValid)
