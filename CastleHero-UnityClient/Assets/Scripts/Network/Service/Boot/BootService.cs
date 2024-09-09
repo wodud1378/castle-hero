@@ -96,9 +96,10 @@ namespace RGLabs.Network.Service.Boot
 
         private async UniTask<Result> Init()
         {
-            var initUnityServices = await InitUnityServices();
-            if (!initUnityServices.IsSuccess)
-                return Result.Error(initUnityServices.error, initUnityServices.errorMessage);
+            // TODO : 클라우드 프로젝트 생성 및 IAP 설정 후 주석 비활성화
+            // var initUnityServices = await InitUnityServices();
+            // if (!initUnityServices.IsSuccess)
+            //     return Result.Error(initUnityServices.error, initUnityServices.errorMessage);
             
             var initServer = _initService.InitServer("dev");
             if (!initServer.IsSuccess)
@@ -193,9 +194,9 @@ namespace RGLabs.Network.Service.Boot
             Storage.db = result.db;
             Storage.localize = result.localize;
 
-            var inAppProducts = result.db.shop.GetInAppProducts();
-            var iap = new IAPManager(inAppProducts);
-            NetworkService.Shop.RegisterIAP(iap);
+            // var inAppProducts = result.db.shop.GetInAppProducts();
+            // var iap = new IAPManager(inAppProducts);
+            // NetworkService.Shop.RegisterIAP(iap);
             
             await Storage.localize.Set(Application.systemLanguage);
         }

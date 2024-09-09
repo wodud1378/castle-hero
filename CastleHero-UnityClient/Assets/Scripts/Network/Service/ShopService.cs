@@ -11,10 +11,12 @@ namespace RGLabs.Network.Service
 {
     public class ShopService : NetworkServiceBase
     {
-        public IAPManager InApp { get; private set; }
+        private IAPManager _inApp;
 
-        public void RegisterIAP(IAPManager iap) => InApp = iap;
-        
+        public void RegisterIAP(IAPManager iap) => _inApp = iap;
+
+        public string InAppPrice(string productKey, int fallBack = -1) => _inApp?.GetLocalizedPrice(productKey) ?? $"\uffe6 {fallBack:N0}";
+
         public async UniTask<Result> RefreshProducts()
         {
             var get = await GetTable<ShopRecordDto>(Table.ShopRecord);

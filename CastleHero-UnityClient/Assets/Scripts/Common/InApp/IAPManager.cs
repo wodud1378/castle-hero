@@ -75,7 +75,7 @@ namespace RGLabs.Common.InApp
             if (!IsInitialized()) return null;
 
             Product product = storeController.products.WithID(productId);
-            return product != null ? product.metadata.localizedPriceString : null;
+            return product?.metadata.localizedPriceString;
         }
 
         // 구매 성공 시 호출되는 콜백
