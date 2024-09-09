@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using BackEnd;
 using Cysharp.Threading.Tasks;
 using RGLabs.Common.InApp;
+using RGLabs.Common.Localize;
 using RGLabs.Common.Sound;
 using RGLabs.Data;
 using RGLabs.Data.Repositories;
 using RGLabs.Network.DB.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Network.Service.Login;
-using RGLabs.Utility;
-using Unity.Services.Core;
-using Unity.Services.Core.Environments;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -24,6 +23,8 @@ namespace RGLabs.Network.Service.Boot
         private readonly ILoginService _autoLoginService;
         private readonly InitService _initService;
         private readonly BootConfig _config;
+
+        private ChartInfo[] _chartList;
 
         public BootService(BootConfig config, IBootServiceHandler handler, IBackendErrorHandler errorHandler = null)
         {
@@ -65,33 +66,89 @@ namespace RGLabs.Network.Service.Boot
                 var loginResponse = await loginService.Login();
                 var code = loginResponse.statusCode;
                 newUser = code == 201;
-                if (newUser)
-                    await _handler.CheckPolicy();
             }
 
             Debug.Log("로그인 성공");
+
+            await CacheChartList();
+            await InitLocalize();
+            await _handler.CheckPolicy();
 
             var nickname = await GetNickname();
 
             Debug.Log(newUser
                 ? "신규 유저 로그인"
                 : "기존 유저 로그인");
+            
+            // 유저 데이터 로드.
+            // 신규 가입이거나 데이터 초기화 이전 종료 등으로
+            // 테이블이 정상 초기화 되지 않았을 경우 데이터 생성.
+            Result<UserDataDto> result;
+            if (newUser)
+            {
+                result = await NetworkService.User.CreateUserData();
+            }
+            else
+            {
+                result = await NetworkService.User.GetUserData();
 
-            var task = newUser
-                ? NetworkService.User.Init()
-                : NetworkService.User.GetUserData();
+                if (!result.IsSuccess && result.statusCode == 404)
+                {
+                    result = await NetworkService.User.CreateUserData();
+                }
+            }
 
-            var result = await task;
             if (!result.IsSuccess)
+            {
                 await _handler.OnError(result);
+            }
+
 
             Debug.Log("데이터 불러오기 완료");
 
-            await InitFromServer(nickname, result.data);
+            await InitChart(nickname, result.data);
 
             _handler.OnInitDone();
 
             Debug.Log("부팅 성공");
+        }
+
+        private async UniTask<Result> CacheChartList()
+        {
+            var response = await _initService.GetChartList();
+            if (!response.IsSuccess)
+            {
+                _handler
+                    .OnError(response)
+                    .Forget();
+
+                return Result.Error(response.error);
+            }
+
+            _chartList = response.data;
+            return Result.Complete();
+        }
+
+        private async UniTask<Result> InitLocalize()
+        {
+            var result = await _initService.GetChartContent(
+                _chartList.FirstOrDefault(x => x.chartName == "localize")
+                    .selectedChartFileId.ToString());
+
+            if (!result.IsSuccess)
+            {
+                _handler
+                    .OnError(result)
+                    .Forget();
+
+                return Result.Error(result.error);
+            }
+
+            Storage.localize = new LocalizeText(result.raw.FlattenRows());
+
+            await Storage.localize.Set(Application.systemLanguage);
+
+            return Result.Complete();
         }
 
         private async UniTask<Result> Init()
@@ -100,14 +157,14 @@ namespace RGLabs.Network.Service.Boot
             // var initUnityServices = await InitUnityServices();
             // if (!initUnityServices.IsSuccess)
             //     return Result.Error(initUnityServices.error, initUnityServices.errorMessage);
-            
+
             var initServer = _initService.InitServer("dev");
             if (!initServer.IsSuccess)
             {
                 _handler
                     .OnError(initServer)
                     .Forget();
-                
+
                 return Result.Error(initServer.error);
             }
 
@@ -124,7 +181,7 @@ namespace RGLabs.Network.Service.Boot
 
             Storage.settingRepository = new();
             Storage.soundPath = await Addressables.LoadAssetAsync<SoundPath>("Sound/SoundPath.asset");
-            
+
             return Result.Complete();
         }
 
@@ -173,7 +230,7 @@ namespace RGLabs.Network.Service.Boot
             return nickname;
         }
 
-        private async UniTask InitFromServer(string nickname, UserDataDto userData)
+        private async UniTask InitChart(string nickname, UserDataDto userData)
         {
             var service = new DBLoadService(_initService);
             var response = await _initService.GetChartList();
@@ -190,32 +247,29 @@ namespace RGLabs.Network.Service.Boot
             var result = await service.InitialLoad(chartList);
 
             Storage.inGameRepository = new();
-            Storage.userRepository = new UserRepository(nickname, userData);
-            Storage.db = result.db;
-            Storage.localize = result.localize;
+            Storage.userRepository = new(nickname, userData);
+            Storage.db = result;
 
             // var inAppProducts = result.db.shop.GetInAppProducts();
             // var iap = new IAPManager(inAppProducts);
             // NetworkService.Shop.RegisterIAP(iap);
-            
-            await Storage.localize.Set(Application.systemLanguage);
         }
 
-        private async UniTask<Result> InitUnityServices()
-        {
-            try
-            {
-                var options = new InitializationOptions().SetEnvironmentName("production");
-
-                await UnityServices.InitializeAsync(options);
-
-                return Result.Complete();
-            }
-            catch (Exception e)
-            {
-                return Result.Error(Error.Unknown, e.ToString());
-            }
-        }
+        // private async UniTask<Result> InitUnityServices()
+        // {
+        //     try
+        //     {
+        //         var options = new InitializationOptions().SetEnvironmentName("production");
+        //
+        //         await UnityServices.InitializeAsync(options);
+        //
+        //         return Result.Complete();
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         return Result.Error(Error.Unknown, e.ToString());
+        //     }
+        // }
 
         public void Dispose() => _errorHandler?.Detach();
     }

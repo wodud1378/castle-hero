@@ -20,7 +20,7 @@ namespace RGLabs.Network.DB.Service
 
         public DBLoadService(InitService service) => _service = service;
 
-        public async UniTask<(DBCollections db, LocalizeText localize)> InitialLoad(ChartInfo[] chartList)
+        public async UniTask<DBCollections> InitialLoad(ChartInfo[] chartList)
         {
             DBCollections collections = new();
 
@@ -54,13 +54,9 @@ namespace RGLabs.Network.DB.Service
             LoadInstance<DungeonDB>(map, x => collections.dungeons = x);
             LoadInstance<DungeonRewardDB>(map, x => collections.dungeonRewards = x);
 
-            var localize = map.TryGetValue("localize", out var data)
-                ? new LocalizeText(data.rawData)
-                : null;
-
             collections.units.CacheUnitSizes();
 
-            return (collections, localize);
+            return collections;
         }
 
 #if UNITY_EDITOR

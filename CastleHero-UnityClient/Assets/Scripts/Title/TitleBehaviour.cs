@@ -1,5 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Sound;
 using RGLabs.Common.UI.Popup;
@@ -8,6 +9,7 @@ using RGLabs.Network.Service.Boot;
 using RGLabs.Network.Service.Login;
 using RGLabs.Title.UI.Popup;
 using UnityEngine;
+using JsonConvert = BackEnd.BackndNewtonsoft.Json.JsonConvert;
 
 namespace RGLabs.Title
 {
@@ -15,8 +17,11 @@ namespace RGLabs.Title
     {
         public bool terms;
         public bool privacy;
+        public bool share;
         public bool push;
         public bool nightPush;
+
+        [JsonIgnore] public bool updated;
     }
 
     public class TitleBehaviour : MonoBehaviour, IBootServiceHandler
@@ -32,7 +37,7 @@ namespace RGLabs.Title
         {
             var service = new BootService(_config, this);
             service.Start().Forget();
-            
+
             //Context.sounds = _soundManager;
         }
 
@@ -41,8 +46,8 @@ namespace RGLabs.Title
             Debug.LogError(
                 $"[result] :{response.error}\n" +
                 $"[code] : {response.statusCode}" +
-            $"[raw] : {response.raw.GetFlattenJSON().ToJson()}");
-            
+                $"[raw] : {response.raw.GetFlattenJSON().ToJson()}");
+
             return UniTask.CompletedTask;
         }
 
@@ -87,14 +92,24 @@ namespace RGLabs.Title
 
         public async UniTask<PolicyAgreement> CheckPolicy()
         {
-            _policyPopup.gameObject.SetActive(true);
+            var saved = PlayerPrefs.GetString("policy", string.Empty);
+            var agreement = !string.IsNullOrEmpty(saved)
+                ? JsonConvert.DeserializeObject<PolicyAgreement>(saved)
+                : default;
+            
+            while (!agreement.terms || !agreement.privacy)
+            {
+                _policyPopup.gameObject.SetActive(true);
 
-            await _policyPopup.Open();
-            var agreement = await _policyPopup.AgreementTask;
+                await _policyPopup.Open();
+                agreement = await _policyPopup.AgreementTask;
+            }
 
+            var json = JsonConvert.SerializeObject(agreement);
+            PlayerPrefs.SetString("policy", json);
             PlayerPrefs.SetInt("push", agreement.push ? 1 : 0);
             PlayerPrefs.SetInt("push-night", agreement.nightPush ? 1 : 0);
-
+            
             return agreement;
         }
     }

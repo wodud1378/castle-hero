@@ -18,7 +18,7 @@ namespace RGLabs.Network.Service
         
         public UniTask<Result<UserDataDto>> GetUserData() => GetTables();
         
-        public async UniTask<Result<UserDataDto>> Init()
+        public async UniTask<Result<UserDataDto>> CreateUserData()
         {
             var ids = new List<int>
             {

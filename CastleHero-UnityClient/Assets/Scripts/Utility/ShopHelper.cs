@@ -43,20 +43,21 @@ namespace RGLabs.Utility
         {
             limit = 0;
             left = 0;
+            var count = product.GetBuyCount();
             var type = GetPaymentType(entity, product);
             switch (type)
             {
                 case PaymentType.Default:
-                    limit = entity.totalCount - product.current.byFree - product.current.byAd;
-                    left = entity.totalCount - product.current.Sum;
+                    limit = entity.totalCount - count.byFree - count.byAd;
+                    left = entity.totalCount - count.Sum;
                     break;
                 case PaymentType.Ad:
                     limit = entity.countForAd;
-                    left = entity.countForAd - product.current.byAd;
+                    left = entity.countForAd - count.byAd;
                     break;
                 case PaymentType.Free:
                     limit = entity.countForFree;
-                    left = entity.countForFree - product.current.byFree;
+                    left = entity.countForFree - count.byFree;
                     break;
             }
 
@@ -67,33 +68,28 @@ namespace RGLabs.Utility
         {
             limit = 0;
             left = 0;
+            var count = product.GetBuyCount();
             var type = GetPaymentType(entity, product);
             switch (type)
             {
                 case PaymentType.Default:
-                    limit = entity.totalCount - product.current.byFree - product.current.byAd;
-                    left = entity.totalCount - product.current.Sum;
+                    limit = entity.totalCount - count.byFree - count.byAd;
+                    left = entity.totalCount - count.Sum;
                     break;
                 case PaymentType.Ad:
                     limit = entity.countForAd;
-                    left = entity.countForAd - product.current.byAd;
+                    left = entity.countForAd - count.byAd;
                     break;
                 case PaymentType.Free:
                     limit = entity.countForFree;
-                    left = entity.countForFree - product.current.byFree;
+                    left = entity.countForFree - count.byFree;
                     break;
             }
         }
         
         public static PaymentType GetPaymentType(ShopItemEntity entity, Product product)
         {
-            var count = product?.current ?? new Product.BuyCount
-            {
-                byDefault = 0,
-                byAd = 0,
-                byFree = 0
-            };
-
+            var count = product.GetBuyCount();
             if (entity.countForFree > count.byFree)
                 return PaymentType.Free;
 
@@ -101,6 +97,16 @@ namespace RGLabs.Utility
                 return PaymentType.Ad;
 
             return PaymentType.Default;
+        }
+
+        private static Product.BuyCount GetBuyCount(this Product product)
+        {
+            return product?.current ?? new Product.BuyCount
+            {
+                byDefault = 0,
+                byAd = 0,
+                byFree = 0
+            };
         }
     }
 }

@@ -112,6 +112,14 @@ namespace RGLabs.Network.Service
 
             return result;
         }
+        
+        public static Result<T> Error(Error error, int statusCode)
+        {
+            var result =Error(error, string.Empty);
+            result.statusCode = statusCode;
+            return result;
+        }
+
 
         public new static Result<T> Error(Error error) => Error(error, string.Empty);
 
@@ -137,7 +145,6 @@ namespace RGLabs.Network.Service
             { Table.ShopRecord, "shop" },
         };
 
-        public static int LeftRequestCount { get; private set; }
 
         private readonly List<IErrorHandler> _errorHandlers = new();
 
@@ -175,8 +182,6 @@ namespace RGLabs.Network.Service
             var src = new UniTaskCompletionSource<Result>();
             api.Invoke(raw =>
             {
-                --LeftRequestCount;
-
                 try
                 {
                     var result = Result.Complete(raw);
@@ -195,8 +200,6 @@ namespace RGLabs.Network.Service
                 }
             });
 
-            ++LeftRequestCount;
-
             return await src.Task;
         }
 
@@ -205,8 +208,6 @@ namespace RGLabs.Network.Service
             var src = new UniTaskCompletionSource<Result<T>>();
             api.Invoke(raw =>
             {
-                --LeftRequestCount;
-
                 try
                 {
                     var result = Result<T>.Complete(raw, convert);
@@ -220,8 +221,6 @@ namespace RGLabs.Network.Service
 #endif
                 }
             });
-
-            ++LeftRequestCount;
 
             return src.Task;
         }
@@ -276,7 +275,7 @@ namespace RGLabs.Network.Service
 
             return response.IsSuccess
                 ? Result<UserDataDto>.Complete(response.data)
-                : Result<UserDataDto>.Error(response.error);
+                : Result<UserDataDto>.Error(response.error, response.statusCode);
         }
 
         protected async UniTask<Result<UserDataDto>> GetTables(IEnumerable<Table> tables)
