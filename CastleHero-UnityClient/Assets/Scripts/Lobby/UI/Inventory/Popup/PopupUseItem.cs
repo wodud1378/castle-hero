@@ -84,26 +84,26 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         private void SetActiveSlider()
         {
             bool hasPrice = Entity.sellPrice > 0;
-            bool hasUseOption = false;
+            bool usable = false;
             var type = Entity.type;
             int maxCount = Item.Quantity;
             switch (type)
             {
                 case ItemType.Consumable:
-                    hasUseOption = Entity.optionConsume.type == ConsumeType.Stamina;
+                    usable = Entity.optionConsume.type == ConsumeType.Stamina;
                     break;
                 case ItemType.Ingredient:
                     var option = Entity.optionIngredient;
                     bool isPiece = option.type is IngredientType.ElementalPiece or IngredientType.EquipmentPiece;
-                    hasUseOption = isPiece;
+                    usable = isPiece && Item.Quantity >= option.forCombine;
                     maxCount = isPiece ? Item.Quantity / option.forCombine : maxCount; 
                     break;
                 case ItemType.Chest:
-                    hasUseOption = true;
+                    usable = true;
                     break;
             }
             
-            bool isActive = hasPrice || hasUseOption;
+            bool isActive = hasPrice || usable;
             _useCount.gameObject.SetActive(isActive);
             _countRoot.gameObject.SetActive(isActive);
             _slider.maxValue = maxCount;
