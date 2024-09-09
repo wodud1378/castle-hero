@@ -74,19 +74,19 @@ namespace RGLabs.Lobby.Shop.UI
             var entity = data.Value;
             if (!entity.IsValid)
                 return;
-
-            var paymentType = ShopHelper.GetPaymentType(data.Value, product.Value, out int left, out int limit);
+            
+            ShopHelper.GetBuyCount(entity, product.Value, out int left, out int limit);
             if (leftCount != null)
             {
                 leftCount.text = left == 0 && limit == 0
                     ? string.Empty
                     : $"{left}/{limit}";
             }
-
-            price.Init(paymentType, entity.costId, entity.costValue)
-                .Forget();
-
+            
             _isSoldOut = ShopHelper.IsSoldOut(data.Value, product.Value, out _, out _, out _);
+            
+            price.Init(entity, product.Value)
+                .Forget();
 
             state.Value = _isSoldOut
                 ? State.Dim
@@ -97,12 +97,7 @@ namespace RGLabs.Lobby.Shop.UI
             SetSchedule();
         }
 
-        private void OnClickSlot(UISlot _)
-        {
-            var paymentType = ShopHelper.GetPaymentType(data.Value, product.Value, out int _, out int _);
-
-            Context.popups.Open<PopupPurchase>(paymentType, data.Value);
-        }
+        private void OnClickSlot(UISlot _) => Context.popups.Open<PopupPurchase>(data.Value, product.Value);
 
         private void SetSchedule()
         {

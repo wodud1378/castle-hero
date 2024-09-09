@@ -44,6 +44,8 @@ namespace RGLabs.Data.Model
         public int duration;
         [DataField("Shop_Index")]
         public int order;
+        [DataField("")] 
+        public string inApp;
         [DataField("Shop_Cost_Type")]
         public int costId;
         [DataField("Shop_Cost_Value")]

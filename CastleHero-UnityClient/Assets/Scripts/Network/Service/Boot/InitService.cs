@@ -45,7 +45,7 @@ namespace RGLabs.Network.Service.Boot
     
     public class InitService : NetworkServiceBase
     {
-        public Result Init(string serverName)
+        public Result InitServer(string serverName)
         {
             var project = MultiSettingManager.FindByProjectName(serverName);
             var raw = Backend.InitializeByMultiProject(project);

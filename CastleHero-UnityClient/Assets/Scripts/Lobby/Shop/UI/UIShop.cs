@@ -6,7 +6,6 @@ using RGLabs.Data.Model;
 using RGLabs.Network.Service;
 using RGLabs.Utility;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace RGLabs.Lobby.Shop.UI
 {

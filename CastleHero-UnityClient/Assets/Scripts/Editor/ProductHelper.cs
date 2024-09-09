@@ -47,8 +47,6 @@ namespace RGLabs.Editor
                     if (!priceTr.TryGetComponent(out UIPrice price))
                     {
                         price = priceTr.gameObject.AddComponent<UIPrice>();
-                        price.icon = priceTr.Find("Icon").GetComponent<Image>();
-                        price.label = priceTr.Find("Value").GetComponent<TMP_Text>();
                     }
 
                     slot.price = price;
@@ -164,8 +162,6 @@ namespace RGLabs.Editor
                     if (!priceTr.TryGetComponent(out UIPrice price))
                     {
                         price = priceTr.gameObject.AddComponent<UIPrice>();
-                        price.icon = priceTr.Find("Icon").GetComponent<Image>();
-                        price.label = priceTr.Find("Value").GetComponent<TMP_Text>();
                     }
 
                     slot.price = price;

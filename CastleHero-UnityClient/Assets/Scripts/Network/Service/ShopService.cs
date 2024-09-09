@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.InApp;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Network.Shared;
@@ -11,6 +11,10 @@ namespace RGLabs.Network.Service
 {
     public class ShopService : NetworkServiceBase
     {
+        public IAPManager InApp { get; private set; }
+
+        public void RegisterIAP(IAPManager iap) => InApp = iap;
+        
         public async UniTask<Result> RefreshProducts()
         {
             var get = await GetTable<ShopRecordDto>(Table.ShopRecord);

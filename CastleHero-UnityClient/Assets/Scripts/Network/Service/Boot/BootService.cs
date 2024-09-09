@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using BackEnd;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.InApp;
 using RGLabs.Common.Sound;
 using RGLabs.Data;
 using RGLabs.Data.Repositories;
@@ -9,6 +10,8 @@ using RGLabs.Network.DB.Service;
 using RGLabs.Network.Shared;
 using RGLabs.Network.Service.Login;
 using RGLabs.Utility;
+using Unity.Services.Core;
+using Unity.Services.Core.Environments;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -91,16 +94,20 @@ namespace RGLabs.Network.Service.Boot
             Debug.Log("부팅 성공");
         }
 
-        private async UniTask Init()
+        private async UniTask<Result> Init()
         {
-            var initResult = _initService.Init("dev");
-            if (!initResult.IsSuccess)
+            var initUnityServices = await InitUnityServices();
+            if (!initUnityServices.IsSuccess)
+                return Result.Error(initUnityServices.error, initUnityServices.errorMessage);
+            
+            var initServer = _initService.InitServer("dev");
+            if (!initServer.IsSuccess)
             {
                 _handler
-                    .OnError(initResult)
+                    .OnError(initServer)
                     .Forget();
                 
-                return;
+                return Result.Error(initServer.error);
             }
 
             await Addressables.InitializeAsync();
@@ -116,6 +123,8 @@ namespace RGLabs.Network.Service.Boot
 
             Storage.settingRepository = new();
             Storage.soundPath = await Addressables.LoadAssetAsync<SoundPath>("Sound/SoundPath.asset");
+            
+            return Result.Complete();
         }
 
         private async UniTask CheckVersion()
@@ -183,8 +192,28 @@ namespace RGLabs.Network.Service.Boot
             Storage.userRepository = new UserRepository(nickname, userData);
             Storage.db = result.db;
             Storage.localize = result.localize;
+
+            var inAppProducts = result.db.shop.GetInAppProducts();
+            var iap = new IAPManager(inAppProducts);
+            NetworkService.Shop.RegisterIAP(iap);
             
             await Storage.localize.Set(Application.systemLanguage);
+        }
+
+        private async UniTask<Result> InitUnityServices()
+        {
+            try
+            {
+                var options = new InitializationOptions().SetEnvironmentName("production");
+
+                await UnityServices.InitializeAsync(options);
+
+                return Result.Complete();
+            }
+            catch (Exception e)
+            {
+                return Result.Error(Error.Unknown, e.ToString());
+            }
         }
 
         public void Dispose() => _errorHandler?.Detach();
