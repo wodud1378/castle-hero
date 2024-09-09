@@ -3,6 +3,7 @@ using System.Linq;
 using RGLabs.Common.Behaviours;
 using RGLabs.Data;
 using RGLabs.Data.Model;
+using RGLabs.InGame.Data;
 using RGLabs.InGame.System;
 using RGLabs.InGame.System.Wave;
 using RGLabs.Utility;
@@ -23,7 +24,7 @@ namespace RGLabs.InGame.Behaviours
             public float angle;
         }
 
-        [SerializeField] private SpawnAreaSetUp[] _areaSetUpData;
+        [SerializeField] private SpawnConfig _config;
 
         [NonSerialized] public bool isRunning;
         
@@ -59,7 +60,8 @@ namespace RGLabs.InGame.Behaviours
             
             var db = Storage.db;
             var waves = db.waves.Map(groupId);
-            int length = _areaSetUpData.Length;
+            var setUp = _config.areaSetUp;
+            int length = setUp.Length;
             
             _main = new WaveUpdate(waves);
             _areas = new SpawnArea[length];
@@ -71,7 +73,7 @@ namespace RGLabs.InGame.Behaviours
             var castle = Storage.inGameRepository.castle.Value;
             for (int i = 0; i < length; ++i)
             {
-                var data = _areaSetUpData[i];
+                var data = setUp[i];
                 var area = new SpawnArea(data.id, data.position, data.size, data.angle, db.units, factory, castle);
                 _areas[i] = area;
                 _updates[i + 1] = area;
@@ -115,10 +117,10 @@ namespace RGLabs.InGame.Behaviours
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (_areaSetUpData == null)
+            if (_config == null)
                 return;
             
-            foreach (var data in _areaSetUpData)
+            foreach (var data in _config.areaSetUp)
             {
                 DrawArea(data);
             }

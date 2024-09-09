@@ -928,7 +928,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8608099495487889358, guid: 0f56dec3b638d1c43b57115e5a4e1de8, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 50
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8608099495487889358, guid: 0f56dec3b638d1c43b57115e5a4e1de8, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -983,55 +983,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df8c2b5260cb4606a89e69b6808f29da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _areaSetUpData:
-  - id: 1
-    position: {x: -6, y: 14}
-    size: 6
-    angle: 0
-  - id: 2
-    position: {x: 0, y: 14}
-    size: 6
-    angle: 0
-  - id: 3
-    position: {x: 6, y: 14}
-    size: 6
-    angle: 0
-  - id: 4
-    position: {x: -10, y: 8}
-    size: 8
-    angle: 90
-  - id: 5
-    position: {x: -10, y: 0}
-    size: 8
-    angle: 90
-  - id: 6
-    position: {x: -10, y: -8}
-    size: 8
-    angle: 90
-  - id: 7
-    position: {x: 10, y: 8}
-    size: 8
-    angle: -90
-  - id: 8
-    position: {x: 10, y: 0}
-    size: 8
-    angle: -90
-  - id: 9
-    position: {x: 10, y: -8}
-    size: 8
-    angle: -90
-  - id: 10
-    position: {x: -6, y: -14}
-    size: 6
-    angle: 180
-  - id: 11
-    position: {x: 0, y: -14}
-    size: 6
-    angle: 180
-  - id: 12
-    position: {x: 6, y: -14}
-    size: 6
-    angle: 180
+  _config: {fileID: 11400000, guid: 057f0c64e72bff248aecb68b3ab5b5e7, type: 2}
 --- !u!1 &988010839
 GameObject:
   m_ObjectHideFlags: 0
