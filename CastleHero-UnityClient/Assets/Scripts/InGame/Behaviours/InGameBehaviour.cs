@@ -125,16 +125,15 @@ namespace RGLabs.InGame.Behaviours
 
         private void InitGlobalSkills()
         {
+            var ui = _uiInGame.GlobalSkill;
             if (Storage.inGameRepository.castle.Value != null)
             {
-                _uiInGame.gameObject.SetActive(true);
-                _uiInGame.GlobalSkill
-                    .Init(_handler.GetCastleSkills())
-                    .Forget();
+                ui.gameObject.SetActive(true);
+                ui.Init(_handler.GetCastleSkills()).Forget();
             }
             else
             {
-                _uiInGame.gameObject.SetActive(false);
+                ui.gameObject.SetActive(false);
             }
         }
 
