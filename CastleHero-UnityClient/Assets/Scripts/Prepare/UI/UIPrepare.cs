@@ -25,7 +25,7 @@ namespace RGLabs.Prepare.UI
             this.SubscribeButton(_speedUp, () =>
             {
                 var repository = Storage.inGameRepository;
-                repository.speedUp = !repository.speedUp;
+                repository.speedUp.Value = !repository.speedUp.Value;
             });
 
             _characterList.isOpened

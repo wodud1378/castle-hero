@@ -33,7 +33,7 @@ namespace RGLabs.InGame.UI
 
         public void Close()
         {
-            Time.timeScale = Storage.inGameRepository.speedUp ? 2f : 1f;
+            Time.timeScale = Storage.inGameRepository.speedUp.Value ? 2f : 1f;
             
             gameObject.SetActive(false);
         }

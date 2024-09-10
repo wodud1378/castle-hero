@@ -2415,6 +2415,7 @@ GameObject:
   - component: {fileID: 1351830841790175207}
   - component: {fileID: 2052569917375929971}
   - component: {fileID: 489355203870874598}
+  - component: {fileID: 1671311177206043497}
   m_Layer: 0
   m_Name: SkeletonGraphic (Icon_Speed)
   m_TagString: Untagged
@@ -2506,6 +2507,19 @@ MonoBehaviour:
       immutableTriangles: 0
   updateTiming: 1
   unscaledTime: 0
+--- !u!114 &1671311177206043497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7952914592593814878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82fdb5f981fa400f9233ad0a01bdbf4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _skeleton: {fileID: 489355203870874598}
 --- !u!1 &8187835076803943870
 GameObject:
   m_ObjectHideFlags: 0

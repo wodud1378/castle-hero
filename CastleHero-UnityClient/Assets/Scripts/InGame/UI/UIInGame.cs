@@ -47,9 +47,9 @@ namespace RGLabs.InGame.UI
             this.SubscribeButton(_speedUp, () =>
             {
                 var repository = Storage.inGameRepository;
-                repository.speedUp = !repository.speedUp;
+                repository.speedUp.Value = !repository.speedUp.Value;
 
-                Time.timeScale = repository.speedUp
+                Time.timeScale = repository.speedUp.Value
                     ? 2f
                     : 1f;
             });

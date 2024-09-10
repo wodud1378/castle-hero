@@ -60,7 +60,7 @@ namespace RGLabs.InGame.Behaviours
 
         private void Run(StartGame startGame)
         {
-            Time.timeScale = Storage.inGameRepository.speedUp
+            Time.timeScale = Storage.inGameRepository.speedUp.Value
                 ? 2f
                 : 1f;
 
