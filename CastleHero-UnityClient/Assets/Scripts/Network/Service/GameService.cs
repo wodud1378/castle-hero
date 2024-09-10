@@ -256,7 +256,8 @@ namespace RGLabs.Network.Service
 
             var transitions = new List<UnitTransition>();
             var units = characters.units
-                .Where(unit => formation.fieldUnits.FindIndex(x => x.id == unit.id) != -1);
+                .Where(unit => formation.fieldUnits.FindIndex(x => x.id == unit.id) != -1)
+                .ToList();
 
             if (addExp == 0)
             {
@@ -267,9 +268,10 @@ namespace RGLabs.Network.Service
             }
             else
             {
+                int perUnit = addExp / units.Count;
                 foreach (var unit in units)
                 {
-                    UnitHelper.CalculateLvUp(unit.lv, unit.exp, addExp, out int lv, out int exp, out _);
+                    UnitHelper.CalculateLvUp(unit.lv, unit.exp, perUnit, out int lv, out int exp, out _);
 
                     transitions.Add(UnitTransition.Create(unit, lv, exp));
                     unit.lv = lv;
