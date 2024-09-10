@@ -14,6 +14,7 @@ namespace RGLabs.InGame.UI
         [SerializeField] private Button _resumeButton;
         [SerializeField] private Button _retryButton;
 
+        
         private void Awake()
         {
             this.SubscribeButton(_exitButton, Exit);
@@ -32,7 +33,7 @@ namespace RGLabs.InGame.UI
 
         public void Close()
         {
-            Time.timeScale = 1f;
+            Time.timeScale = Storage.inGameRepository.speedUp ? 2f : 1f;
             
             gameObject.SetActive(false);
         }
