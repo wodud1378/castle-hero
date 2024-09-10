@@ -344,7 +344,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4886590983818091677}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -353,11 +353,11 @@ RectTransform:
   - {fileID: 1277397105276339056}
   - {fileID: 5190026699973039098}
   - {fileID: 7812433665002378294}
-  m_Father: {fileID: 7712937153216452815}
+  m_Father: {fileID: 6861031135638028416}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -10, y: 0}
+  m_AnchoredPosition: {x: -125, y: 0}
   m_SizeDelta: {x: 250, y: 34}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &4380742171255220278
@@ -570,8 +570,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7712937153216452815}
+  - component: {fileID: 527867442704919900}
   m_Layer: 5
-  m_Name: HP_Castle
+  m_Name: CastleState
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -589,8 +590,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3442307949699587575}
-  - {fileID: 3171204819653115995}
+  - {fileID: 6861031135638028416}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -598,6 +598,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 330, y: 34}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &527867442704919900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7822543470594608304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8646c90b12fae4742986df1e57c6317c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _lv: {fileID: 7931566578675894403}
+  _hp: {fileID: 1206125458405680408}
+  _hpBar: {fileID: 4380742171255220278}
+  _root: {fileID: 9117069821418968556}
+  _distanceFromCastle: 200
 --- !u!1 &8328580750532003615
 GameObject:
   m_ObjectHideFlags: 0
@@ -630,11 +647,11 @@ RectTransform:
   m_Children:
   - {fileID: 6105964270720742139}
   - {fileID: 5125017514129631326}
-  m_Father: {fileID: 7712937153216452815}
+  m_Father: {fileID: 6861031135638028416}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: -10, y: 0}
+  m_AnchoredPosition: {x: 40, y: 0}
   m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &5662795892332419374
@@ -844,4 +861,41 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &9117069821418968556
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6861031135638028416}
+  m_Layer: 5
+  m_Name: Root
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6861031135638028416
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9117069821418968556}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3442307949699587575}
+  - {fileID: 3171204819653115995}
+  m_Father: {fileID: 7712937153216452815}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 32.5, y: 0}
+  m_SizeDelta: {x: 495, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}

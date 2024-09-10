@@ -15,6 +15,9 @@ namespace RGLabs.Utility
                 .EveryUpdate()
                 .Where(_ =>
                 {
+                    if (animator == null)
+                        return true;
+                    
                     var state = animator.GetCurrentAnimatorStateInfo(0);
                     return state.shortNameHash == hash && state.normalizedTime >= 1f;
                 })

@@ -45,12 +45,12 @@ namespace RGLabs.Unit.Behaviours
 
         public Status status => Core.status;
         public ReactiveProperty<UnitCore.States> state => Core.state;
-        
+        public readonly ReactiveProperty<UnitInfo> information = new();
+ 
         public UnitCore Core { get; private set; }
         
         public bool Released { get; private set; }
 
-        public UnitInfo Info { get; private set; }
 
         public UnitEntity Data { get; private set; }
         
@@ -69,7 +69,7 @@ namespace RGLabs.Unit.Behaviours
 
         public void Init(UnitInfo info, UnitEntity entity, UnitBalanceEntity balance)
         {
-            Info = info;
+            information.Value = info;
             Data = entity;
             
             _balance = balance;
@@ -95,7 +95,7 @@ namespace RGLabs.Unit.Behaviours
         public void Recovery()
         {
             ForceActivate();
-            Init(Info, Data, _balance);
+            Init(information.Value, Data, _balance);
 
             Core.movement.Default = position;
         }
