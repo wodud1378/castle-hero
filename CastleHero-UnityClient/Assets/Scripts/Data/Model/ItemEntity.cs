@@ -9,10 +9,10 @@ namespace RGLabs.Data.Model
 {
     public enum EquipmentGrade
     {
-        Legend = 0,
-        Epic = 1,
-        Rare = 2,
-        Common = 3
+        Common = 0,
+        Rare = 1,
+        Epic = 2,
+        Legend = 3,
     }
 
     public enum ConsumeType
@@ -37,6 +37,7 @@ namespace RGLabs.Data.Model
         Armor = 1,
         Ring = 2,
         Necklace = 3,
+        Count,
     }
 
     public enum ItemType

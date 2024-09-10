@@ -14,6 +14,7 @@ namespace RGLabs.Data
             LevelUp,
             Equipment,
             RateUp,
+            Dungeon,
         }
         
         public State state;

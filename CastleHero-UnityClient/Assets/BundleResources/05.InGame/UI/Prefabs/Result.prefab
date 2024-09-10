@@ -1404,6 +1404,7 @@ GameObject:
   - component: {fileID: 6897530669108106028}
   - component: {fileID: 5827357013329165572}
   - component: {fileID: 3378162052447258366}
+  - component: {fileID: 3161275108215483610}
   m_Layer: 5
   m_Name: Button_RateUpLink
   m_TagString: Untagged
@@ -1535,6 +1536,22 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3161275108215483610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5720718305476691210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79270c6e7da94852ae11eee026e752a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _material: {fileID: 2100000, guid: 52eba2c552de3cd41b4c17d693e7619c, type: 2}
+  targets:
+  - {fileID: 141509619028431761}
+  _preview: 0
 --- !u!1 &5737888394700876479
 GameObject:
   m_ObjectHideFlags: 0
@@ -2323,6 +2340,7 @@ GameObject:
   - component: {fileID: 7855227306479983547}
   - component: {fileID: 8987337105973026872}
   - component: {fileID: 7583476646431185035}
+  - component: {fileID: 5295226534294309257}
   m_Layer: 5
   m_Name: Button_EquipmentLink
   m_TagString: Untagged
@@ -2454,6 +2472,22 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5295226534294309257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6869164805278847305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79270c6e7da94852ae11eee026e752a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _material: {fileID: 2100000, guid: 52eba2c552de3cd41b4c17d693e7619c, type: 2}
+  targets:
+  - {fileID: 601803409979322986}
+  _preview: 0
 --- !u!1 &6949266709710210393
 GameObject:
   m_ObjectHideFlags: 0
@@ -2749,6 +2783,7 @@ GameObject:
   - component: {fileID: 13105628343515683}
   - component: {fileID: 7995897155288106590}
   - component: {fileID: 1994232457907095174}
+  - component: {fileID: 3574714588748439169}
   m_Layer: 5
   m_Name: Button_LevelUpLink
   m_TagString: Untagged
@@ -2880,6 +2915,22 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3574714588748439169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7605679973407461660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79270c6e7da94852ae11eee026e752a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _material: {fileID: 2100000, guid: 52eba2c552de3cd41b4c17d693e7619c, type: 2}
+  targets:
+  - {fileID: 994210616401740180}
+  _preview: 0
 --- !u!1 &7668271918177169090
 GameObject:
   m_ObjectHideFlags: 0

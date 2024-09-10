@@ -33,7 +33,7 @@ namespace RGLabs.Lobby.UI
         [SerializeField] private Button _summon;
         [SerializeField] private Button _dungeon;
         [SerializeField] private Button _castle;
-        
+
         [SerializeField] private Button _noAdsMark;
         [SerializeField] private Button[] _contractMarks;
 
@@ -58,54 +58,73 @@ namespace RGLabs.Lobby.UI
             this.SubscribeButton(_noAdsMark, () =>
             {
                 var noAds = Storage.db.shop.Find(x => x.category == ShopCategory.NoAds);
-                if(!noAds.IsValid)
+                if (!noAds.IsValid)
                     return;
-                
+
                 OpenToolTip(noAds.name, _noAdsMark);
             });
-            
+
             SubScribeContractMark(0);
             SubScribeContractMark(1);
-            
+
             var products = Storage.userRepository.shopRecord.products;
             products
                 .ChangeAsObservable()
                 .Subscribe(UpdateMarks)
                 .AddTo(this);
-            
+
             UpdateMarks(products);
+
+            ProcessLink();
         }
 
-        public void ProcessLink(Entrance.Link link)
+        private void ProcessLink()
         {
-            switch (link)
+            var entrance = Storage.entranceData;
+            if (entrance.state != State.Lobby || entrance.link == Entrance.Link.None)
+                return;
+
+            var repository = Storage.userRepository;
+            UnitInfo unit = null;
+            switch (entrance.link)
             {
                 case Entrance.Link.LevelUp:
+                    unit = repository.UnitForLevelUp();
+                    break;
                 case Entrance.Link.RateUp:
+                    unit = repository.UnitForUpgrade();
+                    break;
                 case Entrance.Link.Equipment:
-                    OpenPopup<PopupCharacterList>();
+                    unit = Storage.userRepository.UnitForUpgradeEquipments(out bool openDungeon);
+                    if (openDungeon)
+                        OpenPopup<PopupDungeon>();
                     break;
             }
+
+            if (unit != null)
+                OpenPopup<PopupCharacter>(unit);
         }
-        
+
         private void SubScribeContractMark(int index)
         {
             if (!index.IsValidIndex(_contractMarks))
                 return;
-            
+
             var contracts = Storage.db.shop.FindAll(x => x.category == ShopCategory.Contract);
             if (contracts.Count < index + 1)
                 return;
 
             var mark = _contractMarks[index];
-            this.SubscribeButton(mark, ()=> OpenToolTip(contracts[index].name, mark));
+            this.SubscribeButton(mark, () => OpenToolTip(contracts[index].name, mark));
         }
 
-        private void OpenToolTip(string text, Button root) => Context.toolTip.Open(text, root.transform as RectTransform, 0.5f, 1f);
+        private void OpenToolTip(string text, Button root) =>
+            Context.toolTip.Open(text, root.transform as RectTransform, 0.5f, 1f);
 
         private void UpdateMarks(IEnumerable<Product> collection)
         {
             var products = collection.ToList();
+
             bool HasProduct(int id, DateTime currentTime) =>
                 products.Any(p => p.shopId == id && p.expireDate > currentTime);
 
@@ -122,6 +141,8 @@ namespace RGLabs.Lobby.UI
         {
         }
 
-        private void OpenPopup<T>() where T : PopupBase => Context.popups.OpenAsync<T>().Forget();
+        private void OpenPopup<T>() where T : PopupBase => Context.popups.Open<T>();
+
+        private void OpenPopup<T>(params object[] param) where T : PopupBase => Context.popups.Open<T>(param);
     }
 }

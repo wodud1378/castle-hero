@@ -102,15 +102,6 @@ namespace RGLabs.Common.Behaviours
             Transition.CurrentState = Storage.entranceData.state;
 
             sounds.PlayBgm(Storage.soundPath.lobbyBgm);
-
-            if (entrance.state == State.Lobby && entrance.link != Entrance.Link.None)
-            {
-                var lobby = FindObjectOfType<UILobby>();
-                if (lobby == null)
-                    return;
-
-                lobby.ProcessLink(entrance.link);
-            }
         }
 
         private void InitSubscriptions()

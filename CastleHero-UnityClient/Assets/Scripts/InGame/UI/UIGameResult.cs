@@ -6,7 +6,9 @@ using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Common.UI;
 using RGLabs.Data;
+using RGLabs.Data.Model;
 using RGLabs.InGame.Behaviours;
+using RGLabs.Network.Shared;
 using RGLabs.Prepare.UI;
 using RGLabs.Utility;
 using UnityEngine;
@@ -100,26 +102,48 @@ namespace RGLabs.InGame.UI
             foreach (var obj in _failedObjects)
                 obj.SetActive(!isCleared);
             
-            var retryGrayScale = _retryButton.GetComponent<UIGrayScale>();
-            var nextGrayScale = _nextButton.GetComponent<UIGrayScale>();
-            int apForRetry = Storage.db.TryLoadGameEntity(result.type, result.id, out var retry)
-                ? retry.Ap
-                : int.MaxValue;
+            if(!isCleared)
+                UpdateButtonsOnFailed();
             
-            int apForNext = Storage.db.TryLoadNextGameEntity(result.type, result.id, out var next)
-                ? next.Ap
-                : int.MaxValue;
-
-            int ap = Storage.userRepository.stamina.point.Value;
-
-            bool activeRetry = ap >= apForRetry;
-            bool activeNext = ap >= apForNext && isCleared;
-            _retryButton.interactable =  activeRetry;
-            _nextButton.interactable = activeNext;
-            retryGrayScale.enabled.Value = !activeRetry;
-            nextGrayScale.enabled.Value = !activeNext;
+            UpdateBottomButtons(result);
         }
 
+        private void UpdateButtonsOnFailed()
+        {
+            var repository = Storage.userRepository;
+            var enableLvLink = repository.UnitForLevelUp() != null;
+            var enableRateLink = repository.UnitForUpgrade() != null;
+            var enableEquipmentLink = repository.UnitForUpgradeEquipments(out _) != null;
+            
+            SetButtonActive(_levelUpLink, enableLvLink);
+            SetButtonActive(_rateUpLink, enableRateLink);
+            SetButtonActive(_equipmentLink, enableEquipmentLink);
+        }
+
+        private void UpdateBottomButtons(GameResult result)
+        {
+            int ap = Storage.userRepository.stamina.point.Value;
+            bool activeRetry = HasApForRetry(ap, result.type, result.id);
+            bool activeNext = HasApFoNext(ap, result.type, result.id) && result.isCleared;
+            
+            SetButtonActive(_retryButton, activeRetry);
+            SetButtonActive(_nextButton, activeNext);
+        }
+
+        private void SetButtonActive(Button button, bool isActive)
+        {
+            button.interactable = isActive;
+
+            if (button.TryGetComponent(out UIGrayScale grayScale))
+                grayScale.enabled.Value = !isActive;
+        }
+
+        private bool HasApForRetry(int ap, GameType type, int id)
+            => ap >= (Storage.db.TryLoadGameEntity(type, id, out var entity) ? entity.Ap : int.MaxValue);
+
+        private bool HasApFoNext(int ap, GameType type, int id)
+            => ap >= (Storage.db.TryLoadGameEntity(type, id, out var entity) ? entity.Ap : int.MaxValue);
+        
         private void Exit(Entrance.Link link = Entrance.Link.None) => CloseWith(() =>
         {
             new ExitGame
