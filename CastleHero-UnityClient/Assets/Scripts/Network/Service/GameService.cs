@@ -287,6 +287,9 @@ namespace RGLabs.Network.Service
             switch (entity.Type)
             {
                 case GameType.Stage:
+                    if (record.lastClearedStage >= entity.Id)
+                        Storage.userRepository.StageFocus = entity.Id;
+                        
                     record.lastClearedStage = Mathf.Max(record.lastClearedStage, entity.Id);
                     break;
                 case GameType.Dungeon:

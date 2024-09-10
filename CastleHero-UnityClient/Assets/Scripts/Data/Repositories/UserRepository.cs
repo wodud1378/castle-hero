@@ -23,7 +23,7 @@ namespace RGLabs.Data.Repositories
         public int StageFocus
         {
             get => PlayerPrefs.GetInt(StageFocusKey, Mathf.Max(1, gameRecord.lastClearedStage.Value));
-            private set => PlayerPrefs.SetInt(StageFocusKey, value);
+            set => PlayerPrefs.SetInt(StageFocusKey, value);
         }
 
         public readonly Stamina stamina;
