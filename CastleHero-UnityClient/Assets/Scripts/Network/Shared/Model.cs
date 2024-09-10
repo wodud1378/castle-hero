@@ -143,8 +143,7 @@ namespace RGLabs.Network.Shared
 
     public class DungeonRecord
     {
-        public int type;
-        public int detailType;
+        public int layer;
         public int lastClearedLv;
     }
 

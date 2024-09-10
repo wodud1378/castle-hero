@@ -13,5 +13,14 @@ namespace RGLabs.Data.Model
         
         [DataField("Rate_Gold_Normal")]
         public int gold;
+        
+        [DataField("Rate_Gold_Rare")]
+        public int goldForRare;
+        
+        [DataField("Rate_Gold_Epic")]
+        public int goldForEpic;
+        
+        [DataField("Rate_Gold_Legend")]
+        public int goldForLegend;
     }
 }

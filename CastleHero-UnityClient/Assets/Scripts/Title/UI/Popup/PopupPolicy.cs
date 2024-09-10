@@ -34,7 +34,6 @@ namespace RGLabs.Title.UI.Popup
         public UniTask<PolicyAgreement> AgreementTask => _completionSource.Task;
 
         private UniTaskCompletionSource<PolicyAgreement> _completionSource;
-        private Sequence _sequence;
 
         protected override void OnAwake()
         {
@@ -47,14 +46,12 @@ namespace RGLabs.Title.UI.Popup
                     if (x)
                     {
                         _essentials.ForEach(t => t.isOn = true);
-                        _optionals.ForEach(t => t.isOn = true);    
+                        _optionals.ForEach(t => t.isOn = true);
                     }
 
                     _all.interactable = !x;
                 })
                 .AddTo(this);
-
-            var a = _essentials[0].onValueChanged.AsObservable();
 
             Observable.CombineLatest(
                     OnToggleChanged(Essential.Terms),
@@ -112,13 +109,11 @@ namespace RGLabs.Title.UI.Popup
 
         private void ShowNeedEssential()
         {
-            _sequence ??= DOTween.Sequence()
+            DOTween.Sequence()
                 .Append(_needEssential.DOFade(1f, 0.15f).From(0f))
                 .AppendInterval(1f)
-                .Append(_needEssential.DOFade(0f, 0.15f).From(1f));
-            
-            _sequence.Kill();
-            _sequence.Play();
+                .Append(_needEssential.DOFade(0f, 0.15f).From(1f))
+                .Play();
         }
     }
 }

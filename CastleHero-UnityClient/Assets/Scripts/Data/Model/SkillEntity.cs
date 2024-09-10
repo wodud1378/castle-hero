@@ -47,5 +47,8 @@ namespace RGLabs.Data.Model
         
         [DataField("Description")]
         public string desc;
+        
+        [DataField("Range")]
+        public string ignore;
     }
 }

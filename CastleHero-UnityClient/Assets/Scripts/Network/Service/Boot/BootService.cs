@@ -207,6 +207,8 @@ namespace RGLabs.Network.Service.Boot
             bool foreUpdate = versionInfo.type == 2;
             if(foreUpdate)
                 await _handler.OnForceUpdate();
+#else
+            await UniTask.DelayFrame(1);
 #endif
         }
 

@@ -50,11 +50,11 @@ namespace RGLabs.Lobby.UI.Popup
             {
                 _select.Close();
                 
-                if (slot.Type == _select.Type && slot.DetailType == _select.DetailType)
+                if (slot.Entity.Layer == _select.Entity.Layer)
                     return;
             }
             
-            _select.Open(slot.Type, slot.DetailType);
+            _select.Open(slot.Entity.Layer);
             var rectTr = (_select.transform as RectTransform)!;
             rectTr.SetSiblingIndex(slot.transform.GetSiblingIndex() + 1);
             //Reposition(rectTr);
@@ -113,26 +113,25 @@ namespace RGLabs.Lobby.UI.Popup
 
         private UniTask UpdateList(DayOfWeek dow)
         {
-            var hashSet = new HashSet<(DungeonType main, DungeonDetailType sub)>();
-            Storage.db.dungeons.ForEach(x => hashSet.Add((x.type, x.detailType)));
-
-            var list = hashSet.ToList();
-            var db = Storage.db.dungeons;
+            var list = new List<DungeonEntity>();
+            Storage.db.dungeons.BinarySearch(x =>
+            {
+                if (list.FindIndex(exist => exist.Layer == x.Layer).IsValidIndex(list))
+                    return;
+                
+                list.Add(x);
+            });
+            
             list.Sort((x, y) =>
             {
-                var openDaysX = db.Where(e => e.type == x.main).First().OpenDaysOfWeek();
-                var openDaysY = db.Where(e => e.type == y.main).First().OpenDaysOfWeek();
+                var openDaysX = x.OpenDaysOfWeek();
+                var openDaysY = y.OpenDaysOfWeek();
                 int compareDow = (openDaysX.Contains(dow) ? 0 : 1).CompareTo(openDaysY.Contains(dow) ? 0 : 1);
-                if (compareDow != 0)
-                    return compareDow;
-
-                var compareMain = x.main.CompareTo(y.main);
-                if (compareMain != 0)
-                    return compareMain;
-
-                return x.sub.CompareTo(y.sub);
+                return compareDow != 0
+                    ? compareDow
+                    : x.Layer.CompareTo(y.Layer);
             });
-
+            
             return _dungeonList.Init(list);
         }
     }

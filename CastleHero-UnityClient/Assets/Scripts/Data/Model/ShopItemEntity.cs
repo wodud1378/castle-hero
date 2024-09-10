@@ -34,7 +34,7 @@ namespace RGLabs.Data.Model
         public string name;
         [DataField("Shop_Prefab")]
         public string prefab;
-        [DataField("Shop_Description")]
+        [DataField("Shop_Descripsion")]
         public string desc;
         [DataField("Shop_Type")]
         public ShopCategory category;
@@ -42,7 +42,7 @@ namespace RGLabs.Data.Model
         public int groupId;
         [DataField("Shop_Duration")]
         public int duration;
-        [DataField("Shop_Index")]
+        [DataField("Shop_index")]
         public int order;
         [DataField("")] 
         public string inApp;

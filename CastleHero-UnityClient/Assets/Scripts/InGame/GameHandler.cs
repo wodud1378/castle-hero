@@ -64,20 +64,20 @@ namespace RGLabs.InGame
 
             if (_entity is DungeonEntity dungeonEntity)
             {
-                switch (dungeonEntity.type)
+                switch (dungeonEntity.category)
                 {
-                    case DungeonType.Assault:
-                    case DungeonType.Escort:
+                    case DungeonCategory.Assault:
+                    case DungeonCategory.Escort:
                         _clearCondition.Add(GameEvent.WaveDone);
                         _clearCondition.Add(GameEvent.TimeOver);
                         _failedCondition.Add(GameEvent.CastleDestroyed);
                         break;
-                    case DungeonType.Raid:
+                    case DungeonCategory.Raid:
                         _clearCondition.Add(GameEvent.WaveDone);
                         _failedCondition.Add(GameEvent.TimeOver);
                         _failedCondition.Add(GameEvent.DeadAllCharacters);
                         break;
-                    case DungeonType.Invasion:
+                    case DungeonCategory.Invasion:
                         _clearCondition.Add(GameEvent.WaveDone);
                         _failedCondition.Add(GameEvent.TimeOver);
                         _failedCondition.Add(GameEvent.CastleDestroyed);

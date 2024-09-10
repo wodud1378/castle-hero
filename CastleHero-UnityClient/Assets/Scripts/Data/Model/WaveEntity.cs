@@ -26,6 +26,9 @@ namespace RGLabs.Data.Model
         [DataField("Wave_Grp_ID")]
         public int groupId;
 
+        [DataField("Wave_Grp_Index")]
+        public int index;
+        
         [DataField("Wave_Grp_Delay")]
         public float startTime;
         

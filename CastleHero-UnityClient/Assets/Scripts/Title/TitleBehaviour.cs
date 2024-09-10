@@ -92,23 +92,24 @@ namespace RGLabs.Title
 
         public async UniTask<PolicyAgreement> CheckPolicy()
         {
-            var saved = PlayerPrefs.GetString("policy", string.Empty);
-            var agreement = !string.IsNullOrEmpty(saved)
-                ? JsonConvert.DeserializeObject<PolicyAgreement>(saved)
-                : default;
+            const string key = "policy";
+         
+            var agree = PlayerPrefs.GetInt(key, 0) == 1;
             
-            while (!agreement.terms || !agreement.privacy)
+            PolicyAgreement agreement = default;
+            while (!agree)
             {
                 _policyPopup.gameObject.SetActive(true);
 
                 await _policyPopup.Open();
                 agreement = await _policyPopup.AgreementTask;
+                agree = agreement is { terms: true, privacy: true };
             }
-
-            var json = JsonConvert.SerializeObject(agreement);
-            PlayerPrefs.SetString("policy", json);
+            
+            PlayerPrefs.SetInt(key, 1);
             PlayerPrefs.SetInt("push", agreement.push ? 1 : 0);
             PlayerPrefs.SetInt("push-night", agreement.nightPush ? 1 : 0);
+            PlayerPrefs.Save();
             
             return agreement;
         }

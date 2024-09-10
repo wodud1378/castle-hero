@@ -14,16 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clientAppID: 3c2f6560-3364-11ef-9121-97f8abb85a9d7861
   signatureKey: 3c2f8c70-3364-11ef-9121-97f8abb85a9d7861
-  functionAuthKey: AQICAHiT9pph8qngOxVNCJXRC0BZjtURNwhhts4F69FL8VO4dgFN7i9zyNBtQCVr8+ZNTcFvAAAAYjBgBgkqhkiG9w0BBwagUzBRAgEAMEwGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMIoQVfYCuwwI4IMcTAgEQgB8spp9/k96lumgrPkLfVOzxIdk47oFJ+2ARAnsfFvE1
+  functionAuthKey: 
   packageName: com.retgames.castlehero
-  isAllPlatform: 1
   sendLogReport: 1
-  rateCountActive: 0
   timeOutSec: 100
-  Version: 5.11.9
+  Version: 5.13.0
   autoRefreshToken: 1
   retryWhenClientRequestFailError: 1
   retryWhenServerError: 1
-  retryWhenBadSignatureError: 1
   initFailWhenDeviceIdUnknown: 1
   autoLoadLocationProperties: 1
+  waitUntilInitializeFinish: 1

@@ -928,7 +928,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8608099495487889358, guid: 0f56dec3b638d1c43b57115e5a4e1de8, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 8608099495487889358, guid: 0f56dec3b638d1c43b57115e5a4e1de8, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -2675,6 +2675,7 @@ MonoBehaviour:
   _startButton: {fileID: 5746891985466724950}
   _popupManager: {fileID: 1864153840}
   _soundManager: {fileID: 2079095717}
+  _networkConfig: {fileID: 11400000, guid: aa46de3f17473c143b81850c83ba2ec4, type: 2}
 --- !u!4 &2079095716
 Transform:
   m_ObjectHideFlags: 0

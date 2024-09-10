@@ -5,9 +5,8 @@ using RGLabs.Network.Service;
 
 namespace RGLabs.Lobby.UI
 {
-    public class UIDungeonList : UIListAdapter<UIDungeonSlot, (DungeonType type, DungeonDetailType detailType)>
+    public class UIDungeonList : UIListAdapter<UIDungeonSlot, DungeonEntity>
     {
-        protected override UniTask SetItem(UIDungeonSlot slot, (DungeonType type, DungeonDetailType detailType) data) 
-            => slot.Init(data.type, data.detailType);
+        protected override UniTask SetItem(UIDungeonSlot slot, DungeonEntity data) => slot.Init(data);
     }
 }

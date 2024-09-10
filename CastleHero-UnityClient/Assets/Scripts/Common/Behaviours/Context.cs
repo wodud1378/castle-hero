@@ -6,6 +6,8 @@ using RGLabs.Common.Sound;
 using RGLabs.Common.UI;
 using RGLabs.Data;
 using RGLabs.Lobby.UI;
+using RGLabs.Network;
+using RGLabs.Network.Service.Boot;
 using RGLabs.Unit.Factory;
 using RGLabs.Utility;
 using UniRx;
@@ -23,13 +25,13 @@ namespace RGLabs.Common.Behaviours
         public static PoolContainer poolContainer;
         public static UnitFactory unitFactory;
         public static CastleFactory castleFactory;
-        
+
         public static StartButton startButton;
         public static PopupManager popups;
         public static SoundManager sounds;
         public static UILock uiLock;
         public static UIToolTip toolTip;
-        
+
         [SerializeField] private int _frameRate;
         [SerializeField] private UILock _uiLock;
         [SerializeField] private UIToolTip _toolTip;
@@ -37,31 +39,39 @@ namespace RGLabs.Common.Behaviours
         [SerializeField] private PopupManager _popupManager;
         [SerializeField] private SoundManager _soundManager;
 
+#if UNITY_EDITOR
+        public static NetworkConfig NetworkConfig;
+        
+        [SerializeField] private NetworkConfig _networkConfig;
+#endif
+
         private void Load()
         {
             Time.timeScale = 1f;
-         
+
             try
             {
                 poolContainer = new();
                 unitFactory = new UnitFactory();
                 castleFactory = new CastleFactory();
-            
+#if UNITY_EDITOR
+                NetworkConfig = _networkConfig;
+#endif
                 uiLock = _uiLock;
                 toolTip = _toolTip;
                 startButton = _startButton;
                 startButton.StageSelect.Init();
-            
+
                 popups = _popupManager;
                 sounds = _soundManager;
-            
+
                 InitSubscriptions();
 
                 while (OnLoadCompleteQueue.Count > 0)
                 {
                     OnLoadCompleteQueue.Dequeue()?.Invoke();
                 }
-            
+
                 SetEntranceTransition();
             }
             catch (Exception e)
@@ -70,12 +80,12 @@ namespace RGLabs.Common.Behaviours
                 throw;
             }
         }
-        
+
         private void Start()
         {
             Application.targetFrameRate = _frameRate;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
-            
+
             Load();
         }
 
@@ -90,7 +100,7 @@ namespace RGLabs.Common.Behaviours
 
             startButton.enabled = true;
             Transition.CurrentState = Storage.entranceData.state;
-            
+
             sounds.PlayBgm(Storage.soundPath.lobbyBgm);
 
             if (entrance.state == State.Lobby && entrance.link != Entrance.Link.None)
@@ -98,7 +108,7 @@ namespace RGLabs.Common.Behaviours
                 var lobby = FindObjectOfType<UILobby>();
                 if (lobby == null)
                     return;
-                
+
                 lobby.ProcessLink(entrance.link);
             }
         }
@@ -108,11 +118,11 @@ namespace RGLabs.Common.Behaviours
             this
                 .UpdateAsObservable()
                 .Where(_ => Input.GetKeyDown(KeyCode.Escape))
-                .Subscribe(_=> ProcessBack())
+                .Subscribe(_ => ProcessBack())
                 .AddTo(this);
 
             this.SubscribeButton(startButton, () => Transition.CurrentState = State.Prepare);
-            
+
             Transition
                 .StateObserver
                 .Subscribe(x => { startButton.enabled = x == State.Lobby; })

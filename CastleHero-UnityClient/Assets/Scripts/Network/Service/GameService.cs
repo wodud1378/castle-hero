@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Behaviours;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Network.Shared;
@@ -13,35 +14,34 @@ namespace RGLabs.Network.Service
 {
     public class GameService : NetworkServiceBase
     {
-        public async UniTask<Result<List<DungeonType>>> GetOpenedDungeonTypes()
+        public async UniTask<Result<List<int>>> GetOpenedDungeonLayers()
         {
-            return Result<List<DungeonType>>.Complete(new List<DungeonType>
+            var map = new Dictionary<int, List<DayOfWeek>>();
+            Storage.db.dungeons.BinarySearch(x =>
             {
-                DungeonType.Assault,
-                DungeonType.Escort,
-                DungeonType.Raid,
-                DungeonType.Invasion,
+                if (map.ContainsKey(x.Layer))
+                    return;
+
+                map.Add(x.Layer, x.OpenDaysOfWeek());
             });
 
-            // var map = new Dictionary<DungeonType, List<DayOfWeek>>();
-            // Storage.db.dungeons.BinarySearch(x =>
-            // {
-            //     if (map.ContainsKey(x.type))
-            //         return;
-            //
-            //     map.Add(x.type, x.OpenDaysOfWeek());
-            // });
-            //
-            // var getTime = await GetServerTime();
-            // if (!getTime.IsSuccess)
-            //     return Result<List<DungeonType>>.Error(getTime.error);
-            //
-            // var dow = getTime.data.DayOfWeek;
-            // var list = map
-            //     .Where(x => x.Value.Contains(dow))
-            //     .Select(x => x.Key).ToList();
-            //
-            // return Result<List<DungeonType>>.Complete(list);
+            async UniTask<Result<List<int>>> Filter(Dictionary<int, List<DayOfWeek>> collection)
+            {
+                var getTime = await GetServerTime();
+                if (!getTime.IsSuccess)
+                    return Result<List<int>>.Error(getTime.error);
+
+                var dow = getTime.data.DayOfWeek;
+                return Result<List<int>>.Complete(collection
+                    .Where(x => x.Value.Contains(dow))
+                    .Select(x => x.Key).ToList());
+            }
+
+#if UNITY_EDITOR
+            if (Context.NetworkConfig.openAllDungeons)
+                return Result<List<int>>.Complete(map.Keys.ToList());
+#endif
+            return await Filter(map);
         }
 
         public async UniTask<Result> Start(GameType type, int id)
@@ -69,16 +69,12 @@ namespace RGLabs.Network.Service
             if (!checkProcess.data)
                 return Error.NotEnoughAp;
 
-            var getTime = await GetServerTime();
-            if (!getTime.IsSuccess)
-                return getTime.error;
-
             var record = get.data.gameRecord;
-            var checkIsOpened = await CheckIsOpened(record, getTime.data, entity);
+            var checkIsOpened = await CheckIsOpened(record, entity);
             return !checkIsOpened.IsSuccess ? checkIsOpened.error : Error.None;
         }
 
-        private async UniTask<Error> CanClear(UserDataDto userData, DateTime currentTime, IGameEntity entity)
+        private async UniTask<Error> CanClear(UserDataDto userData, IGameEntity entity)
         {
             var stamina = userData.stamina;
             var update = await UpdateStamina(stamina);
@@ -89,11 +85,11 @@ namespace RGLabs.Network.Service
                 return Error.NotEnoughAp;
 
             var record = userData.gameRecord;
-            var checkIsOpened = await CheckIsOpened(record, currentTime, entity);
+            var checkIsOpened = await CheckIsOpened(record, entity);
             return !checkIsOpened.IsSuccess ? checkIsOpened.error : Error.None;
         }
 
-        private async UniTask<Result> CheckIsOpened(GameRecordDto record, DateTime currentTime, IGameEntity entity)
+        private async UniTask<Result> CheckIsOpened(GameRecordDto record, IGameEntity entity)
         {
             switch (entity.Type)
             {
@@ -105,11 +101,11 @@ namespace RGLabs.Network.Service
                         return Result.Error(Error.InvalidRequest);
 
                     // 열린 던전 타입인지 체크.
-                    var getOpenedTypes = await GetOpenedDungeonTypes();
+                    var getOpenedTypes = await GetOpenedDungeonLayers();
                     if (!getOpenedTypes.IsSuccess)
                         return Result.Error(getOpenedTypes.error);
 
-                    if (!getOpenedTypes.data.Contains(dungeonEntity.type))
+                    if (!getOpenedTypes.data.Contains(dungeonEntity.Layer))
                         return Result.Error(Error.NotOpened);
 
                     // 해당 던전 기록 확인
@@ -134,18 +130,7 @@ namespace RGLabs.Network.Service
                 return Result<GameCleared>.Error(get.error);
 
             var userData = get.data;
-
-            var currentTime = DateTime.MinValue;
-            if (type == GameType.Dungeon)
-            {
-                var getTime = await GetServerTime();
-                if (!getTime.IsSuccess)
-                    return Result<GameCleared>.Error(getTime.error);
-
-                currentTime = getTime.data;
-            }
-
-            var error = await CanClear(userData, currentTime, entity);
+            var error = await CanClear(userData, entity);
             if (error != Error.None)
                 return Result<GameCleared>.Error(error);
 
@@ -176,15 +161,15 @@ namespace RGLabs.Network.Service
 
             result.currency = reward.currency;
             result.items = reward.items;
-            
-            UpdateRecord(userData.gameRecord, currentTime, entity);
+
+            UpdateRecord(userData.gameRecord, entity);
 
             bool updateCurrency = !reward.currency.IsEmpty();
             bool updateInventory = reward.items.Count > 0;
             var tables = new Dictionary<Table, object>
             {
-                { Table.Stamina, userData.stamina }, 
-                { Table.GameRecord, userData.gameRecord }, 
+                { Table.Stamina, userData.stamina },
+                { Table.GameRecord, userData.gameRecord },
             };
             if (updateCurrency)
             {
@@ -297,7 +282,7 @@ namespace RGLabs.Network.Service
             return transitions;
         }
 
-        private void UpdateRecord(GameRecordDto record, DateTime currentTime, IGameEntity entity)
+        private void UpdateRecord(GameRecordDto record, IGameEntity entity)
         {
             switch (entity.Type)
             {
@@ -308,17 +293,11 @@ namespace RGLabs.Network.Service
                     if (entity is not DungeonEntity dungeonEntity)
                         return;
 
-                    var dungeonRecord = record.dungeon.Find(x =>
-                        x.type == (int)dungeonEntity.type && x.detailType == (int)dungeonEntity.detailType);
-                    
+                    var dungeonRecord = GetLatestDungeonRecord(record, dungeonEntity);
                     if (dungeonRecord == null)
                     {
-                        dungeonRecord = new DungeonRecord
-                        {
-                            type = (int)dungeonEntity.type,
-                            detailType = (int)dungeonEntity.detailType,
-                        };
-                        
+                        dungeonRecord = new DungeonRecord { layer = dungeonEntity.Layer };
+
                         record.dungeon.Add(dungeonRecord);
                     }
 
@@ -341,8 +320,7 @@ namespace RGLabs.Network.Service
 
         private int GetLatestStageLv(GameRecordDto record) => record.lastClearedStage;
 
-        private DungeonRecord GetLatestDungeonRecord(GameRecordDto record, DungeonEntity entity)
-            => record.dungeon
-                .FirstOrDefault(x => x.type == (int)entity.type && x.detailType == (int)entity.detailType);
+        private DungeonRecord GetLatestDungeonRecord(GameRecordDto record, DungeonEntity entity) =>
+            record.dungeon.FirstOrDefault(x => x.layer == entity.Layer);
     }
 }

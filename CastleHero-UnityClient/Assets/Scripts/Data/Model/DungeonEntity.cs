@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RGLabs.Data.DB;
+using RGLabs.InGame;
 using RGLabs.Network.Service;
 using RGLabs.Prepare.UI;
 using RGLabs.Utility;
@@ -9,24 +10,31 @@ using Random = UnityEngine.Random;
 
 namespace RGLabs.Data.Model
 {
-    public enum DungeonType
+    public enum DungeonCategory
     {
         Assault = 0,
         Escort,
         Raid,
         Invasion
     }
-    
-    public enum DungeonDetailType
+
+    public enum DungeonType
     {
-        None, Executor, Ground = 0,
-        Slaughterer, Fire = 1,
-        Punisher, Wind = 2,
-        Transcendent, Water = 3,
+        None,
+        Executor,
+        Ground = 0,
+        Slaughterer,
+        Fire = 1,
+        Punisher,
+        Wind = 2,
+        Transcendent,
+        Water = 3,
     }
 
     public struct DungeonEntity : IGameEntity
     {
+        public int Layer => (int)category * 10 + (int)type;
+        
         public GameType Type => GameType.Dungeon;
 
         [DataField("Dg_index")] public int Id { get; set; }
@@ -51,14 +59,16 @@ namespace RGLabs.Data.Model
         public int Exp => 0;
 
         [DataField("Dg_Castle")] public string castlePrefab;
-        
+
         [DataField("Dg_Image")] public string image;
 
         [DataField("Dg_Name")] public string name;
 
-        [DataField("Dg_Type")] public DungeonType type;
+        [DataField("Dg_Comment")] public string desc;
 
-        [DataField("Dg_DetailType")] public DungeonDetailType detailType;
+        [DataField("Dg_Type")] public DungeonCategory category;
+
+        [DataField("Dg_DetailType")] public DungeonType type;
 
         [DataField("Dg_Week")] public int dayOfWeek;
 
@@ -66,12 +76,18 @@ namespace RGLabs.Data.Model
 
         [DataField("Dg_Rwd_Item_Grp_ID")] public int rewardGroup;
 
-        public bool IsOpened()
-        {
-            var openDays = OpenDaysOfWeek();
-            var dow = NetworkService.CurrentTimeByLocal().DayOfWeek;
+        #region TODO : 추 후 데이터로 성공/실패 컨디션 분리.
 
-            return openDays.Contains(dow);
+        [DataField("Dg_ClearCondition")] public GameEvent[] clearConditions;
+        [DataField("Dg_ClearCondition")] public GameEvent[] failedConditions;
+
+        #endregion
+
+        public bool IsOpened(out List<DayOfWeek> openDays)
+        {
+            openDays = OpenDaysOfWeek();
+            
+            return openDays.Contains(NetworkService.CurrentTimeByLocal().DayOfWeek);
         }
 
         public List<DayOfWeek> OpenDaysOfWeek()

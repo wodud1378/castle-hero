@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI;
-using RGLabs.Data;
 using RGLabs.Data.Model;
-using RGLabs.Network.Service;
 using RGLabs.Utility;
 using UnityEngine;
 
@@ -15,38 +11,27 @@ namespace RGLabs.Lobby.UI
     {
         [SerializeField] private UIDayOfWeek _dayOfWeek;
         //[SerializeField] private UIRewardList _rewardList;
-        
-        public DungeonType Type { get; private set; }
-        public DungeonDetailType DetailType { get; private set; }
 
-        public UniTask Init(DungeonType type, DungeonDetailType detailType)
+        public DungeonEntity Entity { get; private set; }
+
+        public UniTask Init(DungeonEntity entity)
         {
-            Type = type;
-            DetailType = detailType;
-
-            var data = Storage.db.dungeons.Where(x => x.type == type).First();
-            //var openDays = data.OpenDaysOfWeek();
-            var openDays = new List<DayOfWeek>
-            {
-                DayOfWeek.Sunday,
-                DayOfWeek.Monday,
-                DayOfWeek.Tuesday,
-                DayOfWeek.Wednesday,
-                DayOfWeek.Thursday,
-                DayOfWeek.Friday,
-                DayOfWeek.Saturday,
-            };
+            Entity = entity;
             
-            var dow = NetworkService.CurrentTimeByLocal().DayOfWeek;
-
-            bool isOpened = openDays.Contains(dow);
+            bool isOpened = entity.IsOpened(out var openDays);
+            
+#if UNITY_EDITOR
+            if (Context.NetworkConfig.openAllDungeons)
+                isOpened = true;
+#endif
+            
             state.Value = isOpened
                 ? State.Default
                 : State.Dim;
 
             _dayOfWeek.values.Update(openDays);
-            
-            return base.Init(data.image);
+
+            return base.Init(Entity.image);
             // var baseTask = base.Init(entity.image);
             // if (initialState == State.Dim)
             // {

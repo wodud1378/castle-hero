@@ -26,9 +26,8 @@ namespace RGLabs.Lobby.UI
         public UniTask<DungeonEntity> SelectTask => _ctSource.Task;
         
         private UniTaskCompletionSource<DungeonEntity> _ctSource;
-        
-        public DungeonType Type { get; private set; }
-        public DungeonDetailType DetailType { get; private set; }
+
+        public DungeonEntity Entity => _entity.Value;
 
         public bool IsOpened => gameObject.activeSelf;
         
@@ -37,7 +36,7 @@ namespace RGLabs.Lobby.UI
             get
             {
                 var record = Storage.userRepository.gameRecord.dungeon
-                    .FirstOrDefault(x => x.type == (int)Type);
+                    .FirstOrDefault(x => x.layer == _entity.Value.Layer);
 
                 return record != null
                     ? Mathf.Min(record.lastClearedLv + 1, _listOfSameType[^1].Lv)
@@ -58,6 +57,7 @@ namespace RGLabs.Lobby.UI
             this.SubscribeButton(_next, OnNext);
             
             _entity
+                .Skip(1)
                 .Subscribe(OnDataChanged)
                 .AddTo(this);
             
@@ -106,15 +106,13 @@ namespace RGLabs.Lobby.UI
             _closeAfterSelect = closeAfterSelect;
         }
 
-        public void Open(DungeonType type, DungeonDetailType detailType)
+        public void Open(int layer)
         {
             gameObject.SetActive(true);
             
             BeginSelect(true);
 
-            Type = type;
-            DetailType = detailType;
-            _listOfSameType = Storage.db.dungeons.FindAll(x => x.type == type && x.detailType == detailType);
+            _listOfSameType = Storage.db.dungeons.FindAll(x => x.Layer == layer);
             _listOfSameType.Sort((x, y) => x.lv.CompareTo(y.lv));
             
             _entity.Value = _listOfSameType.Find(x => x.lv == AvailableLv);
