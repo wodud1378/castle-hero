@@ -49,12 +49,6 @@ namespace RGLabs.Prepare.UI
 
                     UpdateButtonsActive(x);
                 }));
-
-            _repository.entrance.Value = new GameEntrance
-            {
-                type = GameType.Stage,
-                id = _repository.StageFocus
-            };
         }
 
         public void SetMoveStageEnable(bool enabled)
