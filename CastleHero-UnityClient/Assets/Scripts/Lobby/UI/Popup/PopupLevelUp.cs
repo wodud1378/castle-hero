@@ -138,16 +138,12 @@ namespace RGLabs.Lobby.UI.Popup
             if (_unit.Value == null)
                 return;
 
-            int itemQty = (int)_slider.value;
-
-            var count = Mathf.RoundToInt(value);
-            if (count == 0)
+            var itemQty = Mathf.RoundToInt(value);
+            if (itemQty == 0)
             {
                 _level.ReleaseOverride();
-                _maxCount.text = string.Empty;
                 _gold.text = "0";
                 _quantity.text = $"0";
-
                 return;
             }
             var unit = _unit.Value;
@@ -174,8 +170,10 @@ namespace RGLabs.Lobby.UI.Popup
             if (slot == null)
                 return;
 
-            _slider.value = Mathf.Min(slot.Item.Quantity, 1);
+            int minCount = Mathf.Min(slot.Item.Quantity, 1);
+            _slider.value = minCount;
             _slider.maxValue = slot.Item.Quantity;
+            _quantity.text = $"{minCount:N0}";
             _maxCount.text = $"{_slider.maxValue:N0}";
 
             _expSlotS.state.Value = _expSlotS == slot
