@@ -336,7 +336,10 @@ namespace RGLabs.Lobby.Behaviours
                 .SuppressCancellationThrow();
 
             if (task.IsCanceled)
+            {
+                Debug.Log("Castle Creation Cancel");
                 return;
+            }
             
             _gameRepo.castle.Value = task.Result;
         }
