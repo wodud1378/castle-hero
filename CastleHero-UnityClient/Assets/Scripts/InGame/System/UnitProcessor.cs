@@ -159,8 +159,6 @@ namespace RGLabs.InGame.System
             if (unit.Core.Team != UnitCore.Teams.Character || unit.Type == UnitBehaviour.BehaviourType.Barricade)
                 return;
 
-            Storage.inGameRepository.deadCharacters.Add(unit);
-
             float recoverTime = unit.status.recovery;
             if (!unit.Core.enableRecover || recoverTime <= 0f)
                 return;
@@ -212,11 +210,7 @@ namespace RGLabs.InGame.System
                 .DistinctUntilChanged()
                 .Where(isDone => isDone)
                 .Take(1)
-                .Subscribe(_ =>
-                {
-                    Storage.inGameRepository.deadCharacters.Remove(recover.behaviour);
-                    Recovery(recover);
-                })
+                .Subscribe(_ => Recovery(recover))
                 .AddTo(_disposables);
         }
 

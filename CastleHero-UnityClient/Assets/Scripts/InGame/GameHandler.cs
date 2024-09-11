@@ -131,17 +131,22 @@ namespace RGLabs.InGame
 
             if (_failedCondition.Contains(GameEvent.DeadAllCharacters))
             {
-                var deadSubscription = _gameRepo.deadCharacters
-                    .ChangeAsObservable()
-                    .Subscribe(x =>
-                    {
-                        int dead = x.Count(unit => unit.Type == UnitBehaviour.BehaviourType.Unit);
-                        int all = _gameRepo.characters.Count(unit => unit.Type == UnitBehaviour.BehaviourType.Unit);
-                        if (dead >= all)
-                            OccurGameEvent(GameEvent.DeadAllCharacters);
-                    });
+                var units = _gameRepo.characters
+                    .Where(x => x.Type == UnitBehaviour.BehaviourType.Unit)
+                    .ToList();
                 
-                _subscriptions.Add(deadSubscription);
+                void OnUnitDead(UnitBehaviour unit)
+                {
+                    if(units.TrueForAll(x => x.state.Value == UnitCore.States.Dead))
+                        OccurGameEvent(GameEvent.DeadAllCharacters);
+                    
+                    unit.OnDead -= OnUnitDead;
+                }
+                
+                foreach (var unit in units)
+                {
+                    unit.OnDead += OnUnitDead;
+                }
             }
             
             var waveSubscription = _wave.completed
