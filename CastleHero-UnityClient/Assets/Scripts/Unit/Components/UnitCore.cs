@@ -264,7 +264,11 @@ namespace RGLabs.Unit.Components
             _updateMethod = isRest ? OnRest : OnBattle;
 
             if (isRest)
+            {
+                movement?.Stop();
+                attack?.Stop();
                 return;
+            }
 
             _skill?.SetToEnable();
         }

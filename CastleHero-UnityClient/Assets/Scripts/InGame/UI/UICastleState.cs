@@ -2,7 +2,9 @@ using System;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
 using RGLabs.Data;
+using RGLabs.InGame.Behaviours;
 using RGLabs.Unit.Behaviours;
+using RGLabs.Utility;
 using TMPro;
 using UniRx;
 using UniRx.Triggers;
@@ -27,6 +29,8 @@ namespace RGLabs.InGame.UI
             Storage.inGameRepository.castle
                 .Subscribe(OnCastleChanged)
                 .AddTo(this);
+            
+            this.SubscribeMessage<ExitGame>(_=> _root.SetActive(false));
         }
 
         private void OnCastleChanged(UnitBehaviour castle)

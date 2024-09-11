@@ -29,17 +29,11 @@ namespace RGLabs.Data.Repositories
         
         public void Dispose()
         {
-            castle.Value = null;
-            
-            speedUp?.Dispose();
             characters?.Dispose();
             characters?.Clear();
             
             recovers?.Dispose();
             recovers?.Clear();
-
-            castle?.Dispose();
-            characters?.Dispose();
         }
     }
 }
