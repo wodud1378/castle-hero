@@ -13,7 +13,7 @@ namespace RGLabs.Common.UI
         {
             Info = info;
             
-            return Init(entity.icon);
+            return Init(entity.icon, $"Lv.{info.lv}");
         }
         
         public UniTask Init(UnitInfo info)
