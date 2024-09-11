@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Flow;
 using RGLabs.Data;
 using RGLabs.Data.Model;
 using RGLabs.Data.Repositories;
@@ -49,6 +50,16 @@ namespace RGLabs.Prepare.UI
 
                     UpdateButtonsActive(x);
                 }));
+
+            var exist = _repository.entrance.Value;
+            if (exist.type == GameType.Dungeon && Storage.entranceData.state == State.Lobby)
+            {
+                _repository.entrance.Value = new GameEntrance
+                {
+                    type = GameType.Stage,
+                    id = _repository.StageFocus
+                };
+            }
         }
 
         public void SetMoveStageEnable(bool enabled)

@@ -78,6 +78,9 @@ namespace RGLabs.Common.UI
         {
             items.ForEach(x =>
             {
+                if (x.gameObject == null)
+                    return;
+                
                 x.Dispose();
                 Addressables.ReleaseInstance(x.gameObject);
             });

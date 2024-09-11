@@ -111,9 +111,27 @@ namespace RGLabs.Utility
 
             int amount = (int)option.value;
             int total = amount  * quantity;
-            CalculateLvUp(startLv, startExp, total, out lv, out exp, out var remainAmount);
+            
+            var db = Storage.db.levels;
+            int maxLv = db.MaxLv;
+            while (db.TryFind(lv, out var entity) && total > 0)
+            {
+                int forNext = entity.exp;
+                int requireExp = forNext - exp;
+                int add = Mathf.Min(requireExp, total);
+                exp += add;
+                price += entity.gold;
+                total -= add;
 
-            leftItem = remainAmount / amount;
+                int remain = exp - forNext;
+                if (remain >= 0)
+                {
+                    ++lv;
+                    exp = lv >= maxLv ? 0 : remain;
+                }
+            }
+
+            leftItem = total / amount;
         }
 
         public static void CalculateLvUp(int startLv, int startExp, int expAmount, out int lv, out int exp, out int remainAmount)
