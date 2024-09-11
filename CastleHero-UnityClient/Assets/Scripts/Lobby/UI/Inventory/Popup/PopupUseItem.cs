@@ -107,6 +107,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             bool isActive = hasPrice || usable;
             _useCount.gameObject.SetActive(isActive);
             _countRoot.gameObject.SetActive(isActive);
+            _slider.minValue = 1;
             _slider.maxValue = maxCount;
         }
 
