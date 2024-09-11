@@ -574,7 +574,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 0
+  m_text: 1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b2e30944874a15545876a27cbb65a879, type: 2}
   m_sharedMaterial: {fileID: 7644107486547799300, guid: b2e30944874a15545876a27cbb65a879, type: 2}
@@ -2935,6 +2935,7 @@ MonoBehaviour:
   _increase: {fileID: 4562329561116033565}
   _decrease: {fileID: 4482845031977773371}
   _slider: {fileID: 6431916786251375932}
+  _quantity: {fileID: 0}
   _minCount: {fileID: 74057335016265629}
   _maxCount: {fileID: 5634600269533642015}
   _gold: {fileID: 935001383701076851}
@@ -3532,7 +3533,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 1
-  m_Value: 0
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -3593,6 +3594,8 @@ MonoBehaviour:
   icon: {fileID: 8650584393374820404}
   label: {fileID: 0}
   _quantity: {fileID: 9131962316363330592}
+  _quantityPrefix: 
+  _quantitySuffix: 
   quantityDisplay:
     value: 1
 --- !u!1 &8416817627035173150

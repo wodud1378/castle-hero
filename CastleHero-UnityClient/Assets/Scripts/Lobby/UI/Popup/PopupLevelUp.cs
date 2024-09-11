@@ -32,6 +32,7 @@ namespace RGLabs.Lobby.UI.Popup
         [SerializeField] private Button _increase;
         [SerializeField] private Button _decrease;
         [SerializeField] private Slider _slider;
+        [SerializeField] private TMP_Text _quantity;
         [SerializeField] private TMP_Text _minCount;
         [SerializeField] private TMP_Text _maxCount;
         [SerializeField] private TMP_Text _gold;
@@ -121,8 +122,7 @@ namespace RGLabs.Lobby.UI.Popup
         protected override void OnUnitChanged(UnitInfo unit)
         {
             _level.Set(unit);
-
-            _slider.value = 0;
+            _slider.value = Mathf.Min(_selected.Value.Item.Quantity, 1);;
         }
 
         protected override (int id, int quantity) ConsumeItem()
@@ -138,17 +138,19 @@ namespace RGLabs.Lobby.UI.Popup
             if (_unit.Value == null)
                 return;
 
+            int itemQty = (int)_slider.value;
+
             var count = Mathf.RoundToInt(value);
             if (count == 0)
             {
                 _level.ReleaseOverride();
                 _maxCount.text = string.Empty;
                 _gold.text = "0";
+                _quantity.text = $"0";
+
                 return;
             }
-
             var unit = _unit.Value;
-            int itemQty = (int)_slider.value;
             UnitHelper.CalculateLvUp(unit.lv, unit.exp, _selected.Value.Entity, itemQty,
                 out int lv, out int exp, out int leftItem, out int price);
 
@@ -164,7 +166,7 @@ namespace RGLabs.Lobby.UI.Popup
             // 루프 방지를 위해 WithoutNotify 사용.
             int clamped = itemQty - leftItem;
             _slider.SetValueWithoutNotify(itemQty - leftItem);
-            _maxCount.text = clamped.ToString();
+            _quantity.text = $"{clamped:N0}";
         }
 
         private void OnSlotSelected(UIItemSlot slot)
@@ -172,8 +174,9 @@ namespace RGLabs.Lobby.UI.Popup
             if (slot == null)
                 return;
 
-            _slider.value = 0;
+            _slider.value = Mathf.Min(slot.Item.Quantity, 1);
             _slider.maxValue = slot.Item.Quantity;
+            _maxCount.text = $"{_slider.maxValue:N0}";
 
             _expSlotS.state.Value = _expSlotS == slot
                 ? UIState.State.Highlighted
