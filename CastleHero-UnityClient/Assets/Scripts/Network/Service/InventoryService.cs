@@ -191,7 +191,7 @@ namespace RGLabs.Network.Service
 
         public async UniTask<Result<StaminaDto>> AddStamina(int id, int amount)
         {
-            var get = await GetTables(Table.Stamina);
+            var get = await GetTables(Table.Stamina, Table.Inventory);
             if (!get.IsSuccess)
                 return Result<StaminaDto>.Error(get.error);
 

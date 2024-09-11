@@ -73,12 +73,16 @@ namespace RGLabs.Lobby.UI.Popup
         {
             _gold.text = "0";
 
-            await InitItemSlots();
+            int initialSlot = parameters.Length > 1 && parameters[1] is int id
+                ? id
+                : ExpSmallId;
+            
+            await InitItemSlots(initialSlot);
 
             await base.Open(parameters);
         }
 
-        private UniTask InitItemSlots()
+        private async UniTask InitItemSlots(int initialSlot = -1)
         {
             var tasks = new UniTask[3];
             var s = GetExpItem(ExpSmallId);
@@ -93,7 +97,19 @@ namespace RGLabs.Lobby.UI.Popup
             tasks[1] = _expSlotM.Init(m);
             tasks[2] = _expSlotL.Init(l);
 
-            return UniTask.WhenAll(tasks);
+            await UniTask.WhenAll(tasks);
+
+            if (initialSlot == ExpSmallId)
+                _selected.Value = _expSlotS;
+            
+            else if (initialSlot == ExpMediumId)
+                _selected.Value = _expSlotM;
+            
+            else if (initialSlot == ExpLargeId)
+                _selected.Value = _expSlotL;
+
+            if (_selected.Value == null)
+                _selected.Value = _expSlotS;
         }
 
         private IItem GetExpItem(int id)
@@ -107,7 +123,6 @@ namespace RGLabs.Lobby.UI.Popup
             _level.Set(unit);
 
             _slider.value = 0;
-            _selected.Value = _expSlotS;
         }
 
         protected override (int id, int quantity) ConsumeItem()

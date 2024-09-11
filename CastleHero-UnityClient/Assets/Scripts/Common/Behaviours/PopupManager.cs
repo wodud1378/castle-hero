@@ -64,7 +64,7 @@ namespace RGLabs.Common.Behaviours
             popup.gameObject.SetActive(true);
             return popup;
         }
-
+        
         public bool TryGetPopupIfExist<T>(out T popup) where T : PopupBase
         {
             popup = _popups.OfType<T>().FirstOrDefault();
@@ -99,16 +99,26 @@ namespace RGLabs.Common.Behaviours
         public async UniTask Close<T>(T popup) where T : PopupBase
             => await popup.CloseAsync();
 
-        public async UniTask CloseAll()
+        public async UniTask CloseAllAsync()
         {
             var list = new List<UniTask>();
+            var queue = new Queue<PopupBase>();
             foreach (var popup in _popups)
             {
-                list.Add(popup.CloseAsync());
+                queue.Enqueue(popup);
+            }
+
+            while (queue.Count > 0)
+            {
+                list.Add(queue.Dequeue().CloseAsync());
             }
 
             await UniTask.WhenAll(list);
+            
+            _popups.Clear();
         }
+
+        public void CloseAll() => CloseAllAsync().Forget();
 
         private void OnClosed(PopupBase popup)
         {

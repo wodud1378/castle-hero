@@ -11,6 +11,7 @@ namespace RGLabs.Data.Repositories
     {
         public IGameEntity gameEntity;
         public readonly BoolReactiveProperty speedUp;
+        public readonly BoolReactiveProperty repeat = new(false);
         public readonly ReactiveProperty<int> mana = new(0);
         public readonly ReactiveProperty<UnitBehaviour> castle = new(null);
         public readonly ReactiveCollection<UnitBehaviour> characters = new();

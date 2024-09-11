@@ -433,7 +433,7 @@ namespace RGLabs.Network.Service
             if (!update.IsSuccess)
                 return Result<StaminaDto>.Error(update.error);
 
-            stamina.point += amount * amount;
+            stamina.point += amount;
             return Result.Complete();
         }
 

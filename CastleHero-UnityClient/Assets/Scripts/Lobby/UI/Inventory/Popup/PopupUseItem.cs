@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using RGLabs.Common.Behaviours;
+using RGLabs.Common.Flow;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
@@ -22,7 +23,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         [SerializeField] private Button _increase;
         [SerializeField] private Button _decrease;
         [SerializeField] private Slider _slider;
-        
+
         [SerializeField] private Button _use;
         [SerializeField] private TMP_Text _description;
         [SerializeField] private TMP_Text _useCount;
@@ -34,22 +35,22 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         {
             base.OnAwake();
 
-            this.SubscribeButton(_increase, ()=> _slider.value = Mathf.Min(_slider.value + 1, _slider.maxValue) );
-            this.SubscribeButton(_decrease, ()=> _slider.value = Mathf.Min(_slider.value - 1, _slider.minValue) );
+            this.SubscribeButton(_increase, () => _slider.value = Mathf.Min(_slider.value + 1, _slider.maxValue));
+            this.SubscribeButton(_decrease, () => _slider.value = Mathf.Min(_slider.value - 1, _slider.minValue));
             this.SubscribeButton(_use, OnUse);
 
             _slider.onValueChanged
                 .AsObservable()
                 .Subscribe(UpdateWithQuantity)
                 .AddTo(this);
-            
+
             _slider.value = 0f;
         }
 
         protected override void OnDataChanged(IItem data)
         {
             base.OnDataChanged(data);
-            
+
             _description.text = Entity.desc[0];
 
             SetActiveSlider();
@@ -96,13 +97,13 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                     var option = Entity.optionIngredient;
                     bool isPiece = option.type is IngredientType.ElementalPiece or IngredientType.EquipmentPiece;
                     usable = isPiece && Item.Quantity >= option.forCombine;
-                    maxCount = isPiece ? Item.Quantity / option.forCombine : maxCount; 
+                    maxCount = isPiece ? Item.Quantity / option.forCombine : maxCount;
                     break;
                 case ItemType.Chest:
                     usable = true;
                     break;
             }
-            
+
             bool isActive = hasPrice || usable;
             _useCount.gameObject.SetActive(isActive);
             _countRoot.gameObject.SetActive(isActive);
@@ -141,6 +142,9 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 case ConsumeType.ElementalStone:
                     Refine();
                     break;
+                case ConsumeType.PlayTicket:
+                    MoveToStage();
+                    break;
             }
         }
 
@@ -151,8 +155,8 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 case IngredientType.Soul:
                     int unitId = (Entity.Id % 1000) + 10000;
                     var unit = Storage.userRepository.characters.units.FirstOrDefault(x => x.id == unitId);
-                    
-                    if(unit != null)
+
+                    if (unit != null)
                         Context.popups.Open<PopupRateUp>(unit);
                     break;
                 case IngredientType.ElementalPiece:
@@ -170,8 +174,15 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             var selected = await characters.SelectTask;
             if (selected == null)
                 return;
-            
+
             Context.popups.Open<PopupLevelUp>(selected, Entity.Id);
+        }
+
+        private void MoveToStage()
+        {
+            Context.Transition.CurrentState = State.Prepare;
+
+            Context.popups.CloseAll();
         }
 
         private async void Combine()
@@ -182,7 +193,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 Context.popups.Open<PopupCommon>(result.error);
                 return;
             }
-            
+
             Context.popups.Open<PopupReceivedItems>(result.data);
         }
 
@@ -198,7 +209,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             var data = result.data;
             var currency = data.currency;
             var items = data.items;
-            
+
             Context.popups.Open<PopupReceivedItems>(currency, items);
         }
 
@@ -224,12 +235,12 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         {
             var items = Storage.userRepository.inventory.items
                 .OfType<EquipItem>();
-            
+
             var selection = await Context.popups.OpenAsync<PopupSelectItem>(items);
-            
+
             bool closed = false;
             EquipItem equipItem = null;
-            while (!closed && equipItem ==null)
+            while (!closed && equipItem == null)
             {
                 selection.BeginSelect(false);
 
@@ -241,12 +252,12 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                     equipItem = selected as EquipItem;
                 }
             }
-            
+
             if (closed)
                 return;
-            
+
             selection.Close();
-            
+
             Context.popups.Open<PopupRefine>(equipItem, Entity);
         }
     }
