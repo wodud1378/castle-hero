@@ -20,23 +20,8 @@ namespace RGLabs.Unit.Components.Move
         }
         
         public Vector2 Default { get; set; }
-
-        public UnitBehaviour CurrentTarget
-        {
-            get => _currentTarget;
-            private set
-            {
-                _currentTarget = value;
-                
-                if (_currentTarget.IsValid())
-                {
-                    _currentTarget.OnDead -= OnUnitDead;
-                    _currentTarget.OnDead += OnUnitDead;
-                }
-            }
-        }
-
-        private UnitBehaviour _currentTarget;
+        
+        public UnitBehaviour CurrentTarget { get; private set; }
 
         public DefaultMovement(UnitBehaviour owner, Finder finder, PolyNavAgent navAgent)
         {
@@ -48,28 +33,46 @@ namespace RGLabs.Unit.Components.Move
 
         public bool TryMoveToTarget()
         {
-            float range = _owner.status.moveRange;
-            var overrideUnit = Finder.Override;
-            if (overrideUnit.IsValid())
-            {
-                CurrentTarget = overrideUnit;
-                StartMove(CurrentTarget.position);
-                return true;
-            }
-            
-            Finder.detection.SetRange(range, range);
-
-            if (!Finder.Update(_owner.position))
+            var selected = Select();
+            if (selected == null)
                 return false;
 
-            CurrentTarget = !_currentTarget.IsValid() 
-                ? Finder.Found[0] 
-                : Finder.Found.Contains(_currentTarget) 
-                    ? _currentTarget 
-                    : Finder.Found[0];
+            if (CurrentTarget != selected)
+            {
+                if (CurrentTarget.IsValid())
+                    CurrentTarget.OnDead -= OnUnitDead;
+
+                selected.OnDead -= OnUnitDead;
+                selected.OnDead += OnUnitDead;
+                CurrentTarget = selected;
+            }
             
             StartMove(CurrentTarget.position);
             return true;
+        }
+        
+        private UnitBehaviour Select()
+        {
+            var overriden = Finder.Override;
+            if (overriden.IsValid())
+                return overriden;
+
+            float rangeStat = _owner.status.moveRange;
+            if (CurrentTarget.IsValid())
+            {
+                float distance = (CurrentTarget.position - _owner.position).sqrMagnitude;
+                float range = Mathf.Pow(rangeStat, 2);
+
+                if (distance <= range)
+                    return CurrentTarget;
+            }
+            
+            Finder.detection.SetRange(rangeStat, rangeStat);
+            return !Finder.Update(_owner.position)
+                ? null
+                : Finder.Found.Count > 0
+                    ? Finder.Found[0]
+                    : null;
         }
 
         public bool TryMoveToDefault()
