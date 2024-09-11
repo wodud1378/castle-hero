@@ -48,7 +48,7 @@ namespace RGLabs.Data.Model
         public int exp; 
 
         [DataField("Stage_Rwd_Item_Per")] 
-        public int itemPer;
+        public float itemPer;
 
         [DataField("Stage_Rwd_Item_ID")] 
         public int propItemId;
