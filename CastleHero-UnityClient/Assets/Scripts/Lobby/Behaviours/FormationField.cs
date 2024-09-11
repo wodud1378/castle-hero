@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using PolyNav;
 using RGLabs.Common;
@@ -17,6 +18,7 @@ using RGLabs.Utility;
 using UniRx;
 using UnityEngine;
 using RGLabs.Network.Shared;
+using UnityEngine.AddressableAssets;
 
 namespace RGLabs.Lobby.Behaviours
 {
@@ -144,17 +146,6 @@ namespace RGLabs.Lobby.Behaviours
             {
                 prefab = CastleFactory.DEFAULT_CASTLE_PREFAB;
             }
-
-            var exist = _gameRepo.castle.Value;
-            if (exist != null && exist.ResourcePath != prefab)
-            {
-                exist.DestroySelf();
-                
-                _gameRepo.castle.Value = null;
-            }
-
-            if (string.IsNullOrEmpty(prefab))
-                return;
             
             LoadCastle(prefab).Forget();
         }
@@ -320,11 +311,34 @@ namespace RGLabs.Lobby.Behaviours
             }
         }
 
-        private async UniTask LoadCastle(string prefab = CastleFactory.DEFAULT_CASTLE_PREFAB)
+        private CancellationTokenSource _castleCreationCancel;
+
+        private async UniTask LoadCastle(string prefab)
         {
+            _castleCreationCancel?.Cancel();
+            _castleCreationCancel = new();
+
+            var legacy = _gameRepo.castle.Value;
+            if (legacy != null)
+            {
+                _gameRepo.castle.Value = null;
+                legacy.DestroySelf();
+            }
+
+            if (string.IsNullOrEmpty(prefab))
+                return;
+            
             int lv = _userRepo.gameRecord.castleLv.Value;
-            var unit = await _castleFactory.Create(prefab, new UnitInfo { id = 1, lv = lv, }, Vector2.zero);
-            _gameRepo.castle.Value = unit;
+            var info = new UnitInfo { id = 1, lv = lv, };
+            var task = await _castleFactory
+                .Create(prefab, info, Vector2.zero)
+                .AttachExternalCancellation(_castleCreationCancel.Token)
+                .SuppressCancellationThrow();
+
+            if (task.IsCanceled)
+                return;
+            
+            _gameRepo.castle.Value = task.Result;
         }
 
         private async UniTask LoadSavedUnits()
