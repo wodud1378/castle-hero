@@ -20,6 +20,8 @@ namespace RGLabs.Lobby.UI
         }
         
         [SerializeField] private TMP_Text _quantity;
+        [SerializeField] private string _quantityPrefix;
+        [SerializeField] private string _quantitySuffix;
         
         public Color QuantityLabelColor
         {
@@ -65,13 +67,14 @@ namespace RGLabs.Lobby.UI
                 return;
 
             var quantity = $"{Item.Quantity:N0}";
+            
             switch (mode)
             {
                 case QuantityDisplay.Default:
                     _quantity.text = $"{quantity} / {9999:N0}";
                     break;
                 case QuantityDisplay.ValueOnly:
-                    _quantity.text = $"{quantity}";
+                    _quantity.text = $"{_quantityPrefix}{quantity}{_quantitySuffix}";
                     break;
             }
         }
