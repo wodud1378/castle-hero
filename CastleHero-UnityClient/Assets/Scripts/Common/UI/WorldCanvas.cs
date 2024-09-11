@@ -26,22 +26,5 @@ namespace RGLabs.Common.UI
             // 캔버스의 스케일 적용
             rect.localScale = new Vector3(worldScreenWidth / canvasSize.x, worldScreenHeight / canvasSize.y, 1f);;
         }
-        
-        
-#if UNITY_EDITOR
-        public bool UPDATE = false;
-        
-        private void OnValidate()
-        {
-            if (_canvas == null)
-                _canvas = GetComponent<Canvas>();
-
-            if (!UPDATE)
-                return;
-
-            Adjust();
-            UPDATE = false;
-        }
-#endif
     }
 }
