@@ -129,6 +129,9 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         {
             switch (option.type)
             {
+                case ConsumeType.Exp:
+                    MoveToLvUp();
+                    break;
                 case ConsumeType.Stamina:
                     AddStamina();
                     break;
@@ -157,6 +160,18 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                     Combine();
                     break;
             }
+        }
+
+        private async void MoveToLvUp()
+        {
+            var characters = await Context.popups.OpenAsync<PopupCharacterList>();
+            characters.BeginSelect(true);
+
+            var selected = await characters.SelectTask;
+            if (selected == null)
+                return;
+            
+            Context.popups.Open<PopupLevelUp>(selected, Entity.Id);
         }
 
         private async void Combine()
