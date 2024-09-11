@@ -50,8 +50,7 @@ namespace RGLabs.Unit.Behaviours
         public UnitCore Core { get; private set; }
         
         public bool Released { get; private set; }
-
-
+        
         public UnitEntity Data { get; private set; }
         
         private UnitBalanceEntity _balance;

@@ -18,9 +18,9 @@ namespace RGLabs.Unit.Components
 
         public bool IsRunning { get; private set; }
         
-        public string projectile;
+        public UnitBehaviour CurrentTarget { get; private set; }
         
-        private UnitBehaviour _target;
+        public string projectile;        
 
         public Attack(UnitBehaviour owner, Finder finder, RenderController renderController,
             AnimationEvents animationEvents)
@@ -46,14 +46,14 @@ namespace RGLabs.Unit.Components
             if (selected == null)
                 return false;
 
-            if (_target != selected)
+            if (CurrentTarget != selected)
             {
-                if (_target.IsValid())
-                    _target.OnDead -= OnUnitDead;
+                if (CurrentTarget.IsValid())
+                    CurrentTarget.OnDead -= OnUnitDead;
                 
                 selected.OnDead -= OnUnitDead;
                 selected.OnDead += OnUnitDead;
-                _target = selected;
+                CurrentTarget = selected;
             }
 
             return true;
@@ -66,13 +66,13 @@ namespace RGLabs.Unit.Components
                 return overriden;
 
             float rangeStat = _owner.status.atkRange;
-            if (_target.IsValid())
+            if (CurrentTarget.IsValid())
             {
-                float distance = (_target.position - _owner.position).sqrMagnitude;
+                float distance = (CurrentTarget.position - _owner.position).sqrMagnitude;
                 float range = Mathf.Pow(rangeStat, 2);
 
                 if (distance <= range)
-                    return _target;
+                    return CurrentTarget;
             }
             
             finder.detection.SetRange(rangeStat, rangeStat);
@@ -85,7 +85,7 @@ namespace RGLabs.Unit.Components
         
         private void OnUnitDead(UnitBehaviour unit)
         {
-            if(unit == _target)
+            if(unit == CurrentTarget)
                 Stop();
             
             unit.OnDead -= OnUnitDead;
@@ -99,8 +99,6 @@ namespace RGLabs.Unit.Components
 
         public void Stop()
         {
-            _renderController.SetAnimation(UnitCore.AnimationsHash[UnitCore.States.Idle]);
-
             Clear();
         }
 
@@ -108,22 +106,22 @@ namespace RGLabs.Unit.Components
 
         private void ProcessHit()
         {
-            if (!_target.IsValid())
+            if (!CurrentTarget.IsValid())
                 return;
 
             new AtkEvent
             {
                 Type = DamageType.Normal,
                 From = _owner,
-                To = _target,
+                To = CurrentTarget,
                 Amount = _owner.status.atk
             }.Publish();
             
-            additional.Execute(_target);
+            additional.Execute(CurrentTarget);
 
             if (!string.IsNullOrEmpty(projectile))Effect.Builder
                 .StartBuild(projectile)
-                .To(_target)
+                .To(CurrentTarget)
                 .From(_owner.position)
                 .Run();
         }

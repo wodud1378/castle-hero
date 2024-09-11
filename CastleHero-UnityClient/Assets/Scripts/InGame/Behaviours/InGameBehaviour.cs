@@ -83,6 +83,8 @@ namespace RGLabs.InGame.Behaviours
 
         private async void OnFinished(GameFinished finished)
         {
+            finished.Publish();
+            
             var isCleared = finished.isCleared;
             var type = finished.type;
             var id = finished.id;

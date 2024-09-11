@@ -28,10 +28,14 @@ namespace RGLabs.InGame.System
             SubscribeMessage<UnitDead>(OnUnitDead);
             SubscribeMessage<GameFinished>(_ =>
             {
-                foreach (var recover in Storage.inGameRepository.recovers)
+                var collection = Storage.inGameRepository.recovers;
+                foreach (var recover in collection)
                 {
-                    recover.Dispose();
+                    recover.Clear();
                 }
+                
+                collection.Dispose();
+                collection.Clear();
             });
         }
 

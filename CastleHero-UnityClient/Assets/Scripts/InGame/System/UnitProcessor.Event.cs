@@ -30,13 +30,19 @@ namespace RGLabs.InGame.System
             _subscription = subscription;
         }
 
-        public void Dispose()
+        public void Clear()
         {
-            _root?.Remove(this);
             _subscription?.Dispose();
 
             summary.Dispose();
             leftTime.Dispose();
+        }
+
+        public void Dispose()
+        {
+            _root?.Remove(this);
+            
+            Clear();
         }
     }
 

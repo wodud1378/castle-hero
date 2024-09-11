@@ -203,8 +203,7 @@ namespace RGLabs.Unit.Components
             _update?.Dispose();
             _update = owner
                 .UpdateAsObservable()
-                .Subscribe(_ => OnUpdateOwner())
-                .AddTo(owner);
+                .Subscribe(_ => OnUpdateOwner());
         }
 
         public void Update(UnitInfo info, UnitEntity data, UnitBalanceEntity balance)
@@ -434,7 +433,7 @@ namespace RGLabs.Unit.Components
             if (attack.IsRunning)
                 return true;
 
-            lookDirection.Value = attack.finder.Found[0].position;
+            lookDirection.Value = attack.CurrentTarget.position;
 
             attack.Run();
             movement.Stop();

@@ -43,7 +43,10 @@ namespace RGLabs.InGame.Behaviours
         private void Awake()
         {
             this.SubscribeMessage<ReleaseEvent>(OnReceiveReleaseEvent);
+            this.SubscribeMessage<GameFinished>(OnGameFinished);
         }
+
+        private void OnGameFinished(GameFinished _)=> isRunning = false;
         
         private void OnReceiveReleaseEvent(ReleaseEvent data)
         {
