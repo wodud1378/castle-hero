@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using RGLabs.InGame.Effects.Behaviours;
 using RGLabs.InGame.System;
 using RGLabs.Unit.Behaviours;
@@ -18,7 +17,6 @@ namespace RGLabs.Unit.Components
         private readonly AnimationEvents _animationEvents;
 
         public bool IsRunning { get; private set; }
-
         
         public string projectile;
         
@@ -44,29 +42,53 @@ namespace RGLabs.Unit.Components
 
         public bool IsAbleToAttack()
         {
-            float range = _owner.status.atkRange;
-            var overrideUnit = finder.Override;
-            if (overrideUnit.IsValid())
-            {
-                float distance = overrideUnit.position.DistanceTo(_owner.position);
-                bool inRange = distance <= Mathf.Pow(range, 2f);
-                _target = inRange ? overrideUnit : null;
-
-                return inRange;
-            }
-
-            finder.detection.SetRange(range, range);
-
-            if (!finder.Update(_owner.position))
+            var selected = Select();
+            if (selected == null)
                 return false;
 
-            _target = !_target.IsValid() 
-                ? finder.Found[0] 
-                : finder.Found.Contains(_target) 
-                    ? _target
-                    : finder.Found[0];
-            
+            if (_target != selected)
+            {
+                if (_target.IsValid())
+                    _target.OnDead -= OnUnitDead;
+                
+                selected.OnDead -= OnUnitDead;
+                selected.OnDead += OnUnitDead;
+                _target = selected;
+            }
+
             return true;
+        }
+        
+        private UnitBehaviour Select()
+        {
+            var overriden = finder.Override;
+            if (overriden.IsValid())
+                return overriden;
+
+            float rangeStat = _owner.status.atkRange;
+            if (_target.IsValid())
+            {
+                float distance = (_target.position - _owner.position).sqrMagnitude;
+                float range = Mathf.Pow(rangeStat, 2);
+
+                if (distance <= range)
+                    return _target;
+            }
+            
+            finder.detection.SetRange(rangeStat, rangeStat);
+            return !finder.Update(_owner.position)
+                ? null
+                : finder.Found.Count > 0
+                    ? finder.Found[0]
+                    : null;
+        }
+        
+        private void OnUnitDead(UnitBehaviour unit)
+        {
+            if(unit == _target)
+                Stop();
+            
+            unit.OnDead -= OnUnitDead;
         }
 
         public void Run()

@@ -43,7 +43,7 @@ namespace RGLabs.InGame.UI
                 .Where(x => x != null)
                 .Subscribe(x =>
                 {
-                    _lv.text = $"{x.lv}";
+                    _lv.text = $"Lv.{x.lv}";
                 })
                 .AddTo(_castle);
                 
