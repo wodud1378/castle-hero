@@ -119,7 +119,7 @@ namespace RGLabs.Lobby.UI
         }
 
         private void OpenToolTip(string text, Button root) =>
-            Context.toolTip.Open(text, root.transform as RectTransform, 0.5f, 1f);
+            Context.toolTip.Open(text, root.transform as RectTransform, 1f, 1f);
 
         private void UpdateMarks(IEnumerable<Product> collection)
         {
