@@ -2579,7 +2579,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemRoot: {fileID: 4040741383476044553}
   _itemPrefab:
-    m_AssetGUID: 6dcdabc819b524a418e2119be8c0aafb
+    m_AssetGUID: 5fc31283cfb3f8546b4855aedad42b44
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0

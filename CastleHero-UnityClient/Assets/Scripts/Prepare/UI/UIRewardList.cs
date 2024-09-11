@@ -18,7 +18,7 @@ namespace RGLabs.Prepare.UI
         public int max;
         public float percent;
     }
-    
+
     public class UIRewardList : UIListAdapter<UISlot, Reward>
     {
         public UniTask Init(IGameEntity entity)
@@ -27,7 +27,7 @@ namespace RGLabs.Prepare.UI
 
             if (entity is { MinGold: > 0, MaxGold: > 0 })
             {
-                rewards.Add(new ()
+                rewards.Add(new()
                 {
                     icon = Constants.GoldIcon,
                     min = entity.MinGold,
@@ -38,7 +38,7 @@ namespace RGLabs.Prepare.UI
 
             if (entity.Exp > 0)
             {
-                rewards.Add(new ()
+                rewards.Add(new()
                 {
                     icon = Constants.ExpIcon,
                     min = entity.Exp,
@@ -46,16 +46,23 @@ namespace RGLabs.Prepare.UI
                     percent = 1f
                 });
             }
-            
+
             rewards.AddRange(entity.GetRewardsForDisplay());
-            
+
             return base.Init(rewards);
         }
-        
+
         protected override UniTask SetItem(UISlot slot, Reward data)
         {
-            var task = slot.Init(data.icon);
-            slot.OnClick += (s)=> OnClickSlot(s, data);
+            var text = data.min != data.max
+                ? $"{data.min:N0}~{data.max:N0}"
+                : data.min > 1
+                    ? $"{data.min:N0}"
+                    : string.Empty;
+
+            var task = slot.Init(data.icon, text);
+
+            slot.OnClick += (s) => OnClickSlot(s, data);
 
             return task;
         }
@@ -74,7 +81,7 @@ namespace RGLabs.Prepare.UI
                         {
                             if (!Storage.db.items.TryFind(kvp.Key, out var e))
                                 continue;
-                            
+
                             if (isFirst)
                                 isFirst = false;
                             else
@@ -82,6 +89,7 @@ namespace RGLabs.Prepare.UI
 
                             sb.Append($"{e.name}");
                         }
+
                         break;
                     default:
                         sb.Append(entity.name);
@@ -98,9 +106,9 @@ namespace RGLabs.Prepare.UI
             }
 
             var infoString = sb.ToString();
-            
+
             Context.toolTip.Open(
-                infoString, 
+                infoString,
                 slot.transform as RectTransform,
                 0f,
                 1f);

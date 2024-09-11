@@ -365,7 +365,7 @@ GameObject:
   - component: {fileID: 4468607033753543900}
   - component: {fileID: 9195367765150053358}
   m_Layer: 5
-  m_Name: RewardItem_01
+  m_Name: Slot_RewardItem_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -410,9 +410,10 @@ MonoBehaviour:
   icon: {fileID: 6837201186312370611}
   label: {fileID: 0}
   _quantity: {fileID: 0}
-  _portraitRoot: {fileID: 0}
+  _quantityPrefix: 
+  _quantitySuffix: 
   quantityDisplay:
-    value: 0
+    value: 1
 --- !u!114 &5470961368439747737
 MonoBehaviour:
   m_ObjectHideFlags: 0
