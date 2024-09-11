@@ -73,8 +73,6 @@ namespace RGLabs.Lobby.Behaviours
             _userRepo.entrance
                 .Subscribe(ReloadCastle)
                 .AddTo(this);
-            
-            Debug.Log("Subscription");
 
             if (Storage.db.castles.TryFind(_userRepo.gameRecord.castleLv.Value, out var entity))
             {
@@ -137,8 +135,6 @@ namespace RGLabs.Lobby.Behaviours
 
         private void ReloadCastle(GameEntrance entrance)
         {
-            Debug.Log("Entrance Changed");
-            
             string prefab;
             if (entrance.type == GameType.Dungeon)
             {
@@ -340,10 +336,7 @@ namespace RGLabs.Lobby.Behaviours
                 .SuppressCancellationThrow();
 
             if (task.IsCanceled)
-            {
-                Debug.Log("Castle Creation Cancel");
                 return;
-            }
             
             _gameRepo.castle.Value = task.Result;
         }

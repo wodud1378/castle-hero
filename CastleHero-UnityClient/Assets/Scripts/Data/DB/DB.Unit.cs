@@ -6,7 +6,7 @@ namespace RGLabs.Data.DB
     [DB("castle")]
     public class CastleDB : DB<CastleEntity>
     {
-        public int MaxLv => this[^1].Id + 1;
+        public int MaxLv => this[^1].Id;
     }
     
     [DB("unit")]
