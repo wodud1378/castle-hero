@@ -74,7 +74,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
         private readonly List<UIItemSlot> _sellTargets = new();
 
         private UniTask _updateTask;
-        
+
         protected override void OnAwake()
         {
             base.OnAwake();
@@ -123,8 +123,8 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 .Subscribe(_ => UpdateList())
                 .AddTo(this);
 
-            this.SubscribeButton(_sell, ()=> mode.Value = Mode.Sell);
-            this.SubscribeButton(_cancelSell, ()=> mode.Value = Mode.Default);
+            this.SubscribeButton(_sell, () => mode.Value = Mode.Sell);
+            this.SubscribeButton(_cancelSell, () => mode.Value = Mode.Default);
             this.SubscribeButton(_confirmSell, Sell);
         }
 
@@ -134,6 +134,35 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
                 return;
 
             var selected = _sellTargets.Select(x => (x.Item, x.Item.Quantity)).ToArray();
+            var price = selected
+                .Select(x =>
+                {
+                    if (!Storage.db.items.TryFind(x.Item.ItemId, out var entity))
+                        return 0;
+
+                    return entity.sellPrice * x.Quantity;
+                }).Sum();
+
+            string popupText = $"{price:N0} 골드에 판매하시겠습니까?";
+            var selectSource = new UniTaskCompletionSource<bool>();
+            var param = new PopupCommon.ButtonParam[]
+            {
+                new()
+                {
+                    action = PopupCommon.ButtonAction.Confirm,
+                    onClick = () => selectSource.TrySetResult(true)
+                },
+                new()
+                {
+                    action = PopupCommon.ButtonAction.Cancel,
+                    onClick = () => selectSource.TrySetResult(false)
+                }
+            };
+
+            Context.popups.Open<PopupCommon>(popupText, param);
+
+            if (!await selectSource.Task)
+                return;
 
             var result = await NetworkService.Inventory.Sell(
                 selected.Select(x => x.Item).ToArray(),
@@ -148,7 +177,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             _sell.gameObject.SetActive(value == Mode.Default);
             _cancelSell.gameObject.SetActive(value == Mode.Sell);
             _confirmSell.gameObject.SetActive(value == Mode.Sell);
-            
+
             switch (value)
             {
                 case Mode.Default:
@@ -201,7 +230,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             switch (type)
             {
                 case ItemType.Equipment:
-                    if(slot.Item is EquipItem equipItem)
+                    if (slot.Item is EquipItem equipItem)
                         Equip(equipItem);
                     break;
                 case ItemType.Consumable:
@@ -234,7 +263,7 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             var confirm = await compare.SelectTask;
             if (!confirm)
                 return;
-            
+
             var result = await NetworkService.Character.Equip(unit.id, equipItem.Guid);
             if (!result.IsSuccess)
                 Context.popups.Open<PopupCommon>(result.error);

@@ -1,5 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
+using RGLabs.Common.Behaviours;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
@@ -101,7 +102,32 @@ namespace RGLabs.Lobby.UI.Inventory.Popup
             if (Entity.sellPrice <= 0)
                 return;
 
-            await NetworkService.Inventory.Sell(new IItem[] { Item }, new[] { SellCount });
+            var items = new IItem[] { Item };
+            var quantities = new[] { SellCount };
+
+            var price = Entity.sellPrice * SellCount;
+            string popupText = $"{price:N0} 골드에 판매하시겠습니까?";
+            var selectSource = new UniTaskCompletionSource<bool>();
+            var param = new PopupCommon.ButtonParam[]
+            {
+                new()
+                {
+                    action = PopupCommon.ButtonAction.Confirm,
+                    onClick = () => selectSource.TrySetResult(true)
+                },
+                new()
+                {
+                    action = PopupCommon.ButtonAction.Cancel,
+                    onClick = () => selectSource.TrySetResult(false)
+                }
+            };
+
+            Context.popups.Open<PopupCommon>(popupText, param);
+
+            if (!await selectSource.Task)
+                return;
+            
+            await NetworkService.Inventory.Sell(items, quantities);
         }
 
         protected abstract int SellCount { get; }
