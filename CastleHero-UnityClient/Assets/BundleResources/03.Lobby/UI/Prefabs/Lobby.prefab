@@ -287,6 +287,7 @@ GameObject:
   - component: {fileID: 2915910056979746117}
   - component: {fileID: 7883919529514807641}
   - component: {fileID: 8109079146137074710}
+  - component: {fileID: 1758888496449903549}
   m_Layer: 5
   m_Name: Lobby
   m_TagString: Untagged
@@ -416,6 +417,20 @@ MonoBehaviour:
   - {fileID: 6281527837565132525}
   - {fileID: 1407595678676736363}
   - {fileID: 7691053936985988098}
+--- !u!114 &1758888496449903549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 387619925686495620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1fda781765f4564a88e766017a9ce17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _config: {fileID: 11400000, guid: 8dd2d26a988d22940b3049ef3a67e829, type: 2}
+  _target: {fileID: 1852398771772587568}
 --- !u!1 &399756819878136263
 GameObject:
   m_ObjectHideFlags: 0
@@ -548,6 +563,8 @@ MonoBehaviour:
   icon: {fileID: 3635119234370594762}
   label: {fileID: 0}
   _quantity: {fileID: 1537285339014581057}
+  _quantityPrefix: 
+  _quantitySuffix: 
   quantityDisplay:
     value: 1
 --- !u!1 &418368037246130784
@@ -3598,6 +3615,8 @@ MonoBehaviour:
   icon: {fileID: 45046701311510595}
   label: {fileID: 0}
   _quantity: {fileID: 7173573718352012159}
+  _quantityPrefix: 
+  _quantitySuffix: 
   quantityDisplay:
     value: 1
 --- !u!1 &2490416574135692394
