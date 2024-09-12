@@ -989,7 +989,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _config: {fileID: 11400000, guid: 8dd2d26a988d22940b3049ef3a67e829, type: 2}
-  _overlay: {fileID: 2136379524}
   _target: {fileID: 715287806}
 --- !u!1 &756816140
 GameObject:
@@ -3130,7 +3129,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2136379524
 RectTransform:
   m_ObjectHideFlags: 0

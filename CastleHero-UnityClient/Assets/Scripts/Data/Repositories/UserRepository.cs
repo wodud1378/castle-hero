@@ -24,7 +24,8 @@ namespace RGLabs.Data.Repositories
 
         public int StageFocus
         {
-            get => PlayerPrefs.GetInt(StageFocusKey, Mathf.Max(1, gameRecord.lastClearedStage.Value));
+            get => PlayerPrefs.GetInt(StageFocusKey, 1);
+            //get => PlayerPrefs.GetInt(StageFocusKey, Mathf.Max(1, gameRecord.lastClearedStage.Value));
             set => PlayerPrefs.SetInt(StageFocusKey, value);
         }
 

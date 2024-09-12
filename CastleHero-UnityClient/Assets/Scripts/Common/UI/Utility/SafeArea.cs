@@ -7,7 +7,6 @@ namespace RGLabs.Common.UI.Utility
     public class SafeArea : MonoBehaviour
     {
         [SerializeField] private UIConfig _config;
-        [SerializeField] private RectTransform _overlay;
         [SerializeField] private RectTransform _target;
 
         private void OnEnable()
@@ -21,7 +20,6 @@ namespace RGLabs.Common.UI.Utility
             var minAnchor = safeArea.position;
             var maxAnchor = minAnchor + safeArea.size;
 
-            //인스펙터 프로퍼티에 집어 넣을수 있게 비율로 변환 및 할당
             minAnchor.x /= Screen.width;
             minAnchor.y /= Screen.height;
             maxAnchor.x /= Screen.width;
@@ -29,12 +27,6 @@ namespace RGLabs.Common.UI.Utility
 
             _target.anchorMin = minAnchor;
             _target.anchorMax = maxAnchor;
-
-            if (_overlay != null)
-            {
-                _overlay.anchorMin = _target.anchorMin;
-                _overlay.anchorMax = _target.anchorMax;   
-            }
         }
 
         private Rect GetSafeArea()
