@@ -1,0 +1,129 @@
+Character_OrcWarrior.png
+	size: 512, 512
+	filter: Linear, Linear
+	scale: 0.5
+Effect_Slash
+	bounds: 350, 455, 50, 50
+Elipse
+	bounds: 271, 365, 65, 65
+GroundShockWave_01
+	bounds: 338, 376, 65, 48
+	offsets: 3, 0, 68, 49
+	rotate: 90
+GroundShockWave_02
+	bounds: 298, 215, 52, 26
+	offsets: 3, 0, 68, 49
+GroundShockWave_03
+	bounds: 390, 99, 52, 38
+	offsets: 3, 0, 68, 49
+	rotate: 90
+GroundShockWave_04
+	bounds: 350, 245, 57, 43
+	offsets: 4, 0, 68, 49
+	rotate: 90
+GroundShockWave_05
+	bounds: 341, 80, 63, 47
+	offsets: 3, 0, 68, 49
+	rotate: 90
+OrcWarrior/Arm_L
+	bounds: 129, 106, 87, 82
+	offsets: 5, 5, 97, 92
+OrcWarrior/Arm_L2
+	bounds: 343, 22, 56, 46
+	offsets: 5, 5, 66, 56
+	rotate: 90
+OrcWarrior/Arm_R
+	bounds: 202, 324, 67, 92
+	offsets: 5, 5, 77, 102
+OrcWarrior/Arm_R2
+	bounds: 352, 190, 53, 43
+	offsets: 5, 5, 63, 53
+	rotate: 90
+OrcWarrior/Belt
+	bounds: 218, 122, 131, 79
+	offsets: 3, 2, 135, 91
+	rotate: 270
+OrcWarrior/Chin
+	bounds: 221, 29, 92, 59
+	offsets: 5, 5, 102, 69
+	rotate: 90
+OrcWarrior/Finger_R
+	bounds: 282, 58, 68, 57
+	offsets: 5, 5, 78, 67
+	rotate: 90
+OrcWarrior/Foot
+	bounds: 208, 431, 78, 74
+	offsets: 5, 7, 86, 81
+OrcWarrior/Gauntlet_L
+	bounds: 130, 32, 89, 72
+OrcWarrior/Gauntlet_R
+	bounds: 135, 418, 87, 71
+	rotate: 90
+OrcWarrior/Hand_L
+	bounds: 223, 255, 67, 68
+	offsets: 5, 5, 77, 78
+	rotate: 90
+OrcWarrior/Hand_R
+	bounds: 287, 443, 62, 61
+	offsets: 5, 5, 72, 71
+	rotate: 90
+OrcWarrior/Head
+	bounds: 2, 141, 149, 121
+	offsets: 0, 1, 150, 126
+	rotate: 90
+OrcWarrior/Leg
+	bounds: 293, 304, 56, 59
+	offsets: 5, 5, 66, 69
+OrcWarrior/Shoulder_L
+	bounds: 123, 190, 100, 98
+	offsets: 5, 5, 110, 122
+	rotate: 90
+OrcWarrior/Skill_Blur
+	bounds: 135, 292, 104, 65
+	offsets: 0, 0, 105, 65
+	rotate: 90
+OrcWarrior/Toe
+	bounds: 352, 152, 63, 36
+	offsets: 3, 4, 69, 43
+OrcWarrior/Torso
+	bounds: 2, 26, 116, 127
+	offsets: 3, 2, 121, 132
+	rotate: 90
+OrcWarrior/Weapon
+	bounds: 2, 292, 131, 213
+	offsets: 21, 5, 166, 237
+Smoke_01
+	bounds: 135, 403, 14, 13
+	offsets: 22, 39, 71, 71
+Smoke_02
+	bounds: 85, 128, 24, 26
+	offsets: 22, 29, 71, 71
+Smoke_03
+	bounds: 391, 14, 40, 33
+	offsets: 5, 33, 71, 71
+Smoke_04
+	bounds: 388, 403, 50, 44
+	offsets: 6, 15, 71, 71
+	rotate: 90
+Smoke_05
+	bounds: 293, 243, 59, 55
+	offsets: 6, 6, 71, 71
+	rotate: 90
+Smoke_06
+	bounds: 293, 145, 57, 58
+	offsets: 9, 5, 71, 71
+Smoke_07
+	bounds: 282, 2, 54, 59
+	offsets: 12, 5, 71, 71
+	rotate: 90
+Smoke_08
+	bounds: 351, 314, 38, 60
+	offsets: 28, 5, 71, 71
+Whirl
+	bounds: 391, 304, 47, 37
+	offsets: 2, 2, 50, 40
+	rotate: 90
+Whirl_Blur
+	bounds: 391, 49, 48, 38
+	offsets: 2, 2, 51, 41
+	rotate: 90
