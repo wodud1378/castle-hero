@@ -8,9 +8,33 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1825957506637976819, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 1825957506637976819, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 1826443440396192315, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.5971246
+      objectReference: {fileID: 0}
+    - target: {fileID: 1826443440396192315, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 8.370707
+      objectReference: {fileID: 0}
     - target: {fileID: 2224556522064719523, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
       propertyPath: m_Name
       value: Monster_30003
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514936436172156276, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
+      propertyPath: m_Radius
+      value: 1.61
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514936436172156276, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.95
       objectReference: {fileID: 0}
     - target: {fileID: 2627257296064050957, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
       propertyPath: m_LocalPosition.x
@@ -51,6 +75,14 @@ PrefabInstance:
     - target: {fileID: 2627257296064050957, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4585431582340083859, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.11553036
+      objectReference: {fileID: 0}
+    - target: {fileID: 4585431582340083859, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.1609266
       objectReference: {fileID: 0}
     - target: {fileID: 5975240846050550739, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
       propertyPath: initialSkinName
