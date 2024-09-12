@@ -225,13 +225,6 @@ namespace RGLabs.Utility
             return dic;
         }
         
-        public static Dictionary<Status.Type, float> Total(this IEnumerable<EquipItem> equipments)
-        {
-            var _ = new Elemental();
-            
-            return equipments.Total(ref _);
-        }
-
         public static bool IsRandomItem(this int id) => id / 1000 != 61 && id % 10 == 0;
 
         public static bool IsEquipItem(this int id)
@@ -239,7 +232,5 @@ namespace RGLabs.Utility
             int val = id / 10000;
             return val is >= 1 and <= 4;
         }
-
-        public static bool IsChestItem(this int id) => id / 10000 == 7;
     }
 }

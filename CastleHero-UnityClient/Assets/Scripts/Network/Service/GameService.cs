@@ -271,9 +271,10 @@ namespace RGLabs.Network.Service
                 int perUnit = addExp / units.Count;
                 foreach (var unit in units)
                 {
-                    UnitHelper.CalculateLvUp(unit.lv, unit.exp, perUnit, out int lv, out int exp, out _);
+                    UnitHelper.CalculateLvUp(unit.lv, unit.exp, perUnit, 
+                        out int lv, out int exp, out int totalExp, out _);
 
-                    transitions.Add(UnitTransition.Create(unit, lv, exp));
+                    transitions.Add(UnitTransition.Create(unit, lv, exp, totalExp));
                     unit.lv = lv;
                     unit.exp = exp;
 

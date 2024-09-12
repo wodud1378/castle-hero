@@ -27,9 +27,9 @@ namespace RGLabs.InGame.UI
             return _unitSlot.Init(data.unit);
         }
 
-        public void Show() => StartCoroutine(Play(_data.lvTransition, _data.expTransition));
+        public void Show() => StartCoroutine(Play(_data.lvTransition, _data.expTransition, _data.addedExp));
 
-        private IEnumerator Play(int[] lvTransition, int[] expTransition)
+        private IEnumerator Play(int[] lvTransition, int[] expTransition, int addedExp)
         {
             int lv = lvTransition[0];
             int currentLv = lvTransition[1];
@@ -49,21 +49,8 @@ namespace RGLabs.InGame.UI
                         .From(1f)
                         .SetLoops(-1, LoopType.Yoyo);
                 });
-        
-            float totalExp = 0;
-            for (int l = lv; l <= currentLv; ++l)
-            {
-                Storage.db.levels.TryFind(l, out var entity);
-        
-                if (l == lv)
-                    totalExp += entity.exp - exp;
-                else if (l != currentLv)
-                    totalExp += entity.exp;
-                else
-                    totalExp += currentExp;
-            }
-
-            float perFrame = totalExp / (_expDuration * 60f);
+            
+            float perFrame = addedExp / (_expDuration * 60f);
             bool updatedNext = false;
             int nextExp = 0;
             while (lv <= currentLv && exp < currentExp)
@@ -93,21 +80,8 @@ namespace RGLabs.InGame.UI
                 
                 yield return null;
             }
+            
+            _addedExp.text = addedExp.ToString();
         }
-
-#if UNITY_EDITOR
-        public int[] lvs;
-        public int[] exps;
-        public bool show;
-        
-        private void Update()
-        {
-            if (show)
-            {
-                show = false;
-                StartCoroutine(Play(lvs, exps));
-            }
-        }
-#endif
     }
 }

@@ -78,7 +78,7 @@ namespace RGLabs.Network.Shared
                 case Constants.PaidDiaId:
                 case Constants.FreeDiaId:
                     return TryConsumeDia(amount);
-                
+
                 case Constants.GoldId:
                     if (amount > gold)
                         return false;
@@ -138,7 +138,7 @@ namespace RGLabs.Network.Shared
         public GameRecordDto gameRecord;
         public ShopRecordDto shopRecord;
     }
-    
+
     #region Dungeon
 
     public class DungeonRecord
@@ -159,10 +159,9 @@ namespace RGLabs.Network.Shared
             public int byAd;
             public int byDefault;
 
-            [JsonIgnore]
-            public int Sum => byFree + byAd + byDefault;
+            [JsonIgnore] public int Sum => byFree + byAd + byDefault;
         }
-        
+
         public int shopId;
         public BuyCount total;
         public BuyCount current;
@@ -209,6 +208,7 @@ namespace RGLabs.Network.Shared
         public int[] rateTransition;
         public int[] lvTransition;
         public int[] expTransition;
+        public int addedExp;
         public UnitInfo unit;
 
         public static UnitTransition Create(UnitInfo unit)
@@ -222,18 +222,20 @@ namespace RGLabs.Network.Shared
                 rateTransition = new[] { rate, rate },
                 expTransition = new[] { exp, exp },
                 lvTransition = new[] { lv, lv },
-                unit = unit
+                addedExp = 0,
+                unit = unit,
             };
         }
 
-        public static UnitTransition Create(UnitInfo unit, int lv, int exp)
+        public static UnitTransition Create(UnitInfo unit, int lv, int exp, int addedExp)
         {
             return new UnitTransition
             {
                 rateTransition = new[] { unit.rate, unit.rate },
                 expTransition = new[] { unit.exp, exp },
                 lvTransition = new[] { unit.lv, lv },
-                unit = unit
+                addedExp = addedExp,
+                unit = unit,
             };
         }
 
@@ -244,7 +246,8 @@ namespace RGLabs.Network.Shared
                 rateTransition = new[] { unit.rate, rate },
                 expTransition = new[] { unit.exp, unit.exp },
                 lvTransition = new[] { unit.lv, unit.lv },
-                unit = unit
+                addedExp = 0,
+                unit = unit,
             };
         }
     }

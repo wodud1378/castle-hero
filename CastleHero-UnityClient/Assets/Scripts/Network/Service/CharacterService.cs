@@ -125,7 +125,7 @@ namespace RGLabs.Network.Service
             }
 
             UnitHelper.CalculateLvUp(unit.lv, unit.exp, itemEntity, quantity,
-                out int lv, out int exp, out leftItem, out int price);
+                out int lv, out int exp, out int totalExp, out leftItem, out int price);
 
             if (currency.gold < price)
             {
@@ -139,7 +139,7 @@ namespace RGLabs.Network.Service
                 return null;
             }
 
-            var transition = UnitTransition.Create(unit, lv, exp);
+            var transition = UnitTransition.Create(unit, lv, exp, totalExp);
 
             unit.lv = lv;
             unit.exp = exp;

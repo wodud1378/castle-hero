@@ -98,11 +98,12 @@ namespace RGLabs.Utility
     public static class UnitHelper
     {
         public static void CalculateLvUp(int startLv, int startExp, ItemEntity item, int quantity, 
-            out int lv, out int exp, out int leftItem, out int price)
+            out int lv, out int exp, out int totalExp, out int leftItem, out int price)
         {
             lv = startLv;
             exp = startExp;
             leftItem = quantity;
+            totalExp = 0;
             price = 0;
 
             var option = item.optionConsume;
@@ -110,18 +111,19 @@ namespace RGLabs.Utility
                 return;
 
             int amount = (int)option.value;
-            int total = amount  * quantity;
+            int left = amount  * quantity;
             
             var db = Storage.db.levels;
             int maxLv = db.MaxLv;
-            while (db.TryFind(lv, out var entity) && total > 0)
+            while (db.TryFind(lv, out var entity) && left > 0)
             {
                 int forNext = entity.exp;
                 int requireExp = forNext - exp;
-                int add = Mathf.Min(requireExp, total);
+                int add = Mathf.Min(requireExp, left);
                 exp += add;
+                totalExp += add;
                 price += entity.gold;
-                total -= add;
+                left -= add;
 
                 int remain = exp - forNext;
                 if (remain >= 0)
@@ -131,13 +133,15 @@ namespace RGLabs.Utility
                 }
             }
 
-            leftItem = total / amount;
+            leftItem = left / amount;
         }
 
-        public static void CalculateLvUp(int startLv, int startExp, int expAmount, out int lv, out int exp, out int remainAmount)
+        public static void CalculateLvUp(int startLv, int startExp, int expAmount, 
+            out int lv, out int exp, out int totalExp, out int remainAmount)
         {
             lv = startLv;
             exp = startExp;
+            totalExp = 0;
             remainAmount = expAmount;
             
             var db = Storage.db.levels;
@@ -149,6 +153,7 @@ namespace RGLabs.Utility
                 int requireExp = forNext - exp;
                 int add = Mathf.Min(requireExp, remainAmount);
                 exp += add;
+                totalExp += add;
                 remainAmount -= add;
 
                 int remain = exp - forNext;

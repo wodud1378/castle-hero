@@ -148,7 +148,7 @@ namespace RGLabs.Lobby.UI.Popup
             }
             var unit = _unit.Value;
             UnitHelper.CalculateLvUp(unit.lv, unit.exp, _selected.Value.Entity, itemQty,
-                out int lv, out int exp, out int leftItem, out int price);
+                out int lv, out int exp, out _, out int leftItem, out int price);
 
             bool hasEnoughGold = price <= Storage.userRepository.currency.gold.Value;
             _goldSlot.QuantityLabelColor = hasEnoughGold
