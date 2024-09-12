@@ -106,10 +106,13 @@ namespace RGLabs.Utility
             });
         }
 
-        private static bool IsRelated(int a, int b)
+        private static bool IsRelated(int origin, int compare)
         {
-            var splitA = Split(a);
-            var splitB = Split(b);
+            if (origin == compare)
+                return false;
+            
+            var splitA = Split(origin);
+            var splitB = Split(compare);
 
             int length = splitA.Length;
             if (length != splitB.Length)
@@ -123,14 +126,14 @@ namespace RGLabs.Utility
                     isMatch = splitA[i] == splitB[i];
 #if UNITY_EDITOR
                     if(!isMatch)
-                        Debug.Log($"{a}/{b} not matches in index{i}, values are {splitA[i]}, {splitB[i]}");
+                        Debug.Log($"{origin}/{compare} not matches in index{i}, values are {splitA[i]}, {splitB[i]}");
 #endif
                 }
             }
             
 #if UNITY_EDITOR
             if(isMatch)
-                Debug.Log($"{a}/{b} matches");
+                Debug.Log($"{origin}/{compare} matches");
 #endif
 
             return isMatch;
