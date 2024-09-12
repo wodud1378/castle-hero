@@ -61,7 +61,6 @@ namespace RGLabs.Unit.Components
         public readonly ReactiveProperty<bool> onRest;
         public readonly ReactiveProperty<States> state;
         public readonly Status status;
-        public readonly PolyNavAgent navAgent;
 
         public readonly UnitBehaviour owner;
         public readonly Look look;
@@ -69,7 +68,7 @@ namespace RGLabs.Unit.Components
         public readonly IMovement movement;
         public readonly RenderController renderController;
         public readonly AnimationEvents animationEvent;
-        public readonly ReactiveProperty<Vector2> lookDirection;
+        public readonly ReactiveProperty<Vector2> lookDirection = new();
 
         public bool enableRecover;
 
@@ -106,8 +105,6 @@ namespace RGLabs.Unit.Components
             _enableMove = enableMove;
 
             elemental = new();
-            navAgent = this.owner.GetComponent<PolyNavAgent>();
-
             var skeleton = this.owner.GetComponentInChildren<SkeletonMecanim>();
             var animator = this.owner.GetComponentInChildren<Animator>();
             if(animator != null)
@@ -127,6 +124,7 @@ namespace RGLabs.Unit.Components
             if (_enableMove)
             {
                 buffer ??= new Collider2D[Constants.BufferSize];
+                var navAgent = this.owner.GetComponent<PolyNavAgent>();
                 var moveFinder = Finder.Create(IDetection.Option.Circle, 1, buffer);
                 movement = new DefaultMovement(this.owner, moveFinder, navAgent);
             }
@@ -145,10 +143,12 @@ namespace RGLabs.Unit.Components
                 .Subscribe(UpdateAnimation)
                 .AddTo(this.owner);
 
-            lookDirection = new();
-            lookDirection
-                .Subscribe(UpdateLookDirection)
-                .AddTo(this.owner);
+            if (look != null)
+            {
+                lookDirection
+                    .Subscribe(UpdateLookDirection)
+                    .AddTo(this.owner);
+            }
         }
 
         public void SetRestriction(Restrictions type, float duration)
@@ -196,7 +196,7 @@ namespace RGLabs.Unit.Components
                 movement.Finder.detection.Filter = enemyLayerMask;
 
             renderController.ApplySkin(data.skinName);
-            UpdateLookDirection(movement.Default);
+            lookDirection.Value = movement.Default;
             
             state.Value = States.Prepare;
             
@@ -303,7 +303,7 @@ namespace RGLabs.Unit.Components
 
             _update?.Dispose();
             attack?.Clear();
-            navAgent.Stop();
+            movement.Stop();
             state.Value = States.Dead;
 
             new UnitDead
@@ -337,7 +337,7 @@ namespace RGLabs.Unit.Components
                 renderController.SetFloat(AtkSpeedHash, status.atkSpeed);
 
             if (_enableMove)
-                navAgent.maxSpeed = status.speed;
+                movement.SetSpeed(status.speed);
         }
 
         private void UpdateState()
@@ -390,7 +390,7 @@ namespace RGLabs.Unit.Components
             renderController.SetAnimation(hash);
         }
 
-        private void UpdateLookDirection(Vector2 direction) => look.At(navAgent.position, direction);
+        private void UpdateLookDirection(Vector2 direction) => look.At(movement.Position, direction);
 
         private void OnPrepare()
         {
@@ -471,7 +471,7 @@ namespace RGLabs.Unit.Components
 
         private void OnIdle()
         {
-            lookDirection.Value = navAgent.position * 2f;
+            lookDirection.Value = movement.Position * 2f;
         }
 
         private void OnMove()

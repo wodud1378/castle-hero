@@ -9,7 +9,13 @@ namespace RGLabs.Unit.Components.Move
     public class DefaultMovement : IMovement
     {
         public Finder Finder { get; }
-        
+
+        public Vector2 Position
+        {
+            get => _agent.position;
+            set => _agent.position = value;
+        }
+
         private readonly UnitBehaviour _owner;
         private readonly PolyNavAgent _agent;
 
@@ -49,6 +55,11 @@ namespace RGLabs.Unit.Components.Move
             
             StartMove(CurrentTarget.position);
             return true;
+        }
+
+        public void SetSpeed(float value)
+        {
+            _agent.maxSpeed = value;
         }
         
         private UnitBehaviour Select()

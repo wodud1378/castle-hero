@@ -39,8 +39,8 @@ namespace RGLabs.Unit.Behaviours
 
         public Vector2 position
         {
-            get => Core.navAgent.position;
-            set => Core.navAgent.position = value;
+            get => Core.movement.Position;
+            set => Core.movement.Position = value;
         }
 
         public Status status => Core.status;

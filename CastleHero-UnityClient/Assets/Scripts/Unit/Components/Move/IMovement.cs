@@ -13,10 +13,15 @@ namespace RGLabs.Unit.Components.Move
         public UnitBehaviour CurrentTarget { get; }
         
         public Finder Finder { get; }
+        
+        public Vector2 Position { get; set; }
 
         public bool TryMoveToTarget();
 
         public bool TryMoveToDefault();
+        
         public void Stop();
+
+        public void SetSpeed(float value);
     }
 }
