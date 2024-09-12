@@ -232,7 +232,7 @@ namespace RGLabs.Utility
             return equipments.Total(ref _);
         }
 
-        public static bool IsRandomItem(this int id) => id % 10 == 0;
+        public static bool IsRandomItem(this int id) => id / 1000 != 61 && id % 10 == 0;
 
         public static bool IsEquipItem(this int id)
         {
