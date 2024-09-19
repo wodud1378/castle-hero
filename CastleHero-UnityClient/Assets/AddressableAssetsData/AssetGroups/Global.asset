@@ -17,11 +17,6 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 1b9985d9e51206f4aa7880cf6a4b09ad
   m_SerializeEntries:
-  - m_GUID: ddb0e27aa2258854a8d171196f395b87
-    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: efd42dc46c19f084490c85e190ee6b4a
     m_Address: Common
     m_ReadOnly: 0
