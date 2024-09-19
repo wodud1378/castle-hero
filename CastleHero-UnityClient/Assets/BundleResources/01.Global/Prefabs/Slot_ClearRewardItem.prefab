@@ -230,7 +230,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: Slot_ClearRewardItem
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5470961368439747737, guid: 6dcdabc819b524a418e2119be8c0aafb, type: 3}
+    - {fileID: 3265213396500720868, guid: 6dcdabc819b524a418e2119be8c0aafb, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1348860614712848500, guid: 6dcdabc819b524a418e2119be8c0aafb, type: 3}

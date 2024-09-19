@@ -69,7 +69,6 @@ GameObject:
   - component: {fileID: 5662358376123287385}
   - component: {fileID: 6731751472349090862}
   - component: {fileID: 5948363237790229086}
-  - component: {fileID: 6156910391123867141}
   m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
@@ -134,25 +133,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6156910391123867141
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 982895698336698535}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 2e9214532cea15840997e3d8c47b463b
-    m_SubObjectName: Icon_Gold
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 5948363237790229086}
 --- !u!1 &2415899593917483659
 GameObject:
   m_ObjectHideFlags: 0
@@ -458,7 +438,6 @@ GameObject:
   - component: {fileID: 3317494292917434338}
   - component: {fileID: 4056249728647285339}
   - component: {fileID: 6549602106041267571}
-  - component: {fileID: 7752695720128548245}
   m_Layer: 5
   m_Name: Button_Back
   m_TagString: Untagged
@@ -588,25 +567,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7752695720128548245
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2792896177404641470}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Button_Back_B
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 6549602106041267571}
 --- !u!1 &5044841529048482387
 GameObject:
   m_ObjectHideFlags: 0
@@ -618,7 +578,6 @@ GameObject:
   - component: {fileID: 3909500034390712064}
   - component: {fileID: 1074833653259556951}
   - component: {fileID: 8357240543042041054}
-  - component: {fileID: 1454539560206146484}
   m_Layer: 5
   m_Name: Box
   m_TagString: Untagged
@@ -684,25 +643,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1454539560206146484
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5044841529048482387}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 067ba74a4ec808c4481d73cea0ebf1f9
-    m_SubObjectName: Box_Stock
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 8357240543042041054}
 --- !u!1 &5235307126904430153
 GameObject:
   m_ObjectHideFlags: 0

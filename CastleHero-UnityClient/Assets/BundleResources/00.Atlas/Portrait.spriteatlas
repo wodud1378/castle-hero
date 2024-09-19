@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Portrait
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: b48b197bd44f059428fdd25c46419d3b, type: 3}
+    bindAsDefault: 0
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - b279b8950c6386d4dbccfe15ab81d08d: 21300000
+    - 72396526ed338e840827c8db26f6143c: 21300000
+    - 50a1b1665325f1342b42b639a4e7ee5d: 21300000
+    - 74ebb5178d0599b48ab238997ec23683: 21300000
+    - e2431d37e8b947143b796b8a72c3ec7c: 21300000
+    - 3a4372b77936d1940a67f2f931f2b0bb: 21300000
+    - 4a8ab37a84735774da28d6a7afd8c737: 21300000
+    - 8e9e3cbbee203ce4c87f5d33c9b56890: 21300000
+    - 74e12ffc34672ee468a8f84221dd9720: 21300000
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: b279b8950c6386d4dbccfe15ab81d08d, type: 3}
+  - {fileID: 21300000, guid: 72396526ed338e840827c8db26f6143c, type: 3}
+  - {fileID: 21300000, guid: 50a1b1665325f1342b42b639a4e7ee5d, type: 3}
+  - {fileID: 21300000, guid: 74ebb5178d0599b48ab238997ec23683, type: 3}
+  - {fileID: 21300000, guid: e2431d37e8b947143b796b8a72c3ec7c, type: 3}
+  - {fileID: 21300000, guid: 3a4372b77936d1940a67f2f931f2b0bb, type: 3}
+  - {fileID: 21300000, guid: 4a8ab37a84735774da28d6a7afd8c737, type: 3}
+  - {fileID: 21300000, guid: 8e9e3cbbee203ce4c87f5d33c9b56890, type: 3}
+  - {fileID: 21300000, guid: 74e12ffc34672ee468a8f84221dd9720, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Character_10001
+  - Character_10021
+  - Character_10023
+  - Character_10034
+  - Character_10006
+  - Character_10010
+  - Character_10002
+  - Character_10000
+  - Character_10033
+  m_RenderDataMap: {}
+  m_Tag: Portrait
+  m_IsVariant: 0

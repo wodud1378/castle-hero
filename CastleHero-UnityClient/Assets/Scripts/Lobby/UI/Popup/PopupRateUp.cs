@@ -87,7 +87,7 @@ namespace RGLabs.Lobby.UI.Popup
                 : text.WithNegativeColor();
 
             int requireGold = rateEntity.gold;
-            bool hasEnoughGold = requireGold <= Storage.userRepository.currency.gold.Value;
+            var hasEnoughGold = requireGold <= Storage.userRepository.currency.gold.Value;
             var goldText = requireGold.CurrencyText();
             _requireGold.text = hasEnoughGold
                 ? goldText.WithColor(Color.white)

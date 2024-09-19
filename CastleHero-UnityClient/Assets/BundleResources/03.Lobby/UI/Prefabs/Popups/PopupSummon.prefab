@@ -19805,7 +19805,6 @@ GameObject:
   - component: {fileID: 7559198838352087958}
   - component: {fileID: 8624413424615492196}
   - component: {fileID: 2249932388644076764}
-  - component: {fileID: 5661881414586673850}
   m_Layer: 5
   m_Name: Box
   m_TagString: Untagged
@@ -19870,25 +19869,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5661881414586673850
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1066896566814251544}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 067ba74a4ec808c4481d73cea0ebf1f9
-    m_SubObjectName: Box_Stock
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 2249932388644076764}
 --- !u!1 &1248886115036299148
 GameObject:
   m_ObjectHideFlags: 0
@@ -35121,11 +35101,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34b6d78b90a642199ae25092911e0803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rayTarget: {fileID: 0}
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
+  highlight: {fileID: 0}
   icon: {fileID: 2729618246418470212}
   label: {fileID: 0}
   _quantity: {fileID: 7391506566706861662}
-  _portraitRoot: {fileID: 0}
+  _quantityPrefix: 
+  _quantitySuffix: 
   quantityDisplay:
     value: 1
 --- !u!1 &3327150637559776235
@@ -35139,7 +35123,6 @@ GameObject:
   - component: {fileID: 26264353207164025}
   - component: {fileID: 1010247320189316325}
   - component: {fileID: 2729618246418470212}
-  - component: {fileID: 1794074917030074844}
   m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
@@ -35204,25 +35187,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1794074917030074844
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3327150637559776235}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 2e9214532cea15840997e3d8c47b463b
-    m_SubObjectName: Icon_Diamond
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 2729618246418470212}
 --- !u!1 &3383472842937805764
 GameObject:
   m_ObjectHideFlags: 0
@@ -85010,7 +84974,6 @@ GameObject:
   - component: {fileID: 5198725750549726761}
   - component: {fileID: 8127143294657576973}
   - component: {fileID: 4084315946079649412}
-  - component: {fileID: 2825625693238549595}
   m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
@@ -85075,25 +85038,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2825625693238549595
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7135852692473678289}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 2e9214532cea15840997e3d8c47b463b
-    m_SubObjectName: Icon_Diamond
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 4084315946079649412}
 --- !u!1 &7234535575946711263
 GameObject:
   m_ObjectHideFlags: 0
@@ -90077,11 +90021,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34b6d78b90a642199ae25092911e0803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rayTarget: {fileID: 0}
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
+  highlight: {fileID: 0}
   icon: {fileID: 4084315946079649412}
   label: {fileID: 0}
   _quantity: {fileID: 7388380206189387795}
-  _portraitRoot: {fileID: 0}
+  _quantityPrefix: 
+  _quantitySuffix: 
   quantityDisplay:
     value: 1
 --- !u!1 &8240040121197187532
@@ -95223,7 +95171,6 @@ GameObject:
   - component: {fileID: 3365103719209045441}
   - component: {fileID: 1243733987131371628}
   - component: {fileID: 8506274324085273448}
-  - component: {fileID: 9074124697380754260}
   m_Layer: 5
   m_Name: Box
   m_TagString: Untagged
@@ -95288,22 +95235,3 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &9074124697380754260
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9147093459731165477}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 067ba74a4ec808c4481d73cea0ebf1f9
-    m_SubObjectName: Box_Stock
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 8506274324085273448}

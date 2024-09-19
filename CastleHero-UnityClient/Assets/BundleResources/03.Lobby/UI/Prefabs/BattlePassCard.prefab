@@ -86,7 +86,6 @@ GameObject:
   - component: {fileID: 7905843014358148695}
   - component: {fileID: 3045134603742434097}
   - component: {fileID: 1846745588892797097}
-  - component: {fileID: 1831862628463613341}
   m_Layer: 5
   m_Name: RewardItem_02
   m_TagString: Untagged
@@ -126,7 +125,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3f07f0f215140e4b18744387695e10c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rayTarget: {fileID: 0}
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
+  highlight: {fileID: 0}
   icon: {fileID: 8243036302372493655}
   label: {fileID: 0}
 --- !u!114 &1846745588892797097
@@ -173,20 +175,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &1831862628463613341
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 175671550736578559}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b16e227473e4318a32d8fe7559d696c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 3552041282864734360}
 --- !u!1 &547119134195549763
 GameObject:
   m_ObjectHideFlags: 0
@@ -503,7 +491,6 @@ GameObject:
   - component: {fileID: 6315429378465015271}
   - component: {fileID: 223830166995300959}
   - component: {fileID: 2980556641405062824}
-  - component: {fileID: 1838035383584542100}
   m_Layer: 5
   m_Name: Frame
   m_TagString: Untagged
@@ -583,25 +570,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!114 &1838035383584542100
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1010225067761006579}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Slot_RoundSquare_01
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 223830166995300959}
 --- !u!1 &1211697065796736001
 GameObject:
   m_ObjectHideFlags: 0
@@ -889,7 +857,6 @@ GameObject:
   - component: {fileID: 5025748896344553223}
   - component: {fileID: 3996505033524929591}
   - component: {fileID: 1076759475394250550}
-  - component: {fileID: 3390544552228711563}
   m_Layer: 5
   m_Name: Frame
   m_TagString: Untagged
@@ -969,25 +936,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!114 &3390544552228711563
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2416073479784186041}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Slot_RoundSquare_01
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 3996505033524929591}
 --- !u!1 &2418976647299460838
 GameObject:
   m_ObjectHideFlags: 0
@@ -1306,7 +1254,6 @@ GameObject:
   - component: {fileID: 8024767805295781473}
   - component: {fileID: 384830372032546524}
   - component: {fileID: 3821612367632131741}
-  - component: {fileID: 7282737059273928285}
   m_Layer: 5
   m_Name: RewardItem_04
   m_TagString: Untagged
@@ -1346,7 +1293,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3f07f0f215140e4b18744387695e10c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rayTarget: {fileID: 0}
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
+  highlight: {fileID: 0}
   icon: {fileID: 1833818568191560052}
   label: {fileID: 0}
 --- !u!114 &3821612367632131741
@@ -1393,20 +1343,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &7282737059273928285
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3751155258609341011}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b16e227473e4318a32d8fe7559d696c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 8867173099011121343}
 --- !u!1 &3851622607081974437
 GameObject:
   m_ObjectHideFlags: 0
@@ -1645,7 +1581,6 @@ GameObject:
   - component: {fileID: 7608327497914628996}
   - component: {fileID: 7537027392146884325}
   - component: {fileID: 3147936240763927615}
-  - component: {fileID: 3552041282864734360}
   m_Layer: 5
   m_Name: Frame
   m_TagString: Untagged
@@ -1725,25 +1660,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!114 &3552041282864734360
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4681299673735476535}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Slot_RoundSquare_01
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 7537027392146884325}
 --- !u!1 &5351876660610471929
 GameObject:
   m_ObjectHideFlags: 0
@@ -1868,7 +1784,6 @@ GameObject:
   - component: {fileID: 1259459802553662601}
   - component: {fileID: 378658592176627788}
   - component: {fileID: 8676656728112638626}
-  - component: {fileID: 5366592456041380452}
   m_Layer: 5
   m_Name: RewardItem_01
   m_TagString: Untagged
@@ -1908,7 +1823,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3f07f0f215140e4b18744387695e10c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rayTarget: {fileID: 0}
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
+  highlight: {fileID: 0}
   icon: {fileID: 6901819508603996943}
   label: {fileID: 0}
 --- !u!114 &8676656728112638626
@@ -1955,20 +1873,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &5366592456041380452
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6045335526625481747}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b16e227473e4318a32d8fe7559d696c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 8999051031980088127}
 --- !u!1 &6217442093974727768
 GameObject:
   m_ObjectHideFlags: 0
@@ -2646,7 +2550,6 @@ GameObject:
   - component: {fileID: 3165633276146916218}
   - component: {fileID: 5252576208044858960}
   - component: {fileID: 5779024799651159132}
-  - component: {fileID: 5310094045488592118}
   m_Layer: 5
   m_Name: RewardItem
   m_TagString: Untagged
@@ -2686,7 +2589,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3f07f0f215140e4b18744387695e10c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rayTarget: {fileID: 0}
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
+  highlight: {fileID: 0}
   icon: {fileID: 6683168431958194652}
   label: {fileID: 0}
 --- !u!114 &5779024799651159132
@@ -2733,20 +2639,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &5310094045488592118
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7768418544824166809}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b16e227473e4318a32d8fe7559d696c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 3390544552228711563}
 --- !u!1 &7845693023871878131
 GameObject:
   m_ObjectHideFlags: 0
@@ -2835,7 +2727,6 @@ GameObject:
   - component: {fileID: 1166664250493784705}
   - component: {fileID: 3656632120971164043}
   - component: {fileID: 4788776203371230208}
-  - component: {fileID: 8867173099011121343}
   m_Layer: 5
   m_Name: Frame
   m_TagString: Untagged
@@ -2915,25 +2806,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!114 &8867173099011121343
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8011099709167689931}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Slot_RoundSquare_01
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 3656632120971164043}
 --- !u!1 &8092256508910556109
 GameObject:
   m_ObjectHideFlags: 0
@@ -2945,7 +2817,6 @@ GameObject:
   - component: {fileID: 5615557176203881344}
   - component: {fileID: 6058076229847373775}
   - component: {fileID: 6386546235264494153}
-  - component: {fileID: 7944289163686121152}
   m_Layer: 5
   m_Name: RewardItem_03
   m_TagString: Untagged
@@ -2985,7 +2856,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3f07f0f215140e4b18744387695e10c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rayTarget: {fileID: 0}
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
+  highlight: {fileID: 0}
   icon: {fileID: 6548493857238752478}
   label: {fileID: 0}
 --- !u!114 &6386546235264494153
@@ -3032,20 +2906,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &7944289163686121152
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8092256508910556109}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b16e227473e4318a32d8fe7559d696c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 1838035383584542100}
 --- !u!1 &8157985009188357158
 GameObject:
   m_ObjectHideFlags: 0
@@ -3058,7 +2918,6 @@ GameObject:
   - component: {fileID: 1686541904263326035}
   - component: {fileID: 2876308748464434626}
   - component: {fileID: 7582796894396156508}
-  - component: {fileID: 7813556491918673993}
   m_Layer: 5
   m_Name: Frame
   m_TagString: Untagged
@@ -3138,25 +2997,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!114 &7813556491918673993
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8157985009188357158}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Slot_RoundSquare_01
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 2876308748464434626}
 --- !u!1 &8184479369011152181
 GameObject:
   m_ObjectHideFlags: 0
@@ -3169,7 +3009,6 @@ GameObject:
   - component: {fileID: 8371807431784404189}
   - component: {fileID: 5317717912482784220}
   - component: {fileID: 6124668267293707752}
-  - component: {fileID: 8999051031980088127}
   m_Layer: 5
   m_Name: Frame
   m_TagString: Untagged
@@ -3249,25 +3088,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!114 &8999051031980088127
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8184479369011152181}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Slot_RoundSquare_01
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 5317717912482784220}
 --- !u!1 &8266920265929666470
 GameObject:
   m_ObjectHideFlags: 0
@@ -3550,7 +3370,6 @@ GameObject:
   - component: {fileID: 4542673012720010309}
   - component: {fileID: 1732748241765621416}
   - component: {fileID: 212874571621972092}
-  - component: {fileID: 4637367272084619339}
   m_Layer: 5
   m_Name: RewardItem_05
   m_TagString: Untagged
@@ -3590,7 +3409,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3f07f0f215140e4b18744387695e10c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rayTarget: {fileID: 0}
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
+  highlight: {fileID: 0}
   icon: {fileID: 3089420700357681280}
   label: {fileID: 0}
 --- !u!114 &212874571621972092
@@ -3637,17 +3459,3 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &4637367272084619339
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9183489825345285934}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b16e227473e4318a32d8fe7559d696c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 7813556491918673993}

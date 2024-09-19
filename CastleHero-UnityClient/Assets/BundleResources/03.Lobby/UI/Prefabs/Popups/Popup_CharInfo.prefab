@@ -1611,7 +1611,6 @@ GameObject:
   - component: {fileID: 1412177159830014638}
   - component: {fileID: 2290815002977894943}
   - component: {fileID: 8763395512938914734}
-  - component: {fileID: 1556158796233493624}
   m_Layer: 5
   m_Name: BG
   m_TagString: Untagged
@@ -1690,25 +1689,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!114 &1556158796233493624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2136563033303419120}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: BG_Portrait_01
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 2290815002977894943}
 --- !u!1 &2210895987093596748
 GameObject:
   m_ObjectHideFlags: 0
@@ -2227,7 +2207,6 @@ GameObject:
   - component: {fileID: 8120513581879604598}
   - component: {fileID: 4824097382736949910}
   - component: {fileID: 6179583567850034632}
-  - component: {fileID: 5383947563203177930}
   m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
@@ -2292,25 +2271,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5383947563203177930
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3475766123101226981}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 067ba74a4ec808c4481d73cea0ebf1f9
-    m_SubObjectName: Portrait_Dummy
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 6179583567850034632}
 --- !u!1 &3498999723348374530
 GameObject:
   m_ObjectHideFlags: 0
@@ -6704,7 +6664,6 @@ GameObject:
   - component: {fileID: 7420746551637379103}
   - component: {fileID: 4075696857696375118}
   - component: {fileID: 1091305622013617317}
-  - component: {fileID: 2526162048807632561}
   m_Layer: 5
   m_Name: Frame
   m_TagString: Untagged
@@ -6769,25 +6728,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2526162048807632561
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9005184969143956760}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Frame_Portrait_01
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 1091305622013617317}
 --- !u!1 &9059693633600105285
 GameObject:
   m_ObjectHideFlags: 0

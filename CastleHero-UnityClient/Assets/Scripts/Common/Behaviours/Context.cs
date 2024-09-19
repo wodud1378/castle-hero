@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using RGLabs.Common.Flow;
 using RGLabs.Common.Pattern;
 using RGLabs.Common.Sound;
@@ -13,6 +14,9 @@ using RGLabs.Utility;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.U2D;
 
 namespace RGLabs.Common.Behaviours
 {
@@ -45,6 +49,8 @@ namespace RGLabs.Common.Behaviours
         [SerializeField] private NetworkConfig _networkConfig;
 #endif
 
+        private readonly Dictionary<string, AsyncOperationHandle<SpriteAtlas>> _atlasCache = new();
+
         private void Load()
         {
             Time.timeScale = 1f;
@@ -67,6 +73,8 @@ namespace RGLabs.Common.Behaviours
 
                 InitSubscriptions();
 
+                SpriteAtlasManager.atlasRequested += OnAtlasRequested;
+
                 while (OnLoadCompleteQueue.Count > 0)
                 {
                     OnLoadCompleteQueue.Dequeue()?.Invoke();
@@ -81,12 +89,31 @@ namespace RGLabs.Common.Behaviours
             }
         }
 
+        private void OnAtlasRequested(string tag, Action<SpriteAtlas> callback)
+        {
+            Debug.Log($"{tag} atlas requested");
+            
+            if (!_atlasCache.TryGetValue(tag, out var handle))
+            {
+                handle = Addressables.LoadAssetAsync<SpriteAtlas>($"Atlas/{tag}.spriteatlas");
+                handle.WaitForCompletion();
+                _atlasCache[tag] = handle;
+            }
+            
+            callback.Invoke(handle.Result);
+        }
+
         private void Start()
         {
             Application.targetFrameRate = _frameRate;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
 
             Load();
+        }
+
+        private void OnDestroy()
+        {
+            SpriteAtlasManager.atlasRequested -= OnAtlasRequested;
         }
 
         private void SetEntranceTransition()

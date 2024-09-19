@@ -179,7 +179,6 @@ GameObject:
   - component: {fileID: 1341306729453976073}
   - component: {fileID: 3892797166426826965}
   - component: {fileID: 4952637098284423993}
-  - component: {fileID: 2437775236908166046}
   m_Layer: 5
   m_Name: BG
   m_TagString: Untagged
@@ -258,25 +257,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!114 &2437775236908166046
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6128694785712709518}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: BG_Portrait_01
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 3892797166426826965}
 --- !u!1 &6989849334387385382
 GameObject:
   m_ObjectHideFlags: 0
@@ -288,7 +268,6 @@ GameObject:
   - component: {fileID: 7571577532209658325}
   - component: {fileID: 5286777214108839906}
   - component: {fileID: 773600469278920178}
-  - component: {fileID: 6421543521951727295}
   m_Layer: 5
   m_Name: Frame
   m_TagString: Untagged
@@ -353,22 +332,3 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6421543521951727295
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6989849334387385382}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Frame_Portrait_01
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 773600469278920178}

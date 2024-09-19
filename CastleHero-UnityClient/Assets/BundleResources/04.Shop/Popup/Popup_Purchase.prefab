@@ -385,7 +385,6 @@ GameObject:
   - component: {fileID: 6032362954653307217}
   - component: {fileID: 4126200406838693747}
   - component: {fileID: 8718565403807112157}
-  - component: {fileID: 1487965087514185581}
   m_Layer: 5
   m_Name: Box
   m_TagString: Untagged
@@ -451,25 +450,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1487965087514185581
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1155942172762478468}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 067ba74a4ec808c4481d73cea0ebf1f9
-    m_SubObjectName: Box_Stock
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 8718565403807112157}
 --- !u!1 &1595149798020671266
 GameObject:
   m_ObjectHideFlags: 0
@@ -824,7 +804,6 @@ GameObject:
   - component: {fileID: 4259569888252139501}
   - component: {fileID: 6760522972572187124}
   - component: {fileID: 8613092179252166609}
-  - component: {fileID: 4505225707779383060}
   m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
@@ -889,25 +868,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4505225707779383060
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4595068927288023679}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 2e9214532cea15840997e3d8c47b463b
-    m_SubObjectName: Icon_Gold
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 8613092179252166609}
 --- !u!1 &4642084106563735987
 GameObject:
   m_ObjectHideFlags: 0
@@ -919,7 +879,6 @@ GameObject:
   - component: {fileID: 6042966621605810398}
   - component: {fileID: 673288407798113004}
   - component: {fileID: 7973810489463003855}
-  - component: {fileID: 7757871802857735766}
   - component: {fileID: 1552247031589339055}
   m_Layer: 5
   m_Name: AdIcon
@@ -985,25 +944,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7757871802857735766
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4642084106563735987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 2e9214532cea15840997e3d8c47b463b
-    m_SubObjectName: Icon_Gold
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 7973810489463003855}
 --- !u!114 &1552247031589339055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1837,7 +1777,6 @@ GameObject:
   - component: {fileID: 3365691496387349573}
   - component: {fileID: 378044675595507154}
   - component: {fileID: 2494130501811668168}
-  - component: {fileID: 7645996757897524894}
   - component: {fileID: 4751288064711720547}
   m_Layer: 5
   m_Name: AdMark
@@ -1904,25 +1843,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7645996757897524894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7391071333509995841}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 2e9214532cea15840997e3d8c47b463b
-    m_SubObjectName: Icon_Gold
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 2494130501811668168}
 --- !u!114 &4751288064711720547
 MonoBehaviour:
   m_ObjectHideFlags: 0

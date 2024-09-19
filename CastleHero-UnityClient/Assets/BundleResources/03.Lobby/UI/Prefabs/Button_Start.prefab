@@ -132,7 +132,6 @@ GameObject:
   - component: {fileID: 5562609606234121374}
   - component: {fileID: 4113825509781837256}
   - component: {fileID: 994892628698735328}
-  - component: {fileID: 2359091914939357399}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -197,25 +196,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2359091914939357399
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 416553357631984839}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 067ba74a4ec808c4481d73cea0ebf1f9
-    m_SubObjectName: Button_StageSelect
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 994892628698735328}
 --- !u!1 &562931487102700981
 GameObject:
   m_ObjectHideFlags: 0
@@ -227,7 +207,6 @@ GameObject:
   - component: {fileID: 374919359792108069}
   - component: {fileID: 2566401032514330567}
   - component: {fileID: 6685064271136894286}
-  - component: {fileID: 2464945047743503657}
   m_Layer: 5
   m_Name: Effect
   m_TagString: Untagged
@@ -293,25 +272,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2464945047743503657
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 562931487102700981}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 067ba74a4ec808c4481d73cea0ebf1f9
-    m_SubObjectName: Button_Start_Dust
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 6685064271136894286}
 --- !u!1 &989101854020739224
 GameObject:
   m_ObjectHideFlags: 0
@@ -439,7 +399,6 @@ GameObject:
   - component: {fileID: 2179867949127218782}
   - component: {fileID: 8935459416467213854}
   - component: {fileID: 6538643999714635100}
-  - component: {fileID: 6311614533123924340}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -505,25 +464,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6311614533123924340
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4457910593097087256}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 067ba74a4ec808c4481d73cea0ebf1f9
-    m_SubObjectName: Button_Start
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 6538643999714635100}
 --- !u!1 &4522961804450918346
 GameObject:
   m_ObjectHideFlags: 0
@@ -678,7 +618,6 @@ GameObject:
   - component: {fileID: 7901055614087057469}
   - component: {fileID: 7206659895991906775}
   - component: {fileID: 8168794888493434757}
-  - component: {fileID: 6133347279364560574}
   m_Layer: 5
   m_Name: Sword
   m_TagString: Untagged
@@ -743,25 +682,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6133347279364560574
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4823723693948937050}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 067ba74a4ec808c4481d73cea0ebf1f9
-    m_SubObjectName: Button_Start_Sword
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 8168794888493434757}
 --- !u!1 &4925550107592528476
 GameObject:
   m_ObjectHideFlags: 0
@@ -774,7 +694,6 @@ GameObject:
   - component: {fileID: 5830977979996232787}
   - component: {fileID: 5577797177903681822}
   - component: {fileID: 8240188203900132896}
-  - component: {fileID: 5791175246620594682}
   m_Layer: 5
   m_Name: Button_Start
   m_TagString: Untagged
@@ -818,7 +737,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StageSelect: {fileID: 5577797177903681822}
-  _spriteCollection: {fileID: 5791175246620594682}
+  _spriteCollection: {fileID: 0}
   _button: {fileID: 3293814572851862643}
   _animator: {fileID: 8240188203900132896}
 --- !u!114 &5577797177903681822
@@ -858,27 +777,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5791175246620594682
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4925550107592528476}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b16e227473e4318a32d8fe7559d696c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 2464945047743503657}
-  - {fileID: 3060364092030720153}
-  - {fileID: 6311614533123924340}
-  - {fileID: 0}
-  - {fileID: 3561561166583489178}
-  - {fileID: 6133347279364560574}
-  - {fileID: 1639291905612235570}
-  - {fileID: 2359091914939357399}
 --- !u!1 &5987432634621040512
 GameObject:
   m_ObjectHideFlags: 0
@@ -890,7 +788,6 @@ GameObject:
   - component: {fileID: 5437383768013704391}
   - component: {fileID: 1262473314588014189}
   - component: {fileID: 1028462000382343430}
-  - component: {fileID: 3060364092030720153}
   m_Layer: 5
   m_Name: Particle
   m_TagString: Untagged
@@ -955,25 +852,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3060364092030720153
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5987432634621040512}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 067ba74a4ec808c4481d73cea0ebf1f9
-    m_SubObjectName: Button_Start_Effect
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 1028462000382343430}
 --- !u!1 &6921759238610990802
 GameObject:
   m_ObjectHideFlags: 0
@@ -1228,7 +1106,6 @@ GameObject:
   - component: {fileID: 2488417902281712740}
   - component: {fileID: 1811952325416802555}
   - component: {fileID: 6129763966431137627}
-  - component: {fileID: 1639291905612235570}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -1293,25 +1170,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1639291905612235570
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7617238251066029344}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 067ba74a4ec808c4481d73cea0ebf1f9
-    m_SubObjectName: Button_StageSelect
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 6129763966431137627}
 --- !u!1 &8304905285233201992
 GameObject:
   m_ObjectHideFlags: 0
@@ -1466,7 +1324,6 @@ GameObject:
   - component: {fileID: 2051560989400033822}
   - component: {fileID: 4802993146070962681}
   - component: {fileID: 8272251828694915432}
-  - component: {fileID: 3561561166583489178}
   m_Layer: 5
   m_Name: Grip
   m_TagString: Untagged
@@ -1531,25 +1388,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3561561166583489178
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8953954779417828384}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 067ba74a4ec808c4481d73cea0ebf1f9
-    m_SubObjectName: Button_Start_SwordGrip
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 8272251828694915432}
 --- !u!1001 &8319605132318796636
 PrefabInstance:
   m_ObjectHideFlags: 0

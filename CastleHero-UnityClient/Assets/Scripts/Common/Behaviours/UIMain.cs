@@ -15,7 +15,6 @@ namespace RGLabs.Common.Behaviours
         
         public bool IsOpen { get; private set; }
 
-        [SerializeField] private UIAtlasedSpriteCollection _spriteCollection;
         [SerializeField] private Animator _animator;
         [SerializeField] private Button _back;
         
@@ -52,10 +51,7 @@ namespace RGLabs.Common.Behaviours
 
         protected abstract void OnBack();
 
-        public virtual void Dispose()
-        {
-            _spriteCollection.Dispose();
-        }
+        public virtual void Dispose() { }
 
         #region Animation Events.
 

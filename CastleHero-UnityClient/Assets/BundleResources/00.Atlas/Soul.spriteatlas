@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Soul
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 7d398d80447fdf4488e9211dbe7b8e8d, type: 3}
+    bindAsDefault: 0
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - ea8e5642b5c49c24f87ea58b17c741d1: 21300000
+    - 7909cb0331fd33c4dac5dc66fbef89df: 21300000
+    - b7d751f65d193d644ba4de370bed0812: 21300000
+    - 2159b758075247840be9c17804c753a7: 21300000
+    - 002eca9940017434aba90d0e228db25e: 21300000
+    - 8170f0aaab9c67f48b0f2b1d85c0e0c6: 21300000
+    - 171498aa56bd1ad409d8e6b2bee253ff: 21300000
+    - 893327dd92f2a6a4bb8a1ec40403fe8a: 21300000
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: ea8e5642b5c49c24f87ea58b17c741d1, type: 3}
+  - {fileID: 21300000, guid: 7909cb0331fd33c4dac5dc66fbef89df, type: 3}
+  - {fileID: 21300000, guid: b7d751f65d193d644ba4de370bed0812, type: 3}
+  - {fileID: 21300000, guid: 2159b758075247840be9c17804c753a7, type: 3}
+  - {fileID: 21300000, guid: 002eca9940017434aba90d0e228db25e, type: 3}
+  - {fileID: 21300000, guid: 8170f0aaab9c67f48b0f2b1d85c0e0c6, type: 3}
+  - {fileID: 21300000, guid: 171498aa56bd1ad409d8e6b2bee253ff, type: 3}
+  - {fileID: 21300000, guid: 893327dd92f2a6a4bb8a1ec40403fe8a, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Icon_Soul_60006
+  - Icon_Soul_60023
+  - Icon_Soul_60034
+  - Icon_Soul_60010
+  - Icon_Soul_60021
+  - Icon_Soul_60001
+  - Icon_Soul_60033
+  - Icon_Soul
+  m_RenderDataMap: {}
+  m_Tag: Soul
+  m_IsVariant: 0

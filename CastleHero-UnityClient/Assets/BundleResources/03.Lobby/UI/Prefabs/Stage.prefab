@@ -149,7 +149,6 @@ GameObject:
   - component: {fileID: 682048017341105281}
   - component: {fileID: 8394618984047455909}
   - component: {fileID: 8743958409667133502}
-  - component: {fileID: 4376447885755151014}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -214,25 +213,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4376447885755151014
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 663022208941211887}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Button_RoundSquare_Base
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 8743958409667133502}
 --- !u!1 &1390508987633740434
 GameObject:
   m_ObjectHideFlags: 0
@@ -440,7 +420,6 @@ GameObject:
   - component: {fileID: 5210600139224967046}
   - component: {fileID: 8412817420970726991}
   - component: {fileID: 2845702496053166825}
-  - component: {fileID: 5623941021526096005}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -505,25 +484,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5623941021526096005
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2877184285937902668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Button_RoundSquare_Base
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 2845702496053166825}
 --- !u!1 &2904145648248480371
 GameObject:
   m_ObjectHideFlags: 0
@@ -731,7 +691,6 @@ GameObject:
   - component: {fileID: 1218794380342264885}
   - component: {fileID: 8700942327494756142}
   - component: {fileID: 4750948299720285418}
-  - component: {fileID: 3966805415170137095}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -796,25 +755,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3966805415170137095
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3322278996351975133}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Button_Close_01
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 4750948299720285418}
 --- !u!1 &3452167305242912899
 GameObject:
   m_ObjectHideFlags: 0
@@ -1340,7 +1280,6 @@ GameObject:
   - component: {fileID: 916138965075711988}
   - component: {fileID: 3038089826142558786}
   - component: {fileID: 631771767290000136}
-  - component: {fileID: 4412247851645318414}
   - component: {fileID: 5350016506180162215}
   - component: {fileID: 7025476519332892572}
   m_Layer: 5
@@ -1413,25 +1352,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4412247851645318414
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4764894460152655010}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 067ba74a4ec808c4481d73cea0ebf1f9
-    m_SubObjectName: Panel_CharList
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 631771767290000136}
 --- !u!95 &5350016506180162215
 Animator:
   serializedVersion: 5
@@ -2158,7 +2078,6 @@ GameObject:
   - component: {fileID: 6436220242802681990}
   - component: {fileID: 5202809685760148079}
   - component: {fileID: 4091673952999648975}
-  - component: {fileID: 5414069062613053036}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -2223,25 +2142,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5414069062613053036
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7250543882610924301}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Button_Auto
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 4091673952999648975}
 --- !u!1 &7932508314037980768
 GameObject:
   m_ObjectHideFlags: 0
@@ -2255,7 +2155,6 @@ GameObject:
   - component: {fileID: 884576646772199329}
   - component: {fileID: 8408580728075919321}
   - component: {fileID: 7691001742876561167}
-  - component: {fileID: 380863820696977973}
   m_Layer: 5
   m_Name: Button_Back
   m_TagString: Untagged
@@ -2385,25 +2284,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &380863820696977973
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7932508314037980768}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Button_Back_B
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 7691001742876561167}
 --- !u!1 &7952914592593814878
 GameObject:
   m_ObjectHideFlags: 0
@@ -2914,7 +2794,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1223421940157358330}
   - component: {fileID: 4839459114339923089}
-  - component: {fileID: 7002062625472133963}
   - component: {fileID: 41725882911382213}
   - component: {fileID: 1909244448287053242}
   - component: {fileID: 7554733460502915235}
@@ -2967,27 +2846,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &7002062625472133963
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8442314531143006445}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b16e227473e4318a32d8fe7559d696c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 7036901111204005707}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!114 &41725882911382213
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3096,7 +2954,6 @@ GameObject:
   - component: {fileID: 3384196677642164187}
   - component: {fileID: 3925460931830758600}
   - component: {fileID: 8337539568061210738}
-  - component: {fileID: 8012510231091142883}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -3161,25 +3018,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8012510231091142883
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8596997539706652804}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Button_Speed
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 8337539568061210738}
 --- !u!1 &8639531926720468387
 GameObject:
   m_ObjectHideFlags: 0
@@ -3488,7 +3326,6 @@ GameObject:
   - component: {fileID: 2416494693262150399}
   - component: {fileID: 1872635398301310810}
   - component: {fileID: 3864200570121742571}
-  - component: {fileID: 7036901111204005707}
   m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
@@ -3553,25 +3390,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7036901111204005707
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8749935630783912095}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 2e9214532cea15840997e3d8c47b463b
-    m_SubObjectName: Icon_Energy
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 3864200570121742571}
 --- !u!1 &8862116917869837598
 GameObject:
   m_ObjectHideFlags: 0
@@ -3641,7 +3459,6 @@ GameObject:
   - component: {fileID: 8922756232492063243}
   - component: {fileID: 6175416628731102156}
   - component: {fileID: 1332606653677324598}
-  - component: {fileID: 4859838879178708124}
   m_Layer: 5
   m_Name: Stage
   m_TagString: Untagged
@@ -3685,7 +3502,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8448dabe05b94abfb2c175693a1691d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spriteCollection: {fileID: 4859838879178708124}
+  _spriteCollection: {fileID: 0}
   _animator: {fileID: 1332606653677324598}
   _back: {fileID: 884576646772199329}
   _characterList: {fileID: 7025476519332892572}
@@ -3712,23 +3529,3 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &4859838879178708124
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9172155225769694824}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b16e227473e4318a32d8fe7559d696c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 380863820696977973}
-  - {fileID: 5414069062613053036}
-  - {fileID: 8012510231091142883}
-  - {fileID: 4412247851645318414}
-  - {fileID: 4376447885755151014}
-  - {fileID: 5623941021526096005}
-  - {fileID: 3966805415170137095}

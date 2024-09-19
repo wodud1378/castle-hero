@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Box
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: cd0b7ee0cf4a2c5459f1c38970074e84, type: 3}
+    bindAsDefault: 0
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - 6a2821007534daa4681d1d3423dd98cb: 21300000
+    - 9d114d6009de8684a8dd537451cc777f: 21300000
+    - f72ac0a09596829459b4fe9d8b060c8e: 21300000
+    - 24404db14b933f740af3ddc8f59af577: 21300000
+    - dcafd0f190dbd744a90a883e3f37bcd3: 21300000
+    - 223f4322fe438f24988662be49c9ce85: 21300000
+    - f2329df295d3e3943b1336a99e8e5ab5: 21300000
+    - 89a3c7f3bfcfd0d468c0408e54d7a27d: 21300000
+    - ecce7014569cd3c42bb218bdc6b84bcc: 21300000
+    - 1a3b5fa596b81674da9460152bbb7713: 21300000
+    - d7c1cb4666162e649b72dde6dc2a3fc8: 21300000
+    - 9bb740c6b7961b24bab65a1ccce3e627: 21300000
+    - a38242f7ddbc050438ccfe5ae7a15252: 21300000
+    - 06f8dee823359a340aecd0a042aa28ad: 21300000
+    - dbbd74e999bd3b241bbb82f9e3bd91cf: 21300000
+    - 5e312e9a1e1062d4cadd279f2f7bb324: 21300000
+    - eb6c32eb689227640911a34c9566ce97: 21300000
+    - 04e61aef68ef9be4bb41a0790b9cc5a6: 21300000
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 6a2821007534daa4681d1d3423dd98cb, type: 3}
+  - {fileID: 21300000, guid: 9d114d6009de8684a8dd537451cc777f, type: 3}
+  - {fileID: 21300000, guid: f72ac0a09596829459b4fe9d8b060c8e, type: 3}
+  - {fileID: 21300000, guid: 24404db14b933f740af3ddc8f59af577, type: 3}
+  - {fileID: 21300000, guid: dcafd0f190dbd744a90a883e3f37bcd3, type: 3}
+  - {fileID: 21300000, guid: 223f4322fe438f24988662be49c9ce85, type: 3}
+  - {fileID: 21300000, guid: f2329df295d3e3943b1336a99e8e5ab5, type: 3}
+  - {fileID: 21300000, guid: 89a3c7f3bfcfd0d468c0408e54d7a27d, type: 3}
+  - {fileID: 21300000, guid: ecce7014569cd3c42bb218bdc6b84bcc, type: 3}
+  - {fileID: 21300000, guid: 1a3b5fa596b81674da9460152bbb7713, type: 3}
+  - {fileID: 21300000, guid: d7c1cb4666162e649b72dde6dc2a3fc8, type: 3}
+  - {fileID: 21300000, guid: 9bb740c6b7961b24bab65a1ccce3e627, type: 3}
+  - {fileID: 21300000, guid: a38242f7ddbc050438ccfe5ae7a15252, type: 3}
+  - {fileID: 21300000, guid: 06f8dee823359a340aecd0a042aa28ad, type: 3}
+  - {fileID: 21300000, guid: dbbd74e999bd3b241bbb82f9e3bd91cf, type: 3}
+  - {fileID: 21300000, guid: 5e312e9a1e1062d4cadd279f2f7bb324, type: 3}
+  - {fileID: 21300000, guid: eb6c32eb689227640911a34c9566ce97, type: 3}
+  - {fileID: 21300000, guid: 04e61aef68ef9be4bb41a0790b9cc5a6, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Icon_ElementalStoneBox_02
+  - Icon_GoldBox_03
+  - Icon_EquipmentBox_03
+  - Icon_ElementalStoneBox_03
+  - Icon_SoulBox_02
+  - Icon_StaminaBox_02
+  - Icon_StaminaBox_01
+  - Icon_EXPBox_02
+  - Icon_EXPBox_03
+  - Icon_ElementalStoneBox_01
+  - Icon_EXPBox_01
+  - Icon_GoldBox_01
+  - Icon_GoldBox_02
+  - Icon_SoulBox_01
+  - Icon_StaminaBox_03
+  - Icon_EquipmentBox_02
+  - Icon_EquipmentBox_01
+  - Icon_SoulBox_03
+  m_RenderDataMap: {}
+  m_Tag: Box
+  m_IsVariant: 0

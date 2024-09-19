@@ -161,7 +161,6 @@ GameObject:
   - component: {fileID: 274637592870825706}
   - component: {fileID: 7868513772931502052}
   - component: {fileID: 2865254175459829905}
-  - component: {fileID: 4705218403174819078}
   m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
@@ -226,25 +225,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4705218403174819078
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1382446356465536714}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Button_Auto
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 2865254175459829905}
 --- !u!1 &1468294964252193990
 GameObject:
   m_ObjectHideFlags: 0
@@ -1184,7 +1164,6 @@ GameObject:
   - component: {fileID: 4569657840737367924}
   - component: {fileID: 9077284455393137561}
   - component: {fileID: 729132829645791570}
-  - component: {fileID: 4910790690347075610}
   m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
@@ -1249,25 +1228,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4910790690347075610
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4899092344796421453}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Button_Speed
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 729132829645791570}
 --- !u!1 &5961073295499158193
 GameObject:
   m_ObjectHideFlags: 0
@@ -1279,7 +1239,6 @@ GameObject:
   - component: {fileID: 8774445804751838579}
   - component: {fileID: 8135278974396922712}
   - component: {fileID: 4074151567922058468}
-  - component: {fileID: 3532033241998761525}
   m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
@@ -1344,25 +1303,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3532033241998761525
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5961073295499158193}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Button_Pause
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 4074151567922058468}
 --- !u!1 &6154291149032203547
 GameObject:
   m_ObjectHideFlags: 0
@@ -1699,7 +1639,6 @@ GameObject:
   - component: {fileID: 631800567365772332}
   - component: {fileID: 610378122393592268}
   - component: {fileID: 1025368487432065902}
-  - component: {fileID: 5270345621307383480}
   m_Layer: 5
   m_Name: InGame
   m_TagString: Untagged
@@ -1766,7 +1705,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 733dab7a5465444f9839ca0359714ebb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spriteCollection: {fileID: 5270345621307383480}
+  _spriteCollection: {fileID: 0}
   _animator: {fileID: 610378122393592268}
   _back: {fileID: 0}
   <DeadCharacters>k__BackingField: {fileID: 8547690517139507479}
@@ -1783,34 +1722,6 @@ MonoBehaviour:
     debuff: UI/Prefabs/UIDamage_Debuff.prefab
   _healPrefab: UI/Prefabs/UIDamage_Heal.prefab
   _shieldPrefab: UI/Prefabs/UIDamage_Shield.prefab
---- !u!114 &5270345621307383480
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7512488659658092559}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b16e227473e4318a32d8fe7559d696c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 3532033241998761525}
-  - {fileID: 4705218403174819078}
-  - {fileID: 4910790690347075610}
 --- !u!1 &7820458885665357790
 GameObject:
   m_ObjectHideFlags: 0

@@ -86,7 +86,6 @@ GameObject:
   - component: {fileID: 6484300462649897903}
   - component: {fileID: 7498238984025986093}
   - component: {fileID: 2303881760715334070}
-  - component: {fileID: 48474354673696615}
   m_Layer: 5
   m_Name: Frame
   m_TagString: Untagged
@@ -151,25 +150,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &48474354673696615
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 738200832951494655}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Frame_Portrait_01
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 2303881760715334070}
 --- !u!1 &1331578715064969199
 GameObject:
   m_ObjectHideFlags: 0
@@ -220,7 +200,6 @@ GameObject:
   - component: {fileID: 8332416688335817515}
   - component: {fileID: 1945114197774689203}
   - component: {fileID: 4841303399605013207}
-  - component: {fileID: 5671869408139285811}
   m_Layer: 5
   m_Name: CoolTime
   m_TagString: Untagged
@@ -298,25 +277,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!114 &5671869408139285811
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5383758585433867016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: BG_Portrait_01
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 1945114197774689203}
 --- !u!1 &7878654048202999083
 GameObject:
   m_ObjectHideFlags: 0
@@ -329,7 +289,6 @@ GameObject:
   - component: {fileID: 3557316019001232931}
   - component: {fileID: 9216298327623584565}
   - component: {fileID: 3539377021315333276}
-  - component: {fileID: 1594714985683862832}
   m_Layer: 5
   m_Name: BG
   m_TagString: Untagged
@@ -408,25 +367,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!114 &1594714985683862832
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7878654048202999083}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: BG_Portrait_01
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 9216298327623584565}
 --- !u!1 &8236405116945112273
 GameObject:
   m_ObjectHideFlags: 0
@@ -476,7 +416,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f387b182a5024e099cfd6e55e68cf65b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rayTarget: {fileID: 0}
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
+  highlight: {fileID: 0}
   icon: {fileID: 9054289446085411320}
   label: {fileID: 0}
   _coolTime: {fileID: 1945114197774689203}

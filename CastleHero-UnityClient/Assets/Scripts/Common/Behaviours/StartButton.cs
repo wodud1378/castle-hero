@@ -30,7 +30,6 @@ namespace RGLabs.Common.Behaviours
 
         [field: SerializeField] public UIStageSelect StageSelect;
 
-        [SerializeField] private UIAtlasedSpriteCollection _spriteCollection;
         [SerializeField] private Button _button;
         [SerializeField] private Animator _animator;
 

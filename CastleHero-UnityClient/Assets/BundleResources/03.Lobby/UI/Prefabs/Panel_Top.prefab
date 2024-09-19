@@ -57,7 +57,8 @@ MonoBehaviour:
   icon: {fileID: 5316317446152945208}
   label: {fileID: 0}
   _quantity: {fileID: 8404147444047846648}
-  _portraitRoot: {fileID: 0}
+  _quantityPrefix: 
+  _quantitySuffix: 
   quantityDisplay:
     value: 1
 --- !u!1 &53116670075027077
@@ -192,7 +193,8 @@ MonoBehaviour:
   icon: {fileID: 2617445896031396965}
   label: {fileID: 0}
   _quantity: {fileID: 3966598225029358324}
-  _portraitRoot: {fileID: 0}
+  _quantityPrefix: 
+  _quantitySuffix: 
   quantityDisplay:
     value: 1
 --- !u!1 &410909035318571062
@@ -281,7 +283,6 @@ GameObject:
   - component: {fileID: 7022462737542546495}
   - component: {fileID: 2529926989612441615}
   - component: {fileID: 2617445896031396965}
-  - component: {fileID: 8090475661515171616}
   m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
@@ -346,25 +347,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8090475661515171616
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 451008467217346283}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 2e9214532cea15840997e3d8c47b463b
-    m_SubObjectName: Icon_Diamond
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 2617445896031396965}
 --- !u!1 &561272072467534076
 GameObject:
   m_ObjectHideFlags: 0
@@ -376,7 +358,6 @@ GameObject:
   - component: {fileID: 5047150034416696922}
   - component: {fileID: 8562396576516231620}
   - component: {fileID: 4571526869759564269}
-  - component: {fileID: 8819742095446548813}
   m_Layer: 5
   m_Name: Box
   m_TagString: Untagged
@@ -442,25 +423,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8819742095446548813
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 561272072467534076}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 067ba74a4ec808c4481d73cea0ebf1f9
-    m_SubObjectName: Box_Stock
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 4571526869759564269}
 --- !u!1 &936601054038299602
 GameObject:
   m_ObjectHideFlags: 0
@@ -1202,7 +1164,6 @@ GameObject:
   - component: {fileID: 5397764989061713370}
   - component: {fileID: 8997388387950752206}
   - component: {fileID: 2149845193583175725}
-  - component: {fileID: 4106004274467302130}
   m_Layer: 5
   m_Name: Fill
   m_TagString: Untagged
@@ -1267,25 +1228,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4106004274467302130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2948975898336769835}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 067ba74a4ec808c4481d73cea0ebf1f9
-    m_SubObjectName: Panel_Top_Gauge_Bar
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 2149845193583175725}
 --- !u!1 &3259448030957532257
 GameObject:
   m_ObjectHideFlags: 0
@@ -1297,7 +1239,6 @@ GameObject:
   - component: {fileID: 8751759368782848076}
   - component: {fileID: 2099743259317208167}
   - component: {fileID: 5316317446152945208}
-  - component: {fileID: 6359704150096326377}
   m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
@@ -1362,25 +1303,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6359704150096326377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3259448030957532257}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 2e9214532cea15840997e3d8c47b463b
-    m_SubObjectName: Icon_Gold
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 5316317446152945208}
 --- !u!1 &3367703122331395252
 GameObject:
   m_ObjectHideFlags: 0
@@ -1551,7 +1473,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemRoot: {fileID: 1250632947675504745}
-  _provideSlotAsset: 0
   _itemPrefab:
     m_AssetGUID: dfb08704d625cd34dbd1315d09c84a21
     m_SubObjectName: 
@@ -2360,7 +2281,6 @@ GameObject:
   - component: {fileID: 5467558607856804643}
   - component: {fileID: 3197340064784991080}
   - component: {fileID: 995564391556327464}
-  - component: {fileID: 4677648699822897859}
   m_Layer: 5
   m_Name: Panel_Base
   m_TagString: Untagged
@@ -2428,25 +2348,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4677648699822897859
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5273866613017036757}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 067ba74a4ec808c4481d73cea0ebf1f9
-    m_SubObjectName: Panel_Top
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 995564391556327464}
 --- !u!1 &6468284340806614730
 GameObject:
   m_ObjectHideFlags: 0
@@ -2606,7 +2507,6 @@ GameObject:
   - component: {fileID: 154138071842147516}
   - component: {fileID: 410023287542337685}
   - component: {fileID: 7888680023878070160}
-  - component: {fileID: 673398182167478354}
   m_Layer: 5
   m_Name: Box
   m_TagString: Untagged
@@ -2672,25 +2572,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &673398182167478354
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7683912616522532127}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 067ba74a4ec808c4481d73cea0ebf1f9
-    m_SubObjectName: Box_Stock
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 7888680023878070160}
 --- !u!1 &8401022784767785762
 GameObject:
   m_ObjectHideFlags: 0
@@ -2738,7 +2619,6 @@ GameObject:
   - component: {fileID: 4775994257512842971}
   - component: {fileID: 1945859211838452612}
   - component: {fileID: 4602312243470517927}
-  - component: {fileID: 7118581430160987798}
   m_Layer: 5
   m_Name: Panel_Parent
   m_TagString: Untagged
@@ -2808,25 +2688,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7118581430160987798
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8799516857360755571}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 067ba74a4ec808c4481d73cea0ebf1f9
-    m_SubObjectName: Panel_Top_Parent
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 4602312243470517927}
 --- !u!1 &9080164535192199953
 GameObject:
   m_ObjectHideFlags: 0

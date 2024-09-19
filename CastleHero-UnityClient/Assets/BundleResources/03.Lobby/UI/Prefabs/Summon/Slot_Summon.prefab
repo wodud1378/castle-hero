@@ -261,7 +261,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e73ca784b8a437d8c98309c225a04df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rayTarget: {fileID: 1808010782290277806}
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
+  highlight: {fileID: 0}
   icon: {fileID: 6021621236181207026}
   label: {fileID: 4001370097600451953}
   _itemObjects:
@@ -281,7 +284,6 @@ GameObject:
   - component: {fileID: 6538103526218880298}
   - component: {fileID: 3913622135637284830}
   - component: {fileID: 7013940806964557573}
-  - component: {fileID: 8790590862169706365}
   m_Layer: 5
   m_Name: Mask
   m_TagString: Untagged
@@ -360,25 +362,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 0
---- !u!114 &8790590862169706365
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1710960464763730587}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Frame_Porrait_Mask
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 3913622135637284830}
 --- !u!1 &4111810768183529333
 GameObject:
   m_ObjectHideFlags: 0
@@ -390,7 +373,6 @@ GameObject:
   - component: {fileID: 2216270612997570962}
   - component: {fileID: 7837079176192757814}
   - component: {fileID: 7347255743825344534}
-  - component: {fileID: 982799390283936701}
   m_Layer: 5
   m_Name: Frame
   m_TagString: Untagged
@@ -455,25 +437,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &982799390283936701
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4111810768183529333}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0f9f25fadbe4ffc846711cc43005aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reference:
-    m_AssetGUID: 958d1e21fc74ad146bb62472db92e61b
-    m_SubObjectName: Frame_Porrait_02
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_EditorAssetChanged: 1
-  image: {fileID: 7347255743825344534}
 --- !u!1 &7777579051219030708
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Common
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 9dfe759490cf24040aa717dc76f5007b, type: 3}
+    bindAsDefault: 0
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - 668b581004f573d4e8e44c3971dca752: 21300000
+    - 106d1dc2eb219874e99a99f7969a0fa6: 21300000
+    - a238b014f7ccbd042aa4856d7d6cfc38: 21300000
+    - 6fc963a4a9b2ee946a8c8b2b3dd7ead5: 21300000
+    - d71ea1b45087be8489ab7286b78c8ecf: 21300000
+    - 7fdb0e1735fe34b4184c0d262129c211: 21300000
+    - d2a1c5e9513228540b9b4625d894d539: 21300000
+    - 42c856eb3dd7222409e4c7f1f4165bc3: 21300000
+    - 7b1dbf6df1322254cae94f51254bb0d2: 21300000
+    - 071713eed0b3589488805ad652bd8a6f: 21300000
+    - 4400e64fca7ad7c429a94a528527af8c: 21300000
+    - 238ba7aff53df7d41b98ebfa9379b9d0: 21300000
+    - 397b1bdfe45b77640899885b8564b921: 21300000
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 668b581004f573d4e8e44c3971dca752, type: 3}
+  - {fileID: 21300000, guid: 106d1dc2eb219874e99a99f7969a0fa6, type: 3}
+  - {fileID: 21300000, guid: a238b014f7ccbd042aa4856d7d6cfc38, type: 3}
+  - {fileID: 21300000, guid: 6fc963a4a9b2ee946a8c8b2b3dd7ead5, type: 3}
+  - {fileID: 21300000, guid: d71ea1b45087be8489ab7286b78c8ecf, type: 3}
+  - {fileID: 21300000, guid: 7fdb0e1735fe34b4184c0d262129c211, type: 3}
+  - {fileID: 21300000, guid: d2a1c5e9513228540b9b4625d894d539, type: 3}
+  - {fileID: 21300000, guid: 42c856eb3dd7222409e4c7f1f4165bc3, type: 3}
+  - {fileID: 21300000, guid: 7b1dbf6df1322254cae94f51254bb0d2, type: 3}
+  - {fileID: 21300000, guid: 071713eed0b3589488805ad652bd8a6f, type: 3}
+  - {fileID: 21300000, guid: 4400e64fca7ad7c429a94a528527af8c, type: 3}
+  - {fileID: 21300000, guid: 238ba7aff53df7d41b98ebfa9379b9d0, type: 3}
+  - {fileID: 21300000, guid: 397b1bdfe45b77640899885b8564b921, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Icon_Diamond
+  - Icon_Wave
+  - Icon_Skill_Global_04
+  - Icon_Boss
+  - Icon_Gold
+  - Icon_Cash
+  - Icon_Skill_Global_02
+  - Icon_Energy
+  - Icon_Mana
+  - Icon_Skill_Global_03
+  - Icon_Timer
+  - Icon_Skill_Global_01
+  - Icon_Exp
+  m_RenderDataMap: {}
+  m_Tag: Common
+  m_IsVariant: 0
