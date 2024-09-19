@@ -1,0 +1,243 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Effect
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: dd81371ec3980484eb0b136aab7504dc, type: 3}
+    bindAsDefault: 0
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - 68e6cb10e86fd8c409db3b05284f7780: 21300000
+    - 85f5ffd049389b64ba6a25952c0116ab: 21300000
+    - ca56d1a13cedeaf448f796ed7d7af51e: 6142830190684262957
+    - ca56d1a13cedeaf448f796ed7d7af51e: 6749567222663386730
+    - ca56d1a13cedeaf448f796ed7d7af51e: 3845465350350650367
+    - ca56d1a13cedeaf448f796ed7d7af51e: -8965047848160362098
+    - a48919a17c58d0b449ff80962a896bd8: 21300000
+    - 0cefe5d188192fb419a9d0f1f1d42d3c: 21300000
+    - 1bc24c227ca3a5c4f9003ee813261bce: 21300000
+    - 5f128742322e3794f8128baeb9bfc7a2: 21300000
+    - ba19b483e4d27854da95145d6c738212: 488365977
+    - ba19b483e4d27854da95145d6c738212: 716491738
+    - ba19b483e4d27854da95145d6c738212: 108148825
+    - ba19b483e4d27854da95145d6c738212: 455045032
+    - ba19b483e4d27854da95145d6c738212: 966348915
+    - ba19b483e4d27854da95145d6c738212: 253839240
+    - ba19b483e4d27854da95145d6c738212: 910520755
+    - ba19b483e4d27854da95145d6c738212: -1805087129
+    - ba19b483e4d27854da95145d6c738212: -241318455
+    - ba19b483e4d27854da95145d6c738212: 1477953699
+    - 007a1be3b19197146bbcf0bf53ab9316: 21300000
+    - 651b00344caa00943aa6fcab5f282f75: 21300000
+    - 34e23c1535e617442966d1e36019b0c2: 21300000
+    - 17ba57b56dd3592489f2a51513ddb135: 21300000
+    - 849bfe067e398e44298a819c897c0c30: 21300000
+    - 4982ea16cbb769c4786e00de5e17e371: 488365977
+    - 4982ea16cbb769c4786e00de5e17e371: 716491738
+    - 4982ea16cbb769c4786e00de5e17e371: 108148825
+    - 4982ea16cbb769c4786e00de5e17e371: 966348915
+    - 4982ea16cbb769c4786e00de5e17e371: 253839240
+    - 4982ea16cbb769c4786e00de5e17e371: 910520755
+    - 4982ea16cbb769c4786e00de5e17e371: -1805087129
+    - 4982ea16cbb769c4786e00de5e17e371: 455045032
+    - a431da764f519534bafef58c84a2fe1a: 21300000
+    - d3d621a6e05bbf64cbe79007914a0292: 21300000
+    - 9c8c7be60655c6647861b7be5f89d66f: 21300000
+    - a8a86c17c5d6a394f8434cac144206c6: 21300000
+    - 8bf137c7011efdd428de2387fe8b36fb: 21300000
+    - 2a679fd7e3ee6b54c9f9bdc70281610c: 21300000
+    - d1e4be08c08c0384da4b5135238f54a0: 21300000
+    - ae476d687c229d64a9f8a9328eb635b4: 21300000
+    - 5bbcbaa8984a646449a5c80c4eb7646d: 21300000
+    - f652bbb8cba60f3468fbc43bd28f1eb7: 21300000
+    - 6285afd89822511479ca052d51cea2a7: 21300000
+    - f3e662e870a7e5141a46208b83b59efd: 21300000
+    - dfb6ae699b9052a418ade5a1bc4baad3: 21300000
+    - 2ee5857946217f24bb3daff7f48c56a8: 21300000
+    - 8da70fd9612cd1e48a737be72cb02e3e: 21300000
+    - f39a7e0a25640ec4aaaec079574e2932: 21300000
+    - 9ae644aabd0f8754582dcf9d5674b28a: 21300000
+    - ded48abaf1039f04ba23d8b9be53084b: 21300000
+    - 54f2744b04a8fcc458b758a47346477e: -6931400272290298348
+    - 54f2744b04a8fcc458b758a47346477e: -8105560202311982947
+    - 54f2744b04a8fcc458b758a47346477e: 6004246453574341425
+    - ca7a8f4bf35def646b0eee95e745c5a9: 21300000
+    - 52167c9b5ebc8ef43bb64eeae3e252dd: 21300000
+    - b18955ab99305334e898a2cf0830bd61: 21300000
+    - 5dd0d2fbe5d65b248bf5585e53cb0d0c: 21300000
+    - 6b0fb48c11966af418df7ee984e1f985: 21300000
+    - db30e90dbc5b191449e87f194d62a1ea: 21300000
+    - 3b0bf19d1096ef2428208c00051b58f6: 21300000
+    - 17da4dad1cebd5d41bc9300bb331d7db: 21300000
+    - 6f30605ef6e8a574695b63d02895861e: 21300000
+    - 253c2f8f95713d54598c46c9095d3018: 21300000
+    - f7bec6bff9083174db95137b5ec6eeac: 21300000
+    - b03090ef063ebe8478ff8fa9b3473758: 21300000
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 68e6cb10e86fd8c409db3b05284f7780, type: 3}
+  - {fileID: 21300000, guid: 85f5ffd049389b64ba6a25952c0116ab, type: 3}
+  - {fileID: 6142830190684262957, guid: ca56d1a13cedeaf448f796ed7d7af51e, type: 3}
+  - {fileID: 6749567222663386730, guid: ca56d1a13cedeaf448f796ed7d7af51e, type: 3}
+  - {fileID: 3845465350350650367, guid: ca56d1a13cedeaf448f796ed7d7af51e, type: 3}
+  - {fileID: -8965047848160362098, guid: ca56d1a13cedeaf448f796ed7d7af51e, type: 3}
+  - {fileID: 21300000, guid: a48919a17c58d0b449ff80962a896bd8, type: 3}
+  - {fileID: 21300000, guid: 0cefe5d188192fb419a9d0f1f1d42d3c, type: 3}
+  - {fileID: 21300000, guid: 1bc24c227ca3a5c4f9003ee813261bce, type: 3}
+  - {fileID: 21300000, guid: 5f128742322e3794f8128baeb9bfc7a2, type: 3}
+  - {fileID: 488365977, guid: ba19b483e4d27854da95145d6c738212, type: 3}
+  - {fileID: 716491738, guid: ba19b483e4d27854da95145d6c738212, type: 3}
+  - {fileID: 108148825, guid: ba19b483e4d27854da95145d6c738212, type: 3}
+  - {fileID: 455045032, guid: ba19b483e4d27854da95145d6c738212, type: 3}
+  - {fileID: 966348915, guid: ba19b483e4d27854da95145d6c738212, type: 3}
+  - {fileID: 253839240, guid: ba19b483e4d27854da95145d6c738212, type: 3}
+  - {fileID: 910520755, guid: ba19b483e4d27854da95145d6c738212, type: 3}
+  - {fileID: -1805087129, guid: ba19b483e4d27854da95145d6c738212, type: 3}
+  - {fileID: -241318455, guid: ba19b483e4d27854da95145d6c738212, type: 3}
+  - {fileID: 1477953699, guid: ba19b483e4d27854da95145d6c738212, type: 3}
+  - {fileID: 21300000, guid: 007a1be3b19197146bbcf0bf53ab9316, type: 3}
+  - {fileID: 21300000, guid: 651b00344caa00943aa6fcab5f282f75, type: 3}
+  - {fileID: 21300000, guid: 34e23c1535e617442966d1e36019b0c2, type: 3}
+  - {fileID: 21300000, guid: 17ba57b56dd3592489f2a51513ddb135, type: 3}
+  - {fileID: 21300000, guid: 849bfe067e398e44298a819c897c0c30, type: 3}
+  - {fileID: 488365977, guid: 4982ea16cbb769c4786e00de5e17e371, type: 3}
+  - {fileID: 716491738, guid: 4982ea16cbb769c4786e00de5e17e371, type: 3}
+  - {fileID: 108148825, guid: 4982ea16cbb769c4786e00de5e17e371, type: 3}
+  - {fileID: 966348915, guid: 4982ea16cbb769c4786e00de5e17e371, type: 3}
+  - {fileID: 253839240, guid: 4982ea16cbb769c4786e00de5e17e371, type: 3}
+  - {fileID: 910520755, guid: 4982ea16cbb769c4786e00de5e17e371, type: 3}
+  - {fileID: -1805087129, guid: 4982ea16cbb769c4786e00de5e17e371, type: 3}
+  - {fileID: 455045032, guid: 4982ea16cbb769c4786e00de5e17e371, type: 3}
+  - {fileID: 21300000, guid: a431da764f519534bafef58c84a2fe1a, type: 3}
+  - {fileID: 21300000, guid: d3d621a6e05bbf64cbe79007914a0292, type: 3}
+  - {fileID: 21300000, guid: 9c8c7be60655c6647861b7be5f89d66f, type: 3}
+  - {fileID: 21300000, guid: a8a86c17c5d6a394f8434cac144206c6, type: 3}
+  - {fileID: 21300000, guid: 8bf137c7011efdd428de2387fe8b36fb, type: 3}
+  - {fileID: 21300000, guid: 2a679fd7e3ee6b54c9f9bdc70281610c, type: 3}
+  - {fileID: 21300000, guid: d1e4be08c08c0384da4b5135238f54a0, type: 3}
+  - {fileID: 21300000, guid: ae476d687c229d64a9f8a9328eb635b4, type: 3}
+  - {fileID: 21300000, guid: 5bbcbaa8984a646449a5c80c4eb7646d, type: 3}
+  - {fileID: 21300000, guid: f652bbb8cba60f3468fbc43bd28f1eb7, type: 3}
+  - {fileID: 21300000, guid: 6285afd89822511479ca052d51cea2a7, type: 3}
+  - {fileID: 21300000, guid: f3e662e870a7e5141a46208b83b59efd, type: 3}
+  - {fileID: 21300000, guid: dfb6ae699b9052a418ade5a1bc4baad3, type: 3}
+  - {fileID: 21300000, guid: 2ee5857946217f24bb3daff7f48c56a8, type: 3}
+  - {fileID: 21300000, guid: 8da70fd9612cd1e48a737be72cb02e3e, type: 3}
+  - {fileID: 21300000, guid: f39a7e0a25640ec4aaaec079574e2932, type: 3}
+  - {fileID: 21300000, guid: 9ae644aabd0f8754582dcf9d5674b28a, type: 3}
+  - {fileID: 21300000, guid: ded48abaf1039f04ba23d8b9be53084b, type: 3}
+  - {fileID: -6931400272290298348, guid: 54f2744b04a8fcc458b758a47346477e, type: 3}
+  - {fileID: -8105560202311982947, guid: 54f2744b04a8fcc458b758a47346477e, type: 3}
+  - {fileID: 6004246453574341425, guid: 54f2744b04a8fcc458b758a47346477e, type: 3}
+  - {fileID: 21300000, guid: ca7a8f4bf35def646b0eee95e745c5a9, type: 3}
+  - {fileID: 21300000, guid: 52167c9b5ebc8ef43bb64eeae3e252dd, type: 3}
+  - {fileID: 21300000, guid: b18955ab99305334e898a2cf0830bd61, type: 3}
+  - {fileID: 21300000, guid: 5dd0d2fbe5d65b248bf5585e53cb0d0c, type: 3}
+  - {fileID: 21300000, guid: 6b0fb48c11966af418df7ee984e1f985, type: 3}
+  - {fileID: 21300000, guid: db30e90dbc5b191449e87f194d62a1ea, type: 3}
+  - {fileID: 21300000, guid: 3b0bf19d1096ef2428208c00051b58f6, type: 3}
+  - {fileID: 21300000, guid: 17da4dad1cebd5d41bc9300bb331d7db, type: 3}
+  - {fileID: 21300000, guid: 6f30605ef6e8a574695b63d02895861e, type: 3}
+  - {fileID: 21300000, guid: 253c2f8f95713d54598c46c9095d3018, type: 3}
+  - {fileID: 21300000, guid: f7bec6bff9083174db95137b5ec6eeac, type: 3}
+  - {fileID: 21300000, guid: b03090ef063ebe8478ff8fa9b3473758, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - GhostFace
+  - Sinder
+  - Electric_3_1
+  - Electric_3_0
+  - Electric_3_3
+  - Electric_3_2
+  - Smoke_3x3
+  - Character_10033_Projectile
+  - Extend_G_1x3
+  - WaterDrop
+  - Fire_Magenta_5x2_4
+  - Fire_Magenta_5x2_5
+  - Fire_Magenta_5x2_6
+  - Fire_Magenta_5x2_7
+  - Fire_Magenta_5x2_0
+  - Fire_Magenta_5x2_1
+  - Fire_Magenta_5x2_2
+  - Fire_Magenta_5x2_3
+  - Fire_Magenta_5x2_8
+  - Fire_Magenta_5x2_9
+  - CircleExplosion
+  - IceSphere_3x1
+  - GroundSmash_3x1
+  - Wave_2x3
+  - Particle_Square_Y
+  - Fire_Magenta_5x2_5
+  - Fire_Magenta_5x2_6
+  - Fire_Magenta_5x2_7
+  - Fire_Magenta_5x2_0
+  - Fire_Magenta_5x2_1
+  - Fire_Magenta_5x2_2
+  - Fire_Magenta_5x2_3
+  - Fire_Magenta_5x2_8
+  - Elipse
+  - RadialWave_Solid
+  - Particle_Square_M
+  - Bubble_6x1
+  - Twinkle_Y
+  - HeartLine
+  - Smoke
+  - Triangle_Stretch
+  - Smoke_2x2
+  - Effect_GunFire_5x1
+  - WindSphere_7x2
+  - Particle_Square_B
+  - Confetti_3x2
+  - Projectile_Ice
+  - Circle_Blur
+  - Whirl_3x3
+  - Symbol_Attack
+  - Heart
+  - Thunder_2
+  - Thunder_0
+  - Thunder_1
+  - Round_Half
+  - RadialWave_L
+  - Particle_Square_G
+  - Glow
+  - WaterExplosion_5x3
+  - Particle_Square_R
+  - Circle_InnerFade
+  - Symbol_Heal
+  - MagicCircle
+  - UnderAura
+  - Slash_B_4x2
+  - SpeedTrail
+  m_RenderDataMap: {}
+  m_Tag: Effect
+  m_IsVariant: 0
