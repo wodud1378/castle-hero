@@ -3,6 +3,7 @@ using System.Linq;
 using RGLabs.Castle;
 using RGLabs.Common.Behaviours;
 using RGLabs.Common.Flow;
+using RGLabs.Common.ResourceManagement;
 using RGLabs.Common.UI.Popup;
 using RGLabs.Data;
 using RGLabs.Data.Model;
@@ -176,7 +177,9 @@ namespace RGLabs.Lobby.Behaviours
 
             _uiLobby.Dispose();
             _uiPrepare.Dispose();
-
+            
+            AtlasCache.Clear();
+            
             new StartGame { entity = entity }.Publish();
 
             Context.Back.Clear();

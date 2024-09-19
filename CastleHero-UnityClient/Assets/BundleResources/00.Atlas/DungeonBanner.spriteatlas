@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Banner
+  m_Name: DungeonBanner
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -53,5 +53,5 @@ SpriteAtlas:
   - Banner_Dungeon_Elemental
   - Banner_Dungeon_GoldMine
   m_RenderDataMap: {}
-  m_Tag: Banner
+  m_Tag: DungeonBanner
   m_IsVariant: 0
