@@ -9,13 +9,13 @@ namespace RGLabs.Editor
 {
     public static class UnitHelper
     {
-        [MenuItem("Tools/RGLabs/Animation Events Correction All")]
+        [MenuItem("Tools/RGLabs/Unit/Animation Events Correction All")]
         public static void UpdateUnits()
         {
             RGLabsEditor.ModifyAllPrefabsWithComponent<UnitBehaviour>(AnimationEventsCorrection);
         }
         
-        [MenuItem("GameObject/RGLabs/Animation Events Correction")]
+        [MenuItem("GameObject/RGLabs/Unit/Animation Events Correction")]
         public static void AnimationEventsCorrection()
         {
             var selection = Selection.gameObjects[0];
@@ -23,6 +23,18 @@ namespace RGLabs.Editor
                 return;
             
             AnimationEventsCorrection(unit);
+        }
+        
+        [MenuItem("Tools/RGLabs/Unit/Merge Shadow")]
+        public static void MergeShadow()
+        {
+            RGLabsEditor.ModifyAllPrefabsWithComponent<UnitBehaviour>(MergeShadow);
+        }
+
+        private static void MergeShadow(UnitBehaviour unit)
+        {
+            unit.transform.Find("Shadow").gameObject.SetActive(false);
+            unit.GetComponentInChildren<SkeletonRenderSeparator>().enabled = false;
         }
         
         private static void AnimationEventsCorrection(UnitBehaviour unit)

@@ -61,7 +61,7 @@ MonoBehaviour:
   m_AdditionalLightsCookieResolution: 2048
   m_AdditionalLightsCookieFormat: 3
   m_UseSRPBatcher: 1
-  m_SupportsDynamicBatching: 0
+  m_SupportsDynamicBatching: 1
   m_MixedLightingSupported: 1
   m_SupportsLightCookies: 1
   m_SupportsLightLayers: 0
@@ -82,7 +82,7 @@ MonoBehaviour:
   m_Textures:
     blueNoise64LTex: {fileID: 0}
     bayerMatrixTex: {fileID: 0}
-  m_PrefilteringModeMainLightShadows: 3
+  m_PrefilteringModeMainLightShadows: 0
   m_PrefilteringModeAdditionalLight: 3
   m_PrefilteringModeAdditionalLightShadows: 2
   m_PrefilterXRKeywords: 1

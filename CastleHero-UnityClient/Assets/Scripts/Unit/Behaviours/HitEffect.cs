@@ -13,6 +13,7 @@ namespace RGLabs.Unit.Behaviours
         private float _halfDuration;
         private int _propertyId;
         private MaterialPropertyBlock _propertyBlock;
+        private YieldAwaitable _wait = UniTask.Yield();
         
         public void Init()
         {
@@ -45,7 +46,7 @@ namespace RGLabs.Unit.Behaviours
                 currentTime += Time.deltaTime;
                 ApplyColor(Color.Lerp(start, end, currentTime / _halfDuration));
 
-                yield return UniTask.Yield();
+                yield return _wait;
             }
         }
 

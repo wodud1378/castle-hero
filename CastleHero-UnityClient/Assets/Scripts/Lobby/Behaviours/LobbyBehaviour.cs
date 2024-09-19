@@ -178,8 +178,6 @@ namespace RGLabs.Lobby.Behaviours
             _uiLobby.Dispose();
             _uiPrepare.Dispose();
             
-            AtlasCache.Clear();
-            
             new StartGame { entity = entity }.Publish();
 
             Context.Back.Clear();
