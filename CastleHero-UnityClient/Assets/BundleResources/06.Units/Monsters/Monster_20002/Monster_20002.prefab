@@ -12,9 +12,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Spine Mecanim GameObject (Monster_Farmer)
       objectReference: {fileID: 0}
+    - target: {fileID: 1401594709473735656, guid: cad1920cbef678240bb989106a4dc0e8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6391860083955039845, guid: cad1920cbef678240bb989106a4dc0e8, type: 3}
       propertyPath: m_Name
       value: Monster_20002
+      objectReference: {fileID: 0}
+    - target: {fileID: 6677911987457325467, guid: cad1920cbef678240bb989106a4dc0e8, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7154187406837400977, guid: cad1920cbef678240bb989106a4dc0e8, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7174810689259680027, guid: cad1920cbef678240bb989106a4dc0e8, type: 3}
       propertyPath: m_Controller

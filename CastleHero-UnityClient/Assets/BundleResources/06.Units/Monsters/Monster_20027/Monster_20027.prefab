@@ -8,9 +8,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1401594709473735656, guid: bd09fec732dad8644be334c714f47f02, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6391860083955039845, guid: bd09fec732dad8644be334c714f47f02, type: 3}
       propertyPath: m_Name
       value: Monster_20027
+      objectReference: {fileID: 0}
+    - target: {fileID: 6677911987457325467, guid: bd09fec732dad8644be334c714f47f02, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7154187406837400977, guid: bd09fec732dad8644be334c714f47f02, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7174810689259680027, guid: bd09fec732dad8644be334c714f47f02, type: 3}
       propertyPath: m_Controller

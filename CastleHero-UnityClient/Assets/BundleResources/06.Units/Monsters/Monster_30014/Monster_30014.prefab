@@ -28,6 +28,10 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: 0.6
       objectReference: {fileID: 0}
+    - target: {fileID: 1401594709473735656, guid: 8a738b3168be04e47b67328f79825327, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1950612129469484486, guid: 8a738b3168be04e47b67328f79825327, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.009275408
@@ -48,6 +52,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Monster_30014
       objectReference: {fileID: 0}
+    - target: {fileID: 6677911987457325467, guid: 8a738b3168be04e47b67328f79825327, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6729772277759493457, guid: 8a738b3168be04e47b67328f79825327, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.6
@@ -63,6 +71,10 @@ PrefabInstance:
     - target: {fileID: 6998452685520390668, guid: 8a738b3168be04e47b67328f79825327, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.02019409
+      objectReference: {fileID: 0}
+    - target: {fileID: 7154187406837400977, guid: 8a738b3168be04e47b67328f79825327, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7174810689259680027, guid: 8a738b3168be04e47b67328f79825327, type: 3}
       propertyPath: m_Controller

@@ -8,12 +8,24 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1401594709473735656, guid: a1a723246b262b640ad3090719ba89bf, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6391860083955039845, guid: a1a723246b262b640ad3090719ba89bf, type: 3}
       propertyPath: m_Name
       value: Monster_20012
       objectReference: {fileID: 0}
+    - target: {fileID: 6677911987457325467, guid: a1a723246b262b640ad3090719ba89bf, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6927557205221649431, guid: a1a723246b262b640ad3090719ba89bf, type: 3}
       propertyPath: _enableAttack
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7154187406837400977, guid: a1a723246b262b640ad3090719ba89bf, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7174810689259680027, guid: a1a723246b262b640ad3090719ba89bf, type: 3}

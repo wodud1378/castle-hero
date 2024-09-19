@@ -76,6 +76,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2961150237718510959, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246205144746849534, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4585431582340083859, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.11553036
@@ -83,6 +91,10 @@ PrefabInstance:
     - target: {fileID: 4585431582340083859, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
       propertyPath: m_LocalPosition.y
       value: 3.1609266
+      objectReference: {fileID: 0}
+    - target: {fileID: 4666143083836451417, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5975240846050550739, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
       propertyPath: initialSkinName
