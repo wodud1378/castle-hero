@@ -8308,8 +8308,6 @@ MonoBehaviour:
   _groups: {fileID: 0}
   _tabToggle: {fileID: 0}
   _characterList: {fileID: 0}
-  clickMethod: 0
-  equipmentId: 0
 --- !u!95 &8272312466967312267
 Animator:
   serializedVersion: 5

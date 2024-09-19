@@ -331,6 +331,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7e77359498c447787eb20260156f552, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
   highlight: {fileID: 0}
   icon: {fileID: 0}
   label: {fileID: 0}
@@ -338,9 +341,6 @@ MonoBehaviour:
   _level: {fileID: 8999277572728911763}
   _addedExp: {fileID: 3104496510736627825}
   _unitSlot: {fileID: 4412689911233090267}
-  lvs: 
-  exps: 
-  show: 0
 --- !u!1 &3397275070202327214
 GameObject:
   m_ObjectHideFlags: 0

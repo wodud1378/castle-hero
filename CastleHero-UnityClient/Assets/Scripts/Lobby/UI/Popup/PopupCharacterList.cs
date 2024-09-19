@@ -97,6 +97,7 @@ namespace RGLabs.Lobby.UI.Popup
         public readonly ReactiveProperty<Tab> tab = new();
         public readonly ReactiveProperty<SortOption> sortOption = new();
 
+        [NonSerialized]
         public ClickMethod clickMethod;
 
         public EquipParam equipParam;

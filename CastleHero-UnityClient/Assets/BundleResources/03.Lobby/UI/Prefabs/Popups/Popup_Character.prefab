@@ -2887,8 +2887,6 @@ MonoBehaviour:
   _groups: {fileID: 3283582073139927979}
   _tabToggle: {fileID: 5314591697334345403}
   _characterList: {fileID: 5934711479436281327}
-  clickMethod: 0
-  equipmentId: 0
 --- !u!95 &8272312466967312267
 Animator:
   serializedVersion: 5

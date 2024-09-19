@@ -426,12 +426,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34b6d78b90a642199ae25092911e0803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _grayScaleOnDim: 0
+  grayScale: {fileID: 0}
+  dim: {fileID: 0}
   highlight: {fileID: 0}
-  diminish: {fileID: 0}
   icon: {fileID: 862319264759628413}
   label: {fileID: 0}
   _quantity: {fileID: 0}
-  _portraitRoot: {fileID: 0}
+  _quantityPrefix: 
+  _quantitySuffix: 
   quantityDisplay:
     value: 0
 --- !u!1 &9121787907966090228

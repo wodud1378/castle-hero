@@ -416,7 +416,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f133e8fcb004d26a2b9c4b3510017d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spriteCollection: {fileID: 0}
   _animator: {fileID: 7451036312116929674}
   _back: {fileID: 3317494292917434338}
   _levelUpObjs:

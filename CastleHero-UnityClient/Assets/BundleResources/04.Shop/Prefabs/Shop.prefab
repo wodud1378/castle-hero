@@ -1046,7 +1046,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a3717f8520c4d4e9fd10b13007ddf59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spriteCollection: {fileID: 0}
   _animator: {fileID: 5327355000696906058}
   _back: {fileID: 2422748938798751148}
   _itemList: {fileID: 5946254747557965064}

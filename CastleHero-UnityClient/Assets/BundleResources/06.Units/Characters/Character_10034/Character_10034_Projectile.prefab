@@ -4859,6 +4859,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 30
+  _trail: {fileID: 0}
+  _particle: {fileID: 2490237040081087164}
 --- !u!1 &7748000923899064964
 GameObject:
   m_ObjectHideFlags: 0

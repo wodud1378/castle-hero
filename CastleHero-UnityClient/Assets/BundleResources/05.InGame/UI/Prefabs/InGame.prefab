@@ -1705,7 +1705,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 733dab7a5465444f9839ca0359714ebb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spriteCollection: {fileID: 0}
   _animator: {fileID: 610378122393592268}
   _back: {fileID: 0}
   <DeadCharacters>k__BackingField: {fileID: 8547690517139507479}

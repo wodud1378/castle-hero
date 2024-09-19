@@ -1731,6 +1731,8 @@ MonoBehaviour:
   icon: {fileID: 862319264759628413}
   label: {fileID: 4988924296871623459}
   _quantity: {fileID: 0}
+  _quantityPrefix: 
+  _quantitySuffix: 
   quantityDisplay:
     value: 0
   _grade: {fileID: 2089357818745648765}

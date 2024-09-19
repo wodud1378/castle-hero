@@ -572,7 +572,6 @@ MonoBehaviour:
   icon: {fileID: 1529916527949587917}
   label: {fileID: 0}
   _dayOfWeek: {fileID: 6865101658031788679}
-  _rewardList: {fileID: 6848738702517332679}
 --- !u!114 &7951635913040024868
 MonoBehaviour:
   m_ObjectHideFlags: 0

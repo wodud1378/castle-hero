@@ -73,8 +73,6 @@ namespace RGLabs.Common.Behaviours
 
                 InitSubscriptions();
 
-                SpriteAtlasManager.atlasRequested += OnAtlasRequested;
-
                 while (OnLoadCompleteQueue.Count > 0)
                 {
                     OnLoadCompleteQueue.Dequeue()?.Invoke();
@@ -89,31 +87,12 @@ namespace RGLabs.Common.Behaviours
             }
         }
 
-        private void OnAtlasRequested(string tag, Action<SpriteAtlas> callback)
-        {
-            Debug.Log($"{tag} atlas requested");
-            
-            if (!_atlasCache.TryGetValue(tag, out var handle))
-            {
-                handle = Addressables.LoadAssetAsync<SpriteAtlas>($"Atlas/{tag}.spriteatlas");
-                handle.WaitForCompletion();
-                _atlasCache[tag] = handle;
-            }
-            
-            callback.Invoke(handle.Result);
-        }
-
         private void Start()
         {
             Application.targetFrameRate = _frameRate;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
 
             Load();
-        }
-
-        private void OnDestroy()
-        {
-            SpriteAtlasManager.atlasRequested -= OnAtlasRequested;
         }
 
         private void SetEntranceTransition()

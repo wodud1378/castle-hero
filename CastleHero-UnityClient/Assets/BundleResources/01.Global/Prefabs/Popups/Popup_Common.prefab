@@ -965,7 +965,6 @@ MonoBehaviour:
   _confirm: {fileID: 8110088826815931023}
   _cancel: {fileID: 65816829512865846}
   _text: {fileID: 5512932833647087127}
-  _canvasGroup: {fileID: 0}
 --- !u!222 &7608430114098979917
 CanvasRenderer:
   m_ObjectHideFlags: 0

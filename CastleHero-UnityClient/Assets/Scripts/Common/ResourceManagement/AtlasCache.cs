@@ -1,0 +1,34 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.U2D;
+
+namespace RGLabs.Common.ResourceManagement
+{
+    public static class AtlasCache
+    {
+        private static readonly Dictionary<string, AsyncOperationHandle<SpriteAtlas>> Cache = new();
+        
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void RegisterUnityCallback()
+        {
+            SpriteAtlasManager.atlasRequested += OnAtlasRequested;
+        }
+        
+        private static void OnAtlasRequested(string tag, Action<SpriteAtlas> callback)
+        {
+            Debug.Log($"{tag} atlas requested");
+            
+            if (!Cache.TryGetValue(tag, out var handle))
+            {
+                handle = Addressables.LoadAssetAsync<SpriteAtlas>($"Atlas/{tag}.spriteatlas");
+                handle.WaitForCompletion();
+                Cache[tag] = handle;
+            }
+            
+            callback.Invoke(handle.Result);
+        }
+    }
+}

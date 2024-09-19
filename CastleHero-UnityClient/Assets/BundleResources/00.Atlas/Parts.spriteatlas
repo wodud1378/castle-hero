@@ -44,14 +44,18 @@ SpriteAtlas:
     - 986c3081e6853e3458cbef5d9c1d00b1: 21300000
     - cbfdc7b105a6f8f4da351709f0dc6465: 21300000
     - 20162cd180e39264ca233fd06ab85a93: 21300000
+    - a11f7b422dadf4a44b486dfa5ea5c1c1: 21300000
     - 7e8c0dd24ef8ed14c82b7bdba64fa413: 21300000
+    - cf0b63f27d92a3b40868791767a2775c: 21300000
     - 3071bcb34f957304c8dd12fdd7248997: 21300000
     - c731f3d34d318754e876eb3948816388: 21300000
     - eedc6f04803c0bc48b707de7d3f7fa72: 21300000
     - 3e2a24f409459fb4796909cf5a4b8414: 21300000
     - 23bac41637fb59640951cc49e65b8d19: 21300000
     - 565d1f6608ff69e4ebf4ecbe98e58ec0: 21300000
+    - abfd11d6c41c33e4e989ca10682aa8df: 21300000
     - 8a13a23771880624aa00cfac1619c977: 21300000
+    - cea20ec7e88d4224287b46ea84da88b7: 21300000
     - ddacc8283954e444a97a678a6b0d941e: 21300000
     - 1e5be819888fe4c48a0de68515236f73: 21300000
     - efd9e2dba403b7e41b41c9bd1b71a878: 21300000
@@ -59,8 +63,11 @@ SpriteAtlas:
     - 8ef92bdc33694034ab6da6e6642b0dab: 21300000
     - ca47b13d5c2ba024bb1cf6d83c3a96ff: 21300000
     - 0c2a568d80d62c04498b5cd92a763d4e: 21300000
+    - 47abc78dad415204db6af5849d33ce82: 21300000
     - b6dc7f0e495b09142b0fda880930714b: 21300000
     - 09de04de8d872624784192f3c9e79408: 21300000
+    - 29764faf9111d324f87dca5e9a7a0bd4: 21300000
+    - d375b8ff8dce4d742a03698bf788e3f9: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: c8198c009542868418c994608a6f5640, type: 3}
@@ -70,14 +77,18 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 986c3081e6853e3458cbef5d9c1d00b1, type: 3}
   - {fileID: 21300000, guid: cbfdc7b105a6f8f4da351709f0dc6465, type: 3}
   - {fileID: 21300000, guid: 20162cd180e39264ca233fd06ab85a93, type: 3}
+  - {fileID: 21300000, guid: a11f7b422dadf4a44b486dfa5ea5c1c1, type: 3}
   - {fileID: 21300000, guid: 7e8c0dd24ef8ed14c82b7bdba64fa413, type: 3}
+  - {fileID: 21300000, guid: cf0b63f27d92a3b40868791767a2775c, type: 3}
   - {fileID: 21300000, guid: 3071bcb34f957304c8dd12fdd7248997, type: 3}
   - {fileID: 21300000, guid: c731f3d34d318754e876eb3948816388, type: 3}
   - {fileID: 21300000, guid: eedc6f04803c0bc48b707de7d3f7fa72, type: 3}
   - {fileID: 21300000, guid: 3e2a24f409459fb4796909cf5a4b8414, type: 3}
   - {fileID: 21300000, guid: 23bac41637fb59640951cc49e65b8d19, type: 3}
   - {fileID: 21300000, guid: 565d1f6608ff69e4ebf4ecbe98e58ec0, type: 3}
+  - {fileID: 21300000, guid: abfd11d6c41c33e4e989ca10682aa8df, type: 3}
   - {fileID: 21300000, guid: 8a13a23771880624aa00cfac1619c977, type: 3}
+  - {fileID: 21300000, guid: cea20ec7e88d4224287b46ea84da88b7, type: 3}
   - {fileID: 21300000, guid: ddacc8283954e444a97a678a6b0d941e, type: 3}
   - {fileID: 21300000, guid: 1e5be819888fe4c48a0de68515236f73, type: 3}
   - {fileID: 21300000, guid: efd9e2dba403b7e41b41c9bd1b71a878, type: 3}
@@ -85,8 +96,11 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 8ef92bdc33694034ab6da6e6642b0dab, type: 3}
   - {fileID: 21300000, guid: ca47b13d5c2ba024bb1cf6d83c3a96ff, type: 3}
   - {fileID: 21300000, guid: 0c2a568d80d62c04498b5cd92a763d4e, type: 3}
+  - {fileID: 21300000, guid: 47abc78dad415204db6af5849d33ce82, type: 3}
   - {fileID: 21300000, guid: b6dc7f0e495b09142b0fda880930714b, type: 3}
   - {fileID: 21300000, guid: 09de04de8d872624784192f3c9e79408, type: 3}
+  - {fileID: 21300000, guid: 29764faf9111d324f87dca5e9a7a0bd4, type: 3}
+  - {fileID: 21300000, guid: d375b8ff8dce4d742a03698bf788e3f9, type: 3}
   m_PackedSpriteNamesToIndex:
   - Icon_EquipmentPiece_Rare_02
   - Icon_EquipmentPiece_Epic_02
@@ -95,14 +109,18 @@ SpriteAtlas:
   - Icon_EarthStonePiece_01
   - Icon_WindStonePiece_01
   - Icon_EarthStonePiece_03
+  - Icon_ElementalStonePiece_M
   - Icon_EquipmentPiece_Legendary_01
+  - Icon_ElementalStone_Wind
   - Icon_EquipmentPiece_Epic_03
   - Icon_EquipmentPiece_Rare_04
   - Icon_EquipmentPiece_Legendary_03
   - Icon_EquipmentPiece_Legendary_04
   - Icon_WaterStonePiece_01
   - Icon_EquipmentPiece_Rare_03
+  - Icon_ElementalStone_Fire
   - Icon_FireStonePiece_02
+  - Icon_ElementalStonePiece_L
   - Icon_FireStonePiece_01
   - Icon_WaterStonePiece_02
   - Icon_WaterStonePiece_03
@@ -110,8 +128,11 @@ SpriteAtlas:
   - Icon_EarthStonePiece_02
   - Icon_EquipmentPiece_Epic_01
   - Icon_EquipmentPiece_Epic_04
+  - Icon_ElementalStone_Water
   - Icon_WindStonePiece_02
   - Icon_WindStonePiece_03
+  - Icon_ElementalStonePiece_S
+  - Icon_ElementalStone_Earth
   m_RenderDataMap: {}
   m_Tag: Parts
   m_IsVariant: 0

@@ -314,7 +314,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77f8c2b962fb4cc6b6ee96e66f7f2996, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spriteCollection: {fileID: 0}
   _animator: {fileID: 7883919529514807641}
   _back: {fileID: 0}
   _quest: {fileID: 1694556404051944499}
