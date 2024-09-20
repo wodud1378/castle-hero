@@ -47,7 +47,7 @@ namespace RGLabs.Common.UI.Popup
                 text.Length is <= 12 and >= 2 &&
                 !text.StartsWith(" ") &&
                 !text.EndsWith(" ") &&
-                Regex.IsMatch(text, @"^[a-zA-Z0-9\s]*$");
+                Regex.IsMatch(text, @"^[a-zA-Z0-9가-힣\s]*$");
             
             _warning.SetActive(false);
             _submit.interactable = isValid;
