@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3509385016189868103, guid: b77affbb9e426564890a548ef696e3a8, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6391860083955039845, guid: b77affbb9e426564890a548ef696e3a8, type: 3}
       propertyPath: m_Name
       value: Monster_20006

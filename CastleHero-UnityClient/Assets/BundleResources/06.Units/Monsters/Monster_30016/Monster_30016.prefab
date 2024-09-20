@@ -32,6 +32,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3509385016189868103, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3529228683580960345, guid: ace7d012dead99143a48e3bbe0b796e4, type: 3}
       propertyPath: avoidRadius
       value: 1

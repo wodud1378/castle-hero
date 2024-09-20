@@ -28,6 +28,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Monster_30003
       objectReference: {fileID: 0}
+    - target: {fileID: 2305899168205111227, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2514936436172156276, guid: a1a4bd4ce723008479c51662b90e4f46, type: 3}
       propertyPath: m_Radius
       value: 1.61
