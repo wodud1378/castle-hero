@@ -228,13 +228,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4232243808818475941}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 932408587124195703}
-  m_Father: {fileID: 1888602119296489366}
+  m_Father: {fileID: 6881083204354344332}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -719,6 +719,8 @@ RectTransform:
   m_Children:
   - {fileID: 6011846028646639808}
   - {fileID: 2500983480943178523}
+  - {fileID: 8823930149767279148}
+  - {fileID: 1693986352091419094}
   m_Father: {fileID: 1888602119296489366}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -861,7 +863,7 @@ RectTransform:
   m_Children:
   - {fileID: 1380786264046154100}
   - {fileID: 5434933269040213257}
-  m_Father: {fileID: 1888602119296489366}
+  m_Father: {fileID: 6881083204354344332}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -982,6 +984,7 @@ GameObject:
   - component: {fileID: 1888602119296489366}
   - component: {fileID: 5327355000696906058}
   - component: {fileID: 7477073479279247605}
+  - component: {fileID: 4478975693019112480}
   m_Layer: 5
   m_Name: Shop
   m_TagString: Untagged
@@ -1004,8 +1007,6 @@ RectTransform:
   - {fileID: 6881083204354344332}
   - {fileID: 390692598366676911}
   - {fileID: 259551201486728147}
-  - {fileID: 8823930149767279148}
-  - {fileID: 1693986352091419094}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1050,6 +1051,18 @@ MonoBehaviour:
   _back: {fileID: 2422748938798751148}
   _itemList: {fileID: 5946254747557965064}
   _withdrawalRoot: {fileID: 4800438525675952780}
+--- !u!225 &4478975693019112480
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8814000972037397950}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &8964935165467978326
 GameObject:
   m_ObjectHideFlags: 0
@@ -1356,7 +1369,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2451955796586587645, guid: f9f2e9337708e2043a00ffb54edd671d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2451955796586587645, guid: f9f2e9337708e2043a00ffb54edd671d, type: 3}
       propertyPath: m_AnchoredPosition.y
