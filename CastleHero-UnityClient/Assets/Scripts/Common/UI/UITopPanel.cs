@@ -7,6 +7,9 @@ namespace RGLabs.Common.UI
 {
     public class UITopPanel : MonoBehaviour
     {
+        private readonly int _entranceHashId = Animator.StringToHash("Entrance");   
+        private readonly int _exitHashId = Animator.StringToHash("Exit");   
+        
         private readonly int _lobbyHashId = Animator.StringToHash("Lobby");
         private readonly int _stageHashId = Animator.StringToHash("Stage");
         
@@ -17,13 +20,11 @@ namespace RGLabs.Common.UI
             Context.Transition.StateObserver
                 .Subscribe(x =>
                 {
-                    if (x is State.Shop or State.InGame)
-                    {
-                        gameObject.SetActive(false);
+                    bool isActive = x is not State.Shop and not State.InGame;
+                    _animator.SetTrigger(isActive ? _entranceHashId : _exitHashId);
+                    
+                    if (!isActive)
                         return;
-                    }
-
-                    gameObject.SetActive(true);
 
                     var hash = x switch
                     {
