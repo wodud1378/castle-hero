@@ -133,6 +133,8 @@ namespace RGLabs.Lobby.Behaviours
 
         private void TransitionTo(UIMain from, UIMain to = null, Action onTransitionEnd = null)
         {
+            Debug.Log($"UI Transition From {(from != null ? from.name : "null")} to {(to != null ? to.name : "null")}");
+            
             if (from != null)
             {
                 if (!from.IsOpen)
