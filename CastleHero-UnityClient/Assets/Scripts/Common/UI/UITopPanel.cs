@@ -18,24 +18,27 @@ namespace RGLabs.Common.UI
         private void Awake()
         {
             Context.Transition.StateObserver
-                .Subscribe(x =>
-                {
-                    bool isActive = x is not State.Shop and not State.InGame;
-                    _animator.SetTrigger(isActive ? _entranceHashId : _exitHashId);
-                    
-                    if (!isActive)
-                        return;
-
-                    var hash = x switch
-                    {
-                        State.Lobby => _lobbyHashId,
-                        State.Prepare => _stageHashId,
-                        _ => 0
-                    };
-                    
-                    _animator.SetTrigger(hash);
-                })
+                .Where(x => x != State.None)
+                .Subscribe(TransitionTo)
                 .AddTo(this);
+        }
+
+        private void TransitionTo(State state)
+        {
+            bool isActive = state is not State.Shop and not State.InGame;
+            _animator.SetTrigger(isActive ? _entranceHashId : _exitHashId);
+                    
+            if (!isActive)
+                return;
+
+            var hash = state switch
+            {
+                State.Lobby => _lobbyHashId,
+                State.Prepare => _stageHashId,
+                _ => 0
+            };
+                    
+            _animator.SetTrigger(hash);
         }
     }
 }
