@@ -133,14 +133,20 @@ namespace RGLabs.Lobby.Behaviours
 
         private void TransitionTo(UIMain from, UIMain to = null, Action onTransitionEnd = null)
         {
-            Debug.Log($"UI Transition From {(from != null ? from.name : "null")} to {(to != null ? to.name : "null")}");
+            Debug.Log($"UI Transition From {(from != null ? from.name : "null")} To {(to != null ? to.name : "null")}");
             
             if (from != null)
             {
                 if (!from.IsOpen)
-                    OnTransitionEnd(to, onTransitionEnd);
+                {
+                    OnTransitionEnd(from, onTransitionEnd);
+                    Debug.Log($"{from.name} is not opened. quiet transition");
+                }
                 else
+                {
                     from.OnCloseAnimationEnd += () => OnTransitionEnd(to, onTransitionEnd);
+                    Debug.Log($"{from.name} is opened. play transition");
+                }
 
                 SetMainUIActive(from, false);
             }
@@ -166,6 +172,8 @@ namespace RGLabs.Lobby.Behaviours
             {
                 if (!ui.IsOpen)
                     ui.Open();
+                else
+                    Debug.Log($"{ui.name} already activated. ignore animation");
             }
             else if (ui.IsOpen)
                 ui.Close();
