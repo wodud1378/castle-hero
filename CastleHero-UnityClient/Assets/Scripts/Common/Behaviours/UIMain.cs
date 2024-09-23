@@ -31,8 +31,6 @@ namespace RGLabs.Common.Behaviours
 
         public void Open()
         {
-            Debug.Log($"{name} open");
-            
             IsOpen = true;
             
             gameObject.SetActive(true);
@@ -43,26 +41,14 @@ namespace RGLabs.Common.Behaviours
 
         public void Close()
         {
-            Debug.Log($"{name} close");
-            
             IsOpen = false;
             
             OnClose();
         }
 
-        protected virtual void OnOpen()
-        {
-            Debug.Log($"{name} plays entrance animation");
-            
-            _animator.SetTrigger(_openHashId);
-        }
+        protected virtual void OnOpen() => _animator.SetTrigger(_openHashId);
 
-        protected virtual void OnClose()
-        {
-            Debug.Log($"{name} plays exit animation");
-            
-            _animator.SetTrigger(_closeHashId);
-        }
+        protected virtual void OnClose() => _animator.SetTrigger(_closeHashId);
 
         protected abstract void OnBack();
 
