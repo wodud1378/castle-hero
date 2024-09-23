@@ -69,6 +69,10 @@ namespace RGLabs.Prepare.UI
 
         private void OnClickSlot(UISlot slot, Reward data)
         {
+            string QuantityText(Reward reward) => reward.min == reward.max
+                ? $"{reward.min:N0}"
+                : $"{reward.min:N0}~{reward.max:N0}";
+            
             var sb = new StringBuilder();
             if (data.id != 0 && Storage.db.items.TryFind(data.id, out var entity))
             {
@@ -92,17 +96,13 @@ namespace RGLabs.Prepare.UI
 
                         break;
                     default:
-                        sb.Append(entity.name);
+                        sb.Append($"{entity.name} {QuantityText(data)}");
                         break;
                 }
             }
-            else
+            else if(data.icon == Constants.ExpIcon)
             {
-                string text = data.min == data.max
-                    ? $"{data.min:N0}"
-                    : $"{data.min:N0}~{data.max:N0}";
-
-                sb.Append(text);
+                sb.Append($"{Storage.localize.Get(250)} {QuantityText(data)}");
             }
 
             var infoString = sb.ToString();
