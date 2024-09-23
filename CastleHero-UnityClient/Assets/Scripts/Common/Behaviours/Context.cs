@@ -49,8 +49,6 @@ namespace RGLabs.Common.Behaviours
         [SerializeField] private NetworkConfig _networkConfig;
 #endif
 
-        private readonly Dictionary<string, AsyncOperationHandle<SpriteAtlas>> _atlasCache = new();
-
         private void Load()
         {
             Time.timeScale = 1f;
