@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 660911240, guid: f624596d5fe1bd5459a5da424a8abc1b, type: 3}
   m_Name: TheBackendSettings
   m_EditorClassIdentifier: 
-  clientAppID: 3c2f6560-3364-11ef-9121-97f8abb85a9d7861
-  signatureKey: 3c2f8c70-3364-11ef-9121-97f8abb85a9d7861
+  clientAppID: 74b1cba0-94e7-11ef-83cb-4132a7a3c0358612
+  signatureKey: 74b1cba1-94e7-11ef-83cb-4132a7a3c0358612
   functionAuthKey: 
   packageName: com.retgames.castlehero
   sendLogReport: 1

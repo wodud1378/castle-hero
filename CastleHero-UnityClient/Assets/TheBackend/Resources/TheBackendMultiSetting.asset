@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: TheBackendMultiSetting
   m_EditorClassIdentifier: 
   projectList:
-  - index: 1
+  - index: 0
     projectName: dev
-    clientAppId: '3c2f6560-3364-11ef-9121-97f8abb85a9d7861 '
-    signatureKey: 3c2f8c70-3364-11ef-9121-97f8abb85a9d7861
-    functionKey: AQICAHiT9pph8qngOxVNCJXRC0BZjtURNwhhts4F69FL8VO4dgFN7i9zyNBtQCVr8+ZNTcFvAAAAYjBgBgkqhkiG9w0BBwagUzBRAgEAMEwGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMIoQVfYCuwwI4IMcTAgEQgB8spp9/k96lumgrPkLfVOzxIdk47oFJ+2ARAnsfFvE1
+    clientAppId: 74b1cba0-94e7-11ef-83cb-4132a7a3c0358612
+    signatureKey: 74b1cba1-94e7-11ef-83cb-4132a7a3c0358612
+    functionKey: 

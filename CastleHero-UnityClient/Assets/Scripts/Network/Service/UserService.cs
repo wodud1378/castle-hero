@@ -48,7 +48,7 @@ namespace RGLabs.Network.Service
                 new Item { ItemId = 61034, Quantity = 860 },
             };
 
-            var response = await Call(onResult => Backend.Chart.GetChartContents(129116.ToString(), onResult.Invoke));
+            var response = await Call(onResult => Backend.Chart.GetChartContents(146355.ToString(), onResult.Invoke));
             if (!response.IsSuccess)
                 return Result<UserDataDto>.Error(Error.FromServer);
 
