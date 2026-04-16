@@ -1,6 +1,6 @@
-using RGLabs.Data.DB;
+using CastleHero.Data.DB;
 
-namespace RGLabs.Data.Model
+namespace CastleHero.Data.Model
 {
     public struct DungeonRewardEntity : IEntity
     {

@@ -2,13 +2,13 @@ using System;
 using System.Collections;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using RGLabs.Utility;
+using CastleHero.Utility;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace RGLabs.Common.Sound
+namespace CastleHero.Common.Sound
 {
     public class SoundPlayer : MonoBehaviour, IDisposable
     {
@@ -44,7 +44,6 @@ namespace RGLabs.Common.Sound
         private Coroutine _coroutine;
 
         private LoadState _loadState;
-
 
         private void Awake()
         {

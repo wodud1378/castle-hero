@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RGLabs.Data.DB;
-using RGLabs.Unit.Components;
-using RGLabs.Utility;
+using CastleHero.Data.DB;
+using CastleHero.Utility;
 
-namespace RGLabs.Data.Model
+namespace CastleHero.Data.Model
 {
     public enum EquipmentGrade
     {

@@ -1,7 +1,7 @@
-using RGLabs.Common.Pattern;
+using CastleHero.Common.Pattern;
 using UnityEngine;
 
-namespace RGLabs.Common.Behaviours
+namespace CastleHero.Common.Behaviours
 {
     public abstract class PoolItemBase : MonoBehaviour, IObjectPoolItem
     {

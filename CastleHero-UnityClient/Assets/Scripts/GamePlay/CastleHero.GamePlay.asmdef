@@ -1,0 +1,29 @@
+{
+    "name": "CastleHero.GamePlay",
+    "rootNamespace": "CastleHero.GamePlay",
+    "references": [
+        "UniTask",
+        "UniTask.DOTween",
+        "UniRx",
+        "Unity.TextMeshPro",
+        "spine-unity",
+        "spine-csharp",
+        "Unity.Mathematics",
+        "Unity.Collections",
+        "Unity.Burst",
+        "PolyNav",
+        "NaughtyAttributes.Core",
+        "CastleHero.Data",
+        "CastleHero.Common",
+        "CastleHero.Network"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

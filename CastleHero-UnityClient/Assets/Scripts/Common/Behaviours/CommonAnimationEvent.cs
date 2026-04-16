@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace RGLabs.Common.Behaviours
+namespace CastleHero.Common.Behaviours
 {
     public class CommonAnimationEvent : MonoBehaviour
     {

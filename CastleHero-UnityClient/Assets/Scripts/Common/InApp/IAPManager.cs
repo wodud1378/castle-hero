@@ -1,7 +1,7 @@
 using System;
 using Cysharp.Threading.Tasks;
 
-namespace RGLabs.Common.InApp
+namespace CastleHero.Common.InApp
 {
     public class IAPManager// : IDetailedStoreListener
     {

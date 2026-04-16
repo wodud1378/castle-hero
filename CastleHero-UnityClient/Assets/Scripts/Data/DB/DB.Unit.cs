@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using RGLabs.Data.Model;
+using CastleHero.Data.Model;
 
-namespace RGLabs.Data.DB
+namespace CastleHero.Data.DB
 {
     [DB("castle")]
     public class CastleDB : DB<CastleEntity>
@@ -61,7 +61,6 @@ namespace RGLabs.Data.DB
         public int MaxLv => this[^1].Id + 1;
     }
 
-    
     [DB("skill")]
     public class SkillDB : DB<SkillEntity> { }
 }

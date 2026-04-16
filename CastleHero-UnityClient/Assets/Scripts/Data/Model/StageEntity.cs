@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using RGLabs.Data.DB;
-using RGLabs.Prepare.UI;
+using CastleHero.Data.DB;
 
-namespace RGLabs.Data.Model
+using CastleHero.Common.Pattern;
+namespace CastleHero.Data.Model
 {
     public struct StageEntity : IGameEntity
     {
@@ -60,7 +60,7 @@ namespace RGLabs.Data.Model
         {
             var rewards = new List<Reward>();
 
-            if (Storage.db.items.TryFind(propItemId, out var itemEntity))
+            if (ServiceLocator.Get<IDBProvider>().Items.TryFind(propItemId, out var itemEntity))
             {
                 rewards.Add(new()
                 {

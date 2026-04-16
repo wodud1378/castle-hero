@@ -2,7 +2,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace RGLabs.Common.Secure
+namespace CastleHero.Common.Secure
 {
     public class AES128
     {

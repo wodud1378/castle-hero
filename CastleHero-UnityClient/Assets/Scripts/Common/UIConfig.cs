@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RGLabs.Common
+namespace CastleHero.Common
 {
     [CreateAssetMenu(fileName = "UIConfig", menuName = "ScriptableObjects/UIConfig")]
     public class UIConfig : ScriptableObject

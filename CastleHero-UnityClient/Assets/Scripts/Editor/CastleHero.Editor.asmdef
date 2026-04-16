@@ -1,0 +1,27 @@
+{
+    "name": "CastleHero.Editor",
+    "rootNamespace": "CastleHero.Editor",
+    "references": [
+        "UniTask",
+        "UniRx",
+        "CastleHero.Common",
+        "CastleHero.Data",
+        "CastleHero.Network",
+        "CastleHero.Network.Impl.Local",
+        "CastleHero.GamePlay",
+        "CastleHero.View",
+        "spine-unity",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

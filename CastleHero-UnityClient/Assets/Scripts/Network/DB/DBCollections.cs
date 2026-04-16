@@ -1,28 +1,28 @@
 using System;
-using RGLabs.Data.DB;
-using RGLabs.Data.Model;
+using CastleHero.Data.DB;
+using CastleHero.Data.Model;
 
-namespace RGLabs.Network.DB
+namespace CastleHero.Network.DB
 {
-    public class DBCollections
+    public class DBCollections : IDBProvider
     {
-        public StageDB stages;
-        public WaveDB waves;
-        public DungeonDB dungeons;
-        public DungeonRewardDB dungeonRewards;
-        public ElementDB elements;
-        public CastleDB castles;
-        public UnitDB units;
-        public UnitLevelDB levels;
-        public UnitRateDB rates;
-        public UnitBalanceDB balances;
-        public SkillDB skills;
-        public SummonDB summons;
-        public SummonGroupDB summonGroups;
-        public ItemDB items;
-        public EquipItemStatDB equipmentStats;
-        public ShopDB shop;
-        public ShopItemGroupDB shopGroup;
+        public StageDB Stages { get; set; }
+        public WaveDB Waves { get; set; }
+        public DungeonDB Dungeons { get; set; }
+        public DungeonRewardDB DungeonRewards { get; set; }
+        public ElementDB Elements { get; set; }
+        public CastleDB Castles { get; set; }
+        public UnitDB Units { get; set; }
+        public UnitLevelDB Levels { get; set; }
+        public UnitRateDB Rates { get; set; }
+        public UnitBalanceDB Balances { get; set; }
+        public SkillDB Skills { get; set; }
+        public SummonDB Summons { get; set; }
+        public SummonGroupDB SummonGroups { get; set; }
+        public ItemDB Items { get; set; }
+        public EquipItemStatDB EquipmentStats { get; set; }
+        public ShopDB Shop { get; set; }
+        public ShopItemGroupDB ShopGroup { get; set; }
 
         public bool TryLoadGameEntity(GameType type, int id, out IGameEntity entity)
         {
@@ -30,13 +30,13 @@ namespace RGLabs.Network.DB
             switch (type)
             {
                 case GameType.Stage:
-                    if (!stages.TryFind(id, out var s))
+                    if (!Stages.TryFind(id, out var s))
                         return false;
 
                     entity = s;
                     return true;
                 case GameType.Dungeon:
-                    if (!dungeons.TryFind(id, out var d))
+                    if (!Dungeons.TryFind(id, out var d))
                         return false;
 
                     entity = d;
@@ -49,23 +49,23 @@ namespace RGLabs.Network.DB
         public bool TryLoadNextGameEntity(GameType type, int id, out IGameEntity entity)
         {
             entity = default;
- 
+
             switch (type)
             {
                 case GameType.Stage:
-                    if (!stages.TryFindIndex(id, out int sIndex))
+                    if (!Stages.TryFindIndex(id, out int sIndex))
                         return false;
 
-                    if (!stages.TryIndexOf(sIndex + 1, out var s))
+                    if (!Stages.TryIndexOf(sIndex + 1, out var s))
                         return false;
 
                     entity = s;
                     return true;
                 case GameType.Dungeon:
-                    if (!dungeons.TryFindIndex(id, out int dIndex))
+                    if (!Dungeons.TryFindIndex(id, out int dIndex))
                         return false;
 
-                    if (!dungeons.TryIndexOf(dIndex + 1, out var d))
+                    if (!Dungeons.TryIndexOf(dIndex + 1, out var d))
                         return false;
 
                     entity = d;

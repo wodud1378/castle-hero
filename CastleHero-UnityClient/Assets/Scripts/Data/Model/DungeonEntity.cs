@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RGLabs.Data.DB;
-using RGLabs.InGame;
-using RGLabs.Network.Service;
-using RGLabs.Prepare.UI;
-using RGLabs.Utility;
+using CastleHero.Data.DB;
+using CastleHero.Utility;
 using Random = UnityEngine.Random;
 
-namespace RGLabs.Data.Model
+using CastleHero.Common.Pattern;
+namespace CastleHero.Data.Model
 {
     public enum DungeonCategory
     {
@@ -87,7 +85,7 @@ namespace RGLabs.Data.Model
         {
             openDays = OpenDaysOfWeek();
             
-            return openDays.Contains(NetworkService.CurrentTimeByLocal().DayOfWeek);
+            return openDays.Contains(ServerTime.Now.DayOfWeek);
         }
 
         public List<DayOfWeek> OpenDaysOfWeek()
@@ -119,7 +117,7 @@ namespace RGLabs.Data.Model
         public List<Reward> GetRewardsForDisplay()
         {
             var rewards = new List<Reward>();
-            if (!Storage.db.dungeonRewards.TryFind(rewardGroup, out var group))
+            if (!ServiceLocator.Get<IDBProvider>().DungeonRewards.TryFind(rewardGroup, out var group))
                 return rewards;
 
             int index = 0;
@@ -129,7 +127,7 @@ namespace RGLabs.Data.Model
                        group.minQuantities,
                        group.maxQuantities))
             {
-                if (Storage.db.items.TryFind(group.itemIds[index], out var itemEntity))
+                if (ServiceLocator.Get<IDBProvider>().Items.TryFind(group.itemIds[index], out var itemEntity))
                 {
                     rewards.Add(new()
                     {

@@ -1,83 +1,78 @@
-using System;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
-using RGLabs.Common.Behaviours;
+using CastleHero.Common.Behaviours;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace RGLabs.Common.Pattern
+namespace CastleHero.Common.Pattern
 {
-    public class PoolContainer : IDisposable
+    /// <summary>
+    /// IPoolContainer 구현. 어드레서블 핸들은 RegisterWithHandle 로 전달 받아 Dispose 시 함께 해제.
+    /// 스테이지 진입 시 Preloader 가 프리팹을 로드하고 Register 로 주입, 종료 시 Dispose 로 일괄 정리.
+    /// </summary>
+    public class PoolContainer : IPoolContainer
     {
         private readonly Dictionary<string, AddressablePool<PoolItemBase>> _pools = new();
-        
-        public AddressablePool<PoolItemBase> Get(string resourcePath, bool autoCreate = true)
+        private readonly Dictionary<string, AsyncOperationHandle<GameObject>> _handles = new();
+
+        public void Register(string path, GameObject prefab, int preloadCount = 0)
+        {
+            if (_pools.ContainsKey(path)) return;
+            var pool = new AddressablePool<PoolItemBase>(path, prefab);
+            if (preloadCount > 0) pool.Preload(preloadCount);
+            _pools[path] = pool;
+        }
+
+        /// <summary>프리팹 뿐 아니라 Addressables 핸들까지 함께 등록. Dispose 시 핸들 해제.</summary>
+        public void RegisterWithHandle(string path, GameObject prefab, AsyncOperationHandle<GameObject> handle, int preloadCount = 0)
+        {
+            Register(path, prefab, preloadCount);
+            _handles[path] = handle;
+        }
+
+        public bool TryGet<T>(string resourcePath, out T item, Vector2 position = default) where T : PoolItemBase
+        {
+            if (!TryGet(resourcePath, out var baseItem, position))
+            {
+                item = null;
+                return false;
+            }
+
+            item = baseItem as T;
+            return item != null;
+        }
+
+        public bool TryGet(string resourcePath, out PoolItemBase item, Vector2 position = default)
         {
             if (!_pools.TryGetValue(resourcePath, out var pool))
             {
-                if (!autoCreate)
-                    return null;
-                
-                pool = new AddressablePool<PoolItemBase>(resourcePath);
-                _pools[resourcePath] = pool;
+                item = null;
+                return false;
             }
-            
-            return pool;
-        }
 
-        public async UniTask<T> GetItem<T>(string resourcePath, bool autoCreatePool = true) where T : PoolItemBase
-        {
-            return await GetItem<T>(resourcePath, default, autoCreatePool);
-        }
-        
-        public async UniTask<T> GetItem<T>(string resourcePath, Vector2 position, bool autoCreatePool = true) where T : PoolItemBase
-        {
-            var item = await GetItem(resourcePath, position, autoCreatePool);
-            if (item == null)
-                return null;
-            
-            return item as T;
-        }
-        
-        public async UniTask<PoolItemBase> GetItem(string resourcePath, bool autoCreatePool = true)
-        {
-            return await GetItem(resourcePath, default, autoCreatePool);
-        }
-        
-        public async UniTask<PoolItemBase> GetItem(string resourcePath, Vector2 position, bool autoCreatePool = true)
-        {
-            var pool = Get(resourcePath, autoCreatePool);
-            var item = await pool.Get(position);
-            if (item == null)
-                return null;
-            
+            if (!pool.TryGet(out item, position))
+                return false;
+
             item.Container = this;
             item.Pool = pool;
-            
-            return item;
+            return true;
         }
 
-        public void Release(PoolItemBase poolItemBase)
+        public void Release(PoolItemBase obj)
         {
-            var pool = Get(poolItemBase.ResourcePath,false);
-
-            pool?.Release(poolItemBase);
-        }
-
-        public void Release(string key)
-        {
-            var pool = Get(key,false);
-
-            pool?.Dispose();
+            if (obj == null || string.IsNullOrEmpty(obj.ResourcePath)) return;
+            if (_pools.TryGetValue(obj.ResourcePath, out var pool))
+                pool.Release(obj);
         }
 
         public void Dispose()
         {
-            foreach (var pair in _pools)
-            {
-                pair.Value.Dispose();
-            }
-            
+            foreach (var pool in _pools.Values) pool.Dispose();
             _pools.Clear();
+
+            foreach (var handle in _handles.Values)
+                if (handle.IsValid()) Addressables.Release(handle);
+            _handles.Clear();
         }
     }
 }

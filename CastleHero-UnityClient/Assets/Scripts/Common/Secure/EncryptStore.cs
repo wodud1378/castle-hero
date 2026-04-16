@@ -2,7 +2,7 @@ using System;
 using System.Security.Cryptography;
 using UnityEngine;
 
-namespace RGLabs.Common.Secure
+namespace CastleHero.Common.Secure
 {
     public static class EncryptStore
     {

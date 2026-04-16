@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using RGLabs.Utility;
+using CastleHero.Utility;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.U2D;
 
-namespace RGLabs.Common.ResourceManagement
+namespace CastleHero.Common.ResourceManagement
 {
     public static class AtlasCache
     {
@@ -33,7 +33,6 @@ namespace RGLabs.Common.ResourceManagement
         }
 
         private static readonly Dictionary<string, AsyncOperationHandle<SpriteAtlas>> Cache = new();
-        
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void RegisterUnityCallback()

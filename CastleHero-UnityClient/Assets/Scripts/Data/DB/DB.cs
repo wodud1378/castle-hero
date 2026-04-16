@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using LitJson;
-using RGLabs.Data.Model;
-using RGLabs.Utility;
+using CastleHero.Data.Model;
+using CastleHero.Utility;
 using UnityEngine;
 
-namespace RGLabs.Data.DB
+namespace CastleHero.Data.DB
 {
     public interface IDataBase
     {

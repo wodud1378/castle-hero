@@ -1,0 +1,31 @@
+{
+    "name": "CastleHero.View",
+    "rootNamespace": "CastleHero.View",
+    "references": [
+        "UniTask",
+        "UniTask.DOTween",
+        "UniRx",
+        "Unity.TextMeshPro",
+        "spine-unity",
+        "spine-csharp",
+        "PolyNav",
+        "NaughtyAttributes.Core",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "UniTask.Addressables",
+        "Newtonsoft.Json",
+        "CastleHero.GamePlay",
+        "CastleHero.Data",
+        "CastleHero.Common",
+        "CastleHero.Network"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace RGLabs.Editor
+namespace CastleHero.Editor
 {
     public static class ShaderHelper
     {
@@ -19,7 +19,7 @@ namespace RGLabs.Editor
             AlphaBlended,
         }
 
-        [MenuItem("Tools/RGLabs/Migrate Particle Shader To Urp Shader")]
+        [MenuItem("Tools/CastleHero/Migrate Particle Shader To Urp Shader")]
         private static void MigrateShaders()
         {
             // 모든 머티리얼을 찾습니다.

@@ -1,101 +1,121 @@
 using System;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
-using RGLabs.Common.Behaviours;
-using RGLabs.InGame.System;
-using RGLabs.Utility;
+using CastleHero.Common.Behaviours;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
-namespace RGLabs.Common.Pattern
+namespace CastleHero.Common.Pattern
 {
     public interface IObjectPoolItem
     {
-        public PoolContainer Container { get; set; }
-        
-        public string ResourcePath { get; set; }
-        
-        public bool Activated { get; }
-        
-        public void Activate();
-        public void Inactivate();
+        PoolContainer Container { get; set; }
+        string ResourcePath { get; set; }
+        bool Activated { get; }
+        void Activate();
+        void Inactivate();
     }
-    
+
+    /// <summary>
+    /// 이미 로드된 프리팹을 받아 동기 Instantiate 로 풀 관리.
+    /// 어드레서블 리소스 핸들 관리는 PoolContainer 가 책임.
+    /// </summary>
     public class AddressablePool<T> : IDisposable where T : MonoBehaviour, IObjectPoolItem
     {
-        private readonly List<T> _activated;
-        private readonly List<T> _spares;
-
+        private readonly GameObject _prefab;
         private readonly string _path;
         private readonly Transform _parent;
+        private readonly List<T> _activated = new();
+        private readonly List<T> _spares = new();
 
-        private bool HasSpare => _spares.Count > 0;
-
-        public AddressablePool(string path, Transform parent = null)
+        public AddressablePool(string path, GameObject prefab, Transform parent = null)
         {
             _path = path;
-            _activated = new List<T>();
-            _spares = new List<T>();
+            _prefab = prefab;
             _parent = parent;
+        }
+
+        public void Preload(int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                var obj = Spawn();
+                if (obj == null) return;
+                obj.Inactivate();
+                _spares.Add(obj);
+            }
         }
 
         public void ForceActivate(T obj)
         {
-            if (obj.Activated)
-                return;
-
-            if (_spares.Contains(obj))
-                _spares.Remove(obj);
-            
+            if (obj.Activated) return;
+            _spares.Remove(obj);
             obj.Activate();
-            _activated.Add(obj);
+            if (!_activated.Contains(obj)) _activated.Add(obj);
         }
 
-        public async UniTask<T> Get(Vector2 position = default)
+        public bool TryGet(out T item, Vector2 position = default)
         {
             T obj;
-            if (HasSpare)
+            if (_spares.Count > 0)
             {
-                obj = _spares[0];
-                _spares.RemoveAt(0);
+                int last = _spares.Count - 1;
+                obj = _spares[last];
+                _spares.RemoveAt(last);
             }
             else
             {
-                var go = await _path.Instantiate<T>(_parent);
-                obj = go.GetComponent<T>();
-                obj.ResourcePath = _path;
+                obj = Spawn();
+                if (obj == null)
+                {
+                    item = null;
+                    return false;
+                }
             }
 
             obj.transform.position = position;
             obj.Activate();
             _activated.Add(obj);
-
-            return obj;
+            item = obj;
+            return true;
         }
 
         public void Release(T obj)
         {
             obj.Inactivate();
+            _activated.Remove(obj);
             _spares.Add(obj);
         }
 
-        public void ClearSpares()
-        {
-            foreach (var spare in _spares)
-            {
-                Addressables.ReleaseInstance(spare.gameObject);
-            }
-        }
-        
         public void Dispose()
         {
             foreach (var obj in _activated)
-                Release(obj);
+                if (obj != null) UnityEngine.Object.Destroy(obj.gameObject);
+            foreach (var obj in _spares)
+                if (obj != null) UnityEngine.Object.Destroy(obj.gameObject);
 
-            ClearSpares();
-            
             _activated.Clear();
             _spares.Clear();
+        }
+
+        private T Spawn()
+        {
+            if (_prefab == null)
+            {
+#if UNITY_EDITOR
+                Debug.LogError($"[AddressablePool] prefab is null for path '{_path}'");
+#endif
+                return null;
+            }
+
+            var go = UnityEngine.Object.Instantiate(_prefab, _parent);
+            var comp = go.GetComponent<T>();
+            if (comp == null)
+            {
+                UnityEngine.Object.Destroy(go);
+                return null;
+            }
+
+            comp.ResourcePath = _path;
+            return comp;
         }
     }
 }

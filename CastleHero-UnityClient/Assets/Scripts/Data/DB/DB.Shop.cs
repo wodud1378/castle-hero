@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
-using RGLabs.Data.Model;
+using CastleHero.Data.Model;
 
-namespace RGLabs.Data.DB
+namespace CastleHero.Data.DB
 {
     [DB("shop")]
     public class ShopDB : DB<ShopItemEntity>

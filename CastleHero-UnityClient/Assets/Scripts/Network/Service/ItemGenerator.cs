@@ -1,22 +1,29 @@
 using System;
 using System.Collections.Generic;
-using RGLabs.Common;
-using RGLabs.Data;
-using RGLabs.Data.Model;
-using RGLabs.Network.Shared;
-using RGLabs.Utility;
+using CastleHero.Common;
+using CastleHero.Data;
+using CastleHero.Data.Model;
+using CastleHero.Network.Shared;
+using CastleHero.Utility;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace RGLabs.Network.Service
+using CastleHero.Common.Pattern;
+using CastleHero.Data.DB;
+namespace CastleHero.Network.Service
 {
     public class ItemGenerator
     {
         private readonly Dictionary<int, List<int>> _itemIdFilterCache = new();
 
+        // 지연 조회: ItemGenerator 가 static readonly 로 타입 초기화 시 생성되므로 IDBProvider 가
+        // 아직 등록되지 않은 상태. 각 메서드 진입 시 캐시 후 사용.
+        private IDBProvider _dbCache;
+        private IDBProvider Db => _dbCache ??= ServiceLocator.Get<IDBProvider>();
+
         public EquipItem NewEquipItem(int id)
         {
-            if (!Storage.db.items.TryFind(id, out var entity))
+            if (!Db.Items.TryFind(id, out var entity))
                 return null;
 
             return NewEquipItem(entity);
@@ -24,7 +31,7 @@ namespace RGLabs.Network.Service
 
         public EquipItem NewEquipItem(ItemEntity itemData)
         {
-            var db = Storage.db.equipmentStats;
+            var db = Db.EquipmentStats;
             var option = itemData.optionEquip;
             int mainStatId = option.mainStat;
             int statValueIndex = (int)option.grade;
@@ -161,7 +168,7 @@ namespace RGLabs.Network.Service
 
         private IItem CreateItem(int id, int quantity)
         {
-            if (!Storage.db.items.TryFind(id, out var data))
+            if (!ServiceLocator.Get<IDBProvider>().Items.TryFind(id, out var data))
             {
 #if UNITY_EDITOR
                 Debug.LogError($"[{id}] 해당하는 아이템이 존재하지 않습니다.");
@@ -179,7 +186,7 @@ namespace RGLabs.Network.Service
 
         private EquipItem.Stat NewMainStat(int status, int index)
         {
-            if (!Storage.db.equipmentStats.TryFind(status, out var entity) &&
+            if (!ServiceLocator.Get<IDBProvider>().EquipmentStats.TryFind(status, out var entity) &&
                 !index.IsValidIndex(entity.mainMin, entity.mainMax))
                 return default;
 
@@ -192,7 +199,7 @@ namespace RGLabs.Network.Service
 
         private EquipItem.Stat NewSubStat(int status, int index)
         {
-            if (!Storage.db.equipmentStats.TryFind(status, out var entity) &&
+            if (!ServiceLocator.Get<IDBProvider>().EquipmentStats.TryFind(status, out var entity) &&
                 !index.IsValidIndex(entity.subMin, entity.subMax))
                 return default;
 

@@ -1,7 +1,7 @@
 using System;
-using RGLabs.Data.Model;
+using CastleHero.Data.Model;
 
-namespace RGLabs.Data.DB
+namespace CastleHero.Data.DB
 {
     [DB("summon")]
     public class SummonDB : DB<SummonEntity> { }

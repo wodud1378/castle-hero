@@ -1,14 +1,16 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using RGLabs.Data.Model;
-using RGLabs.Network.Shared;
-using RGLabs.Utility;
+using CastleHero.Data.Model;
+using CastleHero.Network.Shared;
+using CastleHero.Utility;
 using UniRx;
 using Unity.Collections;
 using UnityEngine;
 
-namespace RGLabs.Data.Repositories
+using CastleHero.Common.Pattern;
+using CastleHero.Data.DB;
+namespace CastleHero.Data.Repositories
 {
     public struct GameEntrance
     {
@@ -16,84 +18,85 @@ namespace RGLabs.Data.Repositories
         public int id;
     }
 
-    public class UserRepository : IDisposable
+    public class UserRepository : IUserRepository
     {
-        public readonly string nickname;
+        public string Nickname { get; }
 
-        public readonly ReactiveProperty<GameEntrance> entrance;
+        public ReactiveProperty<GameEntrance> Entrance { get; }
 
         public int StageFocus
         {
             get => PlayerPrefs.GetInt(StageFocusKey, 1);
-            //get => PlayerPrefs.GetInt(StageFocusKey, Mathf.Max(1, gameRecord.lastClearedStage.Value));
             set => PlayerPrefs.SetInt(StageFocusKey, value);
         }
 
-        public readonly Stamina stamina;
-        public readonly Currency currency;
-        public readonly Inventory inventory;
-        public readonly Characters characters;
-        public readonly Formation formation;
-        public readonly GameRecord gameRecord;
-        public readonly ShopRecord shopRecord;
+        public Stamina Stamina { get; }
+        public Currency Currency { get; }
+        public Inventory Inventory { get; }
+        public Characters Characters { get; }
+        public Formation Formation { get; }
+        public GameRecord GameRecord { get; }
+        public ShopRecord ShopRecord { get; }
 
         private const string StageFocusKey = "stage-focus";
+        private readonly CompositeDisposable _disposables = new();
 
         public UserRepository(string nickname, UserDataDto dto)
         {
-            this.nickname = nickname;
+            Nickname = nickname;
 
-            stamina = new(dto.stamina);
-            currency = new(dto.currency);
-            inventory = new(dto.inventory);
-            characters = new(dto.characters);
-            formation = new(dto.formation);
-            gameRecord = new(dto.gameRecord);
-            shopRecord = new(dto.shopRecord);
+            Stamina = new(dto.stamina);
+            Currency = new(dto.currency);
+            Inventory = new(dto.inventory);
+            Characters = new(dto.characters);
+            Formation = new(dto.formation);
+            GameRecord = new(dto.gameRecord);
+            ShopRecord = new(dto.shopRecord);
 
-            entrance = new(new GameEntrance
+            Entrance = new(new GameEntrance
             {
                 type = GameType.Stage,
                 id = StageFocus
             });
 
-            entrance
+            Entrance
                 .Subscribe(x =>
                 {
                     if (x.type != GameType.Stage)
                         return;
 
                     StageFocus = x.id;
-                });
+                })
+                .AddTo(_disposables);
         }
 
         public void Update(UserDataDto dto)
         {
             if (dto.stamina != null)
-                stamina.Update(dto.stamina);
+                Stamina.Update(dto.stamina);
 
             if (dto.currency != null)
-                currency.Update(dto.currency);
+                Currency.Update(dto.currency);
 
             if (dto.inventory != null)
-                inventory.Update(dto.inventory);
+                Inventory.Update(dto.inventory);
 
             if (dto.characters != null)
-                characters.Update(dto.characters);
+                Characters.Update(dto.characters);
 
             if (dto.formation != null)
-                formation.Update(dto.formation);
+                Formation.Update(dto.formation);
 
             if (dto.gameRecord != null)
-                gameRecord.Update(dto.gameRecord);
+                GameRecord.Update(dto.gameRecord);
 
             if (dto.shopRecord != null)
-                shopRecord.Update(dto.shopRecord);
+                ShopRecord.Update(dto.shopRecord);
         }
 
         public IEnumerable<EquipItem> EquipItems(IList<string> guids)
         {
-            return inventory.items
+            return Inventory.Items
                 .OfType<EquipItem>()
                 .Where(x => guids.Contains(x.Guid));
         }
@@ -102,7 +105,7 @@ namespace RGLabs.Data.Repositories
         {
             var units = UnitsInField();
 
-            int maxLv = Storage.db.levels.MaxLv;
+            int maxLv = ServiceLocator.Get<IDBProvider>().Levels.MaxLv;
             return units.FirstOrDefault(x => x.lv < maxLv);
         }
 
@@ -110,7 +113,7 @@ namespace RGLabs.Data.Repositories
         {
             var units = UnitsInField();
 
-            int maxRate = Storage.db.rates.MaxRate;
+            int maxRate = ServiceLocator.Get<IDBProvider>().Rates.MaxRate;
             return units.FirstOrDefault(x => x.rate < maxRate);
         }
 
@@ -143,7 +146,7 @@ namespace RGLabs.Data.Repositories
             {
                 if (!dataMap.TryGetValue(item, out var option))
                 {
-                    option = Storage.db.items.TryFind(item.ItemId, out var e)
+                    option = ServiceLocator.Get<IDBProvider>().Items.TryFind(item.ItemId, out var e)
                         ? e.optionEquip
                         : default;
                     
@@ -173,7 +176,7 @@ namespace RGLabs.Data.Repositories
                 return null;
 
             // 미사용중인 장비를 슬롯별로 가장 높은 등급 1개씩 필터링.
-            var others = inventory.items
+            var others = Inventory.Items
                 .OfType<EquipItem>()
                 .Where(item => item.character == 0)
                 .GroupBy(item => item.slot)
@@ -208,7 +211,6 @@ namespace RGLabs.Data.Repositories
                 })
                 .ToList();
 
-
             requireOtherEquipments = totalSum == 0;
 
             // 업그레이드 가능한 등급이 가장 높은 유닛을 반환.
@@ -217,22 +219,23 @@ namespace RGLabs.Data.Repositories
 
         public List<UnitInfo> UnitsInField()
         {
-            return characters.units
-                .Where(unit => formation.fieldUnits.FirstOrDefault(x => x.id == unit.id) != default)
+            return Characters.Units
+                .Where(unit => Formation.FieldUnits.FirstOrDefault(x => x.id == unit.id) != default)
                 .OrderBy(x => x.id)
                 .ToList();
         }
 
         public void Dispose()
         {
-            entrance?.Dispose();
-            stamina?.Dispose();
-            currency?.Dispose();
-            inventory?.Dispose();
-            characters?.Dispose();
-            formation?.Dispose();
-            gameRecord?.Dispose();
-            shopRecord?.Dispose();
+            _disposables.Dispose();
+            Entrance?.Dispose();
+            Stamina?.Dispose();
+            Currency?.Dispose();
+            Inventory?.Dispose();
+            Characters?.Dispose();
+            Formation?.Dispose();
+            GameRecord?.Dispose();
+            ShopRecord?.Dispose();
         }
     }
 }

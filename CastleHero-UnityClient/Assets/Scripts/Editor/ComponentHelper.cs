@@ -6,11 +6,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
-namespace RGLabs.Editor
+namespace CastleHero.Editor
 {
     public static class ComponentHelper
     {
-        [MenuItem("Tools/RGLabs/Remove Missing Components")]
+        [MenuItem("Tools/CastleHero/Remove Missing Components")]
         public static void RemoveMissingComponents()
         {
             // 1. 씬을 순회하면서 Missing 컴포넌트 제거

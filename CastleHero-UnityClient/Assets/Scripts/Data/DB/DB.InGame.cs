@@ -1,7 +1,7 @@
 using System;
-using RGLabs.Data.Model;
+using CastleHero.Data.Model;
 
-namespace RGLabs.Data.DB
+namespace CastleHero.Data.DB
 {
     [DB("stage")]
     public class StageDB : DB<StageEntity> { }

@@ -1,8 +1,8 @@
 using Cysharp.Threading.Tasks;
-using RGLabs.Common.Localize;
-using RGLabs.Network.Service.Boot;
+using CastleHero.Common.Localize;
+using CastleHero.Network.Service.Boot;
 
-namespace RGLabs.Network.DB.Service
+namespace CastleHero.Network.DB.Service
 {
     public interface IDBLoadService
     {

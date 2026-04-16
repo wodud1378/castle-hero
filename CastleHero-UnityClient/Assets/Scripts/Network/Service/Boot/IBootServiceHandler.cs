@@ -1,8 +1,7 @@
 using Cysharp.Threading.Tasks;
-using RGLabs.Network.Service.Login;
-using RGLabs.Title;
+using CastleHero.Network.Service.Login;
 
-namespace RGLabs.Network.Service.Boot
+namespace CastleHero.Network.Service.Boot
 {
     public interface IBootServiceHandler
     {

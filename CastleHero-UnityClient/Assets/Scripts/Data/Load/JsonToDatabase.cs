@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using LitJson;
-using RGLabs.Data.DB;
-using RGLabs.Utility;
+using CastleHero.Data.DB;
+using CastleHero.Utility;
 using UnityEngine;
 
-namespace RGLabs.Data.Load
+namespace CastleHero.Data.Load
 {
     public class JsonToDatabase
     {

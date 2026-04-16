@@ -1,0 +1,19 @@
+{
+    "name": "CastleHero.Data",
+    "rootNamespace": "CastleHero.Data",
+    "references": [
+        "UniTask",
+        "UniRx",
+        "CastleHero.Common",
+        "Newtonsoft.Json"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

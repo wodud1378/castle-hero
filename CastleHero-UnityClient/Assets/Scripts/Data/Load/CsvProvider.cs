@@ -1,9 +1,9 @@
 using System.Reflection;
 using Cysharp.Threading.Tasks;
-using RGLabs.Data.DB;
+using CastleHero.Data.DB;
 using UnityEngine;
 
-namespace RGLabs.Data.Load
+namespace CastleHero.Data.Load
 {
     public class CsvProvider
     {

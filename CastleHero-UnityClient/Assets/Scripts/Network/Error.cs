@@ -1,4 +1,4 @@
-namespace RGLabs.Network
+namespace CastleHero.Network
 {
     public enum Error
     {
@@ -9,7 +9,7 @@ namespace RGLabs.Network
         Unknown,
         FromServer,
         InvalidRequest,
-        
+
         // Common.
         ChartLoadFailed,
         DBReadFailed,

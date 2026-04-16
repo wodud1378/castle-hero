@@ -1,34 +1,20 @@
-using System.Collections.Generic;
-using RGLabs.Data.Model;
-using RGLabs.Unit.Skill.Global;
-
-namespace RGLabs.Common
+namespace CastleHero
 {
+    /// <summary>
+    /// 컴파일 타임 상수 (const). switch-case, 패턴 매칭, 배열 크기 초기자 등에 필요한 값만 유지.
+    /// 런타임에 튜닝 가능한 값은 <see cref="CastleHero.Common.GameConstants"/> ScriptableObject 를 사용할 것.
+    /// </summary>
     public static class Constants
     {
-        public static readonly int BufferSize = 50;
-        public static readonly float HitEffectDuration = 0.15f;
-
-        public static readonly float DragDistanceThreshold = 0.3f;
-        
-        public static string ColoredStringTag = "<color={0}>{1}</color>";
-
-        public static readonly int BarricadeId = 10000;
-        public static readonly string BarricadeIcon = "Common/Portrait/Character_10000.png";
-        public static readonly string BarricadePrefab = "Character_10000/Character_10000.prefab";
-
-        public static string GoldIcon = "Common/Icon/Icon_Gold.png";
-        public static string DiaIcon = "Common/Icon/Icon_Diamond.png";
-        public static string ExpIcon = "Common/Icon/Icon_Exp.png";
-        public static float DefaultObjectAngle = 0;
-
-        public static string ManaDropEffect = "Effect_ManaStone";
-        public static string DeadEffect = "UnitEffect/Dead/Dead.prefab";
-        public static string RecoverEffect = "UnitEffect/Recover/Recover.prefab";
-        public static string SpawnEffect = "UnitEffect/Spawn/Spawn.prefab";
-
+        // Currency IDs — switch/pattern 에서 사용하므로 const 필수.
         public const int PaidDiaId = 1;
-        public const int FreeDiaId = 2;        
+        public const int FreeDiaId = 2;
         public const int GoldId = 3;
+
+        // Unit 버퍼 크기 — 배열 초기자에 사용하므로 const 필수.
+        public const int BufferSize = 50;
+
+        // Barricade Unit ID — 다수 파일에서 비교에 사용, 디자인 결정 상수.
+        public const int BarricadeId = 10000;
     }
 }

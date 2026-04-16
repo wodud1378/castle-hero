@@ -1,12 +1,12 @@
 using UnityEngine;
 
-namespace RGLabs.Common.Sound
+namespace CastleHero.Common.Sound
 {
-    [CreateAssetMenu(fileName = "SoundPath", menuName = "RGLabs/ScriptableObjects/Sound Path")]
+    [CreateAssetMenu(fileName = "SoundPath", menuName = "CastleHero/ScriptableObjects/Sound Path")]
     public class SoundPath : ScriptableObject
     {
         public string lobbyBgm;
-        
+
         public string button;
         public string modifyFormation;
         public string back;

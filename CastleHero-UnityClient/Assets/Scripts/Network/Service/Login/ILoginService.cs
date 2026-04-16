@@ -1,7 +1,7 @@
 using BackEnd;
 using Cysharp.Threading.Tasks;
 
-namespace RGLabs.Network.Service.Login
+namespace CastleHero.Network.Service.Login
 {
     public enum Platform
     {

@@ -1,9 +1,11 @@
 using System.Collections.Generic;
-using RGLabs.Data;
-using RGLabs.Network.Shared;
-using RGLabs.Utility;
+using CastleHero.Data;
+using CastleHero.Network.Shared;
+using CastleHero.Utility;
 
-namespace RGLabs.Network.Service
+using CastleHero.Common.Pattern;
+using CastleHero.Data.DB;
+namespace CastleHero.Network.Service
 {
     public class UnitGenerator
     {
@@ -25,7 +27,7 @@ namespace RGLabs.Network.Service
                 }
                 else
                 {
-                    if (!Storage.db.units.TryFind(id, out var entity))
+                    if (!ServiceLocator.Get<IDBProvider>().Units.TryFind(id, out var entity))
                         continue;
 
                     var item = new Item { ItemId = entity.soulItemId, Quantity = 10 };

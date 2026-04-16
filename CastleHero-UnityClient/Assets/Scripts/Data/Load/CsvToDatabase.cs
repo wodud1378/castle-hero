@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Cysharp.Threading.Tasks;
-using RGLabs.Data.DB;
-using RGLabs.Utility;
+using CastleHero.Data.DB;
+using CastleHero.Utility;
 using UnityEngine;
 
-namespace RGLabs.Data.Load
+namespace CastleHero.Data.Load
 {
     public class CsvToDatabase
     {

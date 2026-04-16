@@ -3,69 +3,73 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using RGLabs.Network.Shared;
-using RGLabs.Unit.Behaviours;
-using RGLabs.Utility;
+using CastleHero.Common.Behaviours;
+using CastleHero.Network.Shared;
+using CastleHero.Utility;
 using UniRx;
 using UnityEngine;
 
-namespace RGLabs.Data.Repositories
+namespace CastleHero.Data.Repositories
 {
     public class Stamina : IDisposable
     {
-        public readonly ReactiveProperty<int> point;
-        public readonly ReactiveProperty<int> pointLimit;
-        public readonly ReactiveProperty<DateTime> lastUpdate;
+        public readonly ReactiveProperty<int> Point;
+        public readonly ReactiveProperty<int> PointLimit;
+        public readonly ReactiveProperty<DateTime> LastUpdate;
 
         public const int INTERVAL = 10;
         public const int PER_ONCE = 1;
 
-        private IDisposable _update;
         private CancellationTokenSource _ctSource;
 
         public Stamina(StaminaDto dto)
         {
-            point = new(dto.point);
-            pointLimit = new(dto.pointLimit);
-            lastUpdate = new(dto.lastUpdate);
+            Point = new(dto.point);
+            PointLimit = new(dto.pointLimit);
+            LastUpdate = new(dto.lastUpdate);
 
             RunLocalUpdate();
         }
 
         public void Update(StaminaDto dto)
         {
-            point.Value = dto.point;
-            pointLimit.Value = dto.pointLimit;
-            lastUpdate.Value = dto.lastUpdate;
+            Point.Value = dto.point;
+            PointLimit.Value = dto.pointLimit;
+            LastUpdate.Value = dto.lastUpdate;
 
             RunLocalUpdate();
         }
 
         public void Dispose()
         {
-            _update?.Dispose();
             _ctSource?.Cancel();
-            point?.Dispose();
-            pointLimit?.Dispose();
-            lastUpdate?.Dispose();
+            _ctSource?.Dispose();
+            Point?.Dispose();
+            PointLimit?.Dispose();
+            LastUpdate?.Dispose();
         }
+
         private void RunLocalUpdate()
         {
+            // 이전 토큰을 취소하고 새 토큰으로 재시작
+            // Cancel() 후 새 Task를 즉시 시작해도 이전 Task는
+            // SuppressCancellationThrow()로 감싸져 있어 안전하게 종료됨
             _ctSource?.Cancel();
-            _ctSource = new();
+            _ctSource?.Dispose();
+            _ctSource = new CancellationTokenSource();
 
             LocalUpdate(_ctSource.Token).Forget();
         }
 
-        private DateTime Now => DateTime.UtcNow.AddHours(3);
+        private DateTime Now => ServerTime.Now;
 
         private async UniTaskVoid LocalUpdate(CancellationToken token)
         {
             try
             {
-                while (point.Value < pointLimit.Value && !token.IsCancellationRequested)
+                while (Point.Value < PointLimit.Value && !token.IsCancellationRequested)
                 {
-                    var nextUpdate = lastUpdate.Value.AddMinutes(INTERVAL);
+                    var nextUpdate = LastUpdate.Value.AddMinutes(INTERVAL);
                     var now = Now;
                     var totalMs = (nextUpdate - now).TotalMilliseconds;
                     if (totalMs > 0)
@@ -87,15 +91,15 @@ namespace RGLabs.Data.Repositories
 
         private void UpdateValues()
         {
-            if (point.Value < pointLimit.Value)
+            if (Point.Value < PointLimit.Value)
             {
                 var now = Now;
-                int cycle = (int)((now - lastUpdate.Value).TotalMinutes / INTERVAL);
+                int cycle = (int)((now - LastUpdate.Value).TotalMinutes / INTERVAL);
                 if (cycle > 0)
                 {
                     int amount = cycle * PER_ONCE;
-                    point.Value = Mathf.Min(point.Value + amount, pointLimit.Value);
-                    lastUpdate.Value = now;
+                    Point.Value = Mathf.Min(Point.Value + amount, PointLimit.Value);
+                    LastUpdate.Value = now;
                 }
             }
         }
@@ -103,53 +107,53 @@ namespace RGLabs.Data.Repositories
 
     public class Currency : IDisposable
     {
-        public readonly ReactiveProperty<int> paidDia;
-        public readonly ReactiveProperty<int> freeDia;
-        public readonly ReactiveProperty<int> gold;
+        public readonly ReactiveProperty<int> PaidDia;
+        public readonly ReactiveProperty<int> FreeDia;
+        public readonly ReactiveProperty<int> Gold;
 
         public Currency(CurrencyDto dto)
         {
-            paidDia = new(dto.paidDia);
-            freeDia = new(dto.freeDia);
-            gold = new(dto.gold);
+            PaidDia = new(dto.paidDia);
+            FreeDia = new(dto.freeDia);
+            Gold = new(dto.gold);
         }
 
         public void Update(CurrencyDto dto)
         {
-            paidDia.Value = dto.paidDia;
-            freeDia.Value = dto.freeDia;
-            gold.Value = dto.gold;
+            PaidDia.Value = dto.paidDia;
+            FreeDia.Value = dto.freeDia;
+            Gold.Value = dto.gold;
         }
 
         public void Add(CurrencyDto dto)
         {
-            paidDia.Value += dto.paidDia;
-            freeDia.Value += dto.freeDia;
-            gold.Value += dto.gold;
+            PaidDia.Value += dto.paidDia;
+            FreeDia.Value += dto.freeDia;
+            Gold.Value += dto.gold;
         }
 
         public void Dispose()
         {
-            paidDia?.Dispose();
-            freeDia?.Dispose();
-            gold?.Dispose();
+            PaidDia?.Dispose();
+            FreeDia?.Dispose();
+            Gold?.Dispose();
         }
     }
 
     public class Inventory : IDisposable
     {
-        public readonly ReactiveCollection<IItem> items;
+        public readonly ReactiveCollection<IItem> Items;
 
-        public Inventory(InventoryDto dto) => items = new(dto.items);
+        public Inventory(InventoryDto dto) => Items = new(dto.items);
 
-        public void Update(InventoryDto dto) => items.Update(dto.items);
+        public void Update(InventoryDto dto) => Items.Update(dto.items);
 
         public void Update(IItem item)
         {
             if (item.Quantity > 0)
-                items.Update(item, x => x.ItemId == item.ItemId);
+                Items.Update(item, x => x.ItemId == item.ItemId);
             else
-                items.Update(null, x => x.ItemId == item.ItemId);
+                Items.Update(null, x => x.ItemId == item.ItemId);
         }
 
         public void Add(IEnumerable<IItem> enumerable)
@@ -162,19 +166,19 @@ namespace RGLabs.Data.Repositories
 
         public void Add(IItem item)
         {
-            var exist = items.FirstOrDefault(x => x.ItemId == item.ItemId);
+            var exist = Items.FirstOrDefault(x => x.ItemId == item.ItemId);
             if (exist != null)
             {
                 item.Quantity += exist.Quantity;
                 Update(item);
             }
             else
-                items.Add(item);
+                Items.Add(item);
         }
 
         public IDisposable WhenUpdate<T>(ReactiveProperty<T> origin, Action<T> action) where T : IItem
         {
-            return items.ChangeAsObservable()
+            return Items.ChangeAsObservable()
                 .ThrottleFrame(1)
                 .Subscribe(x =>
                 {
@@ -186,36 +190,36 @@ namespace RGLabs.Data.Repositories
 
         public IDisposable WhenUpdate(Action<ReactiveCollection<IItem>> action)
         {
-            return items.ChangeAsObservable()
+            return Items.ChangeAsObservable()
                 .ThrottleFrame(1)
                 .Subscribe(action.Invoke);
         }
 
         public void Dispose()
         {
-            items?.Dispose();
+            Items?.Dispose();
         }
     }
 
     public class Characters : IDisposable
     {
-        public readonly ReactiveCollection<UnitInfo> units;
+        public readonly ReactiveCollection<UnitInfo> Units;
 
-        public Characters(CharactersDto dto) => units = new(dto.units);
+        public Characters(CharactersDto dto) => Units = new(dto.units);
 
-        public void Update(CharactersDto dto) => units.Update(dto.units);
+        public void Update(CharactersDto dto) => Units.Update(dto.units);
 
         public void Add(UnitInfo unit)
         {
-            if (units.FirstOrDefault(x => x.id == unit.id) != null)
+            if (Units.FirstOrDefault(x => x.id == unit.id) != null)
                 return;
 
-            units.Add(unit);
+            Units.Add(unit);
         }
 
         public IDisposable WhenUpdate(ReactiveProperty<UnitInfo> origin, Action<UnitInfo> action)
         {
-            return units.ChangeAsObservable()
+            return Units.ChangeAsObservable()
                 .ThrottleFrame(1)
                 .Subscribe(x =>
                 {
@@ -227,32 +231,32 @@ namespace RGLabs.Data.Repositories
 
         public IDisposable WhenUpdate(Action<ReactiveCollection<UnitInfo>> action)
         {
-            return units.ChangeAsObservable()
+            return Units.ChangeAsObservable()
                 .ThrottleFrame(1)
                 .Subscribe(action.Invoke);
         }
 
-        public void Update(UnitInfo unit) => units.Update(unit, x => x.id == unit.id);
+        public void Update(UnitInfo unit) => Units.Update(unit, x => x.id == unit.id);
 
         public void Dispose()
         {
-            units?.Dispose();
+            Units?.Dispose();
         }
     }
 
     public class Formation : IDisposable
     {
-        public readonly ReactiveCollection<FieldUnit> fieldUnits;
+        public readonly ReactiveCollection<FieldUnit> FieldUnits;
 
-        public Formation(FormationDto dto) => fieldUnits = new(dto.fieldUnits);
+        public Formation(FormationDto dto) => FieldUnits = new(dto.fieldUnits);
 
-        public void Set(IEnumerable<UnitBehaviour> units)
+        public void Set(IEnumerable<IUnitBehaviour> units)
         {
-            fieldUnits.Clear();
+            FieldUnits.Clear();
             foreach (var unit in units)
             {
-                var position = unit.position;
-                fieldUnits.Add(new()
+                var position = unit.Position;
+                FieldUnits.Add(new()
                 {
                     id = unit.Id,
                     x = position.x,
@@ -261,67 +265,67 @@ namespace RGLabs.Data.Repositories
             }
         }
 
-        public void Update(FormationDto dto) => fieldUnits.Update(dto.fieldUnits);
+        public void Update(FormationDto dto) => FieldUnits.Update(dto.fieldUnits);
 
         public void Dispose()
         {
-            fieldUnits?.Dispose();
+            FieldUnits?.Dispose();
         }
     }
 
     public class GameRecord : IDisposable
     {
-        public readonly ReactiveProperty<int> iconId;
-        public readonly ReactiveProperty<int> castleLv;
-        public readonly ReactiveProperty<int> lastClearedStage;
-        public readonly ReactiveCollection<DungeonRecord> dungeon;
+        public readonly ReactiveProperty<int> IconId;
+        public readonly ReactiveProperty<int> CastleLv;
+        public readonly ReactiveProperty<int> LastClearedStage;
+        public readonly ReactiveCollection<DungeonRecord> Dungeon;
 
         public GameRecord(GameRecordDto dto)
         {
-            iconId = new(dto.iconId);
-            castleLv = new(dto.castleLv);
-            lastClearedStage = new(dto.lastClearedStage);
-            dungeon = new(dto.dungeon);
+            IconId = new(dto.iconId);
+            CastleLv = new(dto.castleLv);
+            LastClearedStage = new(dto.lastClearedStage);
+            Dungeon = new(dto.dungeon);
         }
 
         public void Update(GameRecordDto dto)
         {
-            iconId.Value = dto.iconId;
-            castleLv.Value = dto.castleLv;
-            lastClearedStage.Value = dto.lastClearedStage;
-            dungeon.Update(dto.dungeon);
+            IconId.Value = dto.iconId;
+            CastleLv.Value = dto.castleLv;
+            LastClearedStage.Value = dto.lastClearedStage;
+            Dungeon.Update(dto.dungeon);
         }
 
         public void Dispose()
         {
-            iconId?.Dispose();
-            castleLv?.Dispose();
-            lastClearedStage?.Dispose();
-            dungeon?.Dispose();
+            IconId?.Dispose();
+            CastleLv?.Dispose();
+            LastClearedStage?.Dispose();
+            Dungeon?.Dispose();
         }
     }
 
     public class ShopRecord : IDisposable
     {
-        public readonly ReactiveCollection<Product> products;
-        public readonly ReactiveCollection<ShopRecordDto.History> histories;
+        public readonly ReactiveCollection<Product> Products;
+        public readonly ReactiveCollection<ShopRecordDto.History> Histories;
 
         public ShopRecord(ShopRecordDto dto)
         {
-            products = new(dto.products);
-            histories = new(dto.histories);
+            Products = new(dto.products);
+            Histories = new(dto.histories);
         }
 
         public void Update(ShopRecordDto dto)
         {
-            products.Update(dto.products);
-            histories.Update(dto.histories);
+            Products.Update(dto.products);
+            Histories.Update(dto.histories);
         }
 
         public void Dispose()
         {
-            products?.Dispose();
-            histories?.Dispose();
+            Products?.Dispose();
+            Histories?.Dispose();
         }
     }
 }

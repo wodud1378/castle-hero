@@ -1,0 +1,26 @@
+{
+    "name": "CastleHero.Network",
+    "rootNamespace": "CastleHero.Network",
+    "references": [
+        "UniTask",
+        "UniRx",
+        "Unity.TextMeshPro",
+        "Newtonsoft.Json",
+        "NaughtyAttributes.Core",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "UniTask.Addressables",
+        "GooglePlayGames",
+        "CastleHero.Data",
+        "CastleHero.Common"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

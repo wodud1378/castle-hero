@@ -2,7 +2,7 @@ using System;
 using UniRx;
 using UnityEngine;
 
-namespace RGLabs.Common
+namespace CastleHero.Common
 {
     public class Timer : IDisposable
     {

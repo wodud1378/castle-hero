@@ -1,8 +1,7 @@
 using System;
-using RGLabs.Common;
-using RGLabs.Data.DB;
+using CastleHero.Data.DB;
 
-namespace RGLabs.Data.Model
+namespace CastleHero.Data.Model
 {
     public enum CastleSkillType
     {

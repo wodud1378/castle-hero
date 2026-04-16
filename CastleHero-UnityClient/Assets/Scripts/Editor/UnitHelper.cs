@@ -1,21 +1,21 @@
 using System.Linq;
-using System.Reflection;
-using RGLabs.Unit.Behaviours;
+using CastleHero.GamePlay.Unit.Behaviours;
+using CastleHero.View.Unit;
 using Spine.Unity;
 using UnityEditor;
 using UnityEngine;
 
-namespace RGLabs.Editor
+namespace CastleHero.Editor
 {
     public static class UnitHelper
     {
-        [MenuItem("Tools/RGLabs/Unit/Animation Events Correction All")]
+        [MenuItem("Tools/CastleHero/Unit/Animation Events Correction All")]
         public static void UpdateUnits()
         {
-            RGLabsEditor.ModifyAllPrefabsWithComponent<UnitBehaviour>(AnimationEventsCorrection);
+            CastleHeroEditor.ModifyAllPrefabsWithComponent<UnitBehaviour>(AnimationEventsCorrection);
         }
 
-        [MenuItem("GameObject/RGLabs/Unit/Animation Events Correction")]
+        [MenuItem("GameObject/CastleHero/Unit/Animation Events Correction")]
         public static void AnimationEventsCorrection()
         {
             var selection = Selection.gameObjects[0];
@@ -25,10 +25,10 @@ namespace RGLabs.Editor
             AnimationEventsCorrection(unit);
         }
 
-        [MenuItem("Tools/RGLabs/Unit/Merge Shadow")]
+        [MenuItem("Tools/CastleHero/Unit/Merge Shadow")]
         public static void MergeShadow()
         {
-            RGLabsEditor.ModifyAllPrefabsWithComponent<UnitBehaviour>(MergeShadow);
+            CastleHeroEditor.ModifyAllPrefabsWithComponent<UnitBehaviour>(MergeShadow);
         }
 
         private static void MergeShadow(UnitBehaviour unit)
@@ -93,7 +93,6 @@ namespace RGLabs.Editor
                     continue;
                 }
 
-
                 clipEvents[0].functionName = begin;
                 clipEvents[1].functionName = end;
 
@@ -101,7 +100,7 @@ namespace RGLabs.Editor
             }
         }
 
-        [MenuItem("GameObject/RGLabs/Attach Effect Body")]
+        [MenuItem("GameObject/CastleHero/Attach Effect Body")]
         public static void AttachEffectBody()
         {
             Transform GetTransform(Transform root, string name)
@@ -142,16 +141,8 @@ namespace RGLabs.Editor
             if (body == null)
                 return;
 
-            var type = typeof(UnitBehaviour);
-            var property = type.GetProperty("EffectBody",
-                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            if (property == null)
-                return;
-
-            var method = property.GetSetMethod(nonPublic: true);
-            if (method == null)
-                return;
-
+            // UnitBehaviour.EffectBody 는 런타임 Awake에서 GetComponentInChildren 로 자동 연결.
+            // 에디터 툴은 프리팹 계층(Effect_Top/Middle/Bottom + BoneFollower) 셋업만 담당.
             if (!body.TryGetComponent(out EffectBody effectBody))
                 effectBody = body.gameObject.AddComponent<EffectBody>();
 
@@ -162,8 +153,6 @@ namespace RGLabs.Editor
             AttachBoneFollower(effectBody.top, spine, "Effect_Top");
             AttachBoneFollower(effectBody.middle, spine, "Effect_Middle");
             AttachBoneFollower(effectBody.bottom, spine, "Effect_Bottom");
-
-            property.SetValue(unit, effectBody);
 
             EditorUtility.SetDirty(unit);
         }

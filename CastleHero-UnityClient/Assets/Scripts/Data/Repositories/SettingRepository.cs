@@ -3,26 +3,32 @@ using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 
-namespace RGLabs.Data.Repositories
+namespace CastleHero.Data.Repositories
 {
-    public class SettingRepository : IDisposable
+    public class SettingRepository : ISettingRepository
     {
-        public readonly BoolReactiveProperty bgmToggle = new(PlayerPrefs.GetInt(BgmToggleKey, 1) == 1);
-        public readonly BoolReactiveProperty fxToggle = new(PlayerPrefs.GetInt(FxToggleKey, 1) == 1);
+        public BoolReactiveProperty bgmToggle { get; } = new(PlayerPrefs.GetInt(BgmToggleKey, 1) == 1);
+        public BoolReactiveProperty fxToggle { get; } = new(PlayerPrefs.GetInt(FxToggleKey, 1) == 1);
 
-        public readonly ReactiveProperty<float> bgmLevel = new(PlayerPrefs.GetFloat(BgmLevelKey, 1f));
-        public readonly ReactiveProperty<float> fxLevel =  new(PlayerPrefs.GetFloat(FxLevelKey, 1f));
-        
-        public readonly ReactiveProperty<SystemLanguage> language;
+        public ReactiveProperty<float> bgmLevel { get; } = new(PlayerPrefs.GetFloat(BgmLevelKey, 1f));
+        public ReactiveProperty<float> fxLevel { get; } = new(PlayerPrefs.GetFloat(FxLevelKey, 1f));
+
+        public BoolReactiveProperty speedUp { get; } = new(PlayerPrefs.GetInt(SpeedUpKey, 0) == 1);
+        public BoolReactiveProperty repeat { get; } = new(PlayerPrefs.GetInt(RepeatKey, 0) == 1);
+
+        public ReactiveProperty<SystemLanguage> language { get; }
 
         private const string LanguageKey = "lang";
-        
+
         private const string BgmToggleKey = "toggle-bgm";
         private const string FxToggleKey = "toggle-fx";
 
         private const string BgmLevelKey = "level-bgm";
         private const string FxLevelKey = "level-bgm";
-        
+
+        private const string SpeedUpKey = "speed-up";
+        private const string RepeatKey = "repeat";
+
         private readonly List<IDisposable> _subscriptions = new();
 
         public SettingRepository()
@@ -46,6 +52,8 @@ namespace RGLabs.Data.Repositories
             _subscriptions.Add(fxToggle.Subscribe(x => PlayerPrefs.SetInt(FxToggleKey, x ? 1 : 0)));
             _subscriptions.Add(bgmLevel.Subscribe(x => PlayerPrefs.SetFloat(BgmLevelKey, x)));
             _subscriptions.Add(fxLevel.Subscribe(x => PlayerPrefs.SetFloat(FxLevelKey, x)));
+            _subscriptions.Add(speedUp.Subscribe(x => PlayerPrefs.SetInt(SpeedUpKey, x ? 1 : 0)));
+            _subscriptions.Add(repeat.Subscribe(x => PlayerPrefs.SetInt(RepeatKey, x ? 1 : 0)));
         }
 
         public void Dispose()
@@ -54,8 +62,10 @@ namespace RGLabs.Data.Repositories
             fxToggle?.Dispose();
             bgmLevel?.Dispose();
             fxLevel?.Dispose();
+            speedUp?.Dispose();
+            repeat?.Dispose();
             language?.Dispose();
-            
+
             _subscriptions.ForEach(x => x.Dispose());
         }
     }

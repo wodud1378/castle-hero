@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using RGLabs.Unit.Components;
-using RGLabs.Utility;
+using CastleHero.Utility;
 
-namespace RGLabs.Data.Model
+namespace CastleHero.Data.Model
 {
     public struct EquipmentOption
     {
@@ -23,7 +22,7 @@ namespace RGLabs.Data.Model
     
     public struct ElementalOption
     {
-        public Elemental.Type type;
+        public ElementalType type;
         public int lv;
     }
 
@@ -123,7 +122,6 @@ namespace RGLabs.Data.Model
             return option;
         }
 
-        
         private ConsumableOption GetConsumableOption() =>
             new()
             {
@@ -141,7 +139,7 @@ namespace RGLabs.Data.Model
             
             option = new ElementalOption
             {
-                type = (Elemental.Type)int.Parse(options[1]),
+                type = (ElementalType)int.Parse(options[1]),
                 lv = int.Parse(options[2])
             };
             return true;

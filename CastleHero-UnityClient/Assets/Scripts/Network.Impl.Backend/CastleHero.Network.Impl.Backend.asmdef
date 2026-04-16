@@ -1,0 +1,26 @@
+{
+    "name": "CastleHero.Network.Impl.Backend",
+    "rootNamespace": "CastleHero.Network.Impl.Backend",
+    "references": [
+        "UniTask",
+        "UniRx",
+        "CastleHero.Network",
+        "CastleHero.Data",
+        "CastleHero.Common",
+        "Newtonsoft.Json",
+        "NaughtyAttributes.Core",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "UniTask.Addressables",
+        "GooglePlayGames"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

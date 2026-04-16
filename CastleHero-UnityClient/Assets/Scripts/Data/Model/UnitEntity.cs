@@ -1,7 +1,6 @@
-using RGLabs.Data.DB;
-using RGLabs.Unit.Components;
+using CastleHero.Data.DB;
 
-namespace RGLabs.Data.Model
+namespace CastleHero.Data.Model
 {
     public struct UnitEntity : IEntity
     {
@@ -79,11 +78,11 @@ namespace RGLabs.Data.Model
         [DataField("Character_Range_Move")]
         public float moveRange;
 
-        [DataField("Character_Property_Atk")] 
-        public Elemental.Type elementalAtk;
-            
+        [DataField("Character_Property_Atk")]
+        public ElementalType elementalAtk;
+
         [DataField("Character_Property_Def")]
-        public Elemental.Type  elementalDef;
+        public ElementalType elementalDef;
 
         [DataField("Character_Parts_Item")]
         public int soulItemId;

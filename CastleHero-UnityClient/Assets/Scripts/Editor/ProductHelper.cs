@@ -1,15 +1,15 @@
-using RGLabs.Common.UI;
-using RGLabs.Lobby.Shop.UI;
+using CastleHero.View.Common.UI;
+using CastleHero.View.Lobby.Shop.UI;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace RGLabs.Editor
+namespace CastleHero.Editor
 {
     public static class ProductHelper
     {
-        [MenuItem("Assets/RGLabs/Replace Slot To Price")]
+        [MenuItem("Assets/CastleHero/Replace Slot To Price")]
         public static void ReplaceSlotToPrice()
         {
             var selection = Selection.assetGUIDs;
@@ -60,7 +60,7 @@ namespace RGLabs.Editor
             AssetDatabase.Refresh();
         }
         
-        [MenuItem("Assets/RGLabs/Set Schedule Texts")]
+        [MenuItem("Assets/CastleHero/Set Schedule Texts")]
         public static void SetScheduleTexts()
         {
             var selection = Selection.assetGUIDs;
@@ -118,7 +118,7 @@ namespace RGLabs.Editor
             AssetDatabase.Refresh();
         }
         
-        [MenuItem("Assets/RGLabs/Attach Product Component")]
+        [MenuItem("Assets/CastleHero/Attach Product Component")]
         public static void AttachProductComponent()
         {
             var selection = Selection.assetGUIDs;

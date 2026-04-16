@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using RGLabs.Network.Shared;
-using RGLabs.Prepare.UI;
 
-namespace RGLabs.Data.Model
+namespace CastleHero.Data.Model
 {
     public interface IEntity
     {

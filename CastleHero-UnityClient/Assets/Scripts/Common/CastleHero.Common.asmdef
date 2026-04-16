@@ -1,0 +1,25 @@
+{
+    "name": "CastleHero.Common",
+    "rootNamespace": "CastleHero.Common",
+    "references": [
+        "UniTask",
+        "UniTask.DOTween",
+        "UniRx",
+        "Unity.TextMeshPro",
+        "spine-unity",
+        "NaughtyAttributes.Core",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "UniTask.Addressables",
+        "spine-csharp"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,22 @@
+{
+    "name": "CastleHero.Network.Impl.Local",
+    "rootNamespace": "CastleHero.Network.Impl.Local",
+    "references": [
+        "UniTask",
+        "UniRx",
+        "CastleHero.Network",
+        "CastleHero.Data",
+        "CastleHero.Common",
+        "Newtonsoft.Json",
+        "NaughtyAttributes.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

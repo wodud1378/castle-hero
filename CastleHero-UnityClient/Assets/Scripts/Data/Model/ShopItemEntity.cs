@@ -1,7 +1,9 @@
 using System;
-using RGLabs.Data.DB;
+using CastleHero.Data.DB;
 
-namespace RGLabs.Data.Model
+using CastleHero.Common.Pattern;
+using CastleHero.Common.Localize;
+namespace CastleHero.Data.Model
 {
     public enum ShopCategory
     {
@@ -84,7 +86,7 @@ namespace RGLabs.Data.Model
                 _ => 0
             };
             
-            return Storage.localize.Get(id);
+            return ServiceLocator.Get<LocalizeText>().Get(id);
         }
     }
 }
