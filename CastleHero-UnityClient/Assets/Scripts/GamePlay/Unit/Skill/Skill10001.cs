@@ -47,7 +47,7 @@ namespace CastleHero.GamePlay.Unit.Skill
             }
         }
 
-        private bool TryBuildExecution(out Action<UnitBehaviour> onAlley, out Action<UnitBehaviour> onEnemy)
+        private bool TryBuildExecution(out Action<UnitActor> onAlley, out Action<UnitActor> onEnemy)
         {
             onAlley = null;
             onEnemy = null;
@@ -65,10 +65,10 @@ namespace CastleHero.GamePlay.Unit.Skill
                 onAlley += x =>
                 {
                     if (healPublished++ < healQty)
-                        x.Core.SetInvincible(Data.duration);
+                        PublishHeal(x, healAmount, effect);
 
                     if (invinciblePublished++ < invincibleQty)
-                        PublishHeal(x, healAmount, effect);
+                        x.Combat.SetInvincible(Data.duration);
                 };
             }
 

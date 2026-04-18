@@ -8,6 +8,7 @@ using CastleHero.Data.Repositories;
 using CastleHero.GamePlay.Unit.Behaviours;
 using CastleHero.GamePlay.Unit.Factory;
 using CastleHero.Network.Shared;
+using CastleHero.Utility;
 using UniRx;
 
 namespace CastleHero.View.Lobby.Behaviours
@@ -55,12 +56,12 @@ namespace CastleHero.View.Lobby.Behaviours
         {
             foreach (var unit in units)
             {
-                var inField = _composer.Draft.Characters.FirstOrDefault(x => x.Id == unit.id) as UnitBehaviour;
+                var inField = _composer.Draft.Characters.FirstOrDefault(x => x.Id == unit.id) as UnitActor;
                 if (inField != null &&
                     _db.Units.TryFind(unit.id, out var entity) &&
                     _db.Balances.TryFind(unit.id, out var balance))
                 {
-                    inField.Core.Update(unit, entity, balance);
+                    inField.Combat.Update(unit, entity, balance);
                 }
             }
         }
@@ -75,14 +76,14 @@ namespace CastleHero.View.Lobby.Behaviours
             foreach (var id in ids)
             {
                 var unit = _userRepo.Characters.Units.FirstOrDefault(x => x.id == id);
-                var inField = _composer.Draft.Characters.FirstOrDefault(x => x.Id == id) as UnitBehaviour;
+                var inField = _composer.Draft.Characters.FirstOrDefault(x => x.Id == id) as UnitActor;
 
                 if (unit != null &&
                     inField != null &&
                     _db.Units.TryFind(unit.id, out var entity) &&
                     _db.Balances.TryFind(unit.id, out var balance))
                 {
-                    inField.Core.Update(unit, entity, balance);
+                    inField.Combat.Update(unit, entity, balance);
                 }
             }
         }
@@ -98,10 +99,10 @@ namespace CastleHero.View.Lobby.Behaviours
             }
             else
             {
-                prefab = CastleFactory.DEFAULT_CASTLE_PREFAB;
+                prefab = UnitFactory.DEFAULT_CASTLE_PREFAB;
             }
 
-            _composer.LoadCastle(prefab).Forget();
+            _composer.LoadCastle(prefab).SafeForget();
         }
 
         private void OnCastleLevelChanged(int lv)

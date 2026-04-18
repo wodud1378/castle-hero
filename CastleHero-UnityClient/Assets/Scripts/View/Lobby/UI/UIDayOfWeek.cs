@@ -16,6 +16,7 @@ namespace CastleHero.View.Lobby.UI
 {
     public class UIDayOfWeek : UISlot
     {
+        private LocalizeText _localize;
         [Serializable]
         public struct Preset
         {
@@ -42,6 +43,8 @@ namespace CastleHero.View.Lobby.UI
         protected override void OnAwake()
         {
             base.OnAwake();
+            var sl = ServiceLocator.Instance;
+            _localize = sl.Get<LocalizeText>();
 
             values
                 .ChangeAsObservable()
@@ -67,13 +70,12 @@ namespace CastleHero.View.Lobby.UI
                 var dayOfWeek = values[0];
 
                 preset = presets.First(x => x.dayOfWeek == dayOfWeek).preset;
-                text = ServiceLocator.Get<LocalizeText>().Get(dayOfWeek == DayOfWeek.Sunday
+                text = _localize.Get(dayOfWeek == DayOfWeek.Sunday
                     ? 570
                     : 563 + (int)dayOfWeek);
             }
 
-            Init(preset.spritePath, text.WithColor(preset.textColor))
-                .Forget();
+            Init(preset.spritePath, text.WithColor(preset.textColor));
         }
     }
 }

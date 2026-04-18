@@ -101,7 +101,7 @@ namespace CastleHero.View.Lobby.Title.UI.Popup
 
             _completionSource.TrySetResult(agreement);
 
-            CloseAsync().Forget();
+            CloseAsync().SafeForget();
         }
 
         private Toggle EssentialToggle(Essential type) => essentials[(int)type];

@@ -1,6 +1,4 @@
 using System;
-using System.Threading;
-using Cysharp.Threading.Tasks;
 using CastleHero.Common.Behaviours;
 using CastleHero.View.Common;
 using CastleHero.View.Bootstrapper;
@@ -8,6 +6,7 @@ using CastleHero.Data;
 using CastleHero.Utility;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using CastleHero.Common.Sound;
@@ -21,29 +20,25 @@ namespace CastleHero.View.Common.UI
         public Image icon;
         public TMP_Text label;
 
-        private CancellationTokenSource _ctSource;
+        private ISoundManager _sounds;
+        private SoundPath _soundPath;
 
-        public async UniTask Init(string spritePath, string text = "")
+        protected override void OnAwake()
         {
-            _ctSource?.Cancel();
-            _ctSource = new();
+            base.OnAwake();
+            var sl = ServiceLocator.Instance;
+            _sounds = sl.Get<ISoundManager>();
+            _soundPath = sl.Get<SoundPath>();
+        }
 
-            if (icon != null)
-                icon.enabled = false;
-
+        public void Init(string spritePath, string text = "")
+        {
             Sprite sprite = null;
             if (!string.IsNullOrEmpty(spritePath))
             {
-                try
-                {
-                    sprite = await spritePath.Load<Sprite>(_ctSource.Token);
-                }
-                catch
-                {
-                    Debug.LogError($"Sprite Not Found. path=\"{spritePath}\"");
-                }
+                var handle = Addressables.LoadAssetAsync<Sprite>(spritePath);
+                sprite = handle.WaitForCompletion();
             }
-
             Init(sprite, text);
         }
 
@@ -61,10 +56,6 @@ namespace CastleHero.View.Common.UI
 
         public virtual void Dispose()
         {
-            _ctSource?.Cancel();
-            _ctSource?.Dispose();
-            _ctSource = null;
-
             if (icon != null)
                 icon.sprite = null;
         }
@@ -74,7 +65,7 @@ namespace CastleHero.View.Common.UI
             if (OnClick == null)
                 return;
 
-            ServiceLocator.Get<ISoundManager>().PlaySfx(ServiceLocator.Get<SoundPath>().button);
+            _sounds.PlaySfx(_soundPath.button);
             OnClick.Invoke(this);
         }
     }

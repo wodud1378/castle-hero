@@ -10,7 +10,7 @@ namespace CastleHero.GamePlay.Unit.Components.Move
         
         public Vector2 Default { get; set; }
         
-        public UnitBehaviour CurrentTarget { get; }
+        public UnitActor CurrentTarget { get; }
         
         public Finder Finder { get; }
         

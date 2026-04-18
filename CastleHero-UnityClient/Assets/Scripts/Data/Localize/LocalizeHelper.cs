@@ -6,15 +6,15 @@ namespace CastleHero.Common.Localize
     public static class LocalizeHelper
     {
         // Bootstrap (BackendBootService) 에서 등록한 LocalizeText 를 한 번만 캐싱.
-        // ServiceLocator.OnRegistered 구독으로 자동 갱신 (교체 시에도 안전).
+        // ServiceLocator.Instance.OnRegistered 구독으로 자동 갱신 (교체 시에도 안전).
         private static LocalizeText _cached;
 
         static LocalizeHelper()
         {
-            if (ServiceLocator.TryGet<LocalizeText>(out var lt))
+            if (ServiceLocator.Instance.TryGet<LocalizeText>(out var lt))
                 _cached = lt;
 
-            ServiceLocator.OnRegistered += (type, instance) =>
+            ServiceLocator.Instance.OnRegistered += (type, instance) =>
             {
                 if (type == typeof(LocalizeText))
                     _cached = (LocalizeText)instance;

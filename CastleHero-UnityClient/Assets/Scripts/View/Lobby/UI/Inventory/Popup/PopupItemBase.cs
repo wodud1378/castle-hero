@@ -34,12 +34,22 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
 
         protected readonly ReactiveProperty<TItem> item = new();
 
-        private UniTask _updateTask;
         private bool _hasDataBefore;
+
+        protected IDBProvider _db;
+        protected IPopupManager _popups;
+        protected IUserRepository _userRepo;
+        protected INetworkServiceProvider _network;
 
         protected override void OnAwake()
         {
             base.OnAwake();
+
+            var sl = ServiceLocator.Instance;
+            _db = sl.Get<IDBProvider>();
+            _popups = sl.Get<IPopupManager>();
+            _userRepo = sl.Get<IUserRepository>();
+            _network = sl.Get<INetworkServiceProvider>();
 
             SubscribeUpdate();
 
@@ -51,7 +61,7 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
 
         protected virtual void SubscribeUpdate()
         {
-            ServiceLocator.Get<IUserRepository>().Inventory
+            _userRepo.Inventory
                 .WhenUpdate(item, x => item.Value = x)
                 .AddTo(this);
         }
@@ -60,7 +70,7 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
         {
             HandleParameters(parameters);
 
-            return _updateTask;
+            return UniTask.CompletedTask;
         }
 
         protected virtual void HandleParameters(params object[] parameters)
@@ -92,7 +102,7 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
 
         protected virtual void OnDataChanged(TItem data)
         {
-            if (!ServiceLocator.Get<IDBProvider>().Items.TryFind(data.ItemId, out var entity))
+            if (!_db.Items.TryFind(data.ItemId, out var entity))
             {
                 var exception = new Exception($"아이템을 찾을 수 없습니다. id={data.ItemId}");
                 throw exception;
@@ -100,10 +110,10 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
 
             Entity = entity;
             sell.gameObject.SetActive(Entity.sellPrice > 0);
-            _updateTask = InitSlot(item.Value, itemSlot);
+            InitSlot(item.Value, itemSlot);
         }
 
-        protected virtual UniTask InitSlot(TItem item, TSlot slot) => slot.Init(item, Entity);
+        protected virtual void InitSlot(TItem item, TSlot slot) => slot.Init(item, Entity);
 
         private async UniTask Sell()
         {
@@ -130,12 +140,12 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
                 }
             };
 
-            ServiceLocator.Get<IPopupManager>().Open<PopupCommon>(popupText, param);
+            _popups.Open<PopupCommon>(popupText, param);
 
             if (!await selectSource.Task)
                 return;
 
-            await ServiceLocator.Get<INetworkServiceProvider>().Inventory.Sell(items, quantities);
+            await _network.Inventory.Sell(items, quantities);
         }
 
         protected abstract int SellCount { get; }

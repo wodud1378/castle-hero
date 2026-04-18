@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using Cysharp.Threading.Tasks;
 using CastleHero.Common;
 using CastleHero.Common.Behaviours;
 using CastleHero.View.Common;
@@ -30,23 +27,23 @@ namespace CastleHero.View.InGame.UI
 
         private UIGlobalSkillSlot _selected;
 
-        public override async UniTask Init(IEnumerable<CastleSkillParameter> collection)
+        public override void Init(IEnumerable<CastleSkillParameter> collection)
         {
             rangeDrawer.Init();
             rangeDrawer.Color = rangeColor;
 
             var parameters = collection as CastleSkillParameter[] ?? collection.ToArray();
-            await base.Init(parameters);
+            base.Init(parameters);
 
             int length = parameters.Length;
-            var castle = InGameSession.Current.Castle.Value as UnitBehaviour;
+            var castle = InGameSession.Current.Castle.Value as UnitActor;
             for (int i = 0; i < length; ++i)
             {
                 items[i].skill = new GlobalSkill(castle, parameters[i]);
             }
         }
 
-        protected override UniTask SetItem(UIGlobalSkillSlot slot,CastleSkillParameter data) => slot.Init(data.icon);
+        protected override void SetItem(UIGlobalSkillSlot slot,CastleSkillParameter data) => slot.Init(data.icon);
 
         public void OnBeginDrag(PointerEventData eventData)
         {

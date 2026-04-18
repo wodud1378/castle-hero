@@ -1,8 +1,6 @@
 using System;
 using CastleHero.Data.DB;
 
-using CastleHero.Common.Pattern;
-using CastleHero.Common.Localize;
 namespace CastleHero.Data.Model
 {
     public enum ShopCategory
@@ -46,7 +44,7 @@ namespace CastleHero.Data.Model
         public int duration;
         [DataField("Shop_index")]
         public int order;
-        [DataField("")] 
+        [DataField("Shop_InApp")] // TODO: 실제 컬럼명 확인 필요
         public string inApp;
         [DataField("Shop_Cost_Type")]
         public int costId;
@@ -69,24 +67,5 @@ namespace CastleHero.Data.Model
         [DataField("Shop_Day_End")]
         public DateTime endDate;
 
-        public string CategoryText()
-        {
-            int id = category switch
-            {
-                ShopCategory.NoAds => 112,
-                ShopCategory.Contract => 118,
-                ShopCategory.BattlePass => 122,
-                ShopCategory.Package => 125,
-                ShopCategory.UnitPackage => 132,
-                ShopCategory.Currency01 => 134,
-                ShopCategory.Currency02 => 134,
-                ShopCategory.Currency03 => 134,
-                ShopCategory.Supply => 138,
-                ShopCategory.Limited => 0,
-                _ => 0
-            };
-            
-            return ServiceLocator.Get<LocalizeText>().Get(id);
-        }
     }
 }

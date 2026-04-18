@@ -1,27 +1,38 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Text;
-using Cysharp.Threading.Tasks;
 using CastleHero.Common;
 using CastleHero.Common.Behaviours;
-using CastleHero.View.Common;
-using CastleHero.View.Bootstrapper;
-using CastleHero.View.Common.UI;
-using CastleHero.Data;
-using CastleHero.Data.Model;
-using UnityEngine;
-using CastleHero.Common.Pattern;
-
-using CastleHero.Data.DB;
 using CastleHero.Common.Localize;
+using CastleHero.Common.Pattern;
+using CastleHero.Data;
+using CastleHero.Data.DB;
+using CastleHero.Data.Model;
+using CastleHero.View.Common.UI;
+using UnityEngine;
+
 namespace CastleHero.View.Lobby.Prepare.UI
 {
     using Reward = CastleHero.Data.Model.Reward;
 
     public class UIRewardList : UIListAdapter<UISlot, Reward>
     {
-        public new UniTask Init(IEnumerable<Reward> rewards) => base.Init(rewards);
+        private IDBProvider _db;
+        private GameConstants _constants;
+        private LocalizeText _localize;
+        private UIToolTip _toolTip;
 
-        public UniTask Init(IGameEntity entity)
+        private void Awake()
+        {
+            var sl = ServiceLocator.Instance;
+            _db = sl.Get<IDBProvider>();
+            _constants = sl.Get<GameConstants>();
+            _localize = sl.Get<LocalizeText>();
+            _toolTip = sl.Get<UIToolTip>();
+        }
+
+        public new void Init(IEnumerable<Reward> rewards) => base.Init(rewards);
+
+        public void Init(IGameEntity entity)
         {
             var rewards = new List<Reward>();
 
@@ -29,7 +40,7 @@ namespace CastleHero.View.Lobby.Prepare.UI
             {
                 rewards.Add(new()
                 {
-                    icon = ServiceLocator.Get<GameConstants>().goldIcon,
+                    icon = _constants.goldIcon,
                     min = entity.MinGold,
                     max = entity.MaxGold,
                     percent = 1f
@@ -40,19 +51,19 @@ namespace CastleHero.View.Lobby.Prepare.UI
             {
                 rewards.Add(new()
                 {
-                    icon = ServiceLocator.Get<GameConstants>().expIcon,
+                    icon = _constants.expIcon,
                     min = entity.Exp,
                     max = entity.Exp,
                     percent = 1f
                 });
             }
 
-            rewards.AddRange(entity.GetRewardsForDisplay());
+            rewards.AddRange(entity.GetRewardsForDisplay(_db));
 
-            return base.Init(rewards);
+            base.Init(rewards);
         }
 
-        protected override UniTask SetItem(UISlot slot, Reward data)
+        protected override void SetItem(UISlot slot, Reward data)
         {
             var text = data.min != data.max
                 ? $"{data.min:N0}~{data.max:N0}"
@@ -60,11 +71,9 @@ namespace CastleHero.View.Lobby.Prepare.UI
                     ? $"{data.min:N0}"
                     : string.Empty;
 
-            var task = slot.Init(data.icon, text);
+            slot.Init(data.icon, text);
 
             slot.OnClick += (s) => OnClickSlot(s, data);
-
-            return task;
         }
 
         private void OnClickSlot(UISlot slot, Reward data)
@@ -74,13 +83,12 @@ namespace CastleHero.View.Lobby.Prepare.UI
                 string quantityText = reward.min == reward.max
                     ? $"{reward.min:N0}"
                     : $"{reward.min:N0}~{reward.max:N0}";
-                
-                // TODO : "획득" 텍스트 추가 후 -1 아이디를 해당 id로 교체.
-                return $"{quantityText} {ServiceLocator.Get<LocalizeText>().Get(-1)}";
+
+                return $"{quantityText} {_localize.Get(-1)}";
             }
 
             var sb = new StringBuilder();
-            if (data.id != 0 && ServiceLocator.Get<IDBProvider>().Items.TryFind(data.id, out var entity))
+            if (data.id != 0 && _db.Items.TryFind(data.id, out var entity))
             {
                 switch (entity.type)
                 {
@@ -89,7 +97,7 @@ namespace CastleHero.View.Lobby.Prepare.UI
                         bool isFirst = true;
                         foreach (var kvp in option.itemMap)
                         {
-                            if (!ServiceLocator.Get<IDBProvider>().Items.TryFind(kvp.Key, out var e))
+                            if (!_db.Items.TryFind(kvp.Key, out var e))
                                 continue;
 
                             if (isFirst)
@@ -106,14 +114,14 @@ namespace CastleHero.View.Lobby.Prepare.UI
                         break;
                 }
             }
-            else if(data.icon == ServiceLocator.Get<GameConstants>().expIcon)
+            else if(data.icon == _constants.expIcon)
             {
-                sb.Append($"{ServiceLocator.Get<LocalizeText>().Get(250)} {AmountText(data)}");
+                sb.Append($"{_localize.Get(250)} {AmountText(data)}");
             }
 
             var infoString = sb.ToString();
 
-            ServiceLocator.Get<UIToolTip>().Open(
+            _toolTip.Open(
                 infoString,
                 slot.transform as RectTransform,
                 0f,

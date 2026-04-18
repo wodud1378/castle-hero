@@ -12,13 +12,13 @@ namespace CastleHero.GamePlay.Unit.Events
 
     public struct UnitDead
     {
-        public UnitBehaviour unit;
+        public UnitActor unit;
     }
 
     public interface IUnitEvent
     {
-        UnitBehaviour From { get; }
-        UnitBehaviour To { get; }
+        UnitActor From { get; }
+        UnitActor To { get; }
         float Amount { get; }
         string Effect { get; }
     }
@@ -31,24 +31,24 @@ namespace CastleHero.GamePlay.Unit.Events
     public struct AtkEvent : IUnitEvent
     {
         public DamageType Type { get; set; }
-        public UnitBehaviour From { get; set; }
-        public UnitBehaviour To { get; set; }
+        public UnitActor From { get; set; }
+        public UnitActor To { get; set; }
         public float Amount { get; set; }
         public string Effect { get; set; }
     }
 
     public struct HealEvent : IUnitEvent
     {
-        public UnitBehaviour From { get; set; }
-        public UnitBehaviour To { get; set; }
+        public UnitActor From { get; set; }
+        public UnitActor To { get; set; }
         public float Amount { get; set; }
         public string Effect { get; set; }
     }
 
     public struct ShieldEvent : IUnitEvent
     {
-        public UnitBehaviour From { get; set; }
-        public UnitBehaviour To { get; set; }
+        public UnitActor From { get; set; }
+        public UnitActor To { get; set; }
         public float Amount { get; set; }
         public string Effect { get; set; }
         public float Duration { get; set; }
@@ -56,9 +56,9 @@ namespace CastleHero.GamePlay.Unit.Events
 
     public struct RestrictionEvent : IUnitEvent
     {
-        public UnitBehaviour From { get; set; }
-        public UnitBehaviour To { get; set; }
-        public UnitCore.Restrictions Type { get; set; }
+        public UnitActor From { get; set; }
+        public UnitActor To { get; set; }
+        public CombatController.Restrictions Type { get; set; }
         public float Amount { get; set; }
         public string Effect { get; set; }
         public float Duration { get; set; }
@@ -66,8 +66,8 @@ namespace CastleHero.GamePlay.Unit.Events
 
     public struct StatusEffectEvent : IUnitEvent
     {
-        public UnitBehaviour From { get; set; }
-        public UnitBehaviour To { get; set; }
+        public UnitActor From { get; set; }
+        public UnitActor To { get; set; }
         public Status.Type Type { get; set; }
         public bool IsMultiplier { get; set; }
         public bool IsIncrease { get; set; }
@@ -91,5 +91,12 @@ namespace CastleHero.GamePlay.Unit.Events
     public struct ShieldResult : IUnitEventResult
     {
         public IUnitEvent Event { get; set; }
+    }
+
+    public struct ProjectileEvent
+    {
+        public string Prefab;
+        public UnitActor From;
+        public UnitActor To;
     }
 }

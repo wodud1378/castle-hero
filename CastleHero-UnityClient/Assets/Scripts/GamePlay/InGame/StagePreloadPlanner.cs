@@ -12,10 +12,12 @@ namespace CastleHero.GamePlay.InGame
     public class StagePreloadPlanner
     {
         private readonly IDBProvider _db;
+        private readonly IUserRepository _userRepo;
 
-        public StagePreloadPlanner(IDBProvider db)
+        public StagePreloadPlanner(IDBProvider db, IUserRepository userRepo)
         {
             _db = db;
+            _userRepo = userRepo;
         }
 
         public IEnumerable<PreloadEntry> Plan(int stageId)
@@ -90,9 +92,9 @@ namespace CastleHero.GamePlay.InGame
 
         private void CollectCastle(Dictionary<string, int> entries)
         {
-            AddEntry(entries, CastleFactory.DEFAULT_CASTLE_PREFAB, 1);
+            AddEntry(entries, UnitFactory.DEFAULT_CASTLE_PREFAB, 1);
 
-            int castleLv = ServiceLocator.Get<IUserRepository>()?.GameRecord?.CastleLv?.Value ?? 1;
+            int castleLv = _userRepo?.GameRecord?.CastleLv?.Value ?? 1;
             if (!_db.Castles.TryFind(castleLv, out var castleEntity))
                 return;
 
@@ -115,7 +117,7 @@ namespace CastleHero.GamePlay.InGame
 
         private void CollectAllyCharacters(Dictionary<string, int> entries)
         {
-            var userRepo = ServiceLocator.Get<IUserRepository>();
+            var userRepo = _userRepo;
             if (userRepo == null)
                 return;
 

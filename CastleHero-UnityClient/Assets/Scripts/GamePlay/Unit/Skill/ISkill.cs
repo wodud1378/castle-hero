@@ -22,7 +22,7 @@ namespace CastleHero.GamePlay.Unit.Skill
     /// </summary>
     public interface ISkill
     {
-        UnitBehaviour Owner { get; }
+        UnitActor Owner { get; }
         SkillEntity Data { get; }
         IBound Bound { get; }
         ITargeting Targeting { get; }
@@ -37,12 +37,12 @@ namespace CastleHero.GamePlay.Unit.Skill
     {   
         protected struct AroundCenter
         {
-            public UnitBehaviour center;
-            public IEnumerable<UnitBehaviour> units;
+            public UnitActor center;
+            public IEnumerable<UnitActor> units;
             public Vector2 forward;
         }
 
-        public UnitBehaviour Owner { get; set; }
+        public UnitActor Owner { get; set; }
         public SkillEntity Data { get; set; }
         public IBound Bound { get; set; }
         public ITargeting Targeting { get; set; }
@@ -74,7 +74,7 @@ namespace CastleHero.GamePlay.Unit.Skill
                 {
                     bool filterA = includeCenter || x != centerUnit;
                     bool filterB = includeCastle || x != castle;
-                    bool filterC = x.Type == UnitBehaviour.BehaviourType.Unit;
+                    bool filterC = x.Type == UnitActor.ActorType.Unit;
 
                     return filterA && filterB && filterC;
                 })
@@ -86,7 +86,7 @@ namespace CastleHero.GamePlay.Unit.Skill
             return true;
         }
 
-        protected void PublishAtk(UnitBehaviour unit, DamageType type, float amount, string effect = "")
+        protected void PublishAtk(UnitActor unit, DamageType type, float amount, string effect = "")
         {
             new AtkEvent
             {
@@ -98,7 +98,7 @@ namespace CastleHero.GamePlay.Unit.Skill
             }.Publish();
         }
 
-        protected void PublishHeal(UnitBehaviour unit, float amount, string effect = "")
+        protected void PublishHeal(UnitActor unit, float amount, string effect = "")
         {
             new HealEvent
             {
@@ -109,7 +109,7 @@ namespace CastleHero.GamePlay.Unit.Skill
             }.Publish();
         }
 
-        protected void PublishShield(UnitBehaviour unit, float amount, float duration, string effect = "")
+        protected void PublishShield(UnitActor unit, float amount, float duration, string effect = "")
         {
             new ShieldEvent
             {
@@ -121,19 +121,19 @@ namespace CastleHero.GamePlay.Unit.Skill
             }.Publish();
         }
 
-        protected void PublishBuff(UnitBehaviour unit, Status.Type type, float amount, float duration,
+        protected void PublishBuff(UnitActor unit, Status.Type type, float amount, float duration,
             bool isMultiplier, string effect = "")
         {
             GetStatusEffectEvent(unit, type, amount, duration, true, isMultiplier, effect).Publish();
         }
 
-        protected void PublishDebuff(UnitBehaviour unit, Status.Type type, float amount, float duration,
+        protected void PublishDebuff(UnitActor unit, Status.Type type, float amount, float duration,
             bool isMultiplier, string effect = "")
         {
             GetStatusEffectEvent(unit, type, amount, duration, false, isMultiplier, effect).Publish();
         }
 
-        protected void PublishRestriction(UnitBehaviour unit, UnitCore.Restrictions type, float duration, string effect = "")
+        protected void PublishRestriction(UnitActor unit, CombatController.Restrictions type, float duration, string effect = "")
         {
             new RestrictionEvent
             {
@@ -145,7 +145,7 @@ namespace CastleHero.GamePlay.Unit.Skill
             }.Publish();
         }
 
-        private StatusEffectEvent GetStatusEffectEvent(UnitBehaviour unit, Status.Type type,
+        private StatusEffectEvent GetStatusEffectEvent(UnitActor unit, Status.Type type,
             float amount, float duration, bool isIncrease, bool isMultiplier, string effect)
         {
             return new StatusEffectEvent
@@ -161,10 +161,10 @@ namespace CastleHero.GamePlay.Unit.Skill
             };
         }
 
-        protected IEnumerable<UnitBehaviour> Characters(Func<UnitBehaviour, bool> otherCondition = null,
+        protected IEnumerable<UnitActor> Characters(Func<UnitActor, bool> otherCondition = null,
             int maxCount = 0)
         {
-            Func<UnitBehaviour, bool> condition;
+            Func<UnitActor, bool> condition;
             var list = InGameSession.Current.Characters;
             int length = list.Count;
             if (otherCondition == null)
@@ -173,7 +173,7 @@ namespace CastleHero.GamePlay.Unit.Skill
                 condition = (x) => x.IsValid() && otherCondition.Invoke(x);
 
             return list
-                .OfType<UnitBehaviour>()
+                .OfType<UnitActor>()
                 .Where(condition)
                 .Take(maxCount == 0 || maxCount > length ? length : maxCount);
         }

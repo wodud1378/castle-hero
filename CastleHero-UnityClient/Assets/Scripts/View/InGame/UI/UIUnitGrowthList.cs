@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using CastleHero.View.Common.UI;
 using CastleHero.Network.Shared;
 
@@ -13,7 +12,7 @@ namespace CastleHero.View.InGame.UI
                 item.Show();
             }
         }
-        
-        protected override UniTask SetItem(UIUnitGrowthSlot slot, UnitTransition data) => slot.Init(data);
+
+        protected override void SetItem(UIUnitGrowthSlot slot, UnitTransition data) => slot.Init(data);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using CastleHero.View.Common.UI;
 using CastleHero.Data;
@@ -25,13 +24,22 @@ namespace CastleHero.View.InGame.UI
 
         private UnitTransition _data;
 
-        public UniTask Init(UnitTransition data)
+        private IDBProvider _db;
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+
+            _db = ServiceLocator.Instance.Get<IDBProvider>();
+        }
+
+        public void Init(UnitTransition data)
         {
             _data = data;
             addedExp.text = 0.ToString();
             level.Set(data.lvTransition[0], data.expTransition[0]);
 
-            return unitSlot.Init(data.unit);
+            unitSlot.Init(data.unit);
         }
 
         public void Show() => StartCoroutine(Play(_data.lvTransition, _data.expTransition, _data.addedExp));
@@ -65,7 +73,7 @@ namespace CastleHero.View.InGame.UI
                 if (!updatedNext)
                 {
                     nextExp = lv == currentLv
-                        ? ServiceLocator.Get<IDBProvider>().Levels.TryFind(lv, out var e)
+                        ? _db.Levels.TryFind(lv, out var e)
                             ? e.exp
                             : 0
                         : currentExp;

@@ -18,7 +18,8 @@ namespace CastleHero.View.Lobby.UI.Popup
         {
             var data = (Summon)parameters[0];
 
-            return summonedList.Init(data.list);
+            summonedList.Init(data.list);
+            return UniTask.CompletedTask;
         }
     }
 }

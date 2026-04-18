@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using CastleHero.View.Common.UI;
 using CastleHero.Data;
 using CastleHero.Network.Shared;
@@ -9,12 +8,20 @@ namespace CastleHero.View.Lobby.UI.Adapter
 {
     public class UIItemList : UIListAdapter<UIItemSlot, IItem>
     {
-        protected override UniTask SetItem(UIItemSlot slot, IItem data)
-        {
-            if (!ServiceLocator.Get<IDBProvider>().Items.TryFind(data.ItemId, out var entity))
-                return UniTask.CompletedTask;
+        private IDBProvider _db;
 
-            return slot.Init(data, entity);
+        private void Awake()
+        {
+            var sl = ServiceLocator.Instance;
+            _db = sl.Get<IDBProvider>();
+        }
+
+        protected override void SetItem(UIItemSlot slot, IItem data)
+        {
+            if (!_db.Items.TryFind(data.ItemId, out var entity))
+                return;
+
+            slot.Init(data, entity);
         }
     }
 }

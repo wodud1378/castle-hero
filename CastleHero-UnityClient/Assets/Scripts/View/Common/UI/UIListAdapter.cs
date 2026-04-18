@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using CastleHero.Utility;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -22,7 +21,7 @@ namespace CastleHero.View.Common.UI
 
         private GameObject _cachedPrefab;
 
-        public virtual async UniTask Init(IEnumerable<TData> collection)
+        public virtual void Init(IEnumerable<TData> collection)
         {
             Clear();
 
@@ -35,7 +34,7 @@ namespace CastleHero.View.Common.UI
 
             foreach (var data in collection)
             {
-                await Add(data);
+                Add(data);
             }
         }
 
@@ -94,7 +93,7 @@ namespace CastleHero.View.Common.UI
             items.Clear();
         }
 
-        protected abstract UniTask SetItem(TSlot slot, TData data);
+        protected abstract void SetItem(TSlot slot, TData data);
 
         protected virtual TSlot ProvideSlot(TData data)
         {
@@ -105,7 +104,7 @@ namespace CastleHero.View.Common.UI
             return obj.TryGetComponent(out TSlot slot) ? slot : null;
         }
 
-        private async UniTask Add(TData data)
+        private void Add(TData data)
         {
             var item = ProvideSlot(data);
             if (item == null)
@@ -121,7 +120,7 @@ namespace CastleHero.View.Common.UI
 
             items.Add(item);
 
-            await SetItem(item, data);
+            SetItem(item, data);
         }
 
         private void OnClick(TSlot slot) => OnSlotClickEvent?.Invoke(slot);

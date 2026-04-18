@@ -47,9 +47,9 @@ namespace CastleHero.GamePlay.Unit.Skill
             }
         }
 
-        private Action<UnitBehaviour> BuildExecutionOnEnemy()
+        private Action<UnitActor> BuildExecutionOnEnemy()
         {
-            Action<UnitBehaviour> action = null;
+            Action<UnitActor> action = null;
             if (TryGetStatusParameter(Stat.AroundAtk, out var type, out var value))
             {
                 float atkAmount = GetAmount(type, value);

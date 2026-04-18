@@ -12,6 +12,7 @@ using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 using CastleHero.Common.Pattern;
+using CastleHero.Data.DB;
 using CastleHero.Data.Repositories;
 namespace CastleHero.Network.Impl.Backend
 {
@@ -50,7 +51,25 @@ namespace CastleHero.Network.Impl.Backend
             { Table.ShopRecord, "shop" },
         };
 
+        // 구현체 서비스는 BeforeSceneLoad 에 생성되지만, IDBProvider/IUserRepository 는
+        // BackendBootService 가 로그인 후 등록하므로 ctor 시점에 미등록 상태. OnRegistered 구독으로 늦게 채움.
+        protected IDBProvider Db { get; private set; }
+        protected IUserRepository UserRepo { get; private set; }
+
         private readonly List<IBackendErrorReceiver> _errorHandlers = new();
+
+        protected BackendNetworkServiceBase(IServiceLocator sl)
+        {
+            if (sl.TryGet<IDBProvider>(out var db)) Db = db;
+            if (sl.TryGet<IUserRepository>(out var userRepo)) UserRepo = userRepo;
+            sl.OnRegistered += OnServiceRegistered;
+        }
+
+        private void OnServiceRegistered(Type type, object instance)
+        {
+            if (type == typeof(IDBProvider)) Db = (IDBProvider)instance;
+            else if (type == typeof(IUserRepository)) UserRepo = (IUserRepository)instance;
+        }
 
         public void AttachErrorHandler(IBackendErrorReceiver handler)
         {
@@ -274,10 +293,10 @@ namespace CastleHero.Network.Impl.Backend
 
             var readResponse = await GetTables();
             if (!readResponse.IsSuccess)
-                return BackendResult.Error(writeResponse.error);
+                return BackendResult.Error(readResponse.error);
 
             if (updateStorage)
-                ServiceLocator.Get<IUserRepository>().Update(readResponse.data);
+                UserRepo.Update(readResponse.data);
 
             return BackendResult.Complete(readResponse.raw);
         }
@@ -330,7 +349,7 @@ namespace CastleHero.Network.Impl.Backend
             if (!update.IsSuccess)
                 return BackendResult.Error(update.error);
 
-            ServiceLocator.Get<IUserRepository>().Stamina.Update(stamina);
+            UserRepo.Stamina.Update(stamina);
             return BackendResult.Complete(update.raw);
         }
 

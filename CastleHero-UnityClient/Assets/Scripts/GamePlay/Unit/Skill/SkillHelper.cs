@@ -1,4 +1,5 @@
 using System;
+using CastleHero.GamePlay.Unit.Behaviours;
 using CastleHero.GamePlay.Unit.Components;
 using CastleHero.GamePlay.Unit.Finding;
 using CastleHero.GamePlay.Unit.Skill.Components.Factory;
@@ -9,10 +10,11 @@ namespace CastleHero.GamePlay.Unit.Skill
     {
         private static readonly SkillBuilder Builder = new();
 
-        public static ISkill Attach(this UnitCore unit, int id, int lv)
+        public static ISkill Attach(this CombatController combat, int id, int lv)
         {
             Func<SkillBuilder, ISkill> buildMethod;
-            if (!Builder.StartBuild(unit.Owner, id, lv))
+            var owner = combat.GetComponent<UnitActor>();
+            if (!Builder.StartBuild(owner, id, lv))
                 return null;
             
             switch (id)

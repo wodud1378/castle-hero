@@ -6,7 +6,6 @@ using CastleHero.Data.Model;
 using Newtonsoft.Json;
 
 using CastleHero.Common;
-using CastleHero.Common.Pattern;
 using CastleHero.Data.DB;
 namespace CastleHero.Network.Shared
 {
@@ -297,23 +296,23 @@ namespace CastleHero.Network.Shared
         public List<IItem> items;
         public List<UnitTransition> transitions;
 
-        public List<Reward> GetRewardsForDisplay()
+        public List<Reward> GetRewardsForDisplay(IDBProvider db, GameConstants constants)
         {
             var rewards = new List<Reward>();
             if (currency != null)
             {
                 if (currency.gold > 0)
-                    rewards.Add(new Reward { icon = ServiceLocator.Get<GameConstants>().goldIcon, min = currency.gold, max = currency.gold, percent = 1f });
+                    rewards.Add(new Reward { icon = constants.goldIcon, min = currency.gold, max = currency.gold, percent = 1f });
                 int dia = currency.freeDia + currency.paidDia;
                 if (dia > 0)
-                    rewards.Add(new Reward { icon = ServiceLocator.Get<GameConstants>().diaIcon, min = dia, max = dia, percent = 1f });
+                    rewards.Add(new Reward { icon = constants.diaIcon, min = dia, max = dia, percent = 1f });
             }
 
             if (items != null)
             {
                 foreach (var item in items)
                 {
-                    string icon = ServiceLocator.Get<IDBProvider>().Items.TryFind(item.ItemId, out var entity) ? entity.icon : string.Empty;
+                    string icon = db.Items.TryFind(item.ItemId, out var entity) ? entity.icon : string.Empty;
                     rewards.Add(new Reward { icon = icon, id = item.ItemId, min = item.Quantity, max = item.Quantity, percent = 1f });
                 }
             }

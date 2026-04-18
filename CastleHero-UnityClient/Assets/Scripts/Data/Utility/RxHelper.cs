@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using CastleHero.Common.Pattern;
 using CastleHero.Common.Sound;
 using CastleHero.Data;
@@ -12,6 +13,18 @@ namespace CastleHero.Utility
 {
     public static class RxHelper
     {
+        private static ISoundManager _sounds;
+
+        static RxHelper()
+        {
+            var sl = ServiceLocator.Instance;
+            if (sl.TryGet<ISoundManager>(out var sounds)) _sounds = sounds;
+            sl.OnRegistered += (type, instance) =>
+            {
+                if (type == typeof(ISoundManager)) _sounds = (ISoundManager)instance;
+            };
+        }
+
         public static void Update<T>(this ReactiveCollection<T> collection, T value, Predicate<T> findTarget)
         {
             var exist = collection.FirstOrDefault(findTarget.Invoke);
@@ -57,27 +70,36 @@ namespace CastleHero.Utility
             });
         }
 
-        public static void SubscribeMessage<T>(this MonoBehaviour behaviour, Action<T> onReceive)
+        public static void SubscribeMessage<T>(this MonoBehaviour mono, Action<T> onReceive)
         {
             MessageBroker.Default
                 .Receive<T>()
                 .Subscribe(onReceive)
-                .AddTo(behaviour);
+                .AddTo(mono);
         }
 
         public static void Publish<T>(this T data) => MessageBroker.Default.Publish(data);
 
-        public static void SubscribeButton(this MonoBehaviour behaviour, Button button, Action onClick,
+        public static void SubscribeButton(this MonoBehaviour mono, Button button, Action onClick,
             float clickThreshold = 0.25f)
         {
-            ButtonSubscription(button, onClick, null, clickThreshold).AddTo(behaviour);
+            ButtonSubscription(button, onClick, null, clickThreshold).AddTo(mono);
         }
 
-        public static void SubscribeButton(this MonoBehaviour behaviour, Button button, Action onClick,
+        public static void SubscribeButton(this MonoBehaviour mono, Button button, Action onClick,
             string clickSfx, float clickThreshold = 0.25f)
         {
-            ButtonSubscription(button, onClick, clickSfx, clickThreshold).AddTo(behaviour);
+            ButtonSubscription(button, onClick, clickSfx, clickThreshold).AddTo(mono);
         }
+
+        public static void SafeForget(this UniTask task)
+            => task.Forget(ex => Debug.LogException(ex));
+
+        public static void SafeForget<T>(this UniTask<T> task)
+            => task.Forget(ex => Debug.LogException(ex));
+
+        public static void SafeForget(this UniTaskVoid task)
+            => task.Forget();
 
         public static IDisposable ButtonSubscription(Button button, Action onClick, string clickSfx, float clickThreshold)
         {
@@ -86,8 +108,8 @@ namespace CastleHero.Utility
                 .ThrottleFirst(TimeSpan.FromSeconds(clickThreshold))
                 .Subscribe(_ =>
                 {
-                    if (!string.IsNullOrEmpty(clickSfx) && ServiceLocator.TryGet<ISoundManager>(out var sounds))
-                        sounds.PlaySfx(clickSfx);
+                    if (!string.IsNullOrEmpty(clickSfx) && _sounds != null)
+                        _sounds.PlaySfx(clickSfx);
 
                     onClick.Invoke();
                 });

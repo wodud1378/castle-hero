@@ -10,6 +10,8 @@ namespace CastleHero.Network.Impl.Backend.Services
 {
     public class BackendCastleService : BackendNetworkServiceBase, ICastleService
     {
+        public BackendCastleService(IServiceLocator sl) : base(sl) { }
+
         public async UniTask<Result<CastleGrowth>> LvUp()
         {
             var read = await GetTables(Table.GameRecord, Table.Currency);
@@ -36,7 +38,7 @@ namespace CastleHero.Network.Impl.Backend.Services
 
         private void ProcessLevelUp(GameRecordDto record, CurrencyDto currency, out int lv, out Error error)
         {
-            var db = ServiceLocator.Get<IDBProvider>().Castles;
+            var db = Db.Castles;
             lv = record.castleLv;
             if (db.MaxLv <= lv)
             {

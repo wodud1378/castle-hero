@@ -6,7 +6,7 @@ namespace CastleHero.Data.Repositories
 {
     public class WaitRecover : IDisposable
     {
-        public IUnitBehaviour behaviour;
+        public IUnitActor actor;
         public UnityEngine.Vector2 position;
         public float time;
 

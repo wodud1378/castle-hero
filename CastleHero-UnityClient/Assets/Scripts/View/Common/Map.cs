@@ -4,7 +4,7 @@ using Cysharp.Threading.Tasks;
 using CastleHero.Data;
 using CastleHero.Data.Model;
 using CastleHero.Data.Repositories;
-using CastleHero.View.Bootstrapper;
+using Bootstrapper = CastleHero.View.Bootstrapper.Bootstrapper;
 using CastleHero.Utility;
 using UniRx;
 using UnityEngine;
@@ -21,24 +21,31 @@ namespace CastleHero.View.Common
         private IDisposable _subscription;
         private CancellationTokenSource _ctSource;
 
+        private IUserRepository _userRepo;
+        private IDBProvider _db;
+
         private void Awake()
         {
-            Context.OnLoadCompleteQueue.Enqueue(() => { Init(); return UniTask.CompletedTask; });
+            CastleHero.View.Bootstrapper.Bootstrapper.OnLoadCompleteQueue.Enqueue(() => { Init(); return UniTask.CompletedTask; });
 
             this.SubscribeMessage<StartGame>(_ => _subscription?.Dispose());
         }
 
         private void Init()
         {
-            _subscription = ServiceLocator.Get<IUserRepository>().Entrance
+            var sl = ServiceLocator.Instance;
+            _userRepo = sl.Get<IUserRepository>();
+            _db = sl.Get<IDBProvider>();
+
+            _subscription = _userRepo.Entrance
                 .ThrottleFrame(1)
-                .Subscribe(e => OnEntranceChanged(e).Forget())
+                .Subscribe(e => OnEntranceChanged(e).SafeForget())
                 .AddTo(this);
         }
 
         private async UniTask OnEntranceChanged(GameEntrance entrance)
         {
-            if (!ServiceLocator.Get<IDBProvider>().TryLoadGameEntity(entrance.type, entrance.id, out var entity))
+            if (!_db.TryLoadGameEntity(entrance.type, entrance.id, out var entity))
                 return;
 
             string mapName = entity.Map;

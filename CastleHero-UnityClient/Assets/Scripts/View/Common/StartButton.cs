@@ -29,8 +29,9 @@ namespace CastleHero.View.Common
             { false, Animator.StringToHash("Disappear") }
         };
 
-        [field: SerializeField] public MonoBehaviour StageSelectBehaviour;
-        public IStageSelect StageSelect => (IStageSelect)StageSelectBehaviour;
+        [FormerlySerializedAs("StageSelectBehaviour")]
+        [field: SerializeField] public MonoBehaviour StageSelectComponent;
+        public IStageSelect StageSelect => (IStageSelect)StageSelectComponent;
 
         [FormerlySerializedAs("_button")]
         [SerializeField] private Button button;

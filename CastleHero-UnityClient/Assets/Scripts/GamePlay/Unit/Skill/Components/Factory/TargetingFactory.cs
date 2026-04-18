@@ -14,7 +14,7 @@ namespace CastleHero.GamePlay.Unit.Skill.Components.Factory
     
     public class TargetingFactory
     {
-        public ITargeting GetTargeting(Targeting option, UnitBehaviour owner, int maxTarget)
+        public ITargeting GetTargeting(Targeting option, UnitActor owner, int maxTarget)
         {
             if (maxTarget == 0)
                 maxTarget = Constants.BufferSize;
@@ -36,7 +36,7 @@ namespace CastleHero.GamePlay.Unit.Skill.Components.Factory
                         finder.detection.SetRange(range, range);
                         break;
                     case Targeting.Enemy:
-                        finder = owner.Core.Attack.finder;
+                        finder = owner.Combat.Attack.finder;
                         break;
                     case Targeting.Both:
                         finder = Finder.Create(IDetection.Option.Circle, maxTarget);

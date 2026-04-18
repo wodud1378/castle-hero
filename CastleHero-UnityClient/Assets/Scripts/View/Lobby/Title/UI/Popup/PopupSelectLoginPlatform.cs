@@ -23,7 +23,8 @@ namespace CastleHero.View.Lobby.Title.UI.Popup
         protected override void OnAwake()
         {
             base.OnAwake();
-            _loginFactory = ServiceLocator.Get<ILoginServiceFactory>();
+            var sl = ServiceLocator.Instance;
+            _loginFactory = sl.Get<ILoginServiceFactory>();
         }
 
         public override UniTask Open(params object[] parameters)
@@ -53,7 +54,7 @@ namespace CastleHero.View.Lobby.Title.UI.Popup
 
                     _completionSource.TrySetResult(service);
 
-                    CloseAsync().Forget();
+                    CloseAsync().SafeForget();
                 }
 
                 this.SubscribeButton(current, OnClick);

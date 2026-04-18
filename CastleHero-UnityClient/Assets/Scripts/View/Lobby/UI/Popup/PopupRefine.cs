@@ -6,22 +6,24 @@ using CastleHero.View.Bootstrapper;
 using CastleHero.View.Common.UI.Popup;
 using CastleHero.Data.Model;
 using CastleHero.View.Lobby.UI.Inventory;
-using CastleHero.Network.Service;
 using CastleHero.Network.Shared;
 using CastleHero.Utility;
 using UniRx;
 using CastleHero.Common.Pattern;
+using CastleHero.View.Lobby.UI.Actions;
 
 namespace CastleHero.View.Lobby.UI.Popup
 {
     [PrefabPath("Lobby/UI/Prefabs/Popups/Popup_Refine.prefab")]
     public class PopupRefine : PopupLeftToRight<EquipItem, UIEquipmentSlot>, ISelect<bool>
     {
+        private RefineAction _refineAction;
+
         private readonly ReactiveProperty<EquipItem> _equipItem = new();
         private readonly ReactiveProperty<ItemEntity> _stoneItem = new();
 
         public UniTask<bool> SelectTask => _ctSource.Task;
-        
+
         private UniTaskCompletionSource<bool> _ctSource;
         private bool _closeAfterSelect;
 
@@ -30,10 +32,13 @@ namespace CastleHero.View.Lobby.UI.Popup
             _ctSource = new UniTaskCompletionSource<bool>();
             _closeAfterSelect = closeAfterSelect;
         }
-        
+
         protected override void OnAwake()
         {
             base.OnAwake();
+
+            var sl = ServiceLocator.Instance;
+            _refineAction = sl.Get<RefineAction>();
 
             Observable.Merge(
                     _equipItem.Select(_ => UniRx.Unit.Default),
@@ -89,9 +94,9 @@ namespace CastleHero.View.Lobby.UI.Popup
             right.Value = r;
         }
 
-        protected override UniTask InitSlot(EquipItem data, UIEquipmentSlot slot) => slot.Init(data);
+        protected override void InitSlot(EquipItem data, UIEquipmentSlot slot) => slot.Init(data);
 
-        protected override void OnSubmit() => OnSubmitAsync().Forget();
+        protected override void OnSubmit() => OnSubmitAsync().SafeForget();
 
         private async UniTask OnSubmitAsync()
         {
@@ -102,12 +107,8 @@ namespace CastleHero.View.Lobby.UI.Popup
             }
             else
             {
-                var result = await ServiceLocator.Get<INetworkServiceProvider>().Inventory.Refine(_equipItem.Value.Guid, _stoneItem.Value.Id);
-                if (!result.IsSuccess)
-                {
-                    ServiceLocator.Get<IPopupManager>().Open<PopupCommon>(result.error);
+                if (!await _refineAction.Execute(_equipItem.Value.Guid, _stoneItem.Value.Id))
                     return;
-                }
             }
 
             Close();

@@ -1,27 +1,31 @@
 using CastleHero.Common.Pattern;
+using CastleHero.Network.Impl.Local.Boot;
 using CastleHero.Network.Impl.Local.Services;
 using CastleHero.Network.Service;
+using CastleHero.Network.Service.Boot;
+using CastleHero.Network.Service.Login;
 using UnityEngine;
 
 namespace CastleHero.Network.Impl.Local
 {
-    /// <summary>
-    /// CASTLEHERO_LOCAL_NETWORK 스크립팅 디파인이 활성화된 경우에만 동작.
-    /// LocalUserDataStore 를 만들어 LocalNetworkServiceProvider 에 주입하고 ServiceLocator 에 등록한다.
-    /// </summary>
     internal static class LocalNetworkInstaller
     {
-#if CASTLEHERO_LOCAL_NETWORK
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Install()
         {
+            var config = NetworkConfig.Load();
+            if (config == null || config.Type != NetworkType.Local)
+                return;
+
+            var sl = ServiceLocator.Instance;
             var store = new LocalUserDataStore();
-            ServiceLocator.Register(store);
-            ServiceLocator.Register<INetworkServiceProvider>(new LocalNetworkServiceProvider(store));
+            sl.Register(store);
+            sl.Register<INetworkServiceProvider>(new LocalNetworkServiceProvider(sl, store));
+            sl.Register<IBootServiceFactory>(new LocalBootServiceFactory());
+            sl.Register<ILoginServiceFactory>(new LocalLoginServiceFactory());
 #if UNITY_EDITOR
-            ServiceLocator.Register<ITestService>(new LocalTestService(store));
+            sl.Register<ITestService>(new LocalTestService(sl, store));
 #endif
         }
-#endif
     }
 }

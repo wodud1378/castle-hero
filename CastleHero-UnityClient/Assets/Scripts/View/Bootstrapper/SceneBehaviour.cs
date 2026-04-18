@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace CastleHero.View.Bootstrapper
 {
-    public abstract class SceneBehaviour : MonoBehaviour, IDisposable
+    public abstract class SceneBase : MonoBehaviour, IDisposable
     {
-        protected static List<SceneBehaviour> activated = new();
+        protected static List<SceneBase> activated = new();
 
         private void Awake()
         {
-            Context.OnLoadCompleteQueue.Enqueue(() => OnLoaded());
+            Bootstrapper.OnLoadCompleteQueue.Enqueue(() => OnLoaded());
 
             OnAwake();
         }
@@ -29,8 +29,8 @@ namespace CastleHero.View.Bootstrapper
 
         protected void LoadSceneAfterDispose(string sceneName)
         {
-            foreach (var behaviour in activated)
-                behaviour.Dispose();
+            foreach (var scene in activated)
+                scene.Dispose();
 
             activated.Clear();
 

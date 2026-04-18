@@ -13,6 +13,8 @@ namespace CastleHero.Network.Impl.Backend.Services
 {
     public class BackendCharacterService : BackendNetworkServiceBase, ICharacterService
     {
+        public BackendCharacterService(IServiceLocator sl) : base(sl) { }
+
         public async UniTask<Result<UnitGrowth>> Growth(GrowthAction action, int unitId, int itemId, int quantity)
         {
             var read = await GetTables(Table.Character, Table.Inventory, Table.Currency);
@@ -62,13 +64,13 @@ namespace CastleHero.Network.Impl.Backend.Services
             out int leftItem, out Error error)
         {
             leftItem = quantity;
-            if (ServiceLocator.Get<IDBProvider>().Rates.MaxRate == unit.rate)
+            if (Db.Rates.MaxRate == unit.rate)
             {
                 error = Error.AlreadyMaxLv;
                 return null;
             }
 
-            if (!ServiceLocator.Get<IDBProvider>().Items.TryFind(item.ItemId, out var itemEntity))
+            if (!Db.Items.TryFind(item.ItemId, out var itemEntity))
             {
                 error = Error.DataNotFound;
                 return null;
@@ -103,13 +105,13 @@ namespace CastleHero.Network.Impl.Backend.Services
         {
             leftItem = quantity;
 
-            if (ServiceLocator.Get<IDBProvider>().Levels.MaxLv == unit.lv)
+            if (Db.Levels.MaxLv == unit.lv)
             {
                 error = Error.AlreadyMaxLv;
                 return null;
             }
 
-            if (!ServiceLocator.Get<IDBProvider>().Items.TryFind(item.ItemId, out var itemEntity))
+            if (!Db.Items.TryFind(item.ItemId, out var itemEntity))
             {
                 error = Error.DataNotFound;
                 return null;

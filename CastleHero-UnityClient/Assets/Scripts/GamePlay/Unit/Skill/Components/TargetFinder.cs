@@ -6,19 +6,19 @@ namespace CastleHero.GamePlay.Unit.Skill.Components
 {
     public interface ITargeting
     {
-        public List<UnitBehaviour> Targets { get; }
+        public List<UnitActor> Targets { get; }
 
         public bool HasTargets();
     }
 
     public class FindTargets : ITargeting
     {
-        private readonly UnitBehaviour _owner;
+        private readonly UnitActor _owner;
         private readonly Finder _finder;
 
-        public List<UnitBehaviour> Targets => _finder.Found;
+        public List<UnitActor> Targets => _finder.Found;
 
-        public FindTargets(UnitBehaviour owner, Finder finder)
+        public FindTargets(UnitActor owner, Finder finder)
         {
             _owner = owner;
             _finder = finder;
@@ -29,9 +29,9 @@ namespace CastleHero.GamePlay.Unit.Skill.Components
 
     public class SelfTarget : ITargeting
     {
-        public List<UnitBehaviour> Targets { get; } = new();
+        public List<UnitActor> Targets { get; } = new();
 
-        public SelfTarget(UnitBehaviour owner)
+        public SelfTarget(UnitActor owner)
         {
             Targets.Add(owner);
         }

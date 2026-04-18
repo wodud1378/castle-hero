@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using CastleHero.Data;
 using CastleHero.Network.Shared;
@@ -9,6 +10,18 @@ namespace CastleHero.Network.Service
 {
     public class UnitGenerator
     {
+        private IDBProvider _db;
+
+        public UnitGenerator()
+        {
+            var sl = ServiceLocator.Instance;
+            if (sl.TryGet<IDBProvider>(out var db)) _db = db;
+            sl.OnRegistered += (type, instance) =>
+            {
+                if (type == typeof(IDBProvider)) _db = (IDBProvider)instance;
+            };
+        }
+
         public void AddUnits(List<int> newUnitIds, List<UnitInfo> units, List<IItem> items, bool mergeSameSoulItem,
             out int newUnitStartIndex, out bool itemAdded)
         {
@@ -27,7 +40,7 @@ namespace CastleHero.Network.Service
                 }
                 else
                 {
-                    if (!ServiceLocator.Get<IDBProvider>().Units.TryFind(id, out var entity))
+                    if (!_db.Units.TryFind(id, out var entity))
                         continue;
 
                     var item = new Item { ItemId = entity.soulItemId, Quantity = 10 };

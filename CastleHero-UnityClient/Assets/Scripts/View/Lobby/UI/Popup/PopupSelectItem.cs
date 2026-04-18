@@ -36,7 +36,8 @@ namespace CastleHero.View.Lobby.UI.Popup
 
             itemList.OnSlotClickEvent += OnClickItemSlot;
 
-            return itemList.Init(items);
+            itemList.Init(items);
+            return UniTask.CompletedTask;
         }
 
         protected override void OnClose()

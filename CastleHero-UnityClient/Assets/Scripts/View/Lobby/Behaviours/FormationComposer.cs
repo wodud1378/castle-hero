@@ -33,8 +33,7 @@ namespace CastleHero.View.Lobby.Behaviours
         private readonly CompositeDisposable _disposables = new();
 
         private readonly IFormationFieldArea _area;
-        private readonly IUnitFactory _unitFactory;
-        private readonly ICastleFactory _castleFactory;
+        private readonly UnitFactory _factory;
         private readonly IUserRepository _userRepo;
         private readonly IDBProvider _db;
         private readonly IPopupManager _popups;
@@ -56,8 +55,7 @@ namespace CastleHero.View.Lobby.Behaviours
 
         public FormationComposer(
             IFormationFieldArea area,
-            IUnitFactory unitFactory,
-            ICastleFactory castleFactory,
+            UnitFactory factory,
             IUserRepository userRepo,
             IDBProvider db,
             IPopupManager popups,
@@ -67,8 +65,7 @@ namespace CastleHero.View.Lobby.Behaviours
             INetworkServiceProvider network)
         {
             _area = area;
-            _unitFactory = unitFactory;
-            _castleFactory = castleFactory;
+            _factory = factory;
             _userRepo = userRepo;
             _db = db;
             _popups = popups;
@@ -150,7 +147,7 @@ namespace CastleHero.View.Lobby.Behaviours
             _formation.Set(Draft.Characters);
         }
 
-        public void Remove(UnitBehaviour unit)
+        public void Remove(UnitActor unit)
         {
             if (unit == null) return;
             if (unit == Draft.Castle.Value) return;
@@ -165,7 +162,7 @@ namespace CastleHero.View.Lobby.Behaviours
             Save();
         }
 
-        public bool TryRegister(UnitBehaviour unit, int layer, bool isExist)
+        public bool TryRegister(UnitActor unit, int layer, bool isExist)
         {
             if (unit == null) return false;
             if (!_area.IsValid(unit.Collider, layer)) return false;
@@ -216,20 +213,15 @@ namespace CastleHero.View.Lobby.Behaviours
 
             int lv = _userRepo.GameRecord.CastleLv.Value;
             var info = new UnitInfo { id = 1, lv = lv };
-            var task = await _castleFactory
-                .Create(prefab, info, Vector2.zero)
-                .AttachExternalCancellation(_castleCreationCancel.Token)
-                .SuppressCancellationThrow();
-
-            if (task.IsCanceled)
+            if (_castleCreationCancel.IsCancellationRequested)
                 return;
 
-            Draft.Castle.Value = task.Result;
+            Draft.Castle.Value = _factory.Create(new CastleCreationData(info, Vector2.zero, prefab));
         }
 
         public void ReapplyCastle(int lv, CastleEntity entity)
         {
-            var castle = Draft.Castle.Value as UnitBehaviour;
+            var castle = Draft.Castle.Value as UnitActor;
             if (castle == null) return;
 
             var unitInfo = new UnitInfo { id = 1, lv = lv };
@@ -240,7 +232,7 @@ namespace CastleHero.View.Lobby.Behaviours
         {
             var barricades = Draft.Characters
                 .Where(x => x.Id == Constants.BarricadeId)
-                .OfType<UnitBehaviour>()
+                .OfType<UnitActor>()
                 .ToArray();
 
             if (barricades.Length == 0)
@@ -254,23 +246,24 @@ namespace CastleHero.View.Lobby.Behaviours
 
         private async UniTask CreateCharacter(UnitInfo info, Vector2 position)
         {
-            var created = info.id != Constants.BarricadeId
-                ? await _unitFactory.Create(info, position)
-                : await _unitFactory.CreateBarricade(info, position);
+            IUnitCreationData data = info.id != Constants.BarricadeId
+                ? new UnitCreationData(info, position)
+                : new BarricadeCreationData(info, position);
+            var created = _factory.Create(data);
 
-            if (created is not UnitBehaviour unit)
+            if (created is not UnitActor unit)
                 return;
 
-            unit.Core.Movement.Default = position;
-            unit.Core.OnRest.Value = true;
+            unit.Combat.Movement.Default = position;
+            unit.UnitState.OnRest.Value = true;
 
             Draft.Characters.Add(unit);
         }
 
-        private void RemoveIfLimited(UnitBehaviour unit)
+        private void RemoveIfLimited(UnitActor unit)
         {
-            int limit = unit.Type == UnitBehaviour.BehaviourType.Barricade ? _barricadeCountMax : 1;
-            var queue = new Queue<IUnitBehaviour>();
+            int limit = unit.Type == UnitActor.ActorType.Barricade ? _barricadeCountMax : 1;
+            var queue = new Queue<IUnitActor>();
             foreach (var character in Draft.Characters)
             {
                 if (character.Id == unit.Id && character != unit)
@@ -288,7 +281,7 @@ namespace CastleHero.View.Lobby.Behaviours
             }
         }
 
-        private void OnFieldCharacterCollectionChanged(ReactiveCollection<IUnitBehaviour> collection)
+        private void OnFieldCharacterCollectionChanged(ReactiveCollection<IUnitActor> collection)
         {
             _placed.Value = collection.Count(x => x.Id != Constants.BarricadeId);
         }

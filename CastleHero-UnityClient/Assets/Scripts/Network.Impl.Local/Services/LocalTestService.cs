@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using CastleHero.Common.Pattern;
 using CastleHero.Network.Service;
 using CastleHero.Network.Shared;
 
@@ -6,7 +7,7 @@ namespace CastleHero.Network.Impl.Local.Services
 {
     public class LocalTestService : LocalNetworkServiceBase, ITestService
     {
-        public LocalTestService(LocalUserDataStore store) : base(store) { }
+        public LocalTestService(IServiceLocator sl, LocalUserDataStore store) : base(sl, store) { }
 
         public UniTask<Result> AddItems(int[] ids, int[] quantities)
         {

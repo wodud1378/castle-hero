@@ -24,6 +24,8 @@ namespace CastleHero.Network.Impl.Backend.Boot
 {
     public class BackendBootService : IBootService, IDisposable
     {
+        private readonly IServiceLocator _sl;
+        private readonly INetworkServiceProvider _network;
         private readonly IBootServiceHandler _handler;
         private readonly IBackendErrorHandler _errorHandler;
         private readonly ILoginService _autoLoginService;
@@ -34,10 +36,12 @@ namespace CastleHero.Network.Impl.Backend.Boot
 
         public BackendBootService(BootConfig config, IBootServiceHandler handler, IBackendErrorHandler errorHandler = null)
         {
+            _sl = ServiceLocator.Instance;
+            _network = _sl.Get<INetworkServiceProvider>();
             _handler = handler;
             _errorHandler = errorHandler;
-            _autoLoginService = new BackendAutoLoginService();
-            _initService = new();
+            _autoLoginService = new BackendAutoLoginService(_sl);
+            _initService = new BackendInitService(_sl);
             _config = config;
 
             _errorHandler?.Attach();
@@ -89,15 +93,15 @@ namespace CastleHero.Network.Impl.Backend.Boot
             Result<UserDataDto> result;
             if (newUser)
             {
-                result = await ServiceLocator.Get<INetworkServiceProvider>().User.CreateUserData();
+                result = await _network.User.CreateUserData();
             }
             else
             {
-                result = await ServiceLocator.Get<INetworkServiceProvider>().User.GetUserData();
+                result = await _network.User.GetUserData();
 
                 if (!result.IsSuccess && result.statusCode == 404)
                 {
-                    result = await ServiceLocator.Get<INetworkServiceProvider>().User.CreateUserData();
+                    result = await _network.User.CreateUserData();
                 }
             }
 
@@ -122,7 +126,7 @@ namespace CastleHero.Network.Impl.Backend.Boot
             {
                 _handler
                     .OnError(response)
-                    .Forget();
+                    .SafeForget();
 
                 return BackendResult.Error(response.error);
             }
@@ -141,13 +145,13 @@ namespace CastleHero.Network.Impl.Backend.Boot
             {
                 _handler
                     .OnError(result)
-                    .Forget();
+                    .SafeForget();
 
                 return BackendResult.Error(result.error);
             }
 
             var localize = new LocalizeText(result.raw.FlattenRows());
-            ServiceLocator.Register(localize);
+            _sl.Register(localize);
 
             await localize.Set(Application.systemLanguage);
 
@@ -161,7 +165,7 @@ namespace CastleHero.Network.Impl.Backend.Boot
             {
                 _handler
                     .OnError(initServer)
-                    .Forget();
+                    .SafeForget();
 
                 return BackendResult.Error(initServer.error);
             }
@@ -178,10 +182,10 @@ namespace CastleHero.Network.Impl.Backend.Boot
             await UniTask.WhenAll(tasks);
 
             // EntranceHolder 는 GameHandler / UIStageSelect / UILobby 등이 이른 시점부터 참조하므로 최우선 등록.
-            ServiceLocator.Register(new EntranceHolder());
+            _sl.Register(new EntranceHolder());
 
-            ServiceLocator.Register(new SettingRepository());
-            ServiceLocator.Register(await Addressables.LoadAssetAsync<SoundPath>("Sound/SoundPath.asset"));
+            _sl.Register(new SettingRepository());
+            _sl.Register(await Addressables.LoadAssetAsync<SoundPath>("Sound/SoundPath.asset"));
 
             return BackendResult.Complete(initServer.raw);
         }
@@ -194,7 +198,7 @@ namespace CastleHero.Network.Impl.Backend.Boot
             {
                 _handler
                     .OnError(response)
-                    .Forget();
+                    .SafeForget();
 
                 return;
             }
@@ -222,7 +226,7 @@ namespace CastleHero.Network.Impl.Backend.Boot
                 while (!isSuccess)
                 {
                     nickname = await _handler.SetNickName();
-                    var response = await ServiceLocator.Get<INetworkServiceProvider>().User.UpdateNickname(nickname);
+                    var response = await _network.User.UpdateNickname(nickname);
 
                     isSuccess = response.IsSuccess;
                 }
@@ -241,7 +245,7 @@ namespace CastleHero.Network.Impl.Backend.Boot
             {
                 _handler
                     .OnError(response)
-                    .Forget();
+                    .SafeForget();
 
                 return;
             }
@@ -249,8 +253,8 @@ namespace CastleHero.Network.Impl.Backend.Boot
             var chartList = response.data;
             var result = await service.InitialLoad(chartList);
 
-            ServiceLocator.Register<IUserRepository>(new UserRepository(nickname, userData));
-            ServiceLocator.Register<IDBProvider>(result);
+            _sl.Register<IUserRepository>(new UserRepository(nickname, userData));
+            _sl.Register<IDBProvider>(result);
         }
 
         public void Dispose() => _errorHandler?.Detach();

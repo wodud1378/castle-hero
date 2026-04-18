@@ -7,7 +7,7 @@ namespace CastleHero.GamePlay.Unit.Skill.Components.Factory
 {
     public class BoundFactory
     {
-        public IBound GetBound(IDetection.Option shape, Targeting targeting, UnitBehaviour owner, int maxTarget,
+        public IBound GetBound(IDetection.Option shape, Targeting targeting, UnitActor owner, int maxTarget,
             float x, float y)
         {
             IBound bound;

@@ -10,7 +10,7 @@ namespace CastleHero.GamePlay.Unit.Effects
         public void SetForward(Vector2 forward);
         public void Run(Vector2 startAt = default);
         public void Stop();
-        public void SetTarget(UnitBehaviour unit);
+        public void SetTarget(UnitActor unit);
         public void SetTarget(Vector2 position);
     }
 }

@@ -5,9 +5,9 @@ namespace CastleHero.GamePlay.Unit
 {
     public class ThrustAlley
     {
-        private readonly UnitBehaviour _root;
+        private readonly UnitActor _root;
 
-        public ThrustAlley(UnitBehaviour root) => _root = root;
+        public ThrustAlley(UnitActor root) => _root = root;
         
         public void Execute(Collision2D collision)
         {

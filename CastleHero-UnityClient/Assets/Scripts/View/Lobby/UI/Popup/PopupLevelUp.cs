@@ -73,12 +73,11 @@ namespace CastleHero.View.Lobby.UI.Popup
                 .Subscribe(OnSlotSelected)
                 .AddTo(this);
 
-            ServiceLocator.Get<IUserRepository>().Inventory
+            _userRepo.Inventory
                 .WhenUpdate(_ =>
                 {
-                    InitItemSlots()
-                        .ContinueWith(() => _selected.Value = _selected.Value)
-                        .Forget();
+                    InitItemSlots();
+                    _selected.Value = _selected.Value;
                 });
 
             expSlotS.OnClick += (x) => _selected.Value = (UIItemSlot)x;
@@ -94,14 +93,13 @@ namespace CastleHero.View.Lobby.UI.Popup
                 ? id
                 : ExpSmallId;
 
-            await InitItemSlots(initialSlot);
+            InitItemSlots(initialSlot);
 
             await base.Open(parameters);
         }
 
-        private async UniTask InitItemSlots(int initialSlot = -1)
+        private void InitItemSlots(int initialSlot = -1)
         {
-            var tasks = new UniTask[3];
             var s = GetExpItem(ExpSmallId);
             var m = GetExpItem(ExpMediumId);
             var l = GetExpItem(ExpLargeId);
@@ -110,11 +108,9 @@ namespace CastleHero.View.Lobby.UI.Popup
             expSlotM.quantityDisplay.Value = UIItemSlot.QuantityDisplay.ValueOnly;
             expSlotL.quantityDisplay.Value = UIItemSlot.QuantityDisplay.ValueOnly;
 
-            tasks[0] = expSlotS.Init(s);
-            tasks[1] = expSlotM.Init(m);
-            tasks[2] = expSlotL.Init(l);
-
-            await UniTask.WhenAll(tasks);
+            expSlotS.Init(s);
+            expSlotM.Init(m);
+            expSlotL.Init(l);
 
             if (initialSlot == ExpSmallId)
                 _selected.Value = expSlotS;
@@ -131,7 +127,7 @@ namespace CastleHero.View.Lobby.UI.Popup
 
         private IItem GetExpItem(int id)
         {
-            return ServiceLocator.Get<IUserRepository>().Inventory.Items.FirstOrDefault(x => x.ItemId == id)
+            return _userRepo.Inventory.Items.FirstOrDefault(x => x.ItemId == id)
                    ?? new Item { ItemId = id, };
         }
 
@@ -166,7 +162,7 @@ namespace CastleHero.View.Lobby.UI.Popup
             UnitHelper.CalculateLvUp(unit.lv, unit.exp, _selected.Value.Entity, itemQty,
                 out int lv, out int exp, out _, out int leftItem, out int price);
 
-            bool hasEnoughGold = price <= ServiceLocator.Get<IUserRepository>().Currency.Gold.Value;
+            bool hasEnoughGold = price <= _userRepo.Currency.Gold.Value;
             _goldSlot.QuantityLabelColor = hasEnoughGold
                 ? Color.white
                 : StringHelper.NegativeColor;

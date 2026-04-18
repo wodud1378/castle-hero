@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CastleHero.Common;
@@ -9,13 +10,20 @@ using CastleHero.Common.Pattern;
 using CastleHero.Data.DB;
 namespace CastleHero.Utility
 {
-    /// <summary>
-    /// Item helper methods that depend only on Data types.
-    /// Equipment-specific helpers that depend on Unit component types are in GamePlay/Unit/EquipmentHelper.cs.
-    /// </summary>
     public static class ItemHelper
     {
+        private static IDBProvider _db;
         private static readonly Dictionary<int, List<int>> RandomIdCache = new();
+
+        static ItemHelper()
+        {
+            var sl = ServiceLocator.Instance;
+            if (sl.TryGet<IDBProvider>(out var db)) _db = db;
+            sl.OnRegistered += (type, instance) =>
+            {
+                if (type == typeof(IDBProvider)) _db = (IDBProvider)instance;
+            };
+        }
 
         public static List<int> GetRelatedItemIds(this int id)
         {
@@ -126,7 +134,7 @@ namespace CastleHero.Utility
 
         private static void FilterItemIds(int id, List<int> result)
         {
-            ServiceLocator.Get<IDBProvider>().Items.ForEach(x =>
+            _db.Items.ForEach(x =>
             {
                 if (!IsRelated(id, x.Id))
                     return;

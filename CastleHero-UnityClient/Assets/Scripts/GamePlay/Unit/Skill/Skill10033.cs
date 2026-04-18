@@ -40,7 +40,7 @@ namespace CastleHero.GamePlay.Unit.Skill
             var characters = Characters(x => x.Data.group == group);
             foreach (var unit in characters)
             {
-                unit.Core.Attack.additional.Add(Owner, amount, effect, duration);
+                unit.Combat.Attack.additional.Add(Owner, amount, effect, duration);
             }
         }
     }

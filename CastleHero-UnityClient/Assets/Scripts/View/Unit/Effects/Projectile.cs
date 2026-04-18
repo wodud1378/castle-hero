@@ -1,7 +1,9 @@
+using System;
 using CastleHero.Common.Behaviours;
 using CastleHero.GamePlay.Unit.Behaviours;
 using CastleHero.GamePlay.Unit.Effects;
 using CastleHero.Utility;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -16,11 +18,13 @@ namespace CastleHero.View.Unit.Effects
         [FormerlySerializedAs("_particle")]
         [SerializeField] private ParticleSystem particle;
 
-        private UnitBehaviour _target;
+        private UnitActor _target;
         private Vector2 _destination;
 
         private bool _isRunning = false;
         private float _arrivalTime;
+
+        private IDisposable _targetDeadSub;
 
         public float Duration { get; set; }
 
@@ -38,10 +42,11 @@ namespace CastleHero.View.Unit.Effects
                 particle.Play(true);
         }
 
-        public void SetTarget(UnitBehaviour unit)
+        public void SetTarget(UnitActor unit)
         {
             _target = unit;
-            _target.OnDead += OnTargetDead;
+            _targetDeadSub?.Dispose();
+            _targetDeadSub = _target.OnDead.Take(1).Subscribe(OnTargetDead);
 
             SetTarget(_target.Position);
         }
@@ -68,11 +73,9 @@ namespace CastleHero.View.Unit.Effects
             DestroySelf();
         }
 
-        private void OnTargetDead(UnitBehaviour unit)
+        private void OnTargetDead(UnitActor unit)
         {
             _target = null;
-
-            unit.OnDead -= OnTargetDead;
         }
 
         private void Update()

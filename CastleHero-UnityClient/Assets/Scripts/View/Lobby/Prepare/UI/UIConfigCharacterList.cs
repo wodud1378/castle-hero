@@ -57,12 +57,21 @@ namespace CastleHero.View.Lobby.Prepare.UI
 
         private int _originLayer;
 
+        private CastleHero.Data.Repositories.IUserRepository _userRepo;
+        private IPopupManager _popups;
+        private CastleHero.Common.Localize.LocalizeText _localize;
+
         private void Awake()
         {
+            var sl = ServiceLocator.Instance;
+            _userRepo = sl.Get<CastleHero.Data.Repositories.IUserRepository>();
+            _popups = sl.Get<IPopupManager>();
+            _localize = sl.Get<CastleHero.Common.Localize.LocalizeText>();
+
             formation.Draft.Characters
                 .ChangeAsObservable()
                 .ThrottleFrame(1)
-                .Subscribe(_ => Init(ServiceLocator.Get<CastleHero.Data.Repositories.IUserRepository>().Characters.Units))
+                .Subscribe(_ => Init(_userRepo.Characters.Units))
                 .AddTo(this);
 
             formation.placed
@@ -89,11 +98,11 @@ namespace CastleHero.View.Lobby.Prepare.UI
             this.SubscribeButton(confirm, OnConfirm);
         }
 
-        public override UniTask Init(IEnumerable<UnitInfo> collection)
+        public override void Init(IEnumerable<UnitInfo> collection)
         {
             var exist = formation.Draft.Characters;
 
-            return base.Init(collection
+            base.Init(collection
                 .Where(unit => exist.FirstOrDefault(x => x.Id == unit.id) == null));
         }
 
@@ -107,12 +116,12 @@ namespace CastleHero.View.Lobby.Prepare.UI
         private void OnConfirm()
         {
             int fieldUnitCount = formation.Draft.Characters
-                .OfType<UnitBehaviour>()
-                .Count(x => x.Type == UnitBehaviour.BehaviourType.Unit);
+                .OfType<UnitActor>()
+                .Count(x => x.Type == UnitActor.ActorType.Unit);
 
             if (fieldUnitCount <= 0)
             {
-                ServiceLocator.Get<CastleHero.View.Common.IPopupManager>().Open<PopupCommon>(ServiceLocator.Get<CastleHero.Common.Localize.LocalizeText>().Get(594));
+                _popups.Open<PopupCommon>(_localize.Get(594));
                 return;
             }
 
@@ -155,11 +164,11 @@ namespace CastleHero.View.Lobby.Prepare.UI
                 .ContinueWith(Dispose);
         }
 
-        protected override UniTask SetItem(UICharacterSlot slot, UnitInfo data)
+        protected override void SetItem(UICharacterSlot slot, UnitInfo data)
         {
             slot.OnClick += OnClickSlot;
 
-            return base.SetItem(slot, data);
+            base.SetItem(slot, data);
         }
 
         private void OnClickSlot(UISlot slot)

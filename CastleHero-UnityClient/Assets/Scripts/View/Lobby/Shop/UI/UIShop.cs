@@ -5,7 +5,7 @@ using CastleHero.View.Bootstrapper;
 using CastleHero.Common.Flow;
 using CastleHero.Data;
 using CastleHero.Data.Model;
-using CastleHero.Network.Service;
+using CastleHero.View.Lobby.Shop.Actions;
 using CastleHero.Utility;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -22,18 +22,32 @@ namespace CastleHero.View.Lobby.Shop.UI
         [FormerlySerializedAs("_withdrawalRoot")]
         [SerializeField] private RectTransform withdrawalRoot;
 
+        private StateManager<LobbyState> _lobbyState;
+        private ShopAction _action;
+        private IDBProvider _db;
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+
+            var sl = ServiceLocator.Instance;
+            _lobbyState = sl.Get<StateManager<LobbyState>>();
+            _action = sl.Get<ShopAction>();
+            _db = sl.Get<IDBProvider>();
+        }
+
         protected override void OnBack()
         {
-            ServiceLocator.Get<StateManager<LobbyState>>().CurrentState = LobbyState.Main;
+            _lobbyState.CurrentState = LobbyState.Main;
         }
 
         public async UniTask Init()
         {
-            await ServiceLocator.Get<INetworkServiceProvider>().Shop.RefreshProducts();
+            await _action.RefreshProducts();
 
             var categoryMap = new Dictionary<ShopCategory, List<ShopItemEntity>>();
             var currentTime = ServerTime.Now;
-            ServiceLocator.Get<IDBProvider>().Shop.ForEach(x =>
+            _db.Shop.ForEach(x =>
             {
                 if (x.category == ShopCategory.Limited)
                     return;
@@ -64,7 +78,7 @@ namespace CastleHero.View.Lobby.Shop.UI
                 kvp.Value.Sort((x, y) => x.order.CompareTo(y.order));
             }
 
-            await itemList.Init(categoryMap.Values);
+            itemList.Init(categoryMap.Values);
 
             withdrawalRoot.gameObject.SetActive(true);
             withdrawalRoot.transform.SetAsLastSibling();

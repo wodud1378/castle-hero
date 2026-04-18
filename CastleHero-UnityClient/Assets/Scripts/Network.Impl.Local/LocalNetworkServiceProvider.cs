@@ -1,3 +1,4 @@
+using CastleHero.Common.Pattern;
 using CastleHero.Network.Impl.Local.Services;
 using CastleHero.Network.Service;
 
@@ -17,15 +18,15 @@ namespace CastleHero.Network.Impl.Local
         public ISummonService Summon { get; }
         public ICastleService Castle { get; }
 
-        public LocalNetworkServiceProvider(LocalUserDataStore store)
+        public LocalNetworkServiceProvider(IServiceLocator sl, LocalUserDataStore store)
         {
-            User = new LocalUserService(store);
-            Game = new LocalGameService(store);
-            Character = new LocalCharacterService(store);
-            Inventory = new LocalInventoryService(store);
-            Shop = new LocalShopService(store);
-            Summon = new LocalSummonService(store);
-            Castle = new LocalCastleService(store);
+            User = new LocalUserService(sl, store);
+            Game = new LocalGameService(sl, store);
+            Character = new LocalCharacterService(sl, store);
+            Inventory = new LocalInventoryService(sl, store);
+            Shop = new LocalShopService(sl, store);
+            Summon = new LocalSummonService(sl, store);
+            Castle = new LocalCastleService(sl, store);
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using CastleHero.GamePlay.Unit.Behaviours;
 using CastleHero.GamePlay.Unit.Components;
+using UniRx;
 using UnityEngine;
 
 namespace CastleHero.GamePlay.Unit.Skill.Components
@@ -11,12 +12,12 @@ namespace CastleHero.GamePlay.Unit.Skill.Components
         {
             Animation
         }
-        
+
         public event Action OnExecuteEvent;
         public event Action OnReleaseEvent;
-        
+
         public bool IsRunning { get; }
- 
+
         public void Run();
     }
 
@@ -24,22 +25,19 @@ namespace CastleHero.GamePlay.Unit.Skill.Components
     {
         public event Action OnExecuteEvent;
         public event Action OnReleaseEvent;
-        
+
         public bool IsRunning { get; private set; }
 
         private readonly IUnitRenderer _renderer;
 
-        public AnimationRunner(UnitBehaviour owner)
+        public AnimationRunner(UnitActor owner)
         {
-            _renderer = owner.Core.Renderer;
+            _renderer = owner.Combat.Renderer;
 
-            var animationEvents = owner.Core.AnimationEvent;
-            
-            animationEvents.OnExecuteSkillEvent -= OnExecute;
-            animationEvents.OnExecuteSkillEvent += OnExecute;
-            
-            animationEvents.OnReleaseSkillEvent -= OnRelease;
-            animationEvents.OnReleaseSkillEvent += OnRelease;
+            var animationEvents = owner.Combat.AnimationEvent;
+
+            animationEvents.OnExecuteSkill.Subscribe(_ => OnExecute()).AddTo(owner);
+            animationEvents.OnReleaseSkill.Subscribe(_ => OnRelease()).AddTo(owner);
         }
 
         private void OnExecute()
@@ -50,13 +48,13 @@ namespace CastleHero.GamePlay.Unit.Skill.Components
         private void OnRelease()
         {
             IsRunning = false;
-            
+
             OnReleaseEvent?.Invoke();
         }
-        
+
         public void Run()
         {
-            _renderer.SetAnimation(UnitCore.AnimationsHash[UnitCore.States.Skill]);
+            _renderer.SetAnimation(CombatController.AnimationsHash[UnitState.States.Skill]);
             IsRunning = true;
         }
     }

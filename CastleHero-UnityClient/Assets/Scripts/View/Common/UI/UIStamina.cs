@@ -27,12 +27,15 @@ namespace CastleHero.View.Common.UI
         [SerializeField] private Slider gauge;
 
         private Stamina _stamina;
+        private UIToolTip _toolTip;
         private bool _onUpdate;
 
         private void Awake()
         {
+            var sl = ServiceLocator.Instance;
             this.SubscribeButton(button, ShowLeftTime);
-            _stamina = ServiceLocator.Get<IUserRepository>().Stamina;
+            _stamina = sl.Get<IUserRepository>().Stamina;
+            _toolTip = sl.Get<UIToolTip>();
             _stamina.Point
                 .Subscribe(currentVal =>
                 {
@@ -60,18 +63,17 @@ namespace CastleHero.View.Common.UI
 
             string ToTimeText(float time) => $"{(int)(time / 60):D2}:{(int)(time % 60):D2}";
 
-            var toolTip = ServiceLocator.Get<UIToolTip>();
             var update = Observable.EveryUpdate()
                 .Select(_ => Time.deltaTime)
                 .Subscribe(x =>
                 {
                     toNext = Mathf.Max(0, toNext - x);
                     toMax = Mathf.Max(0, toMax - x);
-                    toolTip.Text = $"{ToTimeText(toNext)} / {ToTimeText(toMax)}";
+                    _toolTip.Text = $"{ToTimeText(toNext)} / {ToTimeText(toMax)}";
                 });
 
-            toolTip.Open(string.Empty, transform as RectTransform, 0.5f, 1f);
-            toolTip.onClosedQueue.Enqueue(() => update.Dispose());
+            _toolTip.Open(string.Empty, transform as RectTransform, 0.5f, 1f);
+            _toolTip.onClosedQueue.Enqueue(() => update.Dispose());
         }
     }
 }

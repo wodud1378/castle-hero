@@ -21,14 +21,21 @@ namespace CastleHero.View.Common.UI
         [FormerlySerializedAs("_animator")]
         [SerializeField] private Animator animator;
 
+        private StateManager<State> _stateManager;
+        private StateManager<LobbyState> _lobbyStateManager;
+
         private void Awake()
         {
-            ServiceLocator.Get<StateManager<State>>().StateObserver
+            var sl = ServiceLocator.Instance;
+            _stateManager = sl.Get<StateManager<State>>();
+            _lobbyStateManager = sl.Get<StateManager<LobbyState>>();
+
+            _stateManager.StateObserver
                 .Where(x => x == State.InGame)
                 .Subscribe(_ => TransitionToExit())
                 .AddTo(this);
 
-            ServiceLocator.Get<StateManager<LobbyState>>().StateObserver
+            _lobbyStateManager.StateObserver
                 .Where(x => x != LobbyState.None)
                 .Subscribe(TransitionTo)
                 .AddTo(this);

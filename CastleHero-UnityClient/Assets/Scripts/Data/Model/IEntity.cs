@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CastleHero.Data.DB;
 
 namespace CastleHero.Data.Model
 {
@@ -28,6 +29,6 @@ namespace CastleHero.Data.Model
         public int MinGold { get; set; }
         public int MaxGold { get; set; }
 
-        public List<Reward> GetRewardsForDisplay();
+        public List<Reward> GetRewardsForDisplay(IDBProvider db);
     }
 }

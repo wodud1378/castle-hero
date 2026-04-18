@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using CastleHero.Data.Model;
 using CastleHero.GamePlay.Unit.Effects;
 using CastleHero.Utility;
@@ -51,8 +50,8 @@ namespace CastleHero.GamePlay.Unit
         {
             get
             {
-                float increase = _timedIncrease.Sum(t => t.value) + _increase;
-                float decrease = _timedDecrease.Sum(t => t.value) + _decrease;
+                float increase = SumValues(_timedIncrease) + _increase;
+                float decrease = SumValues(_timedDecrease) + _decrease;
 
                 return _default + increase - decrease;
             }
@@ -101,6 +100,14 @@ namespace CastleHero.GamePlay.Unit
 
             target.Add(timedVal);
         }
+
+        private static float SumValues(List<TimedValue> list)
+        {
+            float sum = 0f;
+            for (int i = 0; i < list.Count; i++)
+                sum += list[i].value;
+            return sum;
+        }
     }
 
     public class Ability : CachedValue
@@ -141,7 +148,16 @@ namespace CastleHero.GamePlay.Unit
 
         public void Init(IList<IUpdate> root) => root.Add(this);
 
-        protected override float Value => _timedValues.Sum(x => x.Key.value);
+        protected override float Value
+        {
+            get
+            {
+                float sum = 0f;
+                for (int i = 0; i < _timedValues.Count; i++)
+                    sum += _timedValues[i].Key.value;
+                return sum;
+            }
+        }
         
         public void Increase(float val, IEffect effect)
         {
@@ -223,7 +239,7 @@ namespace CastleHero.GamePlay.Unit
 
         public float Left { get; private set; }
 
-        public void Increase(float value) => Left = Mathf.Min(Mathf.Max(Max, Left), Left + value);
+        public void Increase(float value) => Left = Mathf.Min(Max, Left + value);
 
         public void Decrease(float value) => Left = Mathf.Max(0, Left - value);
 

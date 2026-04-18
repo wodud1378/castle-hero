@@ -1,5 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
-using CastleHero.Data;
+﻿using CastleHero.Data;
 using CastleHero.Data.Model;
 using CastleHero.Network.Shared;
 
@@ -10,20 +9,28 @@ namespace CastleHero.View.Common.UI
     public class UICharacterSlot : UISlot
     {
         public UnitInfo Info { get; private set; }
- 
-        public UniTask Init(UnitInfo info, UnitEntity entity)
+
+        private IDBProvider _db;
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+            _db = ServiceLocator.Instance.Get<IDBProvider>();
+        }
+
+        public void Init(UnitInfo info, UnitEntity entity)
         {
             Info = info;
-            
-            return Init(entity.icon, $"Lv.{info.lv}");
-        }
-        
-        public UniTask Init(UnitInfo info)
-        {
-            if (!ServiceLocator.Get<IDBProvider>().Units.TryFind(info.id, out var entity))
-                return UniTask.CompletedTask;
 
-            return Init(info, entity);
+            Init(entity.icon, $"Lv.{info.lv}");
+        }
+
+        public void Init(UnitInfo info)
+        {
+            if (!_db.Units.TryFind(info.id, out var entity))
+                return;
+
+            Init(info, entity);
         }
     }
 }

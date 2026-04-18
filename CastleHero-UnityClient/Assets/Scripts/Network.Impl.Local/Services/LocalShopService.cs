@@ -15,7 +15,7 @@ namespace CastleHero.Network.Impl.Local.Services
     {
         private IAPManager _inApp;
 
-        public LocalShopService(LocalUserDataStore store) : base(store) { }
+        public LocalShopService(IServiceLocator sl, LocalUserDataStore store) : base(sl, store) { }
 
         public void RegisterIAP(IAPManager iap) => _inApp = iap;
 
@@ -36,7 +36,7 @@ namespace CastleHero.Network.Impl.Local.Services
             var currentTime = ServerTime.Now;
             products.ForEach(product =>
             {
-                if (!ServiceLocator.Get<IDBProvider>().Shop.TryFind(product.shopId, out var entity))
+                if (!Db.Shop.TryFind(product.shopId, out var entity))
                     return;
 
                 if (entity.totalCount <= 0 || product.nextReset > currentTime)
@@ -73,10 +73,10 @@ namespace CastleHero.Network.Impl.Local.Services
                 if ((currentTime.Date - x.updatedAt.Date).TotalDays <= 0)
                     return;
 
-                if (!ServiceLocator.Get<IDBProvider>().Shop.TryFind(x.shopId, out var entity))
+                if (!Db.Shop.TryFind(x.shopId, out var entity))
                     return;
 
-                if (!ServiceLocator.Get<IDBProvider>().ShopGroup.TryFind(entity.groupId, out var groupEntity))
+                if (!Db.ShopGroup.TryFind(entity.groupId, out var groupEntity))
                     return;
 
                 x.updatedAt = currentTime;
@@ -129,8 +129,8 @@ namespace CastleHero.Network.Impl.Local.Services
 
         public UniTask<Result<ItemBought>> BuyItem(PaymentType type, int id)
         {
-            if (!ServiceLocator.Get<IDBProvider>().Shop.TryFind(id, out var entity) ||
-                !ServiceLocator.Get<IDBProvider>().ShopGroup.TryFind(entity.groupId, out var groupEntity))
+            if (!Db.Shop.TryFind(id, out var entity) ||
+                !Db.ShopGroup.TryFind(entity.groupId, out var groupEntity))
                 return UniTask.FromResult(Result<ItemBought>.Error(Error.DataNotFound));
 
             var pack = GetPack(groupEntity);

@@ -12,14 +12,14 @@ namespace CastleHero.Editor
         [MenuItem("Tools/CastleHero/Unit/Animation Events Correction All")]
         public static void UpdateUnits()
         {
-            CastleHeroEditor.ModifyAllPrefabsWithComponent<UnitBehaviour>(AnimationEventsCorrection);
+            CastleHeroEditor.ModifyAllPrefabsWithComponent<UnitActor>(AnimationEventsCorrection);
         }
 
         [MenuItem("GameObject/CastleHero/Unit/Animation Events Correction")]
         public static void AnimationEventsCorrection()
         {
             var selection = Selection.gameObjects[0];
-            if (!selection.TryGetComponent(out UnitBehaviour unit))
+            if (!selection.TryGetComponent(out UnitActor unit))
                 return;
 
             AnimationEventsCorrection(unit);
@@ -28,10 +28,10 @@ namespace CastleHero.Editor
         [MenuItem("Tools/CastleHero/Unit/Merge Shadow")]
         public static void MergeShadow()
         {
-            CastleHeroEditor.ModifyAllPrefabsWithComponent<UnitBehaviour>(MergeShadow);
+            CastleHeroEditor.ModifyAllPrefabsWithComponent<UnitActor>(MergeShadow);
         }
 
-        private static void MergeShadow(UnitBehaviour unit)
+        private static void MergeShadow(UnitActor unit)
         {
             var shadow = unit.transform.GetChild(0).Find("Shadow");
             if (shadow == null)
@@ -41,7 +41,7 @@ namespace CastleHero.Editor
             unit.GetComponentInChildren<SkeletonRenderSeparator>().enabled = false;
         }
 
-        private static void AnimationEventsCorrection(UnitBehaviour unit)
+        private static void AnimationEventsCorrection(UnitActor unit)
         {
             var spine = unit.GetComponentInChildren<SkeletonMecanim>();
             if (spine == null)
@@ -127,10 +127,10 @@ namespace CastleHero.Editor
             }
 
             var selection = Selection.gameObjects[0];
-            if (!selection.TryGetComponent(out UnitBehaviour unit))
+            if (!selection.TryGetComponent(out UnitActor unit))
                 return;
 
-            if (unit.Type == UnitBehaviour.BehaviourType.Barricade)
+            if (unit.Type == UnitActor.ActorType.Barricade)
                 return;
 
             var spine = unit.GetComponentInChildren<SkeletonMecanim>();
@@ -141,7 +141,7 @@ namespace CastleHero.Editor
             if (body == null)
                 return;
 
-            // UnitBehaviour.EffectBody 는 런타임 Awake에서 GetComponentInChildren 로 자동 연결.
+            // UnitActor.EffectBody 는 런타임 Awake에서 GetComponentInChildren 로 자동 연결.
             // 에디터 툴은 프리팹 계층(Effect_Top/Middle/Bottom + BoneFollower) 셋업만 담당.
             if (!body.TryGetComponent(out EffectBody effectBody))
                 effectBody = body.gameObject.AddComponent<EffectBody>();

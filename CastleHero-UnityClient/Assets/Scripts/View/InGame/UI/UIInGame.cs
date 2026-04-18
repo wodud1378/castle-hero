@@ -53,24 +53,30 @@ namespace CastleHero.View.InGame.UI
         [FormerlySerializedAs("_shieldPrefab")]
         [SerializeField] private string shieldPrefab;
 
+        private CastleHero.Data.Repositories.SettingRepository _settings;
+        private PoolContainer _poolContainer;
+
         protected override void OnAwake()
         {
             base.OnAwake();
 
+            var sl = ServiceLocator.Instance;
+            _settings = sl.Get<CastleHero.Data.Repositories.SettingRepository>();
+            _poolContainer = sl.Get<PoolContainer>();
+
             this.SubscribeButton(pause, () => SetPause(true));
             this.SubscribeButton(speedUp, () =>
             {
-                var setting = ServiceLocator.Get<CastleHero.Data.Repositories.SettingRepository>();
-                setting.speedUp.Value = !setting.speedUp.Value;
+                _settings.speedUp.Value = !_settings.speedUp.Value;
 
-                Time.timeScale = setting.speedUp.Value
+                Time.timeScale = _settings.speedUp.Value
                     ? 2f
                     : 1f;
             });
             this.SubscribeMessage<GameResult>(OnResult);
-            this.SubscribeMessage<AtkResult>(r => OnAtkResult(r).Forget());
-            this.SubscribeMessage<HealResult>(r => OnHealResult(r).Forget());
-            this.SubscribeMessage<ShieldResult>(r => OnShieldResult(r).Forget());
+            this.SubscribeMessage<AtkResult>(r => OnAtkResult(r).SafeForget());
+            this.SubscribeMessage<HealResult>(r => OnHealResult(r).SafeForget());
+            this.SubscribeMessage<ShieldResult>(r => OnShieldResult(r).SafeForget());
         }
 
         protected override void OnBack() { }
@@ -116,7 +122,7 @@ namespace CastleHero.View.InGame.UI
                 _ => default
             };
 
-            uiDamage.Container = ServiceLocator.Get<CastleHero.Common.Pattern.PoolContainer>();
+            uiDamage.Container = _poolContainer;
             uiDamage.Show((int)result.Amount, pos);
         }
 
@@ -163,8 +169,7 @@ namespace CastleHero.View.InGame.UI
             if (string.IsNullOrEmpty(prefab))
                 return UniTask.FromResult<UIDamage>(null);
 
-            var container = ServiceLocator.Get<CastleHero.Common.Pattern.PoolContainer>();
-            container.TryGet<UIDamage>(prefab, out var item);
+            _poolContainer.TryGet<UIDamage>(prefab, out var item);
             return UniTask.FromResult(item);
         }
 
@@ -185,7 +190,7 @@ namespace CastleHero.View.InGame.UI
                 Pause.Close();
         }
 
-        private void OnResult(GameResult result) => OnResultAsync(result).Forget();
+        private void OnResult(GameResult result) => OnResultAsync(result).SafeForget();
 
         private async UniTaskVoid OnResultAsync(GameResult result)
         {
@@ -196,7 +201,7 @@ namespace CastleHero.View.InGame.UI
 
             Result
                 .Open(result)
-                .Forget();
+                .SafeForget();
         }
 
         public override void Dispose()

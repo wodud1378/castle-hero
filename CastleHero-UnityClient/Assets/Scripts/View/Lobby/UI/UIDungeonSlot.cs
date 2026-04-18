@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using CastleHero.Common.Behaviours;
 using CastleHero.View.Common;
 using CastleHero.View.Bootstrapper;
@@ -19,7 +18,7 @@ namespace CastleHero.View.Lobby.UI
 
         public DungeonEntity Entity { get; private set; }
 
-        public UniTask Init(DungeonEntity entity)
+        public void Init(DungeonEntity entity)
         {
             Entity = entity;
 
@@ -36,7 +35,7 @@ namespace CastleHero.View.Lobby.UI
 
             dayOfWeek.values.Update(openDays);
 
-            return base.Init(Entity.image);
+            base.Init(Entity.image);
         }
     }
 }

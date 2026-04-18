@@ -1,13 +1,10 @@
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using CastleHero.GamePlay.Unit.Events;
 using CastleHero.GamePlay.Unit.Behaviours;
 using CastleHero.Utility;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
-using CastleHero.Common.Pattern;
-using CastleHero.GamePlay.Unit.Effects;
 
 namespace CastleHero.GamePlay.Unit.Components
 {
@@ -15,19 +12,19 @@ namespace CastleHero.GamePlay.Unit.Components
     {
         public class Info
         {
-            public UnitBehaviour unit;
+            public UnitActor unit;
             public float amount;
             public string effect;
 
             public float leftTime;
         }
 
-        public readonly UnitBehaviour owner;
+        public readonly UnitActor owner;
         
         private readonly List<Info> _fixedCollection = new();
         private readonly List<Info> _timedCollection = new();
 
-        public AdditionalAttack(UnitBehaviour owner)
+        public AdditionalAttack(UnitActor owner)
         {
             this.owner = owner;
 
@@ -37,7 +34,7 @@ namespace CastleHero.GamePlay.Unit.Components
                 .AddTo(owner);
         }
 
-        public void Add(UnitBehaviour unit, float amount, string effect, float leftTime = 0f)
+        public void Add(UnitActor unit, float amount, string effect, float leftTime = 0f)
         {
             var info = new Info
             {
@@ -53,13 +50,13 @@ namespace CastleHero.GamePlay.Unit.Components
                 _fixedCollection.Add(info);
         }
 
-        public void Execute(UnitBehaviour target)
+        public void Execute(UnitActor target)
         {
             ExecuteInternal(target, _fixedCollection);
             ExecuteInternal(target, _timedCollection);
         }
 
-        private void ExecuteInternal(UnitBehaviour target, List<Info> collection)
+        private void ExecuteInternal(UnitActor target, List<Info> collection)
         {
             foreach (var info in collection)
             {
@@ -73,11 +70,12 @@ namespace CastleHero.GamePlay.Unit.Components
 
                 if (!string.IsNullOrEmpty(info.effect))
                 {
-                    owner.EffectBuilder
-                        .StartBuild(info.effect)
-                        .To(target)
-                        .From(owner.Position)
-                        .Run();
+                    new ProjectileEvent
+                    {
+                        Prefab = info.effect,
+                        From = owner,
+                        To = target
+                    }.Publish();
                 }
             }
         }

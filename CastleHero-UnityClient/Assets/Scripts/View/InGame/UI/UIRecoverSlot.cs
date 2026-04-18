@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using CastleHero.View.Common.UI;
 using CastleHero.Data.Repositories;
 using CastleHero.GamePlay.Unit.Behaviours;
@@ -14,13 +13,13 @@ namespace CastleHero.View.InGame.UI
         [FormerlySerializedAs("_gauge")]
         [SerializeField] private Image gauge;
 
-        public UniTask InitAsync(WaitRecover data)
+        public void InitAsync(WaitRecover data)
         {
             data.summary
                 .Subscribe(OnUpdate)
                 .AddTo(this);
 
-            return Init((data.behaviour as UnitBehaviour)?.Data.icon);
+            Init((data.actor as UnitActor)?.Data.icon);
         }
 
         private void OnUpdate((float left, float total) summary) => gauge.fillAmount = summary.left / summary.total;

@@ -12,7 +12,7 @@ using CastleHero.GamePlay.InGame;
 
 namespace CastleHero.GamePlay.InGame.Test
 {
-    public class TestBehaviour : MonoBehaviour
+    public class TestScene : MonoBehaviour
     {
         private void Awake()
         {
@@ -52,16 +52,16 @@ namespace CastleHero.GamePlay.InGame.Test
             if (!index.IsValidIndex(characters))
                 return;
 
-            var behaviour = characters[index] as UnitBehaviour;
-            if (behaviour == null)
+            var unitActor = characters[index] as UnitActor;
+            if (unitActor == null)
                 return;
 
             new AtkEvent
             {
                 Type = DamageType.Normal,
                 From = null,
-                To = behaviour,
-                Amount = behaviour.Status.hp.Max
+                To = unitActor,
+                Amount = unitActor.Status.hp.Max
             }.Publish();
         }
     }

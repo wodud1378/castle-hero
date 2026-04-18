@@ -4,7 +4,7 @@ namespace CastleHero.GamePlay.Unit.Components
 {
     /// <summary>
     /// 유닛 렌더링 추상화. 구현체는 View 모듈에 위치 (Animator/Spine 의존).
-    /// UnitCore 는 이 인터페이스만 알고 View 구현체는 몰라야 함.
+    /// CombatController 는 이 인터페이스만 알고 View 구현체는 몰라야 함.
     /// </summary>
     public interface IUnitRenderer
     {

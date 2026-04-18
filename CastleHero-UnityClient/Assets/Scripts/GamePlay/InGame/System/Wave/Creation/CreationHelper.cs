@@ -38,6 +38,8 @@ namespace CastleHero.GamePlay.InGame.System.Wave.Creation
         private readonly UnitSpace[] _spaceBuffer;
         private readonly UnitCreation[] _creationBuffer;
 
+        private readonly IDisposable _subscription;
+
         public CreationHelper(int areaId, UnitDB db, Vector2 cornerA, Vector2 cornerB)
         {
             _areaId = areaId;
@@ -51,7 +53,12 @@ namespace CastleHero.GamePlay.InGame.System.Wave.Creation
             _spaceBuffer = new UnitSpace[_bufferSize];
             _creationBuffer = new UnitCreation[_bufferSize];
 
-            MessageBroker.Default.Receive<SpawnEvent[]>().Subscribe(OnReceiveSpawnEvents);
+            _subscription = MessageBroker.Default.Receive<SpawnEvent[]>().Subscribe(OnReceiveSpawnEvents);
+        }
+
+        public void Dispose()
+        {
+            _subscription?.Dispose();
         }
 
         public void SetUpCreations(Action<UnitCreation> onCreation)

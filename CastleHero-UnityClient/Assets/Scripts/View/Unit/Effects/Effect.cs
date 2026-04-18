@@ -66,7 +66,7 @@ namespace CastleHero.View.Unit.Effects
             DestroySelf();
         }
 
-        public void SetTarget(UnitBehaviour unit)
+        public void SetTarget(UnitActor unit)
         {
             var effectBody = unit.EffectBody;
             if (effectBody == null)

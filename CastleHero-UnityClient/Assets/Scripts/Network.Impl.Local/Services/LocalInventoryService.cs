@@ -13,11 +13,11 @@ namespace CastleHero.Network.Impl.Local.Services
 {
     public class LocalInventoryService : LocalNetworkServiceBase, IInventoryService
     {
-        public LocalInventoryService(LocalUserDataStore store) : base(store) { }
+        public LocalInventoryService(IServiceLocator sl, LocalUserDataStore store) : base(sl, store) { }
 
         public UniTask<Result<OpenBox>> OpenChest(int chestId, int quantity)
         {
-            if (!ServiceLocator.Get<IDBProvider>().Items.TryFind(chestId, out var entity))
+            if (!Db.Items.TryFind(chestId, out var entity))
                 return UniTask.FromResult(Result<OpenBox>.Error(Error.DataNotFound));
 
             var option = entity.optionChest;
@@ -75,7 +75,7 @@ namespace CastleHero.Network.Impl.Local.Services
                 int quantity = quantities[index];
                 ++index;
 
-                if (!ServiceLocator.Get<IDBProvider>().Items.TryFind(item.ItemId, out var entity))
+                if (!Db.Items.TryFind(item.ItemId, out var entity))
                     continue;
 
                 if (item is EquipItem equipItem)
@@ -139,7 +139,7 @@ namespace CastleHero.Network.Impl.Local.Services
 
         private Error TryGetIngredientData(int id, out ItemEntity entity, out IngredientOption option)
         {
-            if (!ServiceLocator.Get<IDBProvider>().Items.TryFind(id, out entity))
+            if (!Db.Items.TryFind(id, out entity))
             {
                 option = default;
                 return Error.DataNotFound;
@@ -181,7 +181,7 @@ namespace CastleHero.Network.Impl.Local.Services
 
         private Error TryGetConsumableData(int id, out ItemEntity entity, out ConsumableOption option)
         {
-            if (!ServiceLocator.Get<IDBProvider>().Items.TryFind(id, out entity))
+            if (!Db.Items.TryFind(id, out entity))
             {
                 option = default;
                 return Error.DataNotFound;
@@ -199,7 +199,7 @@ namespace CastleHero.Network.Impl.Local.Services
 
         public UniTask<Result<EquipItem>> Refine(string guid, int itemId)
         {
-            if (!ServiceLocator.Get<IDBProvider>().Items.TryFind(itemId, out var entity) ||
+            if (!Db.Items.TryFind(itemId, out var entity) ||
                 !entity.TryGetElementalOption(out var option))
                 return UniTask.FromResult(Result<EquipItem>.Error(Error.DataNotFound));
 

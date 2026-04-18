@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using CastleHero.View.Common.UI.Popup;
 using CastleHero.Data;
 using CastleHero.Data.Model;
+using CastleHero.Data.UseCases;
 using CastleHero.View.Lobby.Prepare.UI;
 using CastleHero.Utility;
 using TMPro;
@@ -40,18 +40,11 @@ namespace CastleHero.View.Lobby.UI
 
         public bool IsOpened => gameObject.activeSelf;
 
-        private int AvailableLv
-        {
-            get
-            {
-                var record = ServiceLocator.Get<IUserRepository>().GameRecord.Dungeon
-                    .FirstOrDefault(x => x.layer == _entity.Value.Layer);
+        private int AvailableLv =>
+            DungeonHelper.GetAvailableLv(_userRepo, _entity.Value.Layer, _listOfSameType[^1].Lv);
 
-                return record != null
-                    ? Mathf.Min(record.lastClearedLv + 1, _listOfSameType[^1].Lv)
-                    : 1;
-            }
-        }
+        private IDBProvider _db;
+        private IUserRepository _userRepo;
 
         private readonly ReactiveProperty<DungeonEntity> _entity = new();
 
@@ -61,6 +54,10 @@ namespace CastleHero.View.Lobby.UI
 
         private void Awake()
         {
+            var sl = ServiceLocator.Instance;
+            _db = sl.Get<IDBProvider>();
+            _userRepo = sl.Get<IUserRepository>();
+
             this.SubscribeButton(confirm, Confirm);
             this.SubscribeButton(prev, OnPrev);
             this.SubscribeButton(next, OnNext);
@@ -84,7 +81,7 @@ namespace CastleHero.View.Lobby.UI
             prev.gameObject.SetActive(index > 0);
             next.gameObject.SetActive(index < _listOfSameType.Count - 1 && _listOfSameType[index + 1].lv <= AvailableLv);
 
-            rewardList.Init(entity.GetRewardsForDisplay()).Forget();
+            rewardList.Init(entity.GetRewardsForDisplay(_db));
         }
 
         private void Confirm()
@@ -121,7 +118,7 @@ namespace CastleHero.View.Lobby.UI
 
             BeginSelect(true);
 
-            _listOfSameType = ServiceLocator.Get<IDBProvider>().Dungeons.FindAll(x => x.Layer == layer);
+            _listOfSameType = _db.Dungeons.FindAll(x => x.Layer == layer);
             _listOfSameType.Sort((x, y) => x.lv.CompareTo(y.lv));
 
             _entity.Value = _listOfSameType.Find(x => x.lv == AvailableLv);
@@ -129,7 +126,7 @@ namespace CastleHero.View.Lobby.UI
 
         public void Close()
         {
-            TrySelectComplete(ServiceLocator.Get<IDBProvider>().Dungeons.FallBackEntity());
+            TrySelectComplete(_db.Dungeons.FallBackEntity());
 
             gameObject.SetActive(false);
         }

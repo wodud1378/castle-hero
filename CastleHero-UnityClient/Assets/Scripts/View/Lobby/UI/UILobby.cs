@@ -28,6 +28,13 @@ namespace CastleHero.View.Lobby.UI
 {
     public class UILobby : UIMain
     {
+        private StateManager<LobbyState> _lobbyState;
+        private IDBProvider _db;
+        private IUserRepository _userRepo;
+        private IPopupManager _popups;
+        private UIToolTip _toolTip;
+        private EntranceHolder _entrance;
+
         [FormerlySerializedAs("_quest")]
         [SerializeField] private Button quest;
         [FormerlySerializedAs("_mail")]
@@ -65,6 +72,14 @@ namespace CastleHero.View.Lobby.UI
         {
             base.OnAwake();
 
+            var sl = ServiceLocator.Instance;
+            _lobbyState = sl.Get<StateManager<LobbyState>>();
+            _db = sl.Get<IDBProvider>();
+            _userRepo = sl.Get<IUserRepository>();
+            _popups = sl.Get<IPopupManager>();
+            _toolTip = sl.Get<UIToolTip>();
+            _entrance = sl.Get<EntranceHolder>();
+
             this.SubscribeButton(cheatButton, () => uiTest.Open());
             this.SubscribeButton(characters, OpenPopup<PopupCharacterList>);
             this.SubscribeButton(inventory, OpenPopup<PopupInventory>);
@@ -73,21 +88,21 @@ namespace CastleHero.View.Lobby.UI
             this.SubscribeButton(setting, OpenPopup<PopupSetting>);
             this.SubscribeButton(dungeon, OpenPopup<PopupDungeon>);
             this.SubscribeButton(summon, OpenPopup<PopupSummon>);
-            this.SubscribeButton(castle, () => ServiceLocator.Get<StateManager<LobbyState>>().CurrentState = LobbyState.Castle);
-            this.SubscribeButton(shop, () => ServiceLocator.Get<StateManager<LobbyState>>().CurrentState = LobbyState.Shop);
+            this.SubscribeButton(castle, () => _lobbyState.CurrentState = LobbyState.Castle);
+            this.SubscribeButton(shop, () => _lobbyState.CurrentState = LobbyState.Shop);
             this.SubscribeButton(noAdsMark, () =>
             {
-                var noAds = ServiceLocator.Get<IDBProvider>().Shop.Find(x => x.category == ShopCategory.NoAds);
+                var noAds = _db.Shop.Find(x => x.category == ShopCategory.NoAds);
                 if (!noAds.IsValid)
                     return;
 
                 OpenToolTip(noAds.name, noAdsMark);
             });
 
-            SubScribeContractMark(0);
-            SubScribeContractMark(1);
+            SubscribeContractMark(0);
+            SubscribeContractMark(1);
 
-            var products = ServiceLocator.Get<IUserRepository>().ShopRecord.Products;
+            var products = _userRepo.ShopRecord.Products;
             products
                 .ChangeAsObservable()
                 .Subscribe(UpdateMarks)
@@ -100,22 +115,21 @@ namespace CastleHero.View.Lobby.UI
 
         private void ProcessLink()
         {
-            var entrance = ServiceLocator.Get<EntranceHolder>().Current;
+            var entrance = _entrance.Current;
             if (entrance.state != State.Lobby || entrance.link == Entrance.Link.None)
                 return;
 
-            var repository = ServiceLocator.Get<IUserRepository>();
             UnitInfo unit = null;
             switch (entrance.link)
             {
                 case Entrance.Link.LevelUp:
-                    unit = repository.UnitForLevelUp();
+                    unit = _userRepo.UnitForLevelUp();
                     break;
                 case Entrance.Link.RateUp:
-                    unit = repository.UnitForUpgrade();
+                    unit = _userRepo.UnitForUpgrade();
                     break;
                 case Entrance.Link.Equipment:
-                    unit = ServiceLocator.Get<IUserRepository>().UnitForUpgradeEquipments(out bool openDungeon);
+                    unit = _userRepo.UnitForUpgradeEquipments(out bool openDungeon);
                     if (openDungeon)
                         OpenPopup<PopupDungeon>();
                     break;
@@ -125,12 +139,12 @@ namespace CastleHero.View.Lobby.UI
                 OpenPopup<PopupCharacter>(unit);
         }
 
-        private void SubScribeContractMark(int index)
+        private void SubscribeContractMark(int index)
         {
             if (!index.IsValidIndex(contractMarks))
                 return;
 
-            var contracts = ServiceLocator.Get<IDBProvider>().Shop.FindAll(x => x.category == ShopCategory.Contract);
+            var contracts = _db.Shop.FindAll(x => x.category == ShopCategory.Contract);
             if (contracts.Count < index + 1)
                 return;
 
@@ -139,7 +153,7 @@ namespace CastleHero.View.Lobby.UI
         }
 
         private void OpenToolTip(string text, Button root) =>
-            ServiceLocator.Get<UIToolTip>().Open(text, root.transform as RectTransform, 1f, 1f);
+            _toolTip.Open(text, root.transform as RectTransform, 1f, 1f);
 
         private void UpdateMarks(IEnumerable<Product> collection)
         {
@@ -149,8 +163,8 @@ namespace CastleHero.View.Lobby.UI
                 products.Any(p => p.shopId == id && p.expireDate > currentTime);
 
             var currentTime = ServerTime.Now;
-            var noAds = ServiceLocator.Get<IDBProvider>().Shop.Find(x => x.category == ShopCategory.NoAds);
-            var contracts = ServiceLocator.Get<IDBProvider>().Shop.FindAll(x => x.category == ShopCategory.Contract);
+            var noAds = _db.Shop.Find(x => x.category == ShopCategory.NoAds);
+            var contracts = _db.Shop.FindAll(x => x.category == ShopCategory.Contract);
 
             noAdsMark.gameObject.SetActive(noAds.IsValid && HasProduct(noAds.Id, currentTime));
             contractMarks[0].gameObject.SetActive(contracts.Count > 0 && HasProduct(contracts[0].Id, currentTime));
@@ -161,8 +175,8 @@ namespace CastleHero.View.Lobby.UI
         {
         }
 
-        private void OpenPopup<T>() where T : PopupBase => ServiceLocator.Get<IPopupManager>().Open<T>();
+        private void OpenPopup<T>() where T : PopupBase => _popups.Open<T>();
 
-        private void OpenPopup<T>(params object[] param) where T : PopupBase => ServiceLocator.Get<IPopupManager>().Open<T>(param);
+        private void OpenPopup<T>(params object[] param) where T : PopupBase => _popups.Open<T>(param);
     }
 }

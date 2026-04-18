@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BackEnd;
 using Cysharp.Threading.Tasks;
+using CastleHero.Common.Pattern;
 using CastleHero.Network.Service;
 using CastleHero.Network.Shared;
 using CastleHero.Utility;
@@ -10,6 +11,8 @@ namespace CastleHero.Network.Impl.Backend.Services
 {
     public class BackendUserService : BackendNetworkServiceBase, IUserService
     {
+        public BackendUserService(IServiceLocator sl) : base(sl) { }
+
         public async UniTask SaveFormation(FormationDto formation)
             => await UpdateTable(Table.Formation, formation);
 

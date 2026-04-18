@@ -1,10 +1,10 @@
+using System;
 using CastleHero.GamePlay.Unit.Events;
 using CastleHero.GamePlay.Unit.Behaviours;
 using CastleHero.GamePlay.Unit.Finding;
 using CastleHero.Utility;
+using UniRx;
 using UnityEngine;
-using CastleHero.Common.Pattern;
-using CastleHero.GamePlay.Unit.Effects;
 
 namespace CastleHero.GamePlay.Unit.Components
 {
@@ -13,17 +13,19 @@ namespace CastleHero.GamePlay.Unit.Components
         public readonly Finder finder;
         public readonly AdditionalAttack additional;
 
-        private readonly UnitBehaviour _owner;
+        private readonly UnitActor _owner;
         private readonly IUnitRenderer _renderer;
         private readonly IAnimationEventProvider _animationEvents;
 
         public bool IsRunning { get; private set; }
 
-        public UnitBehaviour CurrentTarget { get; private set; }
+        public UnitActor CurrentTarget { get; private set; }
 
         public string projectile;
 
-        public Attack(UnitBehaviour owner, Finder finder, IUnitRenderer renderer,
+        private IDisposable _targetDeadSub;
+
+        public Attack(UnitActor owner, Finder finder, IUnitRenderer renderer,
             IAnimationEventProvider animationEvents)
         {
             _owner = owner;
@@ -34,11 +36,8 @@ namespace CastleHero.GamePlay.Unit.Components
             _renderer = renderer;
             _animationEvents = animationEvents;
 
-            _animationEvents.OnHitEvent -= ProcessHit;
-            _animationEvents.OnHitEvent += ProcessHit;
-
-            _animationEvents.OnReleaseAttackEvent -= OnReleaseAttack;
-            _animationEvents.OnReleaseAttackEvent += OnReleaseAttack;
+            _animationEvents.OnHit.Subscribe(_ => ProcessHit()).AddTo(owner);
+            _animationEvents.OnReleaseAttack.Subscribe(_ => OnReleaseAttack()).AddTo(owner);
         }
 
         public bool IsAbleToAttack()
@@ -49,52 +48,28 @@ namespace CastleHero.GamePlay.Unit.Components
 
             if (CurrentTarget != selected)
             {
-                if (CurrentTarget.IsValid())
-                    CurrentTarget.OnDead -= OnUnitDead;
-                
-                selected.OnDead -= OnUnitDead;
-                selected.OnDead += OnUnitDead;
+                _targetDeadSub?.Dispose();
+                _targetDeadSub = selected.OnDead.Take(1).Subscribe(OnUnitDead);
                 CurrentTarget = selected;
             }
 
             return true;
         }
         
-        private UnitBehaviour Select()
+        private UnitActor Select()
         {
-            var overriden = finder.Override;
-            if (overriden.IsValid())
-                return overriden;
-
-            float rangeStat = _owner.Status.atkRange;
-            if (CurrentTarget.IsValid())
-            {
-                float distance = (CurrentTarget.Position - _owner.Position).sqrMagnitude;
-                float range = Mathf.Pow(rangeStat, 2);
-
-                if (distance <= range)
-                    return CurrentTarget;
-            }
-            
-            finder.detection.SetRange(rangeStat, rangeStat);
-            return !finder.Update(_owner.Position)
-                ? null
-                : finder.Found.Count > 0
-                    ? finder.Found[0]
-                    : null;
+            return UnitHelper.SelectTarget(finder, _owner, CurrentTarget, _owner.Status.atkRange);
         }
         
-        private void OnUnitDead(UnitBehaviour unit)
+        private void OnUnitDead(UnitActor unit)
         {
             if(unit == CurrentTarget)
                 Stop();
-            
-            unit.OnDead -= OnUnitDead;
         }
 
         public void Run()
         {
-            _renderer.SetAnimation(UnitCore.AnimationsHash[UnitCore.States.Attack]);
+            _renderer.SetAnimation(CombatController.AnimationsHash[UnitState.States.Attack]);
             IsRunning = true;
         }
 
@@ -117,14 +92,18 @@ namespace CastleHero.GamePlay.Unit.Components
                 To = CurrentTarget,
                 Amount = _owner.Status.atk
             }.Publish();
-            
+
             additional.Execute(CurrentTarget);
 
-            if (!string.IsNullOrEmpty(projectile))_owner.EffectBuilder
-                .StartBuild(projectile)
-                .To(CurrentTarget)
-                .From(_owner.Position)
-                .Run();
+            if (!string.IsNullOrEmpty(projectile))
+            {
+                new ProjectileEvent
+                {
+                    Prefab = projectile,
+                    From = _owner,
+                    To = CurrentTarget
+                }.Publish();
+            }
         }
 
         private void OnReleaseAttack() => IsRunning = false;

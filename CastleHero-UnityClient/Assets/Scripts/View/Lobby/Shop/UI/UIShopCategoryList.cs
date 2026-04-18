@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;
 using CastleHero.View.Common.UI;
 using CastleHero.Data.Model;
 using CastleHero.Utility;
@@ -42,6 +41,6 @@ namespace CastleHero.View.Lobby.Shop.UI
             }
         }
 
-        protected override UniTask SetItem(UIShopCategorySlot slot, IEnumerable<ShopItemEntity> data) => slot.Init(data);
+        protected override void SetItem(UIShopCategorySlot slot, IEnumerable<ShopItemEntity> data) => slot.Init(data);
     }
 }

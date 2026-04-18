@@ -8,13 +8,13 @@ using CastleHero.View.Common.UI;
 using CastleHero.View.Common.UI.Popup;
 using CastleHero.Data;
 using CastleHero.View.Lobby.UI;
-using CastleHero.Network.Service;
 using CastleHero.Network.Shared;
 using CastleHero.Utility;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using CastleHero.Common.Pattern;
+using CastleHero.View.Lobby.UI.Inventory.Actions;
 
 using CastleHero.Data.Repositories;
 using CastleHero.Common.Sound;
@@ -32,6 +32,10 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
         [FormerlySerializedAs("_equip")]
         [SerializeField] private Button equip;
 
+        private IUserRepository _userRepo;
+        private EquipAction _equipAction;
+        private SoundPath _soundPath;
+
         private UnitInfo _unit;
         private EquipItem _leftItem;
         private EquipItem _rightItem;
@@ -46,7 +50,12 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
         {
             base.OnAwake();
 
-            this.SubscribeButton(equip, OnEquip, ServiceLocator.Get<SoundPath>().equipItem);
+            var sl = ServiceLocator.Instance;
+            _userRepo = sl.Get<IUserRepository>();
+            _equipAction = sl.Get<EquipAction>();
+            _soundPath = sl.Get<SoundPath>();
+
+            this.SubscribeButton(equip, OnEquip, _soundPath.equipItem);
         }
 
         public override UniTask Open(params object[] parameters)
@@ -71,7 +80,7 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
                 {
                     _unit = unit;
                     _leftItem = unit.equipments != null
-                        ? ServiceLocator.Get<IUserRepository>().EquipItems(unit.equipments).FirstOrDefault(x => x.slot == rightItem.slot)
+                        ? _userRepo.EquipItems(unit.equipments).FirstOrDefault(x => x.slot == rightItem.slot)
                         : null;
                     break;
                 }
@@ -110,12 +119,8 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
             }
             else
             {
-                var result = await ServiceLocator.Get<INetworkServiceProvider>().Character.Equip(_unit.id, _rightItem.Guid);
-                if (!result.IsSuccess)
-                {
-                    ServiceLocator.Get<IPopupManager>().Open<PopupCommon>(result.error);
+                if (!await _equipAction.Equip(_unit.id, _rightItem.Guid))
                     return;
-                }
             }
 
             Close();
@@ -124,9 +129,9 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
         private void UpdateUI()
         {
             if (_leftItem != null)
-                left.Init(_leftItem).Forget();
+                left.Init(_leftItem);
 
-            right.Init(_rightItem).Forget();
+            right.Init(_rightItem);
 
             UpdateText(_leftItem, _rightItem);
         }

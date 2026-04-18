@@ -45,20 +45,20 @@ namespace CastleHero.View.Lobby.Behaviours
 
         public async UniTask Init()
         {
-            var userRepo = ServiceLocator.Get<IUserRepository>();
-            var db = ServiceLocator.Get<IDBProvider>();
+            var sl = ServiceLocator.Instance;
+            var userRepo = sl.Get<IUserRepository>();
+            var db = sl.Get<IDBProvider>();
 
             _composer = new FormationComposer(
                 area: this,
-                unitFactory: ServiceLocator.Get<IUnitFactory>(),
-                castleFactory: ServiceLocator.Get<ICastleFactory>(),
+                factory: sl.Get<UnitFactory>(),
                 userRepo: userRepo,
                 db: db,
-                popups: ServiceLocator.Get<IPopupManager>(),
-                sounds: ServiceLocator.Get<ISoundManager>(),
-                localize: ServiceLocator.Get<LocalizeText>(),
-                soundPath: ServiceLocator.Get<SoundPath>(),
-                network: ServiceLocator.Get<INetworkServiceProvider>());
+                popups: sl.Get<IPopupManager>(),
+                sounds: sl.Get<ISoundManager>(),
+                localize: sl.Get<LocalizeText>(),
+                soundPath: sl.Get<SoundPath>(),
+                network: sl.Get<INetworkServiceProvider>());
 
             _syncer = new FormationSyncer(_composer, userRepo, db);
             _syncer.Start();
@@ -74,9 +74,9 @@ namespace CastleHero.View.Lobby.Behaviours
 
         public void Clear() => _composer.Clear();
 
-        public void Remove(UnitBehaviour unit) => _composer.Remove(unit);
+        public void Remove(UnitActor unit) => _composer.Remove(unit);
 
-        public bool TryRegister(UnitBehaviour unit, int layer, bool isExist) =>
+        public bool TryRegister(UnitActor unit, int layer, bool isExist) =>
             _composer.TryRegister(unit, layer, isExist);
 
         public bool IsValid(Collider2D col, int layer)
@@ -92,10 +92,10 @@ namespace CastleHero.View.Lobby.Behaviours
 
         public bool InArea(Vector2 position) => Vector2.Distance(transform.position, position) <= Radius;
 
-        void IFormationFieldArea.AddObstacle(UnitBehaviour unit, bool regenerateMap) =>
+        void IFormationFieldArea.AddObstacle(UnitActor unit, bool regenerateMap) =>
             map.AddObstacle(unit, regenerateMap);
 
-        void IFormationFieldArea.RemoveObstacle(UnitBehaviour unit) =>
+        void IFormationFieldArea.RemoveObstacle(UnitActor unit) =>
             map.RemoveObstacle(unit);
 
         void IFormationFieldArea.GenerateMap() => map.GenerateMap();

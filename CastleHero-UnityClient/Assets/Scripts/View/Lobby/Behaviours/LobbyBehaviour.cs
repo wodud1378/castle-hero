@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using CastleHero.View.Castle;
 using CastleHero.Common.Behaviours;
@@ -13,10 +12,10 @@ using CastleHero.Data;
 using CastleHero.Data.DB;
 using CastleHero.Data.Model;
 using CastleHero.Data.Repositories;
+using CastleHero.View.Lobby.Actions;
 using CastleHero.View.Lobby.Shop.UI;
 using CastleHero.View.Lobby.UI;
 using CastleHero.View.Lobby.UI.Popup;
-using CastleHero.Network.Service;
 using CastleHero.View.Lobby.Prepare.UI;
 using CastleHero.Utility;
 using UniRx;
@@ -26,7 +25,7 @@ using UnityEngine.Serialization;
 
 namespace CastleHero.View.Lobby.Behaviours
 {
-    public class LobbyBehaviour : SceneBehaviour, IBackButtonListener
+    public class LobbyScene : SceneBase, IBackButtonListener
     {
         [FormerlySerializedAs("_bgm")]
         [SerializeField] private AssetReference bgm;
@@ -52,19 +51,24 @@ namespace CastleHero.View.Lobby.Behaviours
         private StartButton _startButton;
         private BackButton _back;
 
+        private LobbyAction _presenter;
+
         private UIMain _current;
 
         protected override async UniTask OnLoaded()
         {
             base.OnLoaded();
 
-            _lobbyState = ServiceLocator.Get<StateManager<LobbyState>>();
-            _state = ServiceLocator.Get<StateManager<State>>();
-            _userRepo = ServiceLocator.Get<IUserRepository>();
-            _db = ServiceLocator.Get<IDBProvider>();
-            _popups = ServiceLocator.Get<IPopupManager>();
-            _startButton = ServiceLocator.Get<StartButton>();
-            _back = ServiceLocator.Get<BackButton>();
+            var sl = ServiceLocator.Instance;
+            _lobbyState = sl.Get<StateManager<LobbyState>>();
+            _state = sl.Get<StateManager<State>>();
+            _userRepo = sl.Get<IUserRepository>();
+            _db = sl.Get<IDBProvider>();
+            _popups = sl.Get<IPopupManager>();
+            _startButton = sl.Get<StartButton>();
+            _back = sl.Get<BackButton>();
+
+            _presenter = sl.Get<LobbyAction>();
 
             await formation.Init();
 
@@ -88,7 +92,7 @@ namespace CastleHero.View.Lobby.Behaviours
 
         private async UniTask UpdateStamina()
         {
-            var result = await ServiceLocator.Get<INetworkServiceProvider>().User.UpdateStamina();
+            var result = await _presenter.UpdateStamina();
 
             if (!result.IsSuccess)
                 _popups.Open<PopupCommon>(result.error);
@@ -96,33 +100,10 @@ namespace CastleHero.View.Lobby.Behaviours
 
         private async UniTask ReceiveSubscribeProducts()
         {
-            var products = _userRepo.ShopRecord.Products;
-            if (products == null || products.Count == 0)
+            var result = await _presenter.TryReceiveSubscribedItems();
+            if (result == null)
                 return;
 
-            var currentTime = ServerTime.Now;
-            var hasProducts = products
-                .Any(x =>
-                {
-                    if (x.expireDate <= currentTime)
-                        return false;
-
-                    if ((currentTime.Date - x.updatedAt.Date).TotalDays <= 0)
-                        return false;
-
-                    if (!_db.Shop.TryFind(x.shopId, out var entity))
-                        return false;
-
-                    if (!_db.ShopGroup.TryFind(entity.groupId, out var groupEntity))
-                        return false;
-
-                    return groupEntity is { ids: { Length: > 0 }, quantities: { Length: > 0 } };
-                });
-
-            if (!hasProducts)
-                return;
-
-            var result = await ServiceLocator.Get<INetworkServiceProvider>().Shop.ReceiveSubscribedItems();
             if (!result.IsSuccess)
                 _popups.Open<PopupCommon>(result.error);
             else

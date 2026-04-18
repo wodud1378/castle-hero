@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using CastleHero.View.Common.UI;
 using CastleHero.Data;
 using CastleHero.View.Lobby.UI.Inventory;
@@ -18,6 +17,13 @@ namespace CastleHero.View.Lobby.UI.Adapter
         [SerializeField] private AssetReference equipItemPrefab;
 
         private GameObject _cachedEquipPrefab;
+        private IDBProvider _db;
+
+        private void Awake()
+        {
+            var sl = ServiceLocator.Instance;
+            _db = sl.Get<IDBProvider>();
+        }
 
         protected override UIItemSlot ProvideSlot(IItem data)
         {
@@ -42,15 +48,18 @@ namespace CastleHero.View.Lobby.UI.Adapter
             }
         }
 
-        protected override UniTask SetItem(UIItemSlot slot, IItem data)
+        protected override void SetItem(UIItemSlot slot, IItem data)
         {
-            if (!ServiceLocator.Get<IDBProvider>().Items.TryFind(data.ItemId, out var entity))
-                return UniTask.CompletedTask;
+            if (!_db.Items.TryFind(data.ItemId, out var entity))
+                return;
 
             if (slot is UIEquipmentSlot eSlot && data is EquipItem eItem)
-                return eSlot.Init(eItem);
+            {
+                eSlot.Init(eItem);
+                return;
+            }
 
-            return slot.Init(data, entity);
+            slot.Init(data, entity);
         }
     }
 }

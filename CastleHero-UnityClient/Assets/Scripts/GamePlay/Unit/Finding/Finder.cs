@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using CastleHero.GamePlay.Unit.Behaviours;
 using CastleHero.Utility;
@@ -9,16 +10,17 @@ namespace CastleHero.GamePlay.Unit.Finding
     public class Finder
     {
         private static readonly DetectionFactory DetectionFactory = new();
-        private static readonly Dictionary<Collider2D, UnitBehaviour> CachedUnits = new();
+        private static readonly Dictionary<Collider2D, UnitActor> CachedUnits = new();
 
-        public List<UnitBehaviour> Found { get; } = new();
-        public UnitBehaviour Main => Found.Count > 0 ? Found[0] : null;
+        public List<UnitActor> Found { get; } = new();
+        public UnitActor Main => Found.Count > 0 ? Found[0] : null;
 
-        public UnitBehaviour Override => _overrides.Count > 0 ? _overrides[^1] : null;
+        public UnitActor Override => _overrides.Count > 0 ? _overrides[^1] : null;
         
         public readonly IDetection detection;
-        
-        private readonly List<UnitBehaviour> _overrides = new();
+
+        private readonly List<UnitActor> _overrides = new();
+        private readonly Dictionary<UnitActor, IDisposable> _overrideDeadSubs = new();
         
         private Finder(IDetection detection)
         {
@@ -62,22 +64,24 @@ namespace CastleHero.GamePlay.Unit.Finding
             _overrides.Clear();
         }
 
-        public void RegisterOverride(UnitBehaviour unit)
+        public void RegisterOverride(UnitActor unit)
         {
             _overrides.Add(unit);
 
-            unit.OnDead += ReleaseOverride;
+            var sub = unit.OnDead.Take(1).Subscribe(ReleaseOverride);
+            _overrideDeadSubs[unit] = sub;
         }
 
-        public void ReleaseOverride(UnitBehaviour unit)
+        public void ReleaseOverride(UnitActor unit)
         {
             if (_overrides.Contains(unit))
                 _overrides.Remove(unit);
-            
-            unit.OnDead -= ReleaseOverride;
+
+            if (_overrideDeadSubs.Remove(unit, out var sub))
+                sub.Dispose();
         }
 
-        private bool TryGetUnit(Collider2D collider, out UnitBehaviour unit)
+        private bool TryGetUnit(Collider2D collider, out UnitActor unit)
         {
             if (!CachedUnits.TryGetValue(collider, out unit))
             {

@@ -38,8 +38,11 @@ namespace CastleHero.View.Common.UI
 
         private readonly BoolReactiveProperty _hasOverride = new(false);
 
+        private IDBProvider _db;
+
         private void Awake()
         {
+            _db = ServiceLocator.Instance.Get<IDBProvider>();
             Observable
                 .CombineLatest(
                     _lv,
@@ -80,14 +83,14 @@ namespace CastleHero.View.Common.UI
                 ? $"{ToLvText(current.lv).WithColor(lvColor)} -> {ToLvText(next.lv).WithPositiveColor()}"
                 : $"{ToLvText(current.lv).WithColor(lvColor)}";
 
-            int maxLv = ServiceLocator.Get<IDBProvider>().Levels.MaxLv;
+            int maxLv = _db.Levels.MaxLv;
             bool isMaxLv = hasOverride
                 ? next.lv == maxLv
                 : current.lv == maxLv;
 
             int id = hasOverride ? next.lv : current.lv;
             int currentExp = hasOverride ? next.exp : current.exp;
-            int maxExp = !ServiceLocator.Get<IDBProvider>().Levels.TryFind(id, out var entity) ? next.exp : entity.exp;
+            int maxExp = !_db.Levels.TryFind(id, out var entity) ? next.exp : entity.exp;
             float ratio = isMaxLv ? 1f : (float)currentExp / maxExp;
             //_gauge.image.overrideSprite = hasOverride ? _overrideGaugeSprite : null;
             gauge.maxValue = maxExp;

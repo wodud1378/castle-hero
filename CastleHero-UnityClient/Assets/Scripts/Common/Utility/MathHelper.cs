@@ -25,11 +25,11 @@ namespace CastleHero.Utility
             return point;
         }
 
-        public static float DistanceTo(this Vector2 from, Vector2 to) => (to - from).sqrMagnitude;
-        
+        public static float SqrDistanceTo(this Vector2 from, Vector2 to) => (to - from).sqrMagnitude;
+
         public static bool IsNear(this Vector2 from, Vector2 to)
         {
-            float distance = from.DistanceTo(to);
+            float distance = from.SqrDistanceTo(to);
             if (distance > 0.015f)
                 return false;
 

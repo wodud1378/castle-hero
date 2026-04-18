@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using CastleHero.Common;
 using CastleHero.Common.Flow;
 using CastleHero.Common.Sound;
@@ -21,12 +22,14 @@ namespace CastleHero.GamePlay.InGame
 {
     public class GameHandler : IDisposable
     {
-        public event Action<GameFinished> OnFinished;
+        private readonly UniTaskCompletionSource<GameFinished> _finished = new();
+        public UniTask<GameFinished> Finished => _finished.Task;
 
         private readonly IUserRepository _userRepo;
-        private readonly IInGameSession _gameRepo;
+        private readonly IInGameSession _gameSession;
         private readonly IDBProvider _db;
         private readonly ISoundManager _sounds;
+        private readonly EntranceHolder _entranceHolder;
 
         private readonly IGameEntity _entity;
 
@@ -40,21 +43,22 @@ namespace CastleHero.GamePlay.InGame
         private readonly List<GameEvent> _failedCondition = new();
 
         public GameHandler(StartGame startGame, IWaveController wave,
-            IUserRepository userRepo, IInGameSession gameRepo, IDBProvider db, ISoundManager sounds,
+            IUserRepository userRepo, IInGameSession gameSession, IDBProvider db, ISoundManager sounds,
             EffectBuilder effectBuilder, GameConstants constants)
         {
             _userRepo = userRepo;
-            _gameRepo = gameRepo;
+            _gameSession = gameSession;
             _db = db;
             _sounds = sounds;
+            _entranceHolder = ServiceLocator.Instance.Get<EntranceHolder>();
 
             _entity = startGame.entity;
-            _gameRepo.GameEntity = _entity;
-            _gameRepo.LeftTime.Value = _entity.TimeLimit;
+            _gameSession.GameEntity = _entity;
+            _gameSession.LeftTime.Value = _entity.TimeLimit;
             _wave = wave;
 
-            _unitProcessor = new(_gameRepo, effectBuilder, sounds, constants);
-            _timer = new(_gameRepo.LeftTime);
+            _unitProcessor = new(_gameSession, effectBuilder, sounds, constants);
+            _timer = new(_gameSession.LeftTime);
 
             if (_entity is DungeonEntity dungeonEntity)
             {
@@ -93,7 +97,7 @@ namespace CastleHero.GamePlay.InGame
             SetConditions();
             
             _timer.Run();
-            _wave.Init(_entity.WaveId, _db, _gameRepo);
+            _wave.Init(_entity.WaveId, _db, _gameSession);
             _wave.IsRunning = true;
             
             RunUnits();
@@ -104,7 +108,7 @@ namespace CastleHero.GamePlay.InGame
             _wave.IsRunning = false;
 
             var data = NextEntrance(exit.code);
-            ServiceLocator.Get<EntranceHolder>().Current = new Entrance
+            _entranceHolder.Current = new Entrance
             {
                 state = data.Item1,
                 gameEntrance = data.Item2,
@@ -116,8 +120,8 @@ namespace CastleHero.GamePlay.InGame
         {
             if (_failedCondition.Contains(GameEvent.CastleDestroyed))
             {
-                var castleSubscription = ((UnitBehaviour)_gameRepo.Castle.Value).State
-                    .Where(x => x == UnitCore.States.Dead)
+                var castleSubscription = ((UnitActor)_gameSession.Castle.Value).State
+                    .Where(x => x == UnitState.States.Dead)
                     .Subscribe(_ => OccurGameEvent(GameEvent.CastleDestroyed));
 
                 _subscriptions.Add(castleSubscription);
@@ -125,22 +129,20 @@ namespace CastleHero.GamePlay.InGame
 
             if (_failedCondition.Contains(GameEvent.DeadAllCharacters))
             {
-                var units = _gameRepo.Characters
-                    .OfType<UnitBehaviour>()
-                    .Where(x => x.Type == UnitBehaviour.BehaviourType.Unit)
+                var units = _gameSession.Characters
+                    .OfType<UnitActor>()
+                    .Where(x => x.Type == UnitActor.ActorType.Unit)
                     .ToList();
-
-                void OnUnitDead(UnitBehaviour unit)
-                {
-                    if(units.TrueForAll(x => x.State.Value == UnitCore.States.Dead))
-                        OccurGameEvent(GameEvent.DeadAllCharacters);
-
-                    unit.OnDead -= OnUnitDead;
-                }
 
                 foreach (var unit in units)
                 {
-                    unit.OnDead += OnUnitDead;
+                    var sub = unit.OnDead.Take(1).Subscribe(_ =>
+                    {
+                        if (units.TrueForAll(x => x.State.Value == UnitState.States.Dead))
+                            OccurGameEvent(GameEvent.DeadAllCharacters);
+                    });
+
+                    _subscriptions.Add(sub);
                 }
             }
             
@@ -156,11 +158,10 @@ namespace CastleHero.GamePlay.InGame
         private void RunUnits()
         {
             bool enableRecover = !_failedCondition.Contains(GameEvent.DeadAllCharacters);
-            foreach (var character in _gameRepo.Characters.OfType<UnitBehaviour>())
+            foreach (var character in _gameSession.Characters.OfType<UnitActor>())
             {
-                var core = character.Core;
-                core.OnRest.Value = false;
-                core.EnableRecover = enableRecover;
+                character.UnitState.OnRest.Value = false;
+                character.UnitState.EnableRecover = enableRecover;
             }
         }
 
@@ -181,16 +182,14 @@ namespace CastleHero.GamePlay.InGame
             if (isEnd)
             {
                 _sounds.StopBgm();
-                
-                OnFinished?.Invoke(new GameFinished
+
+                _finished.TrySetResult(new GameFinished
                 {
                     IsCleared = isCleared,
                     Cause = ev,
                     Type = _entity.Type,
                     Id = _entity.Id,
                 });
-                
-                OnFinished = null;
             }
         }
 
@@ -201,7 +200,7 @@ namespace CastleHero.GamePlay.InGame
             if (exitCode != ExitCode.Exit)
             {
                 state = State.InGame;
-                var exist = _gameRepo.GameEntity;
+                var exist = _gameSession.GameEntity;
                 var entity = exitCode == ExitCode.Retry
                     ? exist
                     : _db.TryLoadNextGameEntity(exist.Type, exist.Id, out var e)
@@ -235,9 +234,9 @@ namespace CastleHero.GamePlay.InGame
         {
             int lv = _userRepo.GameRecord.CastleLv.Value;
             if (!_db.Castles.TryFind(lv, out var entity))
-                return null;
+                return global::System.Array.Empty<CastleSkillParameter>();
 
-            return entity.SkillParameters();
+            return entity.SkillParameters() ?? global::System.Array.Empty<CastleSkillParameter>();
         }
 
         public void Dispose()

@@ -11,8 +11,8 @@ namespace CastleHero.View.Lobby.Behaviours
     {
         float AutoPlacementRadius { get; }
         bool IsValid(Collider2D collider, int layer);
-        void AddObstacle(UnitBehaviour unit, bool regenerateMap = true);
-        void RemoveObstacle(UnitBehaviour unit);
+        void AddObstacle(UnitActor unit, bool regenerateMap = true);
+        void RemoveObstacle(UnitActor unit);
         void GenerateMap();
     }
 }

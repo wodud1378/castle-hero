@@ -19,7 +19,8 @@ namespace CastleHero.View.Localize
 
         private void Awake()
         {
-            _localize = ServiceLocator.Get<LocalizeText>();
+            var sl = ServiceLocator.Instance;
+            _localize = sl.Get<LocalizeText>();
             _localize.OnLoaded += Refresh;
         }
 

@@ -35,6 +35,13 @@ namespace CastleHero.View.Bootstrapper
 
         private static string _nextScene;
 
+        private BackButton _backButton;
+
+        private void Awake()
+        {
+            _backButton = ServiceLocator.Instance.Get<BackButton>();
+        }
+
         private void Start()
         {
             StartCoroutine(LoadSceneCoroutine(_nextScene));
@@ -42,7 +49,7 @@ namespace CastleHero.View.Bootstrapper
 
         private IEnumerator LoadSceneCoroutine(string load)
         {
-            ServiceLocator.Get<BackButton>().enabled = false;
+            _backButton.enabled = false;
 
             // Loading 진입 시점에 현재 쌓인 Tasks 를 스냅샷 하고 원본은 즉시 Clear.
             // 이유: 로드 중 외부에서 다시 Enqueue 한 작업이 있다면 다음 Loading 씬에서 처리되어야 함.
@@ -68,7 +75,7 @@ namespace CastleHero.View.Bootstrapper
 
             var scene = SceneManager.GetSceneByName(load);
             SceneManager.SetActiveScene(scene);
-            ServiceLocator.Get<BackButton>().enabled = true;
+            _backButton.enabled = true;
         }
     }
 }

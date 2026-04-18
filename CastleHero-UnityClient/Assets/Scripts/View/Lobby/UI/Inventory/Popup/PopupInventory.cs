@@ -10,10 +10,10 @@ using CastleHero.Data;
 using CastleHero.Data.DB;
 using CastleHero.Data.Model;
 using CastleHero.Data.Repositories;
-using CastleHero.Network.Service;
 using CastleHero.Network.Shared;
 using CastleHero.Utility;
 using CastleHero.View.Lobby.UI.Adapter;
+using CastleHero.View.Lobby.UI.Inventory.Actions;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -81,23 +81,25 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
 
         private InventoryItemFilter _filter;
         private InventoryItemActions _actions;
-        private UniTask _updateTask;
+        private IDBProvider _db;
+        private IPopupManager _popups;
+        private IUserRepository _userRepo;
 
         protected override void OnAwake()
         {
             base.OnAwake();
 
-            var db = ServiceLocator.Get<IDBProvider>();
-            var popups = ServiceLocator.Get<IPopupManager>();
-            var network = ServiceLocator.Get<INetworkServiceProvider>();
-
-            _filter = new InventoryItemFilter(db);
-            _actions = new InventoryItemActions(popups, db, network);
+            var sl = ServiceLocator.Instance;
+            _db = sl.Get<IDBProvider>();
+            _popups = sl.Get<IPopupManager>();
+            _userRepo = sl.Get<IUserRepository>();
+            _filter = new InventoryItemFilter(_db);
+            _actions = sl.Get<InventoryItemActions>();
 
             itemList.OnSlotClickEvent -= OnClickItemSlot;
             itemList.OnSlotClickEvent += OnClickItemSlot;
 
-            ServiceLocator.Get<IUserRepository>().Currency.Gold
+            _userRepo.Currency.Gold
                 .Subscribe(x => gold.text = x.CurrencyText())
                 .AddTo(this);
 
@@ -128,7 +130,7 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
                     _filter.Categories
                         .ChangeAsObservable()
                         .Select(_ => UniRx.Unit.Default),
-                    ServiceLocator.Get<IUserRepository>().Inventory.Items
+                    _userRepo.Inventory.Items
                         .ChangeAsObservable()
                         .ThrottleFrame(1)
                         .Select(_ => UniRx.Unit.Default))
@@ -209,12 +211,12 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
             {
                 case ItemType.Equipment:
                     if (slot.Item is EquipItem equipItem)
-                        _actions.Equip(equipItem).Forget();
+                        _actions.Equip(equipItem).SafeForget();
                     break;
                 case ItemType.Consumable:
                 case ItemType.Ingredient:
                 case ItemType.Chest:
-                    ServiceLocator.Get<IPopupManager>().Open<PopupUseItem>(item);
+                    _popups.Open<PopupUseItem>(item);
                     break;
             }
         }
@@ -307,15 +309,15 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
             else
                 UpdateTogglesStatus(_filter.Categories);
 
-            return _updateTask;
+            return UniTask.CompletedTask;
         }
 
         public override UniTask Open() => Open(Tab.All);
 
         private void UpdateList()
         {
-            var items = _filter.Apply(ServiceLocator.Get<IUserRepository>().Inventory.Items);
-            _updateTask = itemList.Init(items);
+            var items = _filter.Apply(_userRepo.Inventory.Items);
+            itemList.Init(items);
         }
 
         private void UpdateTogglesActive(Tab val)

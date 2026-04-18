@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using CastleHero.View.Common.UI;
 using CastleHero.Data;
 using CastleHero.Network.Shared;
+using CastleHero.Utility;
 using Spine.Unity;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -19,28 +20,35 @@ namespace CastleHero.View.Lobby.UI
         [FormerlySerializedAs("_prefabRoot")]
         [SerializeField] private RectTransform prefabRoot;
 
-        public UniTask Init(ISummoned summoned)
+        private IDBProvider _db;
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+            var sl = ServiceLocator.Instance;
+            _db = sl.Get<IDBProvider>();
+        }
+
+        public void Init(ISummoned summoned)
         {
             switch (summoned)
             {
                 case SummonedUnit unit:
                     itemObjects.ForEach(x => x.gameObject.SetActive(false));
                     label.text = string.Empty;
-                    if (ServiceLocator.Get<IDBProvider>().Units.TryFind(unit.Id, out var uEntity))
+                    if (_db.Units.TryFind(unit.Id, out var uEntity))
                     {
-                        return SetCharacter(uEntity.uiPrefab);
+                        SetCharacter(uEntity.uiPrefab).SafeForget();
                     }
                     break;
                 case SummonedSoul soul:
                     itemObjects.ForEach(x => x.gameObject.SetActive(true));
-                    if (ServiceLocator.Get<IDBProvider>().Items.TryFind(soul.Id, out var iEntity))
+                    if (_db.Items.TryFind(soul.Id, out var iEntity))
                     {
-                        return base.Init(iEntity.icon, $"x{soul.quantity}");
+                        base.Init(iEntity.icon, $"x{soul.quantity}");
                     }
                     break;
             }
-
-            return UniTask.CompletedTask;
         }
 
         private async UniTask SetCharacter(string dataPath)

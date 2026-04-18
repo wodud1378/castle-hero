@@ -14,9 +14,12 @@ namespace CastleHero.View.Common.UI
         [FormerlySerializedAs("_skeleton")]
         [SerializeField] private SkeletonGraphic skeleton;
 
+        private ISettingRepository _settingRepo;
+
         private void Awake()
         {
-            ServiceLocator.Get<ISettingRepository>().speedUp
+            _settingRepo = ServiceLocator.Instance.Get<ISettingRepository>();
+            _settingRepo.speedUp
                 .Subscribe(OnSpeedUpToggle)
                 .AddTo(this);
         }

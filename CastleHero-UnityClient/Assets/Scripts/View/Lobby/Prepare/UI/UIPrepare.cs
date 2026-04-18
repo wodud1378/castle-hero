@@ -1,14 +1,10 @@
-﻿using System.Linq;
-using CastleHero.Common.Behaviours;
-using CastleHero.View.Common;
-using CastleHero.View.Bootstrapper;
+﻿using CastleHero.View.Common;
 using CastleHero.Common.Flow;
 using CastleHero.Common.Pattern;
 using CastleHero.View.Common.UI.Popup;
-using CastleHero.Data;
-using CastleHero.Data.Model;
 using CastleHero.Data.Repositories;
-using CastleHero.Network.Service;
+using CastleHero.Data.UseCases;
+using CastleHero.View.Lobby.Prepare.Actions;
 using CastleHero.Utility;
 using UniRx;
 using UnityEngine;
@@ -28,12 +24,35 @@ namespace CastleHero.View.Lobby.Prepare.UI
         [FormerlySerializedAs("_speedUp")]
         [SerializeField] private Button speedUp;
 
+        private ISettingRepository _settings;
+        private IUserRepository _userRepo;
+        private IPopupManager _popups;
+        private StateManager<LobbyState> _lobbyState;
+        private StateManager<State> _globalState;
+
+        private GameStartAction _gameStartAction;
+        private EntranceManager _entranceManager;
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+
+            var sl = ServiceLocator.Instance;
+            _settings = sl.Get<ISettingRepository>();
+            _userRepo = sl.Get<IUserRepository>();
+            _popups = sl.Get<IPopupManager>();
+            _lobbyState = sl.Get<StateManager<LobbyState>>();
+            _globalState = sl.Get<StateManager<State>>();
+
+            _gameStartAction = sl.Get<GameStartAction>();
+            _entranceManager = sl.Get<EntranceManager>();
+        }
+
         public void Init()
         {
             this.SubscribeButton(speedUp, () =>
             {
-                var setting = ServiceLocator.Get<CastleHero.Data.Repositories.SettingRepository>();
-                setting.speedUp.Value = !setting.speedUp.Value;
+                _settings.speedUp.Value = !_settings.speedUp.Value;
             });
 
             characterList.isOpened
@@ -59,7 +78,7 @@ namespace CastleHero.View.Lobby.Prepare.UI
 
         private async UniTask StartAfterConfig()
         {
-            await characterList.Init(ServiceLocator.Get<CastleHero.Data.Repositories.IUserRepository>().Characters.Units);
+            characterList.Init(_userRepo.Characters.Units);
 
             characterList.Open();
 
@@ -78,33 +97,20 @@ namespace CastleHero.View.Lobby.Prepare.UI
 
         private void BackToLobby()
         {
-            var repository = ServiceLocator.Get<CastleHero.Data.Repositories.IUserRepository>();
-            var prop = repository.Entrance;
-            if (prop.Value.type == GameType.Dungeon)
-            {
-                prop.Value = new GameEntrance
-                {
-                    type = GameType.Stage,
-                    id = repository.StageFocus
-                };
-            }
-
-            ServiceLocator.Get<CastleHero.Common.Flow.StateManager<CastleHero.Common.Flow.LobbyState>>().CurrentState = LobbyState.Main;
+            _entranceManager.RevertToStageIfDungeon();
+            _lobbyState.CurrentState = LobbyState.Main;
         }
 
         private async UniTask StartGame()
         {
-            var entrance = ServiceLocator.Get<CastleHero.Data.Repositories.IUserRepository>().Entrance.Value;
-            var result = await ServiceLocator.Get<INetworkServiceProvider>().Game.Start(entrance.type, entrance.id);
+            var result = await _gameStartAction.RequestStart();
             if (!result.IsSuccess)
             {
-                ServiceLocator.Get<CastleHero.View.Common.IPopupManager>().Open<PopupCommon>(result.error);
+                _popups.Open<PopupCommon>(result.error);
                 return;
             }
-            if (!result.IsSuccess)
-                return;
 
-            ServiceLocator.Get<CastleHero.Common.Flow.StateManager<CastleHero.Common.Flow.State>>().CurrentState = State.InGame;
+            _globalState.CurrentState = State.InGame;
         }
     }
 }

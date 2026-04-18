@@ -9,12 +9,11 @@ using CastleHero.View.Common.UI.Popup;
 using CastleHero.Data;
 using CastleHero.Data.Model;
 using CastleHero.View.Lobby.UI;
+using CastleHero.View.Lobby.UI.Actions;
 using CastleHero.View.Lobby.UI.Inventory;
+using CastleHero.View.Lobby.UI.Inventory.Actions;
 using CastleHero.View.Lobby.UI.Inventory.Popup;
-using CastleHero.Network;
-using CastleHero.Network.Service;
 using CastleHero.Network.Shared;
-using CastleHero.GamePlay.Unit;
 using CastleHero.GamePlay.Unit.Components;
 using CastleHero.Utility;
 using TMPro;
@@ -80,14 +79,25 @@ namespace CastleHero.View.Lobby.UI.Popup
         private readonly ReactiveProperty<UnitInfo> _unit = new();
         private GameObject _character;
 
+        private IUserRepository _userRepo;
+        private IDBProvider _db;
+        private IPopupManager _popups;
+        private EquipAction _equipAction;
+
         protected override void OnAwake()
         {
             base.OnAwake();
 
+            var sl = ServiceLocator.Instance;
+            _userRepo = sl.Get<IUserRepository>();
+            _db = sl.Get<IDBProvider>();
+            _popups = sl.Get<IPopupManager>();
+            _equipAction = sl.Get<EquipAction>();
+
             this.SubscribeButton(levelUp, OnLevelUp);
             this.SubscribeButton(upgrade, OnUpgrade);
 
-            ServiceLocator.Get<IUserRepository>().Characters
+            _userRepo.Characters
                 .WhenUpdate(_unit, x => _unit.Value = x)
                 .AddTo(this);
 
@@ -106,7 +116,7 @@ namespace CastleHero.View.Lobby.UI.Popup
                 {
                     if (s is UIEquipmentSlot { Item: not null } equipmentSlot)
                     {
-                        ServiceLocator.Get<IPopupManager>().Open<PopupEquipItem>(equipmentSlot.Item);
+                        _popups.Open<PopupEquipItem>(equipmentSlot.Item);
                     }
                 });
         }
@@ -124,10 +134,10 @@ namespace CastleHero.View.Lobby.UI.Popup
             if (info == null)
                 return;
 
-            if (!ServiceLocator.Get<IDBProvider>().Units.TryFind(_unit.Value.id, out var unitEntity))
+            if (!_db.Units.TryFind(_unit.Value.id, out var unitEntity))
                 return;
 
-            if (!ServiceLocator.Get<IDBProvider>().Balances.TryFind(_unit.Value.id, out var balanceEntity))
+            if (!_db.Balances.TryFind(_unit.Value.id, out var balanceEntity))
                 return;
 
             name.text = unitEntity.name;
@@ -136,10 +146,10 @@ namespace CastleHero.View.Lobby.UI.Popup
             int lvVal = _unit.Value.lv;
             int rate = _unit.Value.rate;
 
-            SetCharacter(unitEntity.uiPrefab).Forget();
+            SetCharacter(unitEntity.uiPrefab).SafeForget();
             UpdateRate(rate);
 
-            var equipmentsData = ServiceLocator.Get<IUserRepository>().EquipItems(info.equipments).ToList();
+            var equipmentsData = _userRepo.EquipItems(info.equipments).ToList();
 
             UpdateUI(lvVal, rate, unitEntity, balanceEntity, equipmentsData);
             UpdateEquipmentSlots(equipmentsData);
@@ -168,11 +178,11 @@ namespace CastleHero.View.Lobby.UI.Popup
 
         private async UniTask Equip(EquipmentSlot slot)
         {
-            var items = ServiceLocator.Get<IUserRepository>().Inventory.Items
+            var items = _userRepo.Inventory.Items
                 .OfType<EquipItem>()
                 .Where(x => x.slot == (int)slot);
 
-            var selection = await ServiceLocator.Get<IPopupManager>().OpenAsync<PopupSelectItem>(items);
+            var selection = await _popups.OpenAsync<PopupSelectItem>(items);
 
             bool closeWithNoSelection = false;
             bool confirm = false;
@@ -186,7 +196,7 @@ namespace CastleHero.View.Lobby.UI.Popup
                 {
                     if (selected is EquipItem e && e.slot == (int)slot)
                     {
-                        var compare = await ServiceLocator.Get<IPopupManager>().OpenAsync<PopupCompareEquipment>(_unit.Value, e);
+                        var compare = await _popups.OpenAsync<PopupCompareEquipment>(_unit.Value, e);
                         compare.BeginSelect(true);
 
                         confirm = await compare.SelectTask;
@@ -206,9 +216,7 @@ namespace CastleHero.View.Lobby.UI.Popup
 
             selection.Close();
 
-            var result = await ServiceLocator.Get<INetworkServiceProvider>().Character.Equip(_unit.Value.id, equipItem.Guid);
-            if (!result.IsSuccess)
-                ServiceLocator.Get<IPopupManager>().Open<PopupCommon>(result.error);
+            await _equipAction.Equip(_unit.Value.id, equipItem.Guid);
         }
 
         private void UpdateEquipmentSlots(List<EquipItem> equipmentsData)
@@ -226,7 +234,7 @@ namespace CastleHero.View.Lobby.UI.Popup
                 else
                 {
                     ui.gameObject.SetActive(true);
-                    ui.Init(item).Forget();
+                    ui.Init(item);
                 }
             }
         }
@@ -235,7 +243,7 @@ namespace CastleHero.View.Lobby.UI.Popup
             List<EquipItem> equipmentsData)
         {
             var elemental = new Elemental();
-            var baseStatus = BaseStatus(lvVal, rate, unit, balance);
+            var baseStatus = CharacterStatusHelper.BaseStatus(lvVal, rate, unit, balance);
             var equipStatus = equipmentsData.Total(ref elemental);
             foreach (var label in statusTexts)
             {
@@ -251,7 +259,7 @@ namespace CastleHero.View.Lobby.UI.Popup
             if (hasAtkType)
             {
                 atkElementRoot.SetActive(true);
-                atkElement.Set(ElementalIcons[elemental.atkType]).Forget();
+                atkElement.Set(ElementalIcons[elemental.atkType]).SafeForget();
             }
             else
                 atkElementRoot.SetActive(false);
@@ -261,31 +269,14 @@ namespace CastleHero.View.Lobby.UI.Popup
             if (hasDefType)
             {
                 defElementRoot.SetActive(true);
-                defElement.Set(ElementalIcons[elemental.defType]).Forget();
+                defElement.Set(ElementalIcons[elemental.defType]).SafeForget();
             }
             else
                 defElementRoot.SetActive(false);
         }
 
-        private Dictionary<Status.Type, float> BaseStatus(int lvVal, int rate, UnitEntity unit, UnitBalanceEntity balance)
-        {
-            balance.AdditionalStatus(lvVal, rate, out var additional, out _);
+        private void OnLevelUp() => _popups.Open<PopupLevelUp>(_unit.Value);
 
-            return new Dictionary<Status.Type, float>
-            {
-                { Status.Type.Hp, unit.hp + additional.GetValueOrDefault(Status.Type.Hp) },
-                { Status.Type.Atk, unit.atk + additional.GetValueOrDefault(Status.Type.Atk) },
-                { Status.Type.Critical, unit.critical + additional.GetValueOrDefault(Status.Type.Critical) },
-                { Status.Type.CriticalAtk, unit.criticalAtk + additional.GetValueOrDefault(Status.Type.CriticalAtk) },
-                { Status.Type.AtkSpeed, unit.atkSpeed + additional.GetValueOrDefault(Status.Type.AtkSpeed) },
-                { Status.Type.MoveSpeed, unit.speed + additional.GetValueOrDefault(Status.Type.MoveSpeed) },
-                { Status.Type.AtkRange, unit.atkRange + additional.GetValueOrDefault(Status.Type.AtkRange) },
-                { Status.Type.MoveRange, unit.moveRange + additional.GetValueOrDefault(Status.Type.MoveRange) },
-            };
-        }
-
-        private void OnLevelUp() => ServiceLocator.Get<IPopupManager>().Open<PopupLevelUp>(_unit.Value);
-
-        private void OnUpgrade() => ServiceLocator.Get<IPopupManager>().Open<PopupRateUp>(_unit.Value);
+        private void OnUpgrade() => _popups.Open<PopupRateUp>(_unit.Value);
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using CastleHero.Common.Pattern;
 using CastleHero.Network.Service;
 using CastleHero.Network.Shared;
 using CastleHero.Utility;
@@ -11,7 +12,7 @@ namespace CastleHero.Network.Impl.Local.Services
     {
         private string _nickname = "Player";
 
-        public LocalUserService(LocalUserDataStore store) : base(store) { }
+        public LocalUserService(IServiceLocator sl, LocalUserDataStore store) : base(sl, store) { }
 
         public UniTask SaveFormation(FormationDto formation)
         {

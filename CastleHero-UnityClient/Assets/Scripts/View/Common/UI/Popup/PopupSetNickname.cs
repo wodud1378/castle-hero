@@ -60,7 +60,7 @@ namespace CastleHero.View.Common.UI.Popup
         {
             _completionSource.TrySetResult(input.text);
 
-            CloseAsync().Forget();
+            CloseAsync().SafeForget();
         }
     }
 }

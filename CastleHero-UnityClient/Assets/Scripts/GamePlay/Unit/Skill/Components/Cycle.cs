@@ -13,7 +13,7 @@ namespace CastleHero.GamePlay.Unit.Skill.Components
             CoolTime
         }
         
-        public UnitBehaviour Owner { get; set; }
+        public UnitActor Owner { get; set; }
         public bool IsReady { get; }
 
         public void StartWaiting(Action onEnd = null);
@@ -23,14 +23,14 @@ namespace CastleHero.GamePlay.Unit.Skill.Components
     {
         public readonly float time;
         
-        private readonly UnitBehaviour _owner;
+        private readonly UnitActor _owner;
 
         public float leftTime;
 
         private IDisposable _disposable;
         private Action _onEnd;
         
-        public Timer(UnitBehaviour owner, float time)
+        public Timer(UnitActor owner, float time)
         {
             _owner = owner;
             this.time = time;
@@ -71,12 +71,12 @@ namespace CastleHero.GamePlay.Unit.Skill.Components
     
     public class CoolTime : ICycle
     {
-        public UnitBehaviour Owner { get; set; }
+        public UnitActor Owner { get; set; }
         public bool IsReady { get; private set; }
         
         public readonly Timer timer;
 
-        public CoolTime(UnitBehaviour owner, float coolTime)
+        public CoolTime(UnitActor owner, float coolTime)
         {
             timer = new(owner, coolTime);
 

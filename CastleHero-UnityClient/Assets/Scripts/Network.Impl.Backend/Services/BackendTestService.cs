@@ -9,6 +9,8 @@ namespace CastleHero.Network.Impl.Backend.Services
 {
     public class BackendTestService : BackendNetworkServiceBase, ITestService
     {
+        public BackendTestService(IServiceLocator sl) : base(sl) { }
+
         public async UniTask<Result> AddCurrency(CurrencyDto add)
         {
             var get = await GetTable<CurrencyDto>(Table.Currency);
@@ -22,7 +24,7 @@ namespace CastleHero.Network.Impl.Backend.Services
             if (!update.IsSuccess)
                 return Result.Error(update.error);
 
-            ServiceLocator.Get<IUserRepository>().Currency.Update(currency);
+            UserRepo.Currency.Update(currency);
             return Result.Complete();
         }
 

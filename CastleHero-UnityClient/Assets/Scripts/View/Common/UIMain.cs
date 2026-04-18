@@ -27,10 +27,14 @@ namespace CastleHero.View.Common
         private readonly int _openHashId = Animator.StringToHash("Entrance");
         private readonly int _closeHashId = Animator.StringToHash("Exit");
 
+        private SoundPath _soundPath;
+
         protected virtual void OnAwake()
         {
+            _soundPath = ServiceLocator.Instance.Get<SoundPath>();
+
             if(back != null)
-                this.SubscribeButton(back, OnBack, ServiceLocator.Get<SoundPath>().back);
+                this.SubscribeButton(back, OnBack, _soundPath.back);
         }
 
         private void Awake() => OnAwake();

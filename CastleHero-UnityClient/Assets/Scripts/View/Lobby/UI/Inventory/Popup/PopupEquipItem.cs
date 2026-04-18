@@ -10,7 +10,6 @@ using CastleHero.Data;
 using CastleHero.View.Lobby.UI;
 using CastleHero.Data.Model;
 using CastleHero.View.Lobby.UI.Popup;
-using CastleHero.Network.Service;
 using CastleHero.Network.Shared;
 using CastleHero.Utility;
 using UniRx;
@@ -18,6 +17,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using CastleHero.Common.Pattern;
+using CastleHero.View.Lobby.UI.Inventory.Actions;
 
 using CastleHero.Data.DB;
 using CastleHero.Data.Repositories;
@@ -44,12 +44,15 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
         public UniTask<EquipItem> SelectTask => _ctSource.Task;
 
         private UniTaskCompletionSource<EquipItem> _ctSource;
+        private EquipAction _equipAction;
 
         public void BeginSelect(bool _) => _ctSource = new UniTaskCompletionSource<EquipItem>();
 
         protected override void OnAwake()
         {
             base.OnAwake();
+
+            _equipAction = ServiceLocator.Instance.Get<EquipAction>();
 
             this.SubscribeButton(refine, Refine);
             this.SubscribeButton(equip, OnClickEquip);
@@ -58,7 +61,7 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
 
         protected override void SubscribeUpdate()
         {
-            ServiceLocator.Get<IUserRepository>().Inventory
+            _userRepo.Inventory
                 .WhenUpdate(WhenUpdateItems)
                 .AddTo(this);
         }
@@ -85,15 +88,15 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
 
         private async UniTask Refine()
         {
-            var items = ServiceLocator.Get<IUserRepository>().Inventory.Items
+            var items = _userRepo.Inventory.Items
                 .OfType<Item>()
-                .Where(x => ServiceLocator.Get<IDBProvider>().Items.TryFind(x.ItemId, out var entity) &&
+                .Where(x => _db.Items.TryFind(x.ItemId, out var entity) &&
                             entity is { type: ItemType.Consumable, optionConsume: { type: ConsumeType.ElementalStone } });
 
-            var selection = await ServiceLocator.Get<IPopupManager>().OpenAsync<PopupSelectItem>(items);
+            var selection = await _popups.OpenAsync<PopupSelectItem>(items);
 
             bool closed = false;
-            var entity = ServiceLocator.Get<IDBProvider>().Items.FallBackEntity();
+            var entity = _db.Items.FallBackEntity();
             while (!closed && !entity.IsValid)
             {
                 selection.BeginSelect(false);
@@ -103,7 +106,7 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
                     closed = true;
                 else
                 {
-                    if (ServiceLocator.Get<IDBProvider>().Items.TryFind(selected.ItemId, out var e) &&
+                    if (_db.Items.TryFind(selected.ItemId, out var e) &&
                         e is { type: ItemType.Consumable, optionConsume: { type: ConsumeType.ElementalStone } })
                     {
                         entity = e;
@@ -116,10 +119,10 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
 
             selection.Close();
 
-            ServiceLocator.Get<IPopupManager>().Open<PopupRefine>(Item, entity);
+            _popups.Open<PopupRefine>(Item, entity);
         }
 
-        protected override UniTask InitSlot(EquipItem item, UIEquipmentSlot slot) => slot.Init(item);
+        protected override void InitSlot(EquipItem item, UIEquipmentSlot slot) => slot.Init(item);
 
         private async UniTask OnClickEquip()
         {
@@ -130,7 +133,7 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
             }
             else
             {
-                var popup = await ServiceLocator.Get<IPopupManager>().OpenAsync<PopupCharacterList>();
+                var popup = await _popups.OpenAsync<PopupCharacterList>();
                 popup.clickMethod = PopupCharacterList.ClickMethod.Equip;
                 popup.equipParam.item = Item;
             }
@@ -140,15 +143,11 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
 
         private async UniTask Release()
         {
-            var unit = ServiceLocator.Get<IUserRepository>().Characters.Units.FirstOrDefault(x => x.id == Item.character);
+            var unit = _userRepo.Characters.Units.FirstOrDefault(x => x.id == Item.character);
             if (unit == null)
                 return;
 
-            var result = await ServiceLocator.Get<INetworkServiceProvider>().Character.Release(unit.id, Item.Guid);
-            if (!result.IsSuccess)
-            {
-                ServiceLocator.Get<IPopupManager>().Open<PopupCommon>(result.error);
-            }
+            await _equipAction.Release(unit.id, Item.Guid);
         }
 
         protected override void OnDataChanged(EquipItem data)

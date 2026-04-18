@@ -15,14 +15,20 @@ namespace CastleHero.View.Unit
         [FormerlySerializedAs("_color")]
         [SerializeField] private Color color = Color.white;
 
+        private GameConstants _constants;
         private float _halfDuration;
         private int _propertyId;
         private MaterialPropertyBlock _propertyBlock;
         private YieldAwaitable _wait = UniTask.Yield();
 
+        private void Awake()
+        {
+            _constants = ServiceLocator.Instance.Get<GameConstants>();
+        }
+
         public void Init()
         {
-            _halfDuration = ServiceLocator.Get<GameConstants>().hitEffectDuration * 0.5f;
+            _halfDuration = _constants.hitEffectDuration * 0.5f;
             _propertyBlock = new MaterialPropertyBlock();
             renderer.SetPropertyBlock(_propertyBlock);
 

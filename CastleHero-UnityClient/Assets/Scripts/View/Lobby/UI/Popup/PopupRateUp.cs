@@ -41,7 +41,7 @@ namespace CastleHero.View.Lobby.UI.Popup
         [FormerlySerializedAs("_disableOnMaxRate")]
         [SerializeField] private List<GameObject> disableOnMaxRate;
 
-        private UniTask _updateTask;
+        private IDBProvider _db;
 
         protected override GrowthAction Action => GrowthAction.Rate;
 
@@ -49,14 +49,17 @@ namespace CastleHero.View.Lobby.UI.Popup
         {
             base.OnAwake();
 
-            ServiceLocator.Get<IUserRepository>().Inventory
+            var sl = ServiceLocator.Instance;
+            _db = sl.Get<IDBProvider>();
+
+            _userRepo.Inventory
                 .WhenUpdate(_ => _unit.Value = _unit.Value)
                 .AddTo(this);
         }
 
-        public override UniTask Open(params object[] parameters) => UniTask.WhenAll(base.Open(parameters), _updateTask);
+        public override UniTask Open(params object[] parameters) => base.Open(parameters);
 
-        private UniTask DefaultSettingTask(UnitInfo unit, UnitEntity entity)
+        private void DefaultSetting(UnitInfo unit, UnitEntity entity)
         {
             name.text = entity.name;
             int rate = unit.rate;
@@ -68,17 +71,17 @@ namespace CastleHero.View.Lobby.UI.Popup
                 star.gameObject.SetActive((i + 1) <= rate);
             }
 
-            bool isMaxRate = rate == ServiceLocator.Get<IDBProvider>().Rates.MaxRate;
+            bool isMaxRate = rate == _db.Rates.MaxRate;
             enableOnMaxRate.ForEach(x => x.gameObject.SetActive(isMaxRate));
             disableOnMaxRate.ForEach(x => x.gameObject.SetActive(!isMaxRate));
 
-            return unitSlot.Init(unit, entity);
+            unitSlot.Init(unit, entity);
         }
 
-        private UniTask SettingIfNotMaxRateTask(UnitInfo unit, UnitEntity unitEntity, UnitRateEntity rateEntity)
+        private void SettingIfNotMaxRate(UnitInfo unit, UnitEntity unitEntity, UnitRateEntity rateEntity)
         {
             int soulItemId = unitEntity.soulItemId;
-            var item = ServiceLocator.Get<IUserRepository>().Inventory.Items.FirstOrDefault(x => x.ItemId == soulItemId) ?? new Item
+            var item = _userRepo.Inventory.Items.FirstOrDefault(x => x.ItemId == soulItemId) ?? new Item
             {
                 ItemId = soulItemId,
             };
@@ -100,7 +103,7 @@ namespace CastleHero.View.Lobby.UI.Popup
                 : text.WithNegativeColor();
 
             int requireGoldVal = rateEntity.gold;
-            var hasEnoughGold = requireGoldVal <= ServiceLocator.Get<IUserRepository>().Currency.Gold.Value;
+            var hasEnoughGold = requireGoldVal <= _userRepo.Currency.Gold.Value;
             var goldText = requireGoldVal.CurrencyText();
             requireGold.text = hasEnoughGold
                 ? goldText.WithColor(Color.white)
@@ -111,34 +114,29 @@ namespace CastleHero.View.Lobby.UI.Popup
                 : StringHelper.NegativeColor;
 
             _confirm.interactable = hasEnoughGold;
-            return soulSlot.Init(item);
+            soulSlot.Init(item);
         }
 
         protected override void OnUnitChanged(UnitInfo unit)
         {
-            if (!ServiceLocator.Get<IDBProvider>().Units.TryFind(unit.id, out var unitEntity) ||
-                !ServiceLocator.Get<IDBProvider>().Rates.TryFind(unit.rate, out var rateEntity))
+            if (!_db.Units.TryFind(unit.id, out var unitEntity) ||
+                !_db.Rates.TryFind(unit.rate, out var rateEntity))
             {
-                var exception = new Exception("�����͸� �ҷ����� ���߽��ϴ�.");
+                var exception = new Exception("데이터를 불러오지 못했습니다.");
                 Debug.LogError(exception);
-                _updateTask = UniTask.CompletedTask;
                 return;
             }
 
-            var defaultTask = DefaultSettingTask(unit, unitEntity);
-            if (unit.rate == ServiceLocator.Get<IDBProvider>().Rates.MaxRate)
-            {
-                _updateTask = defaultTask;
+            DefaultSetting(unit, unitEntity);
+            if (unit.rate == _db.Rates.MaxRate)
                 return;
-            }
 
-            var additionalTask = SettingIfNotMaxRateTask(unit, unitEntity, rateEntity);
-            _updateTask = UniTask.WhenAll(defaultTask, additionalTask);
+            SettingIfNotMaxRate(unit, unitEntity, rateEntity);
         }
 
         protected override (int id, int quantity) ConsumeItem()
         {
-            if (soulSlot.Item == null || !ServiceLocator.Get<IDBProvider>().Rates.TryFind(_unit.Value.rate, out var rateEntity))
+            if (soulSlot.Item == null || !_db.Rates.TryFind(_unit.Value.rate, out var rateEntity))
                 return default;
 
             return (soulSlot.Item.ItemId, rateEntity.soul);

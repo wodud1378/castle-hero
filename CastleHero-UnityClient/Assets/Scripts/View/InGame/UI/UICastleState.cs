@@ -29,20 +29,20 @@ namespace CastleHero.View.InGame.UI
         [FormerlySerializedAs("_root")]
         [SerializeField] private GameObject root;
 
-        private UnitBehaviour _castle;
+        private UnitActor _castle;
 
         private void Awake()
         {
             root.SetActive(false);
 
             InGameSession.Current.Castle
-                .Subscribe(x => OnCastleChanged(x as UnitBehaviour))
+                .Subscribe(x => OnCastleChanged(x as UnitActor))
                 .AddTo(this);
 
             this.SubscribeMessage<ExitGame>(_ => root.SetActive(false));
         }
 
-        private void OnCastleChanged(UnitBehaviour castle)
+        private void OnCastleChanged(UnitActor castle)
         {
             _castle = castle;
             if (_castle == null)

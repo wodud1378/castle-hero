@@ -24,7 +24,8 @@ namespace CastleHero.View.Sound
 
         private void Awake()
         {
-            _repository = ServiceLocator.Get<ISettingRepository>();
+            var sl = ServiceLocator.Instance;
+            _repository = sl.Get<ISettingRepository>();
 
             InitPlayers();
             InitSubscription();

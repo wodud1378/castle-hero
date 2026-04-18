@@ -11,7 +11,7 @@ namespace CastleHero.Network.Impl.Local.Services
 {
     public class LocalCharacterService : LocalNetworkServiceBase, ICharacterService
     {
-        public LocalCharacterService(LocalUserDataStore store) : base(store) { }
+        public LocalCharacterService(IServiceLocator sl, LocalUserDataStore store) : base(sl, store) { }
 
         public UniTask<Result<UnitGrowth>> Growth(GrowthAction action, int unitId, int itemId, int quantity)
         {
@@ -61,13 +61,13 @@ namespace CastleHero.Network.Impl.Local.Services
                 return null;
             }
 
-            if (ServiceLocator.Get<IDBProvider>().Rates.MaxRate == unit.rate)
+            if (Db.Rates.MaxRate == unit.rate)
             {
                 error = Error.AlreadyMaxLv;
                 return null;
             }
 
-            if (!ServiceLocator.Get<IDBProvider>().Items.TryFind(item.ItemId, out var itemEntity))
+            if (!Db.Items.TryFind(item.ItemId, out var itemEntity))
             {
                 error = Error.DataNotFound;
                 return null;
@@ -108,13 +108,13 @@ namespace CastleHero.Network.Impl.Local.Services
                 return null;
             }
 
-            if (ServiceLocator.Get<IDBProvider>().Levels.MaxLv == unit.lv)
+            if (Db.Levels.MaxLv == unit.lv)
             {
                 error = Error.AlreadyMaxLv;
                 return null;
             }
 
-            if (!ServiceLocator.Get<IDBProvider>().Items.TryFind(item.ItemId, out var itemEntity))
+            if (!Db.Items.TryFind(item.ItemId, out var itemEntity))
             {
                 error = Error.DataNotFound;
                 return null;

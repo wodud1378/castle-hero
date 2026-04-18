@@ -12,8 +12,8 @@ using CastleHero.Utility;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
-using CastleHero.Common.Sound;
 using CastleHero.Common.Pattern;
+using CastleHero.View.Lobby.UI.Actions;
 
 using CastleHero.Data.Repositories;
 namespace CastleHero.View.Lobby.UI.Popup
@@ -22,25 +22,34 @@ namespace CastleHero.View.Lobby.UI.Popup
     {
         [SerializeField] protected UIItemSlot _goldSlot;
         [SerializeField] protected Button _confirm;
-        
+
         public UniTask<UnitGrowth> GrowthTask => _completionSource.Task;
 
         protected abstract GrowthAction Action { get; }
-        
+
         protected readonly ReactiveProperty<UnitInfo> _unit = new();
-        
+
         private UniTaskCompletionSource<UnitGrowth> _completionSource;
         private UnitGrowth _result;
-        
+
+        protected IUserRepository _userRepo;
+        protected IPopupManager _popups;
+        private CharacterGrowthAction _growthAction;
+
         protected override void OnAwake()
         {
             base.OnAwake();
-            
-            ServiceLocator.Get<IUserRepository>().Currency.Gold
+
+            var sl = ServiceLocator.Instance;
+            _userRepo = sl.Get<IUserRepository>();
+            _popups = sl.Get<IPopupManager>();
+            _growthAction = sl.Get<CharacterGrowthAction>();
+
+            _userRepo.Currency.Gold
                 .Subscribe(UpdateGoldSlot)
                 .AddTo(this);
-            
-            ServiceLocator.Get<IUserRepository>().Characters.Units
+
+            _userRepo.Characters.Units
                 .ChangeAsObservable()
                 .ThrottleFrame(1)
                 .Subscribe(units =>
@@ -53,12 +62,12 @@ namespace CastleHero.View.Lobby.UI.Popup
                     _unit.Value = updated;
                 })
                 .AddTo(this);
-            
+
             _unit
                 .Subscribe(OnUnitChangedInternal)
                 .AddTo(this);
-            
-            this.SubscribeButton(_confirm, () => Confirm().Forget());
+
+            this.SubscribeButton(_confirm, () => Confirm().SafeForget());
         }
 
         public override UniTask Open(params object[] parameters)
@@ -67,14 +76,14 @@ namespace CastleHero.View.Lobby.UI.Popup
 
             if (parameters.Length > 0 && parameters[0] is UnitInfo unit)
                 _unit.Value = unit;
-            
+
             return UniTask.CompletedTask;
         }
 
         protected override void OnClose()
         {
             base.OnClose();
-            
+
             _completionSource.TrySetResult(_result);
         }
 
@@ -82,7 +91,7 @@ namespace CastleHero.View.Lobby.UI.Popup
         {
             if (unit == null)
                 return;
-            
+
             OnUnitChanged(unit);
         }
 
@@ -96,18 +105,10 @@ namespace CastleHero.View.Lobby.UI.Popup
             var consume = ConsumeItem();
             if (consume.quantity == 0)
                 return;
-            
-            var result = await ServiceLocator.Get<INetworkServiceProvider>().Character.Growth(Action, unitId, consume.id, consume.quantity);
-            if (!result.IsSuccess)
-            {
-                ServiceLocator.Get<IPopupManager>().Open<PopupCommon>(result.error);
-                return;
-            }
 
-            _result = result.data;
-            ServiceLocator.Get<ISoundManager>().PlaySfx(ServiceLocator.Get<SoundPath>().levelUp);
+            _result = await _growthAction.Execute(Action, unitId, consume.id, consume.quantity);
         }
-        
+
         private void UpdateGoldSlot(int gold)
         {
             _goldSlot.Init(new Item

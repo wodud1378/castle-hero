@@ -16,8 +16,8 @@ using UniRx;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
-using CastleHero.Data.Factory;
 using CastleHero.Common.Pattern;
+using CastleHero.GamePlay.Unit.Factory;
 
 namespace CastleHero.View.InGame.Behaviours
 {
@@ -40,8 +40,12 @@ namespace CastleHero.View.InGame.Behaviours
 
         private bool _disposed = false;
 
+        private UnitFactory _unitFactory;
+
         private void Awake()
         {
+            _unitFactory = ServiceLocator.Instance.Get<UnitFactory>();
+
             this.SubscribeMessage<ReleaseEvent>(OnReceiveReleaseEvent);
             this.SubscribeMessage<GameFinished>(OnGameFinished);
         }
@@ -55,7 +59,7 @@ namespace CastleHero.View.InGame.Behaviours
             data.unit.DestroySelf();
         }
 
-        public void Init(int groupId, IDBProvider db, IInGameSession inGameRepository)
+        public void Init(int groupId, IDBProvider db, IInGameSession inGameSession)
         {
             _disposed = false;
             IsRunning = false;
@@ -71,12 +75,11 @@ namespace CastleHero.View.InGame.Behaviours
 
             _updates[0] = _main;
 
-            var factory = ServiceLocator.Get<IUnitFactory>();
-            var castle = inGameRepository.Castle.Value as UnitBehaviour;
+            var castle = inGameSession.Castle.Value as UnitActor;
             for (int i = 0; i < length; ++i)
             {
                 var data = setUp[i];
-                var area = new SpawnArea(data.id, data.position, data.size, data.angle, db.Units, factory, castle);
+                var area = new SpawnArea(data.id, data.position, data.size, data.angle, db.Units, _unitFactory, castle);
                 _areas[i] = area;
                 _updates[i + 1] = area;
             }
@@ -110,6 +113,14 @@ namespace CastleHero.View.InGame.Behaviours
 
         public void Dispose()
         {
+            if (_areas != null)
+            {
+                foreach (var area in _areas)
+                {
+                    area.Dispose();
+                }
+            }
+
             _main = null;
             _areas = null;
 

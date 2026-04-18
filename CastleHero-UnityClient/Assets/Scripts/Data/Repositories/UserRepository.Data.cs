@@ -58,7 +58,7 @@ namespace CastleHero.Data.Repositories
             _ctSource?.Dispose();
             _ctSource = new CancellationTokenSource();
 
-            LocalUpdate(_ctSource.Token).Forget();
+            LocalUpdate(_ctSource.Token).SafeForget();
         }
 
         private DateTime Now => ServerTime.Now;
@@ -250,7 +250,7 @@ namespace CastleHero.Data.Repositories
 
         public Formation(FormationDto dto) => FieldUnits = new(dto.fieldUnits);
 
-        public void Set(IEnumerable<IUnitBehaviour> units)
+        public void Set(IEnumerable<IUnitActor> units)
         {
             FieldUnits.Clear();
             foreach (var unit in units)

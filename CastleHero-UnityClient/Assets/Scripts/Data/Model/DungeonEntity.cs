@@ -1,11 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using CastleHero.Data.DB;
 using CastleHero.Utility;
-using Random = UnityEngine.Random;
-
-using CastleHero.Common.Pattern;
 namespace CastleHero.Data.Model
 {
     public enum DungeonCategory
@@ -77,7 +73,7 @@ namespace CastleHero.Data.Model
         #region TODO : 추 후 데이터로 성공/실패 컨디션 분리.
 
         [DataField("Dg_ClearCondition")] public GameEvent[] clearConditions;
-        [DataField("Dg_ClearCondition")] public GameEvent[] failedConditions;
+        [DataField("Dg_FailCondition")] public GameEvent[] failedConditions;
 
         #endregion
 
@@ -114,10 +110,10 @@ namespace CastleHero.Data.Model
             return list;
         }
 
-        public List<Reward> GetRewardsForDisplay()
+        public List<Reward> GetRewardsForDisplay(IDBProvider db)
         {
             var rewards = new List<Reward>();
-            if (!ServiceLocator.Get<IDBProvider>().DungeonRewards.TryFind(rewardGroup, out var group))
+            if (!db.DungeonRewards.TryFind(rewardGroup, out var group))
                 return rewards;
 
             int index = 0;
@@ -127,7 +123,7 @@ namespace CastleHero.Data.Model
                        group.minQuantities,
                        group.maxQuantities))
             {
-                if (ServiceLocator.Get<IDBProvider>().Items.TryFind(group.itemIds[index], out var itemEntity))
+                if (db.Items.TryFind(group.itemIds[index], out var itemEntity))
                 {
                     rewards.Add(new()
                     {

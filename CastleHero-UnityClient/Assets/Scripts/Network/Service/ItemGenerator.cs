@@ -15,15 +15,21 @@ namespace CastleHero.Network.Service
     public class ItemGenerator
     {
         private readonly Dictionary<int, List<int>> _itemIdFilterCache = new();
+        private IDBProvider _db;
 
-        // 지연 조회: ItemGenerator 가 static readonly 로 타입 초기화 시 생성되므로 IDBProvider 가
-        // 아직 등록되지 않은 상태. 각 메서드 진입 시 캐시 후 사용.
-        private IDBProvider _dbCache;
-        private IDBProvider Db => _dbCache ??= ServiceLocator.Get<IDBProvider>();
+        public ItemGenerator()
+        {
+            var sl = ServiceLocator.Instance;
+            if (sl.TryGet<IDBProvider>(out var db)) _db = db;
+            sl.OnRegistered += (type, instance) =>
+            {
+                if (type == typeof(IDBProvider)) _db = (IDBProvider)instance;
+            };
+        }
 
         public EquipItem NewEquipItem(int id)
         {
-            if (!Db.Items.TryFind(id, out var entity))
+            if (!_db.Items.TryFind(id, out var entity))
                 return null;
 
             return NewEquipItem(entity);
@@ -31,7 +37,7 @@ namespace CastleHero.Network.Service
 
         public EquipItem NewEquipItem(ItemEntity itemData)
         {
-            var db = Db.EquipmentStats;
+            var db = _db.EquipmentStats;
             var option = itemData.optionEquip;
             int mainStatId = option.mainStat;
             int statValueIndex = (int)option.grade;
@@ -168,7 +174,7 @@ namespace CastleHero.Network.Service
 
         private IItem CreateItem(int id, int quantity)
         {
-            if (!ServiceLocator.Get<IDBProvider>().Items.TryFind(id, out var data))
+            if (!_db.Items.TryFind(id, out var data))
             {
 #if UNITY_EDITOR
                 Debug.LogError($"[{id}] 해당하는 아이템이 존재하지 않습니다.");
@@ -186,7 +192,7 @@ namespace CastleHero.Network.Service
 
         private EquipItem.Stat NewMainStat(int status, int index)
         {
-            if (!ServiceLocator.Get<IDBProvider>().EquipmentStats.TryFind(status, out var entity) &&
+            if (!_db.EquipmentStats.TryFind(status, out var entity) &&
                 !index.IsValidIndex(entity.mainMin, entity.mainMax))
                 return default;
 
@@ -199,7 +205,7 @@ namespace CastleHero.Network.Service
 
         private EquipItem.Stat NewSubStat(int status, int index)
         {
-            if (!ServiceLocator.Get<IDBProvider>().EquipmentStats.TryFind(status, out var entity) &&
+            if (!_db.EquipmentStats.TryFind(status, out var entity) &&
                 !index.IsValidIndex(entity.subMin, entity.subMax))
                 return default;
 

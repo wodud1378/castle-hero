@@ -1,5 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
-using CastleHero.View.Common.UI;
+﻿using CastleHero.View.Common.UI;
 using CastleHero.Data;
 using CastleHero.Data.Model;
 using CastleHero.Network.Shared;
@@ -29,6 +28,8 @@ namespace CastleHero.View.Lobby.UI
         [FormerlySerializedAs("_quantitySuffix")]
         [SerializeField] private string quantitySuffix;
 
+        protected IDBProvider _db;
+
         public Color QuantityLabelColor
         {
             get => quantity.color;
@@ -43,28 +44,30 @@ namespace CastleHero.View.Lobby.UI
         protected override void OnAwake()
         {
             base.OnAwake();
+            var sl = ServiceLocator.Instance;
+            _db = sl.Get<IDBProvider>();
 
             quantityDisplay
                 .Subscribe()
                 .AddTo(this);
         }
 
-        public UniTask Init(IItem item)
+        public void Init(IItem item)
         {
-            if (!ServiceLocator.Get<IDBProvider>().Items.TryFind(item.ItemId, out var entity))
-                return UniTask.CompletedTask;
+            if (!_db.Items.TryFind(item.ItemId, out var entity))
+                return;
 
-            return Init(item, entity);
+            Init(item, entity);
         }
 
-        public UniTask Init(IItem item, ItemEntity entity)
+        public void Init(IItem item, ItemEntity entity)
         {
             Item = item;
             Entity = entity;
 
             UpdateQuantity(quantityDisplay.Value);
 
-            return Init(entity.icon, entity.name);
+            Init(entity.icon, entity.name);
         }
 
         private void UpdateQuantity(QuantityDisplay mode)

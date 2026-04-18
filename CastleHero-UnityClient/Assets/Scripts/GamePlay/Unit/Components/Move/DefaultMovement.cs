@@ -1,7 +1,9 @@
+using System;
 using PolyNav;
 using CastleHero.GamePlay.Unit.Behaviours;
 using CastleHero.GamePlay.Unit.Finding;
 using CastleHero.Utility;
+using UniRx;
 using UnityEngine;
 
 namespace CastleHero.GamePlay.Unit.Components.Move
@@ -16,7 +18,7 @@ namespace CastleHero.GamePlay.Unit.Components.Move
             set => _agent.position = value;
         }
 
-        private readonly UnitBehaviour _owner;
+        private readonly UnitActor _owner;
         private readonly PolyNavAgent _agent;
 
         public bool Enabled
@@ -26,10 +28,12 @@ namespace CastleHero.GamePlay.Unit.Components.Move
         }
         
         public Vector2 Default { get; set; }
-        
-        public UnitBehaviour CurrentTarget { get; private set; }
 
-        public DefaultMovement(UnitBehaviour owner, Finder finder, PolyNavAgent navAgent)
+        public UnitActor CurrentTarget { get; private set; }
+
+        private IDisposable _targetDeadSub;
+
+        public DefaultMovement(UnitActor owner, Finder finder, PolyNavAgent navAgent)
         {
             _owner = owner;
             _agent = navAgent;
@@ -45,14 +49,11 @@ namespace CastleHero.GamePlay.Unit.Components.Move
 
             if (CurrentTarget != selected)
             {
-                if (CurrentTarget.IsValid())
-                    CurrentTarget.OnDead -= OnUnitDead;
-
-                selected.OnDead -= OnUnitDead;
-                selected.OnDead += OnUnitDead;
+                _targetDeadSub?.Dispose();
+                _targetDeadSub = selected.OnDead.Take(1).Subscribe(OnUnitDead);
                 CurrentTarget = selected;
             }
-            
+
             StartMove(CurrentTarget.Position);
             return true;
         }
@@ -62,28 +63,9 @@ namespace CastleHero.GamePlay.Unit.Components.Move
             _agent.maxSpeed = value;
         }
         
-        private UnitBehaviour Select()
+        private UnitActor Select()
         {
-            var overriden = Finder.Override;
-            if (overriden.IsValid())
-                return overriden;
-
-            float rangeStat = _owner.Status.moveRange;
-            if (CurrentTarget.IsValid())
-            {
-                float distance = (CurrentTarget.Position - _owner.Position).sqrMagnitude;
-                float range = Mathf.Pow(rangeStat, 2);
-
-                if (distance <= range)
-                    return CurrentTarget;
-            }
-            
-            Finder.detection.SetRange(rangeStat, rangeStat);
-            return !Finder.Update(_owner.Position)
-                ? null
-                : Finder.Found.Count > 0
-                    ? Finder.Found[0]
-                    : null;
+            return UnitHelper.SelectTarget(Finder, _owner, CurrentTarget, _owner.Status.moveRange);
         }
 
         public bool TryMoveToDefault()
@@ -105,12 +87,10 @@ namespace CastleHero.GamePlay.Unit.Components.Move
             _agent.SetDestination(position);
         }
 
-        private void OnUnitDead(UnitBehaviour unit)
+        private void OnUnitDead(UnitActor unit)
         {
             if(unit == CurrentTarget)
                 Stop();
-            
-            unit.OnDead -= OnUnitDead;
         }
     }
 }

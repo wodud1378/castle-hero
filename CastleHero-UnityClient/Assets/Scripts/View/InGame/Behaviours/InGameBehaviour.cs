@@ -12,11 +12,11 @@ using CastleHero.Data.Repositories;
 using CastleHero.GamePlay.InGame;
 using CastleHero.GamePlay.InGame.Behaviours;
 using CastleHero.GamePlay.Unit.Effects;
-using CastleHero.Network.Service;
 using CastleHero.Network.Shared;
 using CastleHero.View.Bootstrapper;
 using CastleHero.View.Common;
 using CastleHero.View.Common.UI.Popup;
+using CastleHero.View.InGame.Actions;
 using CastleHero.View.InGame.UI;
 using CastleHero.Utility;
 using UniRx;
@@ -25,7 +25,7 @@ using UnityEngine.Serialization;
 
 namespace CastleHero.View.InGame.Behaviours
 {
-    public class InGameBehaviour : SceneBehaviour
+    public class InGameScene : SceneBase
     {
         [FormerlySerializedAs("_uiInGame")]
         [SerializeField] private UIInGame uiInGame;
@@ -44,6 +44,8 @@ namespace CastleHero.View.InGame.Behaviours
         private PoolContainer _poolContainer;
         private EntranceHolder _entranceHolder;
 
+        private GameClearAction _gameClearAction;
+
         private GameHandler _handler;
         private InGameSession _session;
 
@@ -51,16 +53,19 @@ namespace CastleHero.View.InGame.Behaviours
         {
             base.OnAwake();
 
-            _db = ServiceLocator.Get<IDBProvider>();
-            _userRepo = ServiceLocator.Get<IUserRepository>();
-            _sounds = ServiceLocator.Get<ISoundManager>();
-            _effectBuilder = ServiceLocator.Get<EffectBuilder>();
-            _constants = ServiceLocator.Get<GameConstants>();
-            _settings = ServiceLocator.Get<ISettingRepository>();
-            _popups = ServiceLocator.Get<IPopupManager>();
-            _startButton = ServiceLocator.Get<StartButton>();
-            _poolContainer = ServiceLocator.Get<PoolContainer>();
-            _entranceHolder = ServiceLocator.Get<EntranceHolder>();
+            var sl = ServiceLocator.Instance;
+            _db = sl.Get<IDBProvider>();
+            _userRepo = sl.Get<IUserRepository>();
+            _sounds = sl.Get<ISoundManager>();
+            _effectBuilder = sl.Get<EffectBuilder>();
+            _constants = sl.Get<GameConstants>();
+            _settings = sl.Get<ISettingRepository>();
+            _popups = sl.Get<IPopupManager>();
+            _startButton = sl.Get<StartButton>();
+            _poolContainer = sl.Get<PoolContainer>();
+            _entranceHolder = sl.Get<EntranceHolder>();
+
+            _gameClearAction = sl.Get<GameClearAction>();
 
             this.SubscribeMessage<ExitGame>(Exit);
             this.SubscribeMessage<StartGame>(Run);
@@ -69,7 +74,7 @@ namespace CastleHero.View.InGame.Behaviours
         protected override async UniTask OnLoaded()
         {
             var entrance = _entranceHolder.Current.gameEntrance;
-            var planner = new StagePreloadPlanner(_db);
+            var planner = new StagePreloadPlanner(_db, _userRepo);
             var entries = planner.Plan(entrance.id);
 
             var preloader = new Preloader();
@@ -93,14 +98,18 @@ namespace CastleHero.View.InGame.Behaviours
 
             _handler = new GameHandler(startGame, waveRunner,
                 _userRepo, _session, _db, _sounds, _effectBuilder, _constants);
-            _handler.OnFinished += OnFinished;
+            AwaitFinished().SafeForget();
 
             InitGlobalSkills();
 
             _handler.OnStart();
         }
 
-        private void OnFinished(GameFinished finished) => OnFinishedAsync(finished).Forget();
+        private async UniTask AwaitFinished()
+        {
+            var finished = await _handler.Finished;
+            OnFinishedAsync(finished).SafeForget();
+        }
 
         private async UniTaskVoid OnFinishedAsync(GameFinished finished)
         {
@@ -112,7 +121,7 @@ namespace CastleHero.View.InGame.Behaviours
             GameCleared data = null;
             if (isCleared)
             {
-                var result = await ServiceLocator.Get<INetworkServiceProvider>().Game.Clear(type, id);
+                var result = await _gameClearAction.RequestClear(type, id);
                 if (!result.IsSuccess)
                 {
                     var param = new PopupCommon.ButtonParam
@@ -152,7 +161,7 @@ namespace CastleHero.View.InGame.Behaviours
             if (_session.Castle.Value != null)
             {
                 ui.gameObject.SetActive(true);
-                ui.Init(_handler.GetCastleSkills()).Forget();
+                ui.Init(_handler.GetCastleSkills());
             }
             else
             {
@@ -164,10 +173,7 @@ namespace CastleHero.View.InGame.Behaviours
         {
             _handler.OnExit(exit);
 
-            var task = ServiceLocator.Get<INetworkServiceProvider>().User.GetUserData()
-                .ContinueWith(x => _userRepo.Update(x.data));
-
-            Loading.Tasks.Add(task);
+            Loading.Tasks.Add(_gameClearAction.RefreshUserData());
             LoadSceneAfterDispose("Main");
         }
 

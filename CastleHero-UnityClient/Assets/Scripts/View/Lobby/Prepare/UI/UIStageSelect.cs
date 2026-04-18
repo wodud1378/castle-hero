@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using CastleHero.Common.Behaviours;
 using CastleHero.View.Common;
-using CastleHero.View.Bootstrapper;
-using CastleHero.Common.Flow;
 using CastleHero.Data;
 using CastleHero.Data.Model;
 using CastleHero.Data.Repositories;
 using CastleHero.Data.DB;
-using CastleHero.Network.DB;
+using CastleHero.Data.UseCases;
 using CastleHero.Utility;
 using TMPro;
 using UniRx;
@@ -36,13 +33,21 @@ namespace CastleHero.View.Lobby.Prepare.UI
 
         private IUserRepository _repository;
         private IDBProvider _db;
+        private EntranceManager _entranceManager;
 
         private readonly List<IDisposable> _subscriptions = new();
 
+        private void Awake()
+        {
+            var sl = ServiceLocator.Instance;
+            _repository = sl.Get<IUserRepository>();
+            _db = sl.Get<IDBProvider>();
+
+            _entranceManager = sl.Get<EntranceManager>();
+        }
+
         public void Init()
         {
-            _repository = ServiceLocator.Get<IUserRepository>();
-            _db = ServiceLocator.Get<IDBProvider>();
 
             this.SubscribeButton(prev, OnPrevStage);
             this.SubscribeButton(next, OnNextStage);
@@ -54,22 +59,13 @@ namespace CastleHero.View.Lobby.Prepare.UI
                 .Subscribe(x =>
                 {
                     title.text = $"STAGE {x.Id}";
-                    rewardList
-                        .Init(x)
-                        .Forget();
+                    rewardList.Init(x);
 
                     UpdateButtonsActive(x);
                 }));
 
-            var exist = _repository.Entrance.Value;
-            if (exist.type == GameType.Dungeon && ServiceLocator.Get<EntranceHolder>().Current.state == State.Lobby)
-            {
-                _repository.Entrance.Value = new GameEntrance
-                {
-                    type = GameType.Stage,
-                    id = _repository.StageFocus
-                };
-            }
+            _entranceManager.RevertToStageOnLobbyInit(
+                ServiceLocator.Instance.Get<EntranceHolder>());
         }
 
         public void SetMoveStageEnable(bool enabled)
@@ -102,7 +98,7 @@ namespace CastleHero.View.Lobby.Prepare.UI
             if (!stages.TryFindIndex(stageData.Id, out int dataIndex))
                 dataIndex = 0;
 
-            if (!stages.TryFindIndex(ServiceLocator.Get<IUserRepository>().GameRecord.LastClearedStage.Value, out int userIndex))
+            if (!stages.TryFindIndex(_repository.GameRecord.LastClearedStage.Value, out int userIndex))
                 userIndex = -1;
 
             prev.gameObject.SetActive(dataIndex > 0);
@@ -136,22 +132,7 @@ namespace CastleHero.View.Lobby.Prepare.UI
 
         private void AdjustIndex(int adjust)
         {
-            var stages = _db.Stages;
-            if (!stages.TryFindIndex(_stageData.Value.Id, out int index))
-                return;
-
-            index += adjust;
-            if (!stages.IsValidIndex(index))
-                return;
-
-            if (!stages.TryIndexOf(index, out var entity))
-                return;
-
-            _repository.Entrance.Value = new GameEntrance
-            {
-                type = GameType.Stage,
-                id = entity.Id
-            };
+            _entranceManager.AdjustStageIndex(_stageData.Value.Id, adjust);
         }
 
         public void Dispose()

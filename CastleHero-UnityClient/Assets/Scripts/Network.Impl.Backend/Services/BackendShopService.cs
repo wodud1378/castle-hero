@@ -17,6 +17,8 @@ namespace CastleHero.Network.Impl.Backend.Services
     {
         private IAPManager _inApp;
 
+        public BackendShopService(IServiceLocator sl) : base(sl) { }
+
         public void RegisterIAP(IAPManager iap) => _inApp = iap;
 
         public string InAppPrice(string productKey, int fallBack = -1)
@@ -40,7 +42,7 @@ namespace CastleHero.Network.Impl.Backend.Services
             var currentTime = getTime.data;
             products.ForEach(product =>
             {
-                if (!ServiceLocator.Get<IDBProvider>().Shop.TryFind(product.shopId, out var entity))
+                if (!Db.Shop.TryFind(product.shopId, out var entity))
                     return;
 
                 if (entity.totalCount <= 0 || product.nextReset > currentTime)
@@ -55,7 +57,7 @@ namespace CastleHero.Network.Impl.Backend.Services
             if (!update.IsSuccess)
                 return Result.Error(update.error);
 
-            ServiceLocator.Get<IUserRepository>().ShopRecord.Update(shopRecord);
+            UserRepo.ShopRecord.Update(shopRecord);
             return Result.Complete();
         }
 
@@ -84,10 +86,10 @@ namespace CastleHero.Network.Impl.Backend.Services
                 if ((currentTime.Date - x.updatedAt.Date).TotalDays <= 0)
                     return;
 
-                if (!ServiceLocator.Get<IDBProvider>().Shop.TryFind(x.shopId, out var entity))
+                if (!Db.Shop.TryFind(x.shopId, out var entity))
                     return;
 
-                if (!ServiceLocator.Get<IDBProvider>().ShopGroup.TryFind(entity.groupId, out var groupEntity))
+                if (!Db.ShopGroup.TryFind(entity.groupId, out var groupEntity))
                     return;
 
                 x.updatedAt = currentTime;
@@ -151,8 +153,8 @@ namespace CastleHero.Network.Impl.Backend.Services
 
         public async UniTask<Result<ItemBought>> BuyItem(PaymentType type, int id)
         {
-            if (!ServiceLocator.Get<IDBProvider>().Shop.TryFind(id, out var entity) ||
-                !ServiceLocator.Get<IDBProvider>().ShopGroup.TryFind(entity.groupId, out var groupEntity))
+            if (!Db.Shop.TryFind(id, out var entity) ||
+                !Db.ShopGroup.TryFind(entity.groupId, out var groupEntity))
                 return Result<ItemBought>.Error(Error.DataNotFound);
 
             var pack = GetPack(groupEntity);
@@ -248,7 +250,7 @@ namespace CastleHero.Network.Impl.Backend.Services
         {
             history = null;
 
-            if (!IsProductTImeValid(currentTime, entity))
+            if (!IsProductTimeValid(currentTime, entity))
             {
                 error = Error.InvalidDate;
                 return false;
@@ -344,7 +346,7 @@ namespace CastleHero.Network.Impl.Backend.Services
             return true;
         }
 
-        private bool IsProductTImeValid(DateTime time, ShopItemEntity entity)
+        private bool IsProductTimeValid(DateTime time, ShopItemEntity entity)
         {
             if (entity.startDate == default)
                 return false;

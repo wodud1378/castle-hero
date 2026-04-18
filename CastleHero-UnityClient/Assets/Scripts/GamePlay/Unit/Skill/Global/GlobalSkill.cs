@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using Cysharp.Threading.Tasks;
 using CastleHero.Data;
 using CastleHero.Data.Model;
 using CastleHero.GamePlay.Unit.Events;
@@ -9,8 +8,6 @@ using CastleHero.GamePlay.Unit.Components;
 using CastleHero.GamePlay.Unit.Skill.Components;
 using CastleHero.GamePlay.Unit.Skill.Components.Factory;
 using CastleHero.Utility;
-using UniRx;
-using UniRx.Triggers;
 using UnityEngine;
 using CastleHero.Common.Pattern;
 using CastleHero.GamePlay.Unit.Effects;
@@ -29,11 +26,11 @@ namespace CastleHero.GamePlay.Unit.Skill.Global
         private readonly string _sfx;
         private readonly float _value;
 
-        private readonly UnitBehaviour _castle;
+        private readonly UnitActor _castle;
         private readonly CircleBound _bound;
         private readonly int _targetId;
 
-        public GlobalSkill(UnitBehaviour castle, CastleSkillParameter parameter)
+        public GlobalSkill(UnitActor castle, CastleSkillParameter parameter)
         {
             type = parameter.type;
             radius = parameter.radius;
@@ -43,11 +40,6 @@ namespace CastleHero.GamePlay.Unit.Skill.Global
             _unitEffect = parameter.unitEffect;
             _sfx = parameter.sfx;
             _castle = castle;
-
-            _castle
-                .UpdateAsObservable()
-                .Subscribe()
-                .AddTo(castle);
 
             _bound = new CircleBound(radius, radius);
 
@@ -67,7 +59,7 @@ namespace CastleHero.GamePlay.Unit.Skill.Global
 
         public void Execute(Vector2 position)
         {
-            Action<UnitBehaviour> action = type switch
+            Action<UnitActor> action = type switch
             {
                 CastleSkillType.Shield => Shield,
                 CastleSkillType.Damage => Damage,
@@ -93,7 +85,7 @@ namespace CastleHero.GamePlay.Unit.Skill.Global
             coolTime.StartWaiting();
         }
 
-        private void Shield(UnitBehaviour unit)
+        private void Shield(UnitActor unit)
         {
             new ShieldEvent
             {
@@ -105,13 +97,13 @@ namespace CastleHero.GamePlay.Unit.Skill.Global
             }.Publish();
         }
 
-        private void Stun(UnitBehaviour unit)
+        private void Stun(UnitActor unit)
         {
             new RestrictionEvent
             {
                 From = _castle,
                 To = unit,
-                Type = UnitCore.Restrictions.Attack,
+                Type = CombatController.Restrictions.Attack,
                 Effect = _unitEffect,
                 Duration = _value
             }.Publish();
@@ -120,7 +112,7 @@ namespace CastleHero.GamePlay.Unit.Skill.Global
             {
                 From = _castle,
                 To = unit,
-                Type = UnitCore.Restrictions.Move,
+                Type = CombatController.Restrictions.Move,
                 Effect = _unitEffect,
                 Duration = _value
             }.Publish();
@@ -129,13 +121,13 @@ namespace CastleHero.GamePlay.Unit.Skill.Global
             {
                 From = _castle,
                 To = unit,
-                Type = UnitCore.Restrictions.Skill,
+                Type = CombatController.Restrictions.Skill,
                 Effect = _unitEffect,
                 Duration = _value
             }.Publish();
         }
 
-        private void Damage(UnitBehaviour unit)
+        private void Damage(UnitActor unit)
         {
             new AtkEvent
             {
@@ -147,7 +139,7 @@ namespace CastleHero.GamePlay.Unit.Skill.Global
             }.Publish();
         }
 
-        private void Heal(UnitBehaviour unit)
+        private void Heal(UnitActor unit)
         {
             new HealEvent
             {

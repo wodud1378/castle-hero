@@ -45,13 +45,13 @@ namespace CastleHero.View.Common.UI.Popup
             this.SubscribeButton(confirm, () =>
             {
                 _confirmAction?.Invoke();
-                CloseAsync().Forget();
+                CloseAsync().SafeForget();
             });
 
             this.SubscribeButton(cancel, () =>
             {
                 _cancelAction?.Invoke();
-                CloseAsync().Forget();
+                CloseAsync().SafeForget();
             });
         }
 

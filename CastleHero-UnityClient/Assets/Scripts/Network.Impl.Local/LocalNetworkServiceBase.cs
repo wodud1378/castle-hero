@@ -1,4 +1,6 @@
+using System;
 using CastleHero.Common.Pattern;
+using CastleHero.Data.DB;
 using CastleHero.Data.Repositories;
 using CastleHero.Network.Service;
 using CastleHero.Network.Shared;
@@ -16,9 +18,26 @@ namespace CastleHero.Network.Impl.Local
         protected static readonly ItemGenerator ItemGen = new();
         protected static readonly UnitGenerator UnitGen = new();
 
+        // 구현체 서비스는 BeforeSceneLoad 에 생성되지만, IDBProvider/IUserRepository 는
+        // 로그인 이후 등록되므로 ctor 시점에 미등록 상태. OnRegistered 구독으로 늦게 채움.
+        protected IDBProvider Db { get; private set; }
+        protected IUserRepository UserRepo { get; private set; }
+
         protected readonly LocalUserDataStore Store;
 
-        protected LocalNetworkServiceBase(LocalUserDataStore store) => Store = store;
+        protected LocalNetworkServiceBase(IServiceLocator sl, LocalUserDataStore store)
+        {
+            Store = store;
+            if (sl.TryGet<IDBProvider>(out var db)) Db = db;
+            if (sl.TryGet<IUserRepository>(out var userRepo)) UserRepo = userRepo;
+            sl.OnRegistered += OnServiceRegistered;
+        }
+
+        private void OnServiceRegistered(Type type, object instance)
+        {
+            if (type == typeof(IDBProvider)) Db = (IDBProvider)instance;
+            else if (type == typeof(IUserRepository)) UserRepo = (IUserRepository)instance;
+        }
 
         protected Result<UserDataDto> Get()
         {
@@ -31,9 +50,7 @@ namespace CastleHero.Network.Impl.Local
         protected void Save(UserDataDto data)
         {
             Store.Save(data);
-
-            if (ServiceLocator.TryGet<IUserRepository>(out var repository))
-                repository.Update(data);
+            UserRepo?.Update(data);
         }
 
         protected static void RecoverStamina(StaminaDto stamina)

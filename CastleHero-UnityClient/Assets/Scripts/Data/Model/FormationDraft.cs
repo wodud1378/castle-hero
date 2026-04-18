@@ -11,8 +11,8 @@ namespace CastleHero.Data.Model
     /// </summary>
     public class FormationDraft : IDisposable
     {
-        public ReactiveCollection<IUnitBehaviour> Characters { get; } = new();
-        public ReactiveProperty<IUnitBehaviour> Castle { get; } = new(null);
+        public ReactiveCollection<IUnitActor> Characters { get; } = new();
+        public ReactiveProperty<IUnitActor> Castle { get; } = new(null);
 
         public void Dispose()
         {

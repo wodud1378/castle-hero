@@ -15,19 +15,21 @@ namespace CastleHero.Network.Impl.Backend.Services
 {
     public class BackendSummonService : BackendNetworkServiceBase, ISummonService
     {
+        public BackendSummonService(IServiceLocator sl) : base(sl) { }
+
         public UniTask<Result<Summon>> SummonOnce(int eventId, int costIndex) => Summon(eventId, costIndex, 1);
 
         public UniTask<Result<Summon>> SummonTenth(int eventId, int costIndex) => Summon(eventId, costIndex, 10);
 
         private async UniTask<Result<Summon>> Summon(int eventId, int costIndex, int count)
         {
-            if (!ServiceLocator.Get<IDBProvider>().Summons.TryFind(eventId, out var entity))
+            if (!Db.Summons.TryFind(eventId, out var entity))
                 return Result<Summon>.Error(Error.DataNotFound);
 
             if (!costIndex.IsValidIndex(entity.costItems, entity.valuePerOnce, entity.valuePerTenth))
                 return Result<Summon>.Error(Error.InvalidRequest);
 
-            var groupEntities = ServiceLocator.Get<IDBProvider>().SummonGroups.Map(entity.groupId);
+            var groupEntities = Db.SummonGroups.Map(entity.groupId);
             if (groupEntities == null || groupEntities.Length == 0)
                 return Result<Summon>.Error(Error.InvalidRequest);
 

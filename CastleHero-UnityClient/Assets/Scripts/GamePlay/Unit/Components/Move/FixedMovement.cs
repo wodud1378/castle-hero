@@ -9,7 +9,7 @@ namespace CastleHero.GamePlay.Unit.Components.Move
         public bool Enabled { get; set; }
         
         public Vector2 Default { get; set; }
-        public UnitBehaviour CurrentTarget { get; set; }
+        public UnitActor CurrentTarget { get; set; }
         public Finder Finder => null;
 
         public Vector2 Position

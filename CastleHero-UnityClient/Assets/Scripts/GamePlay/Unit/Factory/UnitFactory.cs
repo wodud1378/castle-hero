@@ -1,4 +1,5 @@
-using Cysharp.Threading.Tasks;
+using System;
+using System.Collections.Generic;
 using CastleHero.Common.Behaviours;
 using CastleHero.Common.Pattern;
 using CastleHero.Data.DB;
@@ -10,34 +11,100 @@ using UnityEngine;
 
 namespace CastleHero.GamePlay.Unit.Factory
 {
-    public class UnitFactory : IUnitFactory
+    public class UnitFactory
     {
-        private readonly PoolContainer _container;
+        public const string DEFAULT_CASTLE_PREFAB = "Castle_01/Castle_01.prefab";
+
+        private readonly PoolContainer _pool;
         private readonly IDBProvider _db;
         private readonly IUserRepository _userRepo;
+        private readonly HashSet<string> _managedPaths = new();
 
-        public UnitFactory(PoolContainer container, IDBProvider db, IUserRepository userRepo)
+        public UnitFactory(PoolContainer pool, IDBProvider db, IUserRepository userRepo)
         {
-            _container = container;
+            _pool = pool;
             _db = db;
             _userRepo = userRepo;
         }
 
-        public async UniTask<IUnitBehaviour> Create(int id, int lv, int grade, Vector2 position)
+        public IUnitActor Create(IUnitCreationData data)
         {
-            var info = new UnitInfo
+            return data switch
             {
-                lv = lv,
-                rate = grade,
-                id = id
+                CastleCreationData castle => CreateCastle(castle),
+                BarricadeCreationData barricade => CreateBarricade(barricade),
+                UnitCreationData unit => CreateUnit(unit),
+                _ => throw new ArgumentException($"Unknown creation data type: {data.GetType().Name}")
             };
-
-            return await Create(info, position);
         }
 
-        public async UniTask<IUnitBehaviour> CreateBarricade(UnitInfo info, Vector2 position)
+        public void PreloadResources(IEnumerable<PreloadEntry> entries)
         {
+            foreach (var entry in entries)
+            {
+                if (_managedPaths.Contains(entry.Path))
+                    continue;
+
+                _pool.LoadAndRegister(entry.Path, entry.Count);
+                _managedPaths.Add(entry.Path);
+            }
+        }
+
+        public void ReleaseResources()
+        {
+            foreach (var path in _managedPaths)
+                _pool.Remove(path);
+
+            _managedPaths.Clear();
+        }
+
+        public void CleanResources()
+        {
+            ReleaseResources();
+        }
+
+        private IUnitActor CreateUnit(UnitCreationData data)
+        {
+            var info = data.Info;
+            if (!_db.Units.TryFind(info.id, out var unitEntity))
+                return null;
+
+            if (!_db.Balances.TryFind(info.id, out var balanceEntity))
+                balanceEntity = default;
+
+            var unit = GetFromPool(unitEntity.prefab, data.Position);
+            if (unit == null)
+                return null;
+
+            unit.Init(info, unitEntity, balanceEntity);
+            unit.Position = data.Position;
+            return unit;
+        }
+
+        private IUnitActor CreateCastle(CastleCreationData data)
+        {
+            var info = data.Info;
+            var prefab = string.IsNullOrEmpty(data.Prefab) ? DEFAULT_CASTLE_PREFAB : data.Prefab;
+
+            if (!_db.Castles.TryFind(info.lv, out var entity))
+                return null;
+
+            var unitEntity = entity.ToUnitEntity();
+
+            var unit = GetFromPool(prefab, data.Position);
+            if (unit == null)
+                return null;
+
+            unit.Init(info, unitEntity, default);
+            unit.Position = data.Position;
+            return unit;
+        }
+
+        private IUnitActor CreateBarricade(BarricadeCreationData data)
+        {
+            var info = data.Info;
             int lv = _userRepo.GameRecord.CastleLv.Value;
+
             if (!_db.Castles.TryFind(lv, out var castleEntity))
                 return null;
 
@@ -46,43 +113,27 @@ namespace CastleHero.GamePlay.Unit.Factory
 
             unitEntity.hp = castleEntity.barricadeHp;
 
-            var unit = await CreateInternal(unitEntity.prefab, position);
+            var unit = GetFromPool(unitEntity.prefab, data.Position);
             if (unit == null)
                 return null;
 
             unit.Init(info, unitEntity, default);
-            unit.Position = position;
+            unit.Position = data.Position;
             return unit;
         }
 
-        public async UniTask<IUnitBehaviour> Create(UnitInfo info, Vector2 position)
+        private UnitActor GetFromPool(string prefab, Vector2 position)
         {
-            if (!_db.Units.TryFind(info.id, out var unitEntity))
-                return null;
+            if (_pool.TryGet<UnitActor>(prefab, out var unit, position))
+                return unit;
 
-            var unit = await CreateInternal(unitEntity.prefab, position);
-            if (unit == null)
-                return null;
-
-            if (!_db.Balances.TryFind(info.id, out var balanceEntity))
-                balanceEntity = default;
-
-            unit.Init(info, unitEntity, balanceEntity);
-            unit.Position = position;
-            return unit;
-        }
-
-        private UniTask<UnitBehaviour> CreateInternal(string prefab, Vector2 position)
-        {
-            if (!_container.TryGet<UnitBehaviour>(prefab, out var unit, position))
+            if (_pool.LoadAndRegister(prefab))
             {
-#if UNITY_EDITOR
-                Debug.LogError($"[{prefab}] 풀에 프리팹이 등록되지 않았습니다. Preloader 에서 누락.");
-#endif
-                return UniTask.FromResult<UnitBehaviour>(null);
+                _managedPaths.Add(prefab);
+                return _pool.TryGet<UnitActor>(prefab, out unit, position) ? unit : null;
             }
 
-            return UniTask.FromResult(unit);
+            return null;
         }
     }
 }

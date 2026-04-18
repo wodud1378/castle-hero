@@ -11,12 +11,13 @@ using CastleHero.Network.Service;
 using CastleHero.Network.Service.Boot;
 using CastleHero.Network.Service.Login;
 using CastleHero.View.Lobby.Title.UI.Popup;
+using CastleHero.Utility;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace CastleHero.View.Lobby.Title
 {
-    public class TitleBehaviour : MonoBehaviour, IBootServiceHandler
+    public class TitleScene : MonoBehaviour, IBootServiceHandler
     {
         [FormerlySerializedAs("_config")]
         [SerializeField] private BootConfig config;
@@ -33,9 +34,10 @@ namespace CastleHero.View.Lobby.Title
 
         private void Awake()
         {
-            var factory = ServiceLocator.Get<IBootServiceFactory>();
+            var sl = ServiceLocator.Instance;
+            var factory = sl.Get<IBootServiceFactory>();
             var service = factory.Create(config, this);
-            service.Start().Forget();
+            service.Start().SafeForget();
         }
 
         public UniTask OnError(Result response)
@@ -83,7 +85,7 @@ namespace CastleHero.View.Lobby.Title
 
         public void OnInitDone()
         {
-            //ServiceLocator.Get<CastleHero.Common.Sound.ISoundManager>() = null;
+            //ServiceLocator.Instance.Get<CastleHero.Common.Sound.ISoundManager>() = null;
             Loading.NextScene = "Main";
         }
 

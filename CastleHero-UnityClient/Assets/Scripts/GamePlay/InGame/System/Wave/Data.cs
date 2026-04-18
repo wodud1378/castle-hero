@@ -26,6 +26,6 @@ namespace CastleHero.GamePlay.InGame.System.Wave
 
     public struct ReleaseEvent
     {
-        public UnitBehaviour unit;
+        public UnitActor unit;
     }
 }

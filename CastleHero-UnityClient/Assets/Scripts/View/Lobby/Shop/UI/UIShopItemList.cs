@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using CastleHero.View.Common.UI;
 using CastleHero.Data.Model;
 using UnityEngine;
@@ -30,6 +29,6 @@ namespace CastleHero.View.Lobby.Shop.UI
             _prefabCache.Clear();
         }
 
-        protected override UniTask SetItem(UIShopItemSlot slot, ShopItemEntity data) => slot.Init(data);
+        protected override void SetItem(UIShopItemSlot slot, ShopItemEntity data) => slot.Init(data);
     }
 }

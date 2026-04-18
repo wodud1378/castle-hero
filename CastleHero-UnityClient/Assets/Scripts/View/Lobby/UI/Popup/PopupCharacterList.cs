@@ -79,11 +79,11 @@ namespace CastleHero.View.Lobby.UI.Popup
             {
                 switch (tab.Value)
                 {
-                    case Tab.Storage: return ServiceLocator.Get<IUserRepository>().Characters.Units
+                    case Tab.Storage: return _userRepo.Characters.Units
                         .Where(x => x.id != Constants.BarricadeId)
                         .ToArray();
                     case Tab.Collections:
-                        return ServiceLocator.Get<IDBProvider>().Units
+                        return _db.Units
                             .Where(x => x.Id / 10000 == 1)
                             .Select(x => new UnitInfo { id = x.Id })
                             .ToArray();
@@ -112,7 +112,9 @@ namespace CastleHero.View.Lobby.UI.Popup
 
         public EquipParam equipParam;
 
-        private UniTask _updateTask;
+        private IUserRepository _userRepo;
+        private IDBProvider _db;
+        private IPopupManager _popups;
 
         public UniTask<UnitInfo> SelectTask => _ctSource.Task;
 
@@ -128,6 +130,11 @@ namespace CastleHero.View.Lobby.UI.Popup
         protected override void OnAwake()
         {
             base.OnAwake();
+
+            var sl = ServiceLocator.Instance;
+            _userRepo = sl.Get<IUserRepository>();
+            _db = sl.Get<IDBProvider>();
+            _popups = sl.Get<IPopupManager>();
 
             this.UpdateAsObservable()
                 .Select(_ => tabToggle.ActiveToggles().FirstOrDefault(t => t.isOn))
@@ -146,7 +153,7 @@ namespace CastleHero.View.Lobby.UI.Popup
                 .Subscribe(_ => UpdateUI())
                 .AddTo(this);
 
-            ServiceLocator.Get<IUserRepository>().Characters.Units
+            _userRepo.Characters.Units
                 .ChangeAsObservable()
                 .ThrottleFrame(1)
                 .Subscribe(_ => UpdateUI())
@@ -172,7 +179,7 @@ namespace CastleHero.View.Lobby.UI.Popup
             tab.Value = tabParam;
             sortOption.Value = sortParam;
 
-            return _updateTask;
+            return UniTask.CompletedTask;
         }
 
         protected override void OnClose()
@@ -187,7 +194,7 @@ namespace CastleHero.View.Lobby.UI.Popup
             var characters = Characters;
             Array.Sort(characters, Sort);
 
-            _updateTask = characterList.Init(characters);
+            characterList.Init(characters);
         }
 
         private void OnClickSlot(UICharacterSlot slot)
@@ -203,7 +210,7 @@ namespace CastleHero.View.Lobby.UI.Popup
             switch (clickMethod)
             {
                 case ClickMethod.Select:
-                    ServiceLocator.Get<IPopupManager>().Open<PopupCharacter>(slot.Info);
+                    _popups.Open<PopupCharacter>(slot.Info);
                     break;
                 case ClickMethod.Equip:
                     OpenEquipmentCompare(slot.Info);
@@ -227,7 +234,7 @@ namespace CastleHero.View.Lobby.UI.Popup
             if (equipParam.item == null || equipParam.unit == null)
                 return;
 
-            ServiceLocator.Get<IPopupManager>().Open<PopupCompareEquipment>(equipParam.unit, equipParam.item);
+            _popups.Open<PopupCompareEquipment>(equipParam.unit, equipParam.item);
             Close();
 
             equipParam.item = null;

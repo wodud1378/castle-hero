@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using CastleHero.Common.Pattern;
 using CastleHero.GamePlay.Unit.Behaviours;
 using UnityEngine;
@@ -17,14 +16,14 @@ namespace CastleHero.GamePlay.Unit.Effects
         private string _prefab;
         private Vector2 _from;
         private Vector2 _to;
-        private UnitBehaviour _target;
+        private UnitActor _target;
         private Vector2 _forward;
         private float _duration;
-        
+
         public IEffectBuilder StartBuild(string prefab)
         {
             _prefab = prefab;
-            
+
             Clear();
             return this;
         }
@@ -35,12 +34,12 @@ namespace CastleHero.GamePlay.Unit.Effects
             return this;
         }
 
-        public IEffectBuilder To(UnitBehaviour unit)
+        public IEffectBuilder To(UnitActor unit)
         {
             _target = unit;
             return this;
         }
-        
+
         public IEffectBuilder To(Vector2 position)
         {
             _target = null;
@@ -64,36 +63,15 @@ namespace CastleHero.GamePlay.Unit.Effects
         {
             StartBuild(prefab)
                 .To(to)
-                .RunAsync()
-                .Forget();
+                .Run();
         }
 
-        public async UniTask Run()
+        public IEffect Run()
         {
-            var effect = await GetEffect(_prefab);
-            if (effect == null)
-                return;
-            
-            if(_target == null)
-                effect.SetTarget(_to);
-            else
-                effect.SetTarget(_target);
-
-            if (_duration != 0f)
-                effect.Duration = _duration;
-            
-            if(_forward != default)
-                effect.SetForward(_forward);
-            
-            effect.Run(_from);
-        }
-
-        public async UniTask<IEffect> RunAsync()
-        {
-            var effect = await GetEffect(_prefab);
+            var effect = GetEffect(_prefab);
             if (effect == null)
                 return null;
-            
+
             if(_target == null)
                 effect.SetTarget(_to);
             else
@@ -101,10 +79,10 @@ namespace CastleHero.GamePlay.Unit.Effects
 
             if (_duration != 0f)
                 effect.Duration = _duration;
-            
+
             if(_forward != default)
                 effect.SetForward(_forward);
-            
+
             effect.Run(_from);
             return effect;
         }
@@ -117,16 +95,16 @@ namespace CastleHero.GamePlay.Unit.Effects
             _target = null;
             _duration = 0f;
         }
-        
-        private UniTask<IEffect> GetEffect(string prefab)
+
+        private IEffect GetEffect(string prefab)
         {
             if (string.IsNullOrEmpty(prefab))
-                return UniTask.FromResult<IEffect>(null);
+                return null;
 
             if (!_container.TryGet(prefab, out var item))
-                return UniTask.FromResult<IEffect>(null);
+                return null;
 
-            return UniTask.FromResult(item as IEffect);
+            return item as IEffect;
         }
     }
 }

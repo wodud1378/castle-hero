@@ -36,11 +36,18 @@ namespace CastleHero.View.Common.UI.Popup
 
         private readonly List<IDisposable> _disposables = new();
         private bool _onClose;
-        
+
+        private ISoundManager _sounds;
+        private SoundPath _soundPath;
+
         private void Awake()
         {
+            var sl = ServiceLocator.Instance;
+            _sounds = sl.Get<ISoundManager>();
+            _soundPath = sl.Get<SoundPath>();
+
             _onClose = false;
-            
+
             OnAwake();
         }
 
@@ -71,16 +78,16 @@ namespace CastleHero.View.Common.UI.Popup
             _disposables.Add(disposable);
         }
 
-        private void OnEnable() => PlaySfx(ServiceLocator.Get<SoundPath>().openPopup);
+        private void OnEnable() => PlaySfx(_soundPath?.openPopup);
 
-        private void OnDisable() => PlaySfx(ServiceLocator.Get<SoundPath>().closePopup);
+        private void OnDisable() => PlaySfx(_soundPath?.closePopup);
 
         protected void PlaySfx(string sfx)
         {
-            if (ServiceLocator.Get<ISoundManager>() == null)
+            if (_sounds == null)
                 return;
-            
-            ServiceLocator.Get<ISoundManager>().PlaySfx(sfx);
+
+            _sounds.PlaySfx(sfx);
         }
 
         public async UniTask CloseAsync()
@@ -93,7 +100,7 @@ namespace CastleHero.View.Common.UI.Popup
             Closed();
         }
 
-        public void Close() => CloseAsync().Forget();
+        public void Close() => CloseAsync().SafeForget();
 
         protected virtual void OnClose()
         {
@@ -107,7 +114,7 @@ namespace CastleHero.View.Common.UI.Popup
 
         public bool OnProcessBack()
         {
-            CloseAsync().Forget();
+            CloseAsync().SafeForget();
 
             return true;
         }

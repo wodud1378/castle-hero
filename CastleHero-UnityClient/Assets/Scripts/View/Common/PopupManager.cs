@@ -36,10 +36,10 @@ namespace CastleHero.View.Common
         }
 
         public void Open<T>() where T : PopupBase
-            => OpenAsync<T>().Forget();
+            => OpenAsync<T>().SafeForget();
 
         public void Open<T>(params object[] parameters) where T : PopupBase
-            => OpenAsync<T>(parameters).Forget();
+            => OpenAsync<T>(parameters).SafeForget();
 
         public async UniTask<T> OpenAsync<T>(params object[] parameters) where T : PopupBase
         {
@@ -135,7 +135,7 @@ namespace CastleHero.View.Common
             _popups.Clear();
         }
 
-        public void CloseAll() => CloseAllAsync().Forget();
+        public void CloseAll() => CloseAllAsync().SafeForget();
 
         private void OnClosed(PopupBase popup)
         {

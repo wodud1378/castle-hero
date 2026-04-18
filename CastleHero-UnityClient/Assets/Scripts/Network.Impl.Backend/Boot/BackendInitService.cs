@@ -2,6 +2,7 @@ using System;
 using BackEnd;
 using BackEnd.MultiSettings;
 using Cysharp.Threading.Tasks;
+using CastleHero.Common.Pattern;
 using CastleHero.Network.Service;
 using CastleHero.Network.Service.Boot;
 using CastleHero.Utility;
@@ -39,6 +40,8 @@ namespace CastleHero.Network.Impl.Backend.Boot
 
     public class BackendInitService : BackendNetworkServiceBase
     {
+        public BackendInitService(IServiceLocator sl) : base(sl) { }
+
         public BackendResult InitServer(string serverName)
         {
             var project = MultiSettingManager.FindByProjectName(serverName);

@@ -35,7 +35,20 @@ namespace CastleHero.View.Lobby.UI.Popup
         [SerializeField] private UIDungeonSelect select;
 
         private readonly ReactiveProperty<DayOfWeek> _dayOfWeek = new();
-        private UniTask _updateTask;
+
+        private IUserRepository _userRepo;
+        private IDBProvider _db;
+        private StateManager<LobbyState> _lobbyState;
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+
+            var sl = ServiceLocator.Instance;
+            _userRepo = sl.Get<IUserRepository>();
+            _db = sl.Get<IDBProvider>();
+            _lobbyState = sl.Get<StateManager<LobbyState>>();
+        }
 
         private void Start()
         {
@@ -44,7 +57,7 @@ namespace CastleHero.View.Lobby.UI.Popup
                 dayOfWeeks[(int)dow].values.Update(new[] { dow });
             }
 
-            dungeonList.OnSlotClickEvent += s => OnClickSlot(s).Forget();
+            dungeonList.OnSlotClickEvent += s => OnClickSlot(s).SafeForget();
             _dayOfWeek
                 .Subscribe(UpdateUI)
                 .AddTo(this);
@@ -72,13 +85,13 @@ namespace CastleHero.View.Lobby.UI.Popup
             if (!selected.IsValid)
                 return;
 
-            ServiceLocator.Get<IUserRepository>().Entrance.Value = new GameEntrance
+            _userRepo.Entrance.Value = new GameEntrance
             {
                 type = GameType.Dungeon,
                 id = selected.Id
             };
 
-            ServiceLocator.Get<StateManager<LobbyState>>().CurrentState = LobbyState.Prepare;
+            _lobbyState.CurrentState = LobbyState.Prepare;
 
             Close();
         }
@@ -99,14 +112,14 @@ namespace CastleHero.View.Lobby.UI.Popup
         {
             _dayOfWeek.Value = ServerTime.Now.DayOfWeek;
 
-            return _updateTask;
+            return UniTask.CompletedTask;
         }
 
         private void UpdateUI(DayOfWeek value)
         {
             SetHighlightDayOfWeek(value);
 
-            _updateTask = UpdateList(value);
+            UpdateList(value);
         }
 
         private void SetHighlightDayOfWeek(DayOfWeek value)
@@ -120,10 +133,10 @@ namespace CastleHero.View.Lobby.UI.Popup
             }
         }
 
-        private UniTask UpdateList(DayOfWeek dow)
+        private void UpdateList(DayOfWeek dow)
         {
             var list = new List<DungeonEntity>();
-            ServiceLocator.Get<IDBProvider>().Dungeons.BinarySearch(x =>
+            _db.Dungeons.BinarySearch(x =>
             {
                 if (list.FindIndex(exist => exist.Layer == x.Layer).IsValidIndex(list))
                     return;
@@ -141,7 +154,7 @@ namespace CastleHero.View.Lobby.UI.Popup
                     : x.Layer.CompareTo(y.Layer);
             });
 
-            return dungeonList.Init(list);
+            dungeonList.Init(list);
         }
     }
 }

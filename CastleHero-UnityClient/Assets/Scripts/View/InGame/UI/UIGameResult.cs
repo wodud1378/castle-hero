@@ -17,6 +17,7 @@ using CastleHero.Utility;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using CastleHero.Common;
 using CastleHero.Common.Pattern;
 using CastleHero.Common.Sound;
 using CastleHero.GamePlay.InGame;
@@ -57,8 +58,23 @@ namespace CastleHero.View.InGame.UI
         [FormerlySerializedAs("_failedObjects")]
         [SerializeField] private GameObject[] failedObjects;
 
+        private IDBProvider _db;
+        private IUserRepository _userRepo;
+        private ISoundManager _sounds;
+        private SoundPath _soundPath;
+        private GameConstants _constants;
+        private BackButton _back;
+
         private void Awake()
         {
+            var sl = ServiceLocator.Instance;
+            _db = sl.Get<IDBProvider>();
+            _userRepo = sl.Get<IUserRepository>();
+            _sounds = sl.Get<ISoundManager>();
+            _soundPath = sl.Get<SoundPath>();
+            _constants = sl.Get<GameConstants>();
+            _back = sl.Get<BackButton>();
+
             this.SubscribeButton(exitButton,()=> Exit());
             this.SubscribeButton(retryButton, ()=>Retry());
             this.SubscribeButton(nextButton, ()=>Next());
@@ -76,11 +92,10 @@ namespace CastleHero.View.InGame.UI
 
             if (result.IsCleared)
             {
-                ServiceLocator.Get<ISoundManager>().PlaySfx(ServiceLocator.Get<SoundPath>().gameClear);
+                _sounds.PlaySfx(_soundPath.gameClear);
 
-                await UniTask.WhenAll(
-                    growthList.Init(data.transitions),
-                    rewardList.Init(data.GetRewardsForDisplay()));
+                growthList.Init(data.transitions);
+                rewardList.Init(data.GetRewardsForDisplay(_db, _constants));
 
                 Activate();
 
@@ -90,12 +105,12 @@ namespace CastleHero.View.InGame.UI
             }
             else
             {
-                ServiceLocator.Get<ISoundManager>().PlaySfx(ServiceLocator.Get<SoundPath>().gameFailed);
+                _sounds.PlaySfx(_soundPath.gameFailed);
 
                 Activate();
             }
 
-            ServiceLocator.Get<BackButton>().Add(this);
+            _back.Add(this);
         }
 
         private void Activate()
@@ -130,7 +145,7 @@ namespace CastleHero.View.InGame.UI
 
         private void UpdateButtonsOnFailed()
         {
-            var repository = ServiceLocator.Get<IUserRepository>();
+            var repository = _userRepo;
             var enableLvLink = repository.UnitForLevelUp() != null;
             var enableRateLink = repository.UnitForUpgrade() != null;
             var enableEquipmentLink = repository.UnitForUpgradeEquipments(out _) != null;
@@ -142,7 +157,7 @@ namespace CastleHero.View.InGame.UI
 
         private void UpdateBottomButtons(GameResult result)
         {
-            int ap = ServiceLocator.Get<IUserRepository>().Stamina.Point.Value;
+            int ap = _userRepo.Stamina.Point.Value;
             bool activeRetry = HasApForRetry(ap, result.Type, result.Id);
             bool activeNext = HasApFoNext(ap, result.Type, result.Id) && result.IsCleared;
 
@@ -159,10 +174,10 @@ namespace CastleHero.View.InGame.UI
         }
 
         private bool HasApForRetry(int ap, GameType type, int id)
-            => ap >= (ServiceLocator.Get<IDBProvider>().TryLoadGameEntity(type, id, out var entity) ? entity.Ap : int.MaxValue);
+            => ap >= (_db.TryLoadGameEntity(type, id, out var entity) ? entity.Ap : int.MaxValue);
 
         private bool HasApFoNext(int ap, GameType type, int id)
-            => ap >= (ServiceLocator.Get<IDBProvider>().TryLoadGameEntity(type, id, out var entity) ? entity.Ap : int.MaxValue);
+            => ap >= (_db.TryLoadGameEntity(type, id, out var entity) ? entity.Ap : int.MaxValue);
 
         private void Exit(Entrance.Link link = Entrance.Link.None) => CloseWith(() =>
         {

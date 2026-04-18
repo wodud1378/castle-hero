@@ -19,10 +19,12 @@ namespace CastleHero.Network.Impl.Backend.Services
 {
     public class BackendGameService : BackendNetworkServiceBase, IGameService
     {
+        public BackendGameService(IServiceLocator sl) : base(sl) { }
+
         public async UniTask<Result<List<int>>> GetOpenedDungeonLayers()
         {
             var map = new Dictionary<int, List<DayOfWeek>>();
-            ServiceLocator.Get<IDBProvider>().Dungeons.BinarySearch(x =>
+            Db.Dungeons.BinarySearch(x =>
             {
                 if (map.ContainsKey(x.Layer))
                     return;
@@ -60,7 +62,7 @@ namespace CastleHero.Network.Impl.Backend.Services
 
         private async UniTask<Error> CanEntrance(GameType type, int id)
         {
-            if (!ServiceLocator.Get<IDBProvider>().TryLoadGameEntity(type, id, out var entity))
+            if (!Db.TryLoadGameEntity(type, id, out var entity))
                 return Error.DataNotFound;
 
             var get = await GetTables(Table.Stamina, Table.GameRecord);
@@ -122,7 +124,7 @@ namespace CastleHero.Network.Impl.Backend.Services
 
         public async UniTask<Result<GameCleared>> Clear(GameType type, int id)
         {
-            if (!ServiceLocator.Get<IDBProvider>().TryLoadGameEntity(type, id, out var entity))
+            if (!Db.TryLoadGameEntity(type, id, out var entity))
                 return Result<GameCleared>.Error(Error.DataNotFound);
 
             var get = await GetTables();
@@ -225,7 +227,7 @@ namespace CastleHero.Network.Impl.Backend.Services
         {
             var currency = new CurrencyDto();
             var items = new List<IItem>();
-            if (ServiceLocator.Get<IDBProvider>().DungeonRewards.TryFind(entity.rewardGroup, out var rewardEntity))
+            if (Db.DungeonRewards.TryFind(entity.rewardGroup, out var rewardEntity))
             {
                 var selected = rewardEntity.itemIds.Select((id, index) => new
                 {
@@ -291,7 +293,7 @@ namespace CastleHero.Network.Impl.Backend.Services
             {
                 case GameType.Stage:
                     if (record.lastClearedStage >= entity.Id)
-                        ServiceLocator.Get<IUserRepository>().StageFocus = entity.Id;
+                        UserRepo.StageFocus = entity.Id;
 
                     record.lastClearedStage = Mathf.Max(record.lastClearedStage, entity.Id);
                     break;

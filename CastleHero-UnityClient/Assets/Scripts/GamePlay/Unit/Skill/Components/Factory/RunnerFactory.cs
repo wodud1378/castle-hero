@@ -5,7 +5,7 @@ namespace CastleHero.GamePlay.Unit.Skill.Components.Factory
 {
     public class RunnerFactory
     {
-        public IRunner GetRunner(IRunner.Option option, UnitBehaviour owner)
+        public IRunner GetRunner(IRunner.Option option, UnitActor owner)
         {
             switch (option)
             {

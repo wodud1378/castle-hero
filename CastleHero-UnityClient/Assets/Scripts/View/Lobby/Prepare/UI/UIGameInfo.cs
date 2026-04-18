@@ -1,5 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
-using CastleHero.Data;
+﻿using CastleHero.Data;
 using CastleHero.Data.Model;
 using CastleHero.Data.Repositories;
 using CastleHero.Utility;
@@ -23,14 +22,21 @@ namespace CastleHero.View.Lobby.Prepare.UI
 
         private readonly ReactiveProperty<IGameEntity> _entity = new();
 
+        private IUserRepository _userRepo;
+        private IDBProvider _db;
+
         private void Awake()
         {
-            ServiceLocator.Get<IUserRepository>().Entrance
+            var sl = ServiceLocator.Instance;
+            _userRepo = sl.Get<IUserRepository>();
+            _db = sl.Get<IDBProvider>();
+
+            _userRepo.Entrance
                 .ThrottleFrame(1)
                 .Subscribe(OnEntranceChanged)
                 .AddTo(this);
 
-            ServiceLocator.Get<IUserRepository>().Stamina.Point
+            _userRepo.Stamina.Point
                 .ThrottleFrame(1)
                 .Subscribe(OnApChanged)
                 .AddTo(this);
@@ -53,7 +59,7 @@ namespace CastleHero.View.Lobby.Prepare.UI
 
         private void OnEntranceChanged(GameEntrance entrance)
         {
-            if (!ServiceLocator.Get<IDBProvider>().TryLoadGameEntity(entrance.type, entrance.id, out var entity))
+            if (!_db.TryLoadGameEntity(entrance.type, entrance.id, out var entity))
                 return;
 
             _entity.Value = entity;
@@ -70,9 +76,9 @@ namespace CastleHero.View.Lobby.Prepare.UI
             }
 
             if (rewardList != null)
-                rewardList.Init(entity).Forget();
+                rewardList.Init(entity);
 
-            OnApChanged(ServiceLocator.Get<IUserRepository>().Stamina.Point.Value);
+            OnApChanged(_userRepo.Stamina.Point.Value);
         }
     }
 }

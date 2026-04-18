@@ -65,6 +65,31 @@ namespace CastleHero.Common.Pattern
                 pool.Release(obj);
         }
 
+        public bool LoadAndRegister(string path, int preloadCount = 0)
+        {
+            if (_pools.ContainsKey(path))
+                return true;
+
+            var handle = Addressables.LoadAssetAsync<GameObject>(path);
+            var prefab = handle.WaitForCompletion();
+            if (prefab == null)
+                return false;
+
+            RegisterWithHandle(path, prefab, handle, preloadCount);
+            return true;
+        }
+
+        public void Remove(string path)
+        {
+            if (!_pools.Remove(path, out var pool))
+                return;
+
+            pool.Dispose();
+
+            if (_handles.Remove(path, out var handle) && handle.IsValid())
+                Addressables.Release(handle);
+        }
+
         public void Dispose()
         {
             foreach (var pool in _pools.Values) pool.Dispose();

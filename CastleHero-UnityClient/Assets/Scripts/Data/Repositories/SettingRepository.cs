@@ -24,7 +24,7 @@ namespace CastleHero.Data.Repositories
         private const string FxToggleKey = "toggle-fx";
 
         private const string BgmLevelKey = "level-bgm";
-        private const string FxLevelKey = "level-bgm";
+        private const string FxLevelKey = "level-fx";
 
         private const string SpeedUpKey = "speed-up";
         private const string RepeatKey = "repeat";

@@ -81,7 +81,6 @@ namespace CastleHero.View.Lobby.UI.Popup
             var data = (Summon)parameters[0];
             _completionSource = new();
 
-            var tasks = new List<UniTask>();
             using var itr = data.list.GetEnumerator();
             int index = 0;
             while (index.IsValidIndex(slots))
@@ -89,7 +88,7 @@ namespace CastleHero.View.Lobby.UI.Popup
                 var slot = slots[index];
                 if (itr.MoveNext())
                 {
-                    tasks.Add(slot.Init(itr.Current));
+                    slot.Init(itr.Current);
                     var button = slot.GetComponentInParent<Button>();
                     button.onClick.RemoveAllListeners();
                     button.onClick.AddListener(() => OpenSlot(slot));
@@ -100,7 +99,7 @@ namespace CastleHero.View.Lobby.UI.Popup
                 ++index;
             }
 
-            return UniTask.WhenAll(tasks);
+            return UniTask.CompletedTask;
         }
 
         private void OpenSlot(UISummonSlot slot)
@@ -108,7 +107,7 @@ namespace CastleHero.View.Lobby.UI.Popup
             if (!_directions.TryGetValue(slot, out var direction))
                 return;
 
-            direction.Run().Forget();
+            direction.Run().SafeForget();
 
             SetEndIfAllDone();
         }
@@ -118,7 +117,7 @@ namespace CastleHero.View.Lobby.UI.Popup
             using var itr = _directions.Values.GetEnumerator();
             while (itr.MoveNext())
             {
-                itr.Current?.Run().Forget();
+                itr.Current?.Run().SafeForget();
             }
 
             _completionSource.TrySetResult();

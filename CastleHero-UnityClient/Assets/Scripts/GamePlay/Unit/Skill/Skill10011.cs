@@ -15,9 +15,9 @@ namespace CastleHero.GamePlay.Unit.Skill
             float duration = Data.duration;
             foreach (var unit in aroundCenter.units)
             {
-                PublishRestriction(unit, UnitCore.Restrictions.Attack, duration);
-                PublishRestriction(unit, UnitCore.Restrictions.Skill, duration);
-                PublishRestriction(unit, UnitCore.Restrictions.Move, duration);
+                PublishRestriction(unit, CombatController.Restrictions.Attack, duration);
+                PublishRestriction(unit, CombatController.Restrictions.Skill, duration);
+                PublishRestriction(unit, CombatController.Restrictions.Move, duration);
             } 
             
             if (TryGetEffectPrefab(0, out var effect))

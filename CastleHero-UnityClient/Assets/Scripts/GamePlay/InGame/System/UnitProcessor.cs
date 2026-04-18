@@ -1,46 +1,46 @@
 using System;
-using Cysharp.Threading.Tasks;
 using CastleHero.Data;
 using CastleHero.GamePlay.Unit.Events;
 using CastleHero.Data.Model;
 using CastleHero.Data.Repositories;
 using CastleHero.GamePlay.Unit.Effects;
+using CastleHero.GamePlay.Unit;
 using CastleHero.GamePlay.Unit.Behaviours;
 using CastleHero.GamePlay.Unit.Components;
-using CastleHero.Utility;
 using UniRx;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using CastleHero.Common;
 using CastleHero.Common.Pattern;
 using CastleHero.Common.Sound;
-
-using CastleHero.Common;
+using CastleHero.Utility;
 namespace CastleHero.GamePlay.InGame.System
 {
     public class UnitProcessor : IDisposable
     {
         private readonly CompositeDisposable _disposables = new();
-        private readonly IInGameSession _inGameRepository;
+        private readonly IInGameSession _inGameSession;
         private readonly EffectBuilder _effectBuilder;
         private readonly ISoundManager _soundManager;
         private readonly GameConstants _constants;
 
-        public UnitProcessor(IInGameSession inGameRepository, EffectBuilder effectBuilder, ISoundManager soundManager, GameConstants constants)
+        public UnitProcessor(IInGameSession inGameSession, EffectBuilder effectBuilder, ISoundManager soundManager, GameConstants constants)
         {
-            _inGameRepository = inGameRepository;
+            _inGameSession = inGameSession;
             _effectBuilder = effectBuilder;
             _soundManager = soundManager;
             _constants = constants;
 
             SubscribeMessage<AtkEvent>(OnReceiveAtkEvent);
             SubscribeMessage<HealEvent>(OnReceiveHealEvent);
-            SubscribeMessage<ShieldEvent>(ev => OnReceiveShieldEvent(ev).Forget());
+            SubscribeMessage<ShieldEvent>(OnReceiveShieldEvent);
             SubscribeMessage<RestrictionEvent>(OnReceiveRestrictionEvent);
             SubscribeMessage<StatusEffectEvent>(OnReceiveStatusEffectEvent);
+            SubscribeMessage<ProjectileEvent>(OnReceiveProjectileEvent);
             SubscribeMessage<UnitDead>(OnUnitDead);
             SubscribeMessage<GameFinished>(_ =>
             {
-                var collection = _inGameRepository.Recovers;
+                var collection = _inGameSession.Recovers;
                 foreach (var recover in collection)
                 {
                     recover.Clear();
@@ -63,46 +63,54 @@ namespace CastleHero.GamePlay.InGame.System
 
         private void OnReceiveAtkEvent(AtkEvent ev)
         {
-            var from = ev.From;
             var to = ev.To;
             if (!to.IsValid())
                 return;
 
-            float damage;
-            bool isCritical = false;
-            if (to.Core.Invincible)
-            {
-                damage = 0f;
-            }
-            else
-            {
-                float critical = 0f;
-                float criticalMul = 0f;
-                float elementalMul = 1f;
-                if (from.IsValid())
-                {
-                    critical = from.Status.critical;
-                    criticalMul = from.Status.criticalAtk;
-                    elementalMul = Elemental.AtkMultiplier(from.Core.Elemental, to.Core.Elemental);
-                }
+            float damage = CalcDamage(ev, out bool isCritical);
+            float @protected = ApplyDamage(to, damage, ev);
 
-                damage = CalcAmount(ev.Amount, critical, criticalMul, elementalMul, out isCritical);
+            PlayHitFeedback(to, ev);
+
+            new AtkResult { Event = ev, IsCritical = isCritical, Protected = @protected }.Publish();
+        }
+
+        private float CalcDamage(AtkEvent ev, out bool isCritical)
+        {
+            isCritical = false;
+            if (ev.To.Combat.Invincible)
+                return 0f;
+
+            float critical = 0f;
+            float criticalMul = 0f;
+            float elementalMul = 1f;
+            if (ev.From.IsValid())
+            {
+                critical = ev.From.Status.critical;
+                criticalMul = ev.From.Status.criticalAtk;
+                elementalMul = Elemental.AtkMultiplier(ev.From.UnitState.Elemental, ev.To.UnitState.Elemental);
             }
 
-            var status = to.Core.Status;
+            return CalcAmount(ev.Amount, critical, criticalMul, elementalMul, out isCritical);
+        }
+
+        private float ApplyDamage(UnitActor to, float damage, AtkEvent ev)
+        {
+            var status = to.Combat.Status;
             status.shield.Decrease(damage, out float @protected, out float left);
             status.hp.Decrease(left);
             ev.Amount = left;
+            return @protected;
+        }
 
+        private void PlayHitFeedback(UnitActor to, AtkEvent ev)
+        {
             if (to.Hit != null)
                 to.Hit.Play();
 
             _soundManager.PlaySfx(to.Data.hitSfx);
 
-            PlayEffect(ev)
-                .Forget();
-
-            new AtkResult { Event = ev, IsCritical = isCritical, Protected = @protected }.Publish();
+            PlayEffect(ev);
         }
 
         private void OnReceiveHealEvent(HealEvent ev)
@@ -113,20 +121,19 @@ namespace CastleHero.GamePlay.InGame.System
 
             to.Status.hp.Increase(ev.Amount);
 
-            PlayEffect(ev)
-                .Forget();
+            PlayEffect(ev);
 
             new HealResult { Event = ev }.Publish();
         }
 
-        private async UniTaskVoid OnReceiveShieldEvent(ShieldEvent ev)
+        private void OnReceiveShieldEvent(ShieldEvent ev)
         {
             var to = ev.To;
             if (!to.IsValid())
                 return;
 
             var shield = to.Status.shield;
-            var effect = await PlayEffect(ev, ev.Duration == 0f ? 999f : ev.Duration);
+            var effect = PlayEffect(ev, ev.Duration == 0f ? 999f : ev.Duration);
 
             if (ev.Duration == 0f)
                 shield.Increase(ev.Amount, effect);
@@ -149,8 +156,7 @@ namespace CastleHero.GamePlay.InGame.System
             else
                 adjust.Decrease(ev.Amount);
 
-            PlayEffect(ev, ev.Duration)
-                .Forget();
+            PlayEffect(ev, ev.Duration);
         }
 
         private void OnReceiveRestrictionEvent(RestrictionEvent ev)
@@ -159,55 +165,76 @@ namespace CastleHero.GamePlay.InGame.System
             if (!to.IsValid())
                 return;
 
-            to.Core.SetRestriction(ev.Type, ev.Duration);
+            to.Combat.SetRestriction(ev.Type, ev.Duration);
 
-            PlayEffect(ev, ev.Duration)
-                .Forget();
+            PlayEffect(ev, ev.Duration);
+        }
+
+        private void OnReceiveProjectileEvent(ProjectileEvent ev)
+        {
+            if (!ev.To.IsValid())
+                return;
+
+            _effectBuilder
+                .StartBuild(ev.Prefab)
+                .To(ev.To)
+                .From(ev.From.Position)
+                .Run();
         }
 
         private void OnUnitDead(UnitDead unitDead)
         {
             var unit = unitDead.unit;
-            if (unit.Core.Team != UnitCore.Teams.Character || unit.Type == UnitBehaviour.BehaviourType.Barricade)
+
+            if (unit.UnitState.Team == UnitState.Teams.Monster)
+            {
+                _effectBuilder.Run(_constants.deadEffect, unit.Position);
+                _effectBuilder.Run(_constants.manaDropEffect, unit.Position);
+
+                // int 랜덤은 맥스값 - 1, 가독성을 위해 +1.
+                _inGameSession.Mana.Value += Random.Range(3, 10 + 1);
+            }
+
+            if (unit.UnitState.Team != UnitState.Teams.Character || unit.Type == UnitActor.ActorType.Barricade)
                 return;
 
             float recoverTime = unit.Status.recovery;
-            if (!unit.Core.EnableRecover || recoverTime <= 0f)
+            if (!unit.UnitState.EnableRecover || recoverTime <= 0f)
                 return;
 
             var recover = new WaitRecover
             {
-                behaviour = unit,
-                position = unit.Core.Movement.Default,
+                actor = unit,
+                position = unit.Combat.Movement.Default,
                 time = recoverTime
             };
 
             var subscription = ReserveRecover(recover);
-            var collection = _inGameRepository.Recovers;
+            var collection = _inGameSession.Recovers;
             collection.Add(recover);
 
             recover.Bind(collection, subscription);
 
             _effectBuilder
                 .StartBuild(_constants.recoverEffect)
-                .To(recover.behaviour.Position)
+                .To(recover.actor.Position)
                 .Duration(recover.time)
                 .Run();
         }
 
-        private async UniTask<IEffect> PlayEffect(IUnitEvent ev, float duration = 0f)
+        private IEffect PlayEffect(IUnitEvent ev, float duration = 0f)
         {
             if (string.IsNullOrEmpty(ev.Effect))
                 return null;
 
-            var effect = await _effectBuilder
+            return _effectBuilder
                 .StartBuild(ev.Effect)
                 .To(ev.To)
                 .Duration(duration)
-                .RunAsync();
-
-            return effect;
+                .Run();
         }
+
+        private const int RecoveryDelayFrames = 6;
 
         private IDisposable ReserveRecover(WaitRecover recover)
         {
@@ -222,24 +249,24 @@ namespace CastleHero.GamePlay.InGame.System
                 .DistinctUntilChanged()
                 .Where(isDone => isDone)
                 .Take(1)
-                .Subscribe(_ => Recovery(recover).Forget())
+                .Subscribe(_ => Recovery(recover))
                 .AddTo(_disposables);
         }
 
-        private async UniTaskVoid Recovery(WaitRecover recover)
+        private void Recovery(WaitRecover recover)
         {
-            var behaviour = recover.behaviour;
-            behaviour.Position = recover.position;
+            var actor = recover.actor;
+            actor.Position = recover.position;
 
-            _effectBuilder.Run(_constants.spawnEffect, behaviour.Position);
+            _effectBuilder.Run(_constants.spawnEffect, actor.Position);
 
-            for (int i = 0; i < 6; ++i)
-            {
-                await UniTask.Yield(PlayerLoopTiming.Update);
-            }
-
-            recover.behaviour.Recovery();
-            recover.Dispose();
+            Observable.TimerFrame(RecoveryDelayFrames)
+                .Subscribe(_ =>
+                {
+                    recover.actor.Recovery();
+                    recover.Dispose();
+                })
+                .AddTo(_disposables);
         }
 
         private float CalcAmount(float atk, float critical, float criticalAtk, float elementalAtk, out bool isCritical)

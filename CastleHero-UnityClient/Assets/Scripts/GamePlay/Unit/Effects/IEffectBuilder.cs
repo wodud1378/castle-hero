@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using CastleHero.GamePlay.Unit.Behaviours;
 using UnityEngine;
 
@@ -11,12 +10,11 @@ namespace CastleHero.GamePlay.Unit.Effects
     {
         IEffectBuilder StartBuild(string prefab);
         IEffectBuilder From(Vector2 position);
-        IEffectBuilder To(UnitBehaviour unit);
+        IEffectBuilder To(UnitActor unit);
         IEffectBuilder To(Vector2 position);
         IEffectBuilder LookAt(Vector2 forward);
         IEffectBuilder Duration(float value);
         void Run(string prefab, Vector2 to);
-        UniTask Run();
-        UniTask<IEffect> RunAsync();
+        IEffect Run();
     }
 }

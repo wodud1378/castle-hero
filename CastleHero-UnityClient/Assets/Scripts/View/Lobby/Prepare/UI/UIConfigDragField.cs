@@ -8,6 +8,7 @@ using CastleHero.View.Bootstrapper;
 using CastleHero.Common.Pattern;
 using CastleHero.View.Common.UI;
 using CastleHero.Data;
+using CastleHero.Data.Factory;
 using CastleHero.View.Lobby.Behaviours;
 using CastleHero.GamePlay.Unit.Behaviours;
 using CastleHero.Utility;
@@ -32,14 +33,18 @@ namespace CastleHero.View.Lobby.Prepare.UI
         [FormerlySerializedAs("_invalidColor")]
         [SerializeField] private Color invalidColor;
 
-        private readonly ReactiveProperty<UnitBehaviour> _unit = new();
+        private readonly ReactiveProperty<UnitActor> _unit = new();
         private CancellationTokenSource _ctSource;
         private int _originLayer;
 
         private bool _onDrag;
 
+        private CastleHero.GamePlay.Unit.Factory.UnitFactory _unitFactory;
+
         private void Awake()
         {
+            _unitFactory = ServiceLocator.Instance.Get<CastleHero.GamePlay.Unit.Factory.UnitFactory>();
+
             validationCircle.Init();
 
             _unit
@@ -55,7 +60,7 @@ namespace CastleHero.View.Lobby.Prepare.UI
 
         private void OnDisable() => validationCircle.gameObject.SetActive(false);
 
-        private void OnTargetChanged(UnitBehaviour target)
+        private void OnTargetChanged(UnitActor target)
         {
             _unit.Value = target;
             if (_unit.Value == null)
@@ -64,7 +69,7 @@ namespace CastleHero.View.Lobby.Prepare.UI
             _originLayer = target.gameObject.GetLayer();
             target.gameObject.ToPreviewLayer();
             target.Collider.isTrigger = true;
-            target.Core.OnRest.Value = true;
+            target.UnitState.OnRest.Value = true;
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -106,7 +111,7 @@ namespace CastleHero.View.Lobby.Prepare.UI
                 return;
             }
 
-            hold.Core.Movement.Default = _unit.Value.Position;
+            hold.Combat.Movement.Default = _unit.Value.Position;
             hold.Collider.isTrigger = false;
             hold.gameObject.ToLayer(_originLayer);
 
@@ -115,14 +120,14 @@ namespace CastleHero.View.Lobby.Prepare.UI
             validationCircle.Color = validColor;
         }
 
-        private UnitBehaviour FindFromRay(Vector2 position)
+        private UnitActor FindFromRay(Vector2 position)
         {
             var hit = Physics2D.Raycast(position, Vector2.zero);
             if (hit.collider == null)
                 return null;
 
-            var unit = hit.collider.GetComponent<UnitBehaviour>();
-            if (unit == formation.Draft.Castle.Value as UnitBehaviour)
+            var unit = hit.collider.GetComponent<UnitActor>();
+            if (unit == formation.Draft.Castle.Value as UnitActor)
                 return null;
 
             return unit;
@@ -130,15 +135,15 @@ namespace CastleHero.View.Lobby.Prepare.UI
 
         private async UniTaskVoid Create(UICharacterSlot slot, Vector2 position)
         {
-            var factory = ServiceLocator.Get<CastleHero.Data.Factory.IUnitFactory>();
             var info = slot.Info;
-            var created = info.id == Constants.BarricadeId
-                ? await factory.CreateBarricade(info, position)
-                : await factory.Create(info, position);
+            IUnitCreationData data = info.id == Constants.BarricadeId
+                ? new BarricadeCreationData(info, position)
+                : new UnitCreationData(info, position);
+            var created = _unitFactory.Create(data);
 
             await UniTask.NextFrame();
 
-            if (created is not UnitBehaviour unit)
+            if (created is not UnitActor unit)
             {
                 created?.DestroySelf();
                 return;
@@ -146,7 +151,7 @@ namespace CastleHero.View.Lobby.Prepare.UI
 
             if (formation.TryRegister(unit, _originLayer, false))
             {
-                unit.Core.Movement.Default = unit.Position;
+                unit.Combat.Movement.Default = unit.Position;
                 return;
             }
 
@@ -167,7 +172,7 @@ namespace CastleHero.View.Lobby.Prepare.UI
                 var slot = characterList.selected.Value;
                 if (slot != null)
                 {
-                    Create(slot, position).Forget();
+                    Create(slot, position).SafeForget();
                 }
                 else
                 {

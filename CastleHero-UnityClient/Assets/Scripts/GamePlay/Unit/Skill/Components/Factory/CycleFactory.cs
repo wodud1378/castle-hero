@@ -6,7 +6,7 @@ namespace CastleHero.GamePlay.Unit.Skill.Components.Factory
 {
     public class CycleFactory
     {
-        public ICycle GetCycle(ICycle.Option option, UnitBehaviour owner, SkillEntity data)
+        public ICycle GetCycle(ICycle.Option option, UnitActor owner, SkillEntity data)
         {
             switch (option)
             {

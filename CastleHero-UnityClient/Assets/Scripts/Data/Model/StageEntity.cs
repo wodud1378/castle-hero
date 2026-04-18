@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using CastleHero.Data.DB;
-
-using CastleHero.Common.Pattern;
 namespace CastleHero.Data.Model
 {
     public struct StageEntity : IGameEntity
@@ -56,11 +54,11 @@ namespace CastleHero.Data.Model
         [DataField("Stage_Rwd_Item_Value")]
         public int propItemQty;
 
-        public List<Reward> GetRewardsForDisplay()
+        public List<Reward> GetRewardsForDisplay(IDBProvider db)
         {
             var rewards = new List<Reward>();
 
-            if (ServiceLocator.Get<IDBProvider>().Items.TryFind(propItemId, out var itemEntity))
+            if (db.Items.TryFind(propItemId, out var itemEntity))
             {
                 rewards.Add(new()
                 {

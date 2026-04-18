@@ -32,15 +32,15 @@ namespace CastleHero.View.Lobby.UI.Inventory
         [FormerlySerializedAs("_element")]
         [SerializeField] private AddressableImage element;
 
-        public UniTask Init(EquipItem item)
+        public void Init(EquipItem item)
         {
-            if (!ServiceLocator.Get<IDBProvider>().Items.TryFind(item.ItemId, out var entity))
-                return UniTask.CompletedTask;
+            if (!_db.Items.TryFind(item.ItemId, out var entity))
+                return;
 
-            return Init(item, entity);
+            Init(item, entity);
         }
 
-        public UniTask Init(EquipItem item, ItemEntity entity)
+        public void Init(EquipItem item, ItemEntity entity)
         {
             var option = entity.optionEquip;
             if (grade != null)
@@ -49,11 +49,11 @@ namespace CastleHero.View.Lobby.UI.Inventory
             if (!ElementIcons.TryGetValue((ElementalType)item.element.type, out var elementPath))
                 elementPath = string.Empty;
 
-            string portraitPath = ServiceLocator.Get<IDBProvider>().Units.TryFind(item.character, out var e) ? e.icon : string.Empty;
-            return UniTask.WhenAll(
-                base.Init(item, entity),
-                UpdatePortrait(portraitPath),
-                element.Set(elementPath));
+            string portraitPath = _db.Units.TryFind(item.character, out var e) ? e.icon : string.Empty;
+
+            base.Init(item, entity);
+            UpdatePortrait(portraitPath).SafeForget();
+            element.Set(elementPath).SafeForget();
         }
 
         private UniTask UpdatePortrait(string portraitPath)

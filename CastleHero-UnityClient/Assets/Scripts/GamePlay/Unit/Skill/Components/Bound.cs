@@ -8,7 +8,7 @@ namespace CastleHero.GamePlay.Unit.Skill.Components
     public interface IBound
     {
         public Finder Finder { get; }
-        public List<UnitBehaviour> UnitsInBound(Vector2 from, Vector2 forward);
+        public List<UnitActor> UnitsInBound(Vector2 from, Vector2 forward);
     }
 
     public class CircleBound : IBound
@@ -21,7 +21,7 @@ namespace CastleHero.GamePlay.Unit.Skill.Components
             Finder.detection.SetRange(x, y);
         }
 
-        public List<UnitBehaviour> UnitsInBound(Vector2 from, Vector2 forward)
+        public List<UnitActor> UnitsInBound(Vector2 from, Vector2 forward)
         {
             Finder.Update(from);
 
@@ -40,7 +40,7 @@ namespace CastleHero.GamePlay.Unit.Skill.Components
             Finder.detection.SetAngle(y);
         }
 
-        public List<UnitBehaviour> UnitsInBound(Vector2 from, Vector2 forward)
+        public List<UnitActor> UnitsInBound(Vector2 from, Vector2 forward)
         {
             Finder.detection.SetForward(forward);
             Finder.Update(from);
@@ -59,7 +59,7 @@ namespace CastleHero.GamePlay.Unit.Skill.Components
             Finder.detection.SetRange(x, y);
         }
 
-        public List<UnitBehaviour> UnitsInBound(Vector2 from, Vector2 forward)
+        public List<UnitActor> UnitsInBound(Vector2 from, Vector2 forward)
         {
             Finder.detection.SetForward(forward);
             Finder.Update(from);

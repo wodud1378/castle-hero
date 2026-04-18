@@ -17,13 +17,23 @@ namespace CastleHero.GamePlay.Unit.Skill
         private readonly BoundFactory _boundFactory = new();
         private readonly CycleFactory _cycleFactory = new();
         private readonly RunnerFactory _runnerFactory = new();
+        private IDBProvider _db;
 
-        // SkillBase 의 set 을 사용하므로 ISkill(읽기 전용 인터페이스) 대신 구현체 타입으로 보관.
         private SkillBase _skill;
-        
-        public bool StartBuild(UnitBehaviour owner, int id, int lv)
+
+        public SkillBuilder()
         {
-            var db = ServiceLocator.Get<IDBProvider>().Skills;
+            var sl = ServiceLocator.Instance;
+            if (sl.TryGet<IDBProvider>(out var db)) _db = db;
+            sl.OnRegistered += (type, instance) =>
+            {
+                if (type == typeof(IDBProvider)) _db = (IDBProvider)instance;
+            };
+        }
+
+        public bool StartBuild(UnitActor owner, int id, int lv)
+        {
+            var db = _db.Skills;
             int skillId = (id * 10) + lv;
             if (!db.TryFind(skillId, out var entity))
             {

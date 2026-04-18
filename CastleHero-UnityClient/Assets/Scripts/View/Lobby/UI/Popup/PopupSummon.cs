@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Cysharp.Threading.Tasks;
-using CastleHero.Common;
 using CastleHero.Common.Behaviours;
 using CastleHero.View.Common;
 using CastleHero.View.Bootstrapper;
 using CastleHero.View.Common.UI.Popup;
 using CastleHero.Data;
 using CastleHero.Data.Model;
-using CastleHero.Network.Service;
 using CastleHero.Network.Shared;
 using CastleHero.Utility;
+using CastleHero.View.Lobby.UI.Actions;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -23,7 +22,6 @@ using Probability = System.Collections.Generic.Dictionary<int, (string name, flo
 
 using CastleHero.Common.Pattern;
 using CastleHero.Data.DB;
-using CastleHero.Data.Repositories;
 namespace CastleHero.View.Lobby.UI.Popup
 {
     [PrefabPath("Lobby/UI/Prefabs/Popups/PopupSummon.prefab")]
@@ -54,16 +52,25 @@ namespace CastleHero.View.Lobby.UI.Popup
         private readonly Dictionary<int, Probability> _probabilityCache = new();
         private readonly ReactiveProperty<SummonEntity> _entity = new();
 
+        private IDBProvider _db;
+        private IPopupManager _popups;
+        private SummonAction _action;
+
         protected override void OnAwake()
         {
             base.OnAwake();
 
-            this.SubscribeButton(info, () => OpenInfo().Forget());
+            var sl = ServiceLocator.Instance;
+            _db = sl.Get<IDBProvider>();
+            _popups = sl.Get<IPopupManager>();
+            _action = sl.Get<SummonAction>();
+
+            this.SubscribeButton(info, () => OpenInfo().SafeForget());
             this.SubscribeButton(prev, OnPrev);
             this.SubscribeButton(next, OnNext);
         }
 
-        public override UniTask Open() => Open(ServiceLocator.Get<IDBProvider>().Summons[0]);
+        public override UniTask Open() => Open(_db.Summons[0]);
 
         public override UniTask Open(params object[] parameters)
         {
@@ -86,7 +93,7 @@ namespace CastleHero.View.Lobby.UI.Popup
             var data = GetOrCreateProbability(_entity.Value.groupId);
             var infoString = BuildInfoString(data);
 
-            var popup = await ServiceLocator.Get<IPopupManager>()
+            var popup = await _popups
                 .OpenAsync<PopupCommon>(infoString);
 
             var buttonRect = (info.transform as RectTransform)!;
@@ -97,7 +104,7 @@ namespace CastleHero.View.Lobby.UI.Popup
 
         private void AddDataIndex(int value)
         {
-            var db = ServiceLocator.Get<IDBProvider>().Summons;
+            var db = _db.Summons;
             if (!db.TryFindIndex(_entity.Value.Id, out var index))
                 return;
 
@@ -116,7 +123,7 @@ namespace CastleHero.View.Lobby.UI.Popup
             if (!data.IsValid)
                 return;
 
-            var db = ServiceLocator.Get<IDBProvider>().Summons;
+            var db = _db.Summons;
             if (db.TryFindIndex(data.Id, out var entityIndex))
             {
                 prev.gameObject.SetActive(entityIndex > 0);
@@ -129,13 +136,11 @@ namespace CastleHero.View.Lobby.UI.Popup
             }
 
             title.text = data.name;
-            //_desc.text = data.comment;
-            //_desc.gameObject.SetActive(!string.IsNullOrEmpty(_desc.text));
 
             bool TryAssign(int index, int costId, int coast, Button button, UIItemSlot slot,
                 Action<int, int> onClick)
             {
-                bool isEnough = HasEnoughItem(costId, coast, false);
+                bool isEnough = _action.HasEnoughItem(costId, coast, false);
                 if (isEnough || index == 0)
                 {
                     button.onClick.RemoveAllListeners();
@@ -143,8 +148,7 @@ namespace CastleHero.View.Lobby.UI.Popup
                     if (isEnough)
                         button.onClick.AddListener(() => onClick.Invoke(data.Id, index));
 
-                    slot.Init(new Item { ItemId = costId, Quantity = coast })
-                        .Forget();
+                    slot.Init(new Item { ItemId = costId, Quantity = coast });
 
                     slot.QuantityLabelColor = isEnough ? Color.white : Color.red;
 
@@ -166,103 +170,61 @@ namespace CastleHero.View.Lobby.UI.Popup
                 if (!x1Done)
                 {
                     x1Done = TryAssign(i, itemId, perOnce[i], x1, itemForX1,
-                        (id, index) => SummonOnce(id, index).Forget());
+                        (id, index) => SummonOnce(id, index).SafeForget());
                 }
 
                 if (!x10Done)
                 {
                     x10Done = TryAssign(i, itemId, perTenth[i], x10, itemForX10,
-                        (id, index) => SummonTenth(id, index).Forget());
+                        (id, index) => SummonTenth(id, index).SafeForget());
                 }
 
                 --i;
             }
         }
 
-        private UniTask SummonOnce(int eventId, int costIndex)
-            => Summon(eventId, costIndex, OnceTrigger, ServiceLocator.Get<INetworkServiceProvider>().Summon.SummonOnce);
-
-        private UniTask SummonTenth(int eventId, int costIndex)
-            => Summon(eventId, costIndex, TenthTrigger, ServiceLocator.Get<INetworkServiceProvider>().Summon.SummonTenth);
-
-        private async UniTask Summon(int eventId, int costIndex, int animationHash,
-            Func<int, int, UniTask<Result<Summon>>> method)
+        private async UniTask SummonOnce(int eventId, int costIndex)
         {
-            var result = await method.Invoke(eventId, costIndex);
-            if (!result.IsSuccess)
-            {
-                ServiceLocator.Get<IPopupManager>().Open<PopupCommon>(result.error);
-                return;
-            }
+            var summon = await _action.SummonOnce(eventId, costIndex);
+            if (summon == null) return;
 
-            await TaskHelper.OnAnimationEnd(_animator, animationHash);
+            await TaskHelper.OnAnimationEnd(_animator, OnceTrigger);
+            OnSummoned(summon).SafeForget();
+        }
 
-            OnSummoned(result.data).Forget();
+        private async UniTask SummonTenth(int eventId, int costIndex)
+        {
+            var summon = await _action.SummonTenth(eventId, costIndex);
+            if (summon == null) return;
+
+            await TaskHelper.OnAnimationEnd(_animator, TenthTrigger);
+            OnSummoned(summon).SafeForget();
         }
 
         private async UniTaskVoid OnSummoned(Summon result)
         {
-            var repository = ServiceLocator.Get<IUserRepository>();
-            foreach (var summoned in result.list)
-            {
-                switch (summoned)
-                {
-                    case SummonedSoul soul:
-                        repository.Inventory.Add(new Item { ItemId = soul.Id, Quantity = soul.quantity });
-                        break;
-                    case SummonedUnit unit:
-                        repository.Characters.Add(new UnitInfo { id = unit.Id, lv = unit.lv, rate = unit.rate });
-                        break;
-                }
-            }
+            _action.ApplySummonResult(result);
 
             if (result.list.Count > 1)
             {
-                var direction = await ServiceLocator.Get<IPopupManager>()
+                var direction = await _popups
                     .OpenAsync<PopupSummonDirection>(result);
 
                 await direction.DisplayTask;
             }
 
-            ServiceLocator.Get<IPopupManager>().Open<PopupSummonResult>(result);
-        }
-
-        private bool HasEnoughItem(int costId, int cost, bool openPopup = true)
-        {
-            var repo = ServiceLocator.Get<IUserRepository>();
-            var currency = repo.Currency;
-            bool isEnough;
-            switch (costId)
-            {
-                case Constants.GoldId:
-                    isEnough = currency.Gold.Value >= cost;
-                    break;
-                case Constants.PaidDiaId or Constants.FreeDiaId:
-                    isEnough = currency.FreeDia.Value + currency.PaidDia.Value >= cost;
-                    break;
-                default:
-                {
-                    var item = repo.Inventory.Items.FirstOrDefault(x => x.ItemId == costId);
-                    isEnough = item != null && item.Quantity >= cost;
-                    break;
-                }
-            }
-
-            if (!isEnough && openPopup)
-                ServiceLocator.Get<IPopupManager>().Open<PopupCommon>("재화 혹은 아이템 부족해유");
-
-            return isEnough;
+            _popups.Open<PopupSummonResult>(result);
         }
 
         private Probability GetOrCreateProbability(int groupId)
         {
             if (!_probabilityCache.TryGetValue(groupId, out var data))
             {
-                var groupEntities = ServiceLocator.Get<IDBProvider>().SummonGroups
+                var groupEntities = _db.SummonGroups
                     .Map(groupId)
                     .ToList();
 
-                var unitEntities = ServiceLocator.Get<IDBProvider>().Units
+                var unitEntities = _db.Units
                     .Map(groupEntities.Select(x => x.unitId))
                     .ToList();
 

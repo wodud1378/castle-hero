@@ -21,6 +21,18 @@ namespace CastleHero.GamePlay.Unit.Components
             { Type.Wind, (Type.Earth, Type.Fire) }
         };
 
+        private static IDBProvider _db;
+
+        static Elemental()
+        {
+            var sl = ServiceLocator.Instance;
+            if (sl.TryGet<IDBProvider>(out var db)) _db = db;
+            sl.OnRegistered += (type, instance) =>
+            {
+                if (type == typeof(IDBProvider)) _db = (IDBProvider)instance;
+            };
+        }
+
         public int atkLv;
         public int defLv;
         public Type atkType;
@@ -31,12 +43,13 @@ namespace CastleHero.GamePlay.Unit.Components
             if (atk.atkType == Type.None)
             {
                 return def.defType != Type.None
-                    ? ServiceLocator.Get<IDBProvider>().Elements[0].reverse
+                    ? _db.Elements[0].reverse
                     : 1f;
             }
 
-            var entity = ServiceLocator.Get<IDBProvider>().Elements[Mathf.Clamp(def.atkLv - atk.defLv, 0, 2)];
-            var data = Compatibility[atk.atkType];
+            var entity = _db.Elements[Mathf.Clamp(def.atkLv - atk.defLv, 0, 2)];
+            if (!Compatibility.TryGetValue(atk.atkType, out var data))
+                return 1f;
             return def.defType == data.forward
                 ? entity.forward
                 : def.defType == data.reverse

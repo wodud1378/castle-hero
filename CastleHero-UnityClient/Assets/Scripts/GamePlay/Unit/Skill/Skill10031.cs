@@ -20,7 +20,7 @@ namespace CastleHero.GamePlay.Unit.Skill
             Shield,
         }
 
-        private readonly List<UnitBehaviour> _dotDamageTargets = new();
+        private readonly List<UnitActor> _dotDamageTargets = new();
         private IDisposable _dotDamage;
         
         private int _count;
@@ -36,7 +36,7 @@ namespace CastleHero.GamePlay.Unit.Skill
 
         private void ShieldOnAlley()
         {
-            Bound.Finder.detection.Filter = Owner.Core.AlleyLayerMask;
+            Bound.Finder.detection.Filter = Owner.UnitState.AlleyLayerMask;
             if (!TryUpdateAroundCenter() ||
                 !TryGetStatusParameter(Step.Shield, out var type, out var value))
                 return;
@@ -54,7 +54,7 @@ namespace CastleHero.GamePlay.Unit.Skill
 
         private void AttackEnemies()
         {
-            Bound.Finder.detection.Filter = Owner.Core.AlleyLayerMask;
+            Bound.Finder.detection.Filter = Owner.UnitState.AlleyLayerMask;
             if (!TryGetQuantityParameter(Step.Attack, out int quantity) ||
                 !TryUpdateAroundCenter(quantity) ||
                 !TryGetStatusParameter(Step.Attack, out var type, out var value))

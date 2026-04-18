@@ -40,9 +40,11 @@ namespace CastleHero.Data.Repositories
 
         private const string StageFocusKey = "stage-focus";
         private readonly CompositeDisposable _disposables = new();
+        private readonly IDBProvider _db;
 
         public UserRepository(string nickname, UserDataDto dto)
         {
+            _db = ServiceLocator.Instance.Get<IDBProvider>();
             Nickname = nickname;
 
             Stamina = new(dto.stamina);
@@ -105,7 +107,7 @@ namespace CastleHero.Data.Repositories
         {
             var units = UnitsInField();
 
-            int maxLv = ServiceLocator.Get<IDBProvider>().Levels.MaxLv;
+            int maxLv = _db.Levels.MaxLv;
             return units.FirstOrDefault(x => x.lv < maxLv);
         }
 
@@ -113,7 +115,7 @@ namespace CastleHero.Data.Repositories
         {
             var units = UnitsInField();
 
-            int maxRate = ServiceLocator.Get<IDBProvider>().Rates.MaxRate;
+            int maxRate = _db.Rates.MaxRate;
             return units.FirstOrDefault(x => x.rate < maxRate);
         }
 
@@ -146,7 +148,7 @@ namespace CastleHero.Data.Repositories
             {
                 if (!dataMap.TryGetValue(item, out var option))
                 {
-                    option = ServiceLocator.Get<IDBProvider>().Items.TryFind(item.ItemId, out var e)
+                    option = _db.Items.TryFind(item.ItemId, out var e)
                         ? e.optionEquip
                         : default;
                     

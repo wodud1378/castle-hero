@@ -8,7 +8,7 @@ namespace CastleHero.Network.Impl.Local.Services
 {
     public class LocalCastleService : LocalNetworkServiceBase, ICastleService
     {
-        public LocalCastleService(LocalUserDataStore store) : base(store) { }
+        public LocalCastleService(IServiceLocator sl, LocalUserDataStore store) : base(sl, store) { }
 
         public UniTask<Result<CastleGrowth>> LvUp()
         {
@@ -31,7 +31,7 @@ namespace CastleHero.Network.Impl.Local.Services
 
         private void ProcessLevelUp(GameRecordDto record, CurrencyDto currency, out int lv, out Error error)
         {
-            var db = ServiceLocator.Get<IDBProvider>().Castles;
+            var db = Db.Castles;
             lv = record.castleLv;
             if (db.MaxLv <= lv)
             {

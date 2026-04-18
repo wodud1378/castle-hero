@@ -19,8 +19,6 @@ namespace CastleHero.View.Common.UI.Popup
         protected readonly ReactiveProperty<TData> left = new();
         protected readonly ReactiveProperty<TData> right = new();
 
-        private UniTask _updateTask;
-
         protected override void OnAwake()
         {
             base.OnAwake();
@@ -38,7 +36,7 @@ namespace CastleHero.View.Common.UI.Popup
             HandleParameters(parameters);
 
             UpdateUI();
-            return _updateTask;
+            return UniTask.CompletedTask;
         }
 
         protected virtual void HandleParameters(params object[] parameters)
@@ -52,12 +50,11 @@ namespace CastleHero.View.Common.UI.Popup
 
         protected virtual void UpdateUI()
         {
-            _updateTask = UniTask.WhenAll(
-                InitSlot(left.Value, leftSlot),
-                InitSlot(right.Value, rightSlot));
+            InitSlot(left.Value, leftSlot);
+            InitSlot(right.Value, rightSlot);
         }
 
-        protected abstract UniTask InitSlot(TData data, TSlot slot);
+        protected abstract void InitSlot(TData data, TSlot slot);
 
         protected abstract void OnSubmit();
     }

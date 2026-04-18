@@ -46,15 +46,14 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
 
         protected override int SellCount => (int)slider.value;
 
-        private IPopupManager _popups;
         private StateManager<LobbyState> _lobbyState;
 
         protected override void OnAwake()
         {
             base.OnAwake();
 
-            _popups = ServiceLocator.Get<IPopupManager>();
-            _lobbyState = ServiceLocator.Get<StateManager<LobbyState>>();
+            var sl = ServiceLocator.Instance;
+            _lobbyState = sl.Get<StateManager<LobbyState>>();
 
             this.SubscribeButton(increase, () => slider.value = Mathf.Min(slider.value + 1, slider.maxValue));
             this.SubscribeButton(decrease, () => slider.value = Mathf.Min(slider.value - 1, slider.minValue));
@@ -176,7 +175,7 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
             {
                 case IngredientType.Soul:
                     int unitId = (Entity.Id % 1000) + 10000;
-                    var unit = ServiceLocator.Get<IUserRepository>().Characters.Units.FirstOrDefault(x => x.id == unitId);
+                    var unit = _userRepo.Characters.Units.FirstOrDefault(x => x.id == unitId);
 
                     if (unit != null)
                         _popups.Open<PopupRateUp>(unit);
@@ -209,7 +208,7 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
 
         private async UniTask Combine()
         {
-            var result = await ServiceLocator.Get<INetworkServiceProvider>().Inventory.Combine(Item.ItemId, (int)slider.value);
+            var result = await _network.Inventory.Combine(Item.ItemId, (int)slider.value);
             if (!result.IsSuccess)
             {
                 _popups.Open<PopupCommon>(result.error);
@@ -221,7 +220,7 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
 
         private async UniTask OpenBox()
         {
-            var result = await ServiceLocator.Get<INetworkServiceProvider>().Inventory.OpenChest(Item.ItemId, (int)slider.value);
+            var result = await _network.Inventory.OpenChest(Item.ItemId, (int)slider.value);
             if (!result.IsSuccess)
             {
                 _popups.Open<PopupCommon>(result.error);
@@ -237,7 +236,7 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
 
         private async UniTask AddStamina()
         {
-            var result = await ServiceLocator.Get<INetworkServiceProvider>().Inventory.AddStamina(Item.ItemId, (int)slider.value);
+            var result = await _network.Inventory.AddStamina(Item.ItemId, (int)slider.value);
             if (!result.IsSuccess)
             {
                 _popups.Open<PopupCommon>(result.error);
@@ -246,7 +245,7 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
 
         private void MoveToDrawCharacter(int ticketId)
         {
-            if (!ServiceLocator.Get<IDBProvider>().Summons.TryFind(x => x.costItems.Contains(ticketId), out var entity))
+            if (!_db.Summons.TryFind(x => x.costItems.Contains(ticketId), out var entity))
                 return;
 
             _popups.Open<PopupSummon>(entity);
@@ -255,7 +254,7 @@ namespace CastleHero.View.Lobby.UI.Inventory.Popup
 
         private async UniTask Refine()
         {
-            var items = ServiceLocator.Get<IUserRepository>().Inventory.Items
+            var items = _userRepo.Inventory.Items
                 .OfType<EquipItem>();
 
             var selection = await _popups.OpenAsync<PopupSelectItem>(items);

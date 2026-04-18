@@ -46,7 +46,8 @@ namespace CastleHero.View.Test
 
         private void Awake()
         {
-            _service = ServiceLocator.TryGet<ITestService>(out var svc) ? svc : null;
+            var sl = ServiceLocator.Instance;
+            _service = sl.TryGet<ITestService>(out var svc) ? svc : null;
 
             this.SubscribeButton(closeButton, Close);
             this.SubscribeButton(addItemButton, OnClickAddItems);

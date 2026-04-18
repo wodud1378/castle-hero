@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;
 using CastleHero.Common;
 using CastleHero.Common.Behaviours;
 using CastleHero.View.Common;
@@ -38,9 +37,16 @@ namespace CastleHero.View.Lobby.Shop.UI
 
         private bool _isSoldOut;
 
+        private IUserRepository _userRepo;
+        private IPopupManager _popups;
+
         protected override void OnAwake()
         {
             base.OnAwake();
+
+            var sl = ServiceLocator.Instance;
+            _userRepo = sl.Get<IUserRepository>();
+            _popups = sl.Get<IPopupManager>();
 
             Observable.Merge(
                     data.Select(_ => UniRx.Unit.Default),
@@ -49,7 +55,7 @@ namespace CastleHero.View.Lobby.Shop.UI
                 .Subscribe(_ => UpdateUI())
                 .AddTo(this);
 
-            ServiceLocator.Get<IUserRepository>().ShopRecord.Products
+            _userRepo.ShopRecord.Products
                 .ChangeAsObservable()
                 .ThrottleFrame(1)
                 .Subscribe(x =>
@@ -64,13 +70,13 @@ namespace CastleHero.View.Lobby.Shop.UI
             OnClick += OnClickSlot;
         }
 
-        public UniTask Init(ShopItemEntity entity)
+        public void Init(ShopItemEntity entity)
         {
             data.Value = entity;
-            product.Value = ServiceLocator.Get<IUserRepository>().ShopRecord.Products
+            product.Value = _userRepo.ShopRecord.Products
                 .FirstOrDefault(x => x.shopId == entity.Id);
 
-            return base.Init(string.Empty, entity.name);
+            base.Init(string.Empty, entity.name);
         }
 
         private void UpdateUI()
@@ -89,8 +95,7 @@ namespace CastleHero.View.Lobby.Shop.UI
             
             _isSoldOut = ShopHelper.IsSoldOut(data.Value, product.Value, out _, out _, out _);
             
-            price.Init(entity, product.Value)
-                .Forget();
+            price.Init(entity, product.Value);
 
             state.Value = _isSoldOut
                 ? State.Dim
@@ -101,7 +106,7 @@ namespace CastleHero.View.Lobby.Shop.UI
             SetSchedule();
         }
 
-        private void OnClickSlot(UISlot _) => ServiceLocator.Get<IPopupManager>().Open<PopupPurchase>(data.Value, product.Value);
+        private void OnClickSlot(UISlot _) => _popups.Open<PopupPurchase>(data.Value, product.Value);
 
         private void SetSchedule()
         {

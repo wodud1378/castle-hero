@@ -3,7 +3,6 @@ using System.Collections;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using CastleHero.Utility;
-using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -38,7 +37,6 @@ namespace CastleHero.Common.Sound
 
         private string _asset;
         private AudioSource _source;
-        private IDisposable _subscription;
 
         private AsyncOperationHandle<AudioClip> _handle;
         private Coroutine _coroutine;
@@ -104,8 +102,6 @@ namespace CastleHero.Common.Sound
 
         public void Dispose()
         {
-            _subscription?.Dispose();
-            
             _handle.Release();
         }
     }

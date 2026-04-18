@@ -44,7 +44,8 @@ namespace CastleHero.View.Lobby.UI.Popup
             items.AddRange(currencyItems.Where(x => x.Quantity > 0));
             items.Sort((a, b) => a.ItemId.CompareTo(b.ItemId));
 
-            return itemList.Init(items);
+            itemList.Init(items);
+            return UniTask.CompletedTask;
         }
     }
 }

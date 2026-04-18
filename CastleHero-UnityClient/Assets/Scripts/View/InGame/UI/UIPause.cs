@@ -22,8 +22,15 @@ namespace CastleHero.View.InGame.UI
         [FormerlySerializedAs("_retryButton")]
         [SerializeField] private Button retryButton;
 
+        private BackButton _back;
+        private CastleHero.Data.Repositories.SettingRepository _settings;
+
         private void Awake()
         {
+            var sl = ServiceLocator.Instance;
+            _back = sl.Get<BackButton>();
+            _settings = sl.Get<CastleHero.Data.Repositories.SettingRepository>();
+
             this.SubscribeButton(exitButton, Exit);
             this.SubscribeButton(resumeButton, Close);
             this.SubscribeButton(retryButton, Retry);
@@ -35,12 +42,12 @@ namespace CastleHero.View.InGame.UI
 
             gameObject.SetActive(true);
 
-            ServiceLocator.Get<CastleHero.Common.Flow.BackButton>().Add(this);
+            _back.Add(this);
         }
 
         public void Close()
         {
-            Time.timeScale = ServiceLocator.Get<CastleHero.Data.Repositories.SettingRepository>().speedUp.Value ? 2f : 1f;
+            Time.timeScale = _settings.speedUp.Value ? 2f : 1f;
 
             gameObject.SetActive(false);
         }

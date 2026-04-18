@@ -99,6 +99,18 @@ namespace CastleHero.Utility
 
     public static class UnitHelper
     {
+        private static IDBProvider _db;
+
+        static UnitHelper()
+        {
+            var sl = ServiceLocator.Instance;
+            if (sl.TryGet<IDBProvider>(out var db)) _db = db;
+            sl.OnRegistered += (type, instance) =>
+            {
+                if (type == typeof(IDBProvider)) _db = (IDBProvider)instance;
+            };
+        }
+
         public static void CalculateLvUp(int startLv, int startExp, ItemEntity item, int quantity,
             out int lv, out int exp, out int totalExp, out int leftItem, out int price)
         {
@@ -115,9 +127,9 @@ namespace CastleHero.Utility
             int amount = (int)option.value;
             int left = amount * quantity;
 
-            var db = ServiceLocator.Get<IDBProvider>().Levels;
-            int maxLv = db.MaxLv;
-            while (db.TryFind(lv, out var entity) && left > 0)
+            var levels = _db.Levels;
+            int maxLv = levels.MaxLv;
+            while (levels.TryFind(lv, out var entity) && left > 0)
             {
                 int forNext = entity.exp;
                 int requireExp = forNext - exp;
@@ -146,10 +158,10 @@ namespace CastleHero.Utility
             totalExp = 0;
             remainAmount = expAmount;
 
-            var db = ServiceLocator.Get<IDBProvider>().Levels;
-            int maxLv = db.MaxLv;
+            var levels = _db.Levels;
+            int maxLv = levels.MaxLv;
 
-            while (db.TryFind(lv, out var entity) && remainAmount > 0)
+            while (levels.TryFind(lv, out var entity) && remainAmount > 0)
             {
                 int forNext = entity.exp;
                 int requireExp = forNext - exp;
@@ -176,11 +188,11 @@ namespace CastleHero.Utility
             leftItem = quantity;
             price = 0;
 
-            if (!ServiceLocator.Get<IDBProvider>().Units.TryFind(unitId, out var unitEntity) ||
+            if (!_db.Units.TryFind(unitId, out var unitEntity) ||
                 unitEntity.soulItemId != item.Id)
                 return;
 
-            var db = ServiceLocator.Get<IDBProvider>().Rates;
+            var db = _db.Rates;
 
             while (leftItem > 0 && db.TryFind(rate, out var entity))
             {
@@ -259,18 +271,18 @@ namespace CastleHero.Utility
             }
         }
 
-        public static void SetFilter(this IDetection detection, UnitBehaviour owner, Targeting targeting)
+        public static void SetFilter(this IDetection detection, UnitActor owner, Targeting targeting)
         {
             switch (targeting)
             {
                 case Targeting.Alley:
-                    detection.Filter = owner.Core.AlleyLayerMask;
+                    detection.Filter = owner.UnitState.AlleyLayerMask;
                     break;
                 case Targeting.Enemy:
-                    detection.Filter = owner.Core.EnemyLayerMask;
+                    detection.Filter = owner.UnitState.EnemyLayerMask;
                     break;
                 case Targeting.Both:
-                    detection.Filter = owner.Core.AlleyLayerMask | owner.Core.EnemyLayerMask;
+                    detection.Filter = owner.UnitState.AlleyLayerMask | owner.UnitState.EnemyLayerMask;
                     break;
             }
         }
@@ -306,7 +318,7 @@ namespace CastleHero.Utility
                    | (1 << DefTypeToLayer(tag, 2));
         }
 
-        public static void InitAlley(this UnitBehaviour unit, int defLayer)
+        public static void InitAlley(this UnitActor unit, int defLayer)
         {
             var alleyTag = AlleyTag(unit.Id);
             var alleyLayer = DefTypeToLayer(alleyTag, defLayer);
@@ -316,7 +328,7 @@ namespace CastleHero.Utility
             go.layer = alleyLayer;
         }
 
-        public static bool IsAlley(this UnitBehaviour a, UnitBehaviour b) => a.gameObject.CompareTag(b.tag);
+        public static bool IsAlley(this UnitActor a, UnitActor b) => a.gameObject.CompareTag(b.tag);
 
         public static string AlleyTag(this int id) => id.ToString().StartsWith("1") ? "Character" : "Monster";
 
@@ -334,12 +346,35 @@ namespace CastleHero.Utility
             return LayerMask.NameToLayer($"{type}{tag}");
         }
 
-        public static bool IsValid(this UnitBehaviour unit)
+        public static UnitActor SelectTarget(Finder finder, UnitActor owner, UnitActor currentTarget, float range)
+        {
+            var overriden = finder.Override;
+            if (overriden.IsValid())
+                return overriden;
+
+            if (currentTarget.IsValid())
+            {
+                float distance = (currentTarget.Position - owner.Position).sqrMagnitude;
+                float sqrRange = range * range;
+
+                if (distance <= sqrRange)
+                    return currentTarget;
+            }
+
+            finder.detection.SetRange(range, range);
+            return !finder.Update(owner.Position)
+                ? null
+                : finder.Found.Count > 0
+                    ? finder.Found[0]
+                    : null;
+        }
+
+        public static bool IsValid(this UnitActor unit)
         {
             if (unit == null)
                 return false;
 
-            return unit.State.Value is > UnitCore.States.Prepare and < UnitCore.States.Dead;
+            return unit.State.Value is > UnitState.States.Prepare and < UnitState.States.Dead;
         }
     }
 }

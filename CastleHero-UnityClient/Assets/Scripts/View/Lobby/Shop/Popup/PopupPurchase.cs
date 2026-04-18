@@ -5,8 +5,7 @@ using CastleHero.View.Bootstrapper;
 using CastleHero.View.Common.UI.Popup;
 using CastleHero.Data.Model;
 using CastleHero.View.Lobby.Shop.UI;
-using CastleHero.View.Lobby.UI.Popup;
-using CastleHero.Network.Service;
+using CastleHero.View.Lobby.Shop.Actions;
 using CastleHero.Network.Shared;
 using CastleHero.Utility;
 using TMPro;
@@ -34,9 +33,13 @@ namespace CastleHero.View.Lobby.Shop.Popup
         private PaymentType _type;
         private int _id;
 
+        private ShopAction _action;
+
         protected override void OnAwake()
         {
             base.OnAwake();
+
+            _action = ServiceLocator.Instance.Get<ShopAction>();
 
             this.SubscribeButton(confirm, OnConfirm);
         }
@@ -62,19 +65,15 @@ namespace CastleHero.View.Lobby.Shop.Popup
             adMark.SetActive(isAd);
             price.gameObject.SetActive(!isAd);
 
-            return isAd
-                ? UniTask.CompletedTask
-                : price.Init(entity, product);
+            if (!isAd)
+                price.Init(entity, product);
+
+            return UniTask.CompletedTask;
         }
 
         private async UniTask OnConfirm()
         {
-            var result = await ServiceLocator.Get<INetworkServiceProvider>().Shop.BuyItem(_type, _id);
-            if (!result.IsSuccess)
-                ServiceLocator.Get<IPopupManager>().Open<PopupCommon>(result.error);
-            else
-                ServiceLocator.Get<IPopupManager>().Open<PopupReceivedItems>(result.data.pack);
-
+            await _action.BuyItem(_type, _id);
             Close();
         }
     }
